@@ -1,0 +1,17 @@
+<div ng-controller="LibraryAddController">
+    <h1>Add Tint</h1>
+
+    <p>
+        Add a new tint by entering the url to a github or bitbucket repository.
+    </p>
+
+    <div class="input-group">
+        <span class="input-group-addon">git</span>
+        <input type="text" class="form-control" placeholder="<git-url>" ng-model="model.tintUri">
+    </div>
+
+    <div class="btn-group pull-right">
+        <button class="btn btn-default" ng-click="add()">Add</button>
+        <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

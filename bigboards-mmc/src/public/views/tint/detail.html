@@ -1,0 +1,81 @@
+<div class="row-fluid">
+    <div class="span4">
+        <div class="card">
+            <h3 class="card-heading simple">{{tint.name}}</h3>
+            <div class="card-body">
+                <p>This hex is currently configured to run the <strong>{{tint.name}}</strong> tint, created by {{tint.owner}}. It provides {{tint.description}}</p>
+                <p>You may choose to set this tint to your hand by setting specific configuration settings.</p>
+            </div>
+            <div class="card-actions">
+
+            </div>
+        </div>
+
+        <div class="card" ng-show="currentAction">
+            <h3 class="card-heading simple">{{actionState}} {{currentAction.label}}</h3>
+            <div class="card-body">
+                <div ng-show="actionState == 'executing'">
+                    The action to {{currentAction.description}} is currently being executed on the hex. It will take a few moments for the results of the action to become
+                    available.
+                </div>
+
+                <div class="feedback" ng-show="actionState == 'completed'">
+                    <ul>
+                        <li ng-repeat="(play, tasks) in feedback.parsed">
+                            {{play}}
+                            <ul>
+                                <li ng-repeat="(task, nodes) in tasks">
+                                    {{task}}
+                                    <ul>
+                                        <li ng-repeat="(node, status) in nodes">
+                                            <span class="label label-success" ng-class="getStatusLabelType(status)">{{getStatusLabelText(status)}}</span>
+                                            {{node}}
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="error" ng-show="actionState == 'failed'">
+                    <span class="label label-important">Failed!</span> The operation failed to execute on the hex.
+                </div>
+            </div>
+            <div class="card-actions">
+                <button type="button" class="btn" ng-show="actionState == 'completed' || actionState == 'failed'" ng-click="currentAction = null">Close</button>
+            </div>
+        </div>
+    </div>
+    <div class="span4">
+        <div class="card">
+            <h3 class="card-heading simple">Actions</h3>
+        </div>
+
+        <div class="card" ng-repeat="action in tint.actions">
+            <h3 class="card-heading simple">{{action.label}}</h3>
+            <div class="card-body">
+                <p>{{action.description}}</p>
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-warning" ng-class="actionsClass" ng-click="invokeAction(action)">Invoke</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="span4">
+        <div class="card">
+            <h3 class="card-heading simple">Views</h3>
+        </div>
+
+        <div class="card" ng-repeat="(viewId, view) in tint.views">
+            <h3 class="card-heading simple">{{view.label}}</h3>
+            <div class="card-body">
+                <p>{{view.description}}</p>
+            </div>
+            <div class="card-actions">
+                <a class="btn btn-warning" ng-class="actionsClass" href="#/tints/{{tint.id}}/views/{{view.id}}">Open</a>
+            </div>
+        </div>
+    </div>
+</div>

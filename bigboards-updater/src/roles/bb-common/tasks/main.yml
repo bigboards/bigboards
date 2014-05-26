@@ -1,0 +1,17 @@
+---
+
+- name: be sure the hosts file is accurate
+  template: src=etc/hosts dest=/etc/hosts
+
+- name: copy the network configuration
+  template: src=etc/network/interfaces dest=/etc/network/interfaces
+  notify: 
+    - Restart Network
+    - Restart SSH
+
+- name: be sure the pycurl python modules are available
+  apt: name=python-pycurl state=latest
+
+- name: be sure the bigboards apt repository is available
+  apt_repository: repo='deb http://apt.bigboards.io/repo binary/' state=present
+  notify: Update Apt

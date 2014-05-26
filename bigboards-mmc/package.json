@@ -1,0 +1,29 @@
+{
+  "name": "BigBoards-mmc",
+  "description": "This is the management console, incl. master and slaves",
+  "author": "BigBoards <code@bigboards.io>",
+  "version": "1.0.5",
+  "private": true,
+  "dependencies": {
+    "async": "~0.2.9",
+    "events": "~1.0.0",
+    "express": "3.4.7",
+    "git": "^0.1.5",
+    "ini": "~1.1.0",
+    "js-yaml": "~3.0.1",
+    "node-ansible": "^0.2.1",
+    "node-uuid": "^1.4.1",
+    "q": "^1.0.1",
+    "socket.io": "~0.9.16",
+    "string": "~1.8.0",
+    "tty.js": "~0.2.13",
+    "util": "~0.10.2",
+    "winston": "^0.7.3",
+    "restler": "3.2.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engine": "node >= 0.6.6"
+}

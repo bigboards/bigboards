@@ -1,0 +1,28 @@
+---
+- name: get the list of containers
+  shell: lxc-ls
+  register: lxc_list
+  tags:
+    - container
+
+- name: get the status of the container with name {{ tintId }}
+  shell: lxc-info -s --name {{ tintId }}
+  register: tint_status
+  tags:
+    - container
+
+- name: make sure the {{ tintId }} container exists
+  shell: lxc-clone -o bb-template -n {{ tintId }}
+  when: "'{{ tintId }}' not in '''{{lxc_list.stdout}}'''"
+  tags:
+    - container
+
+- name: make sure the container is started at boot
+  file: state=link src=/var/lib/lxc/{{tintId}}/config dest=/etc/lxc/auto/{{tintId}}
+  tags:
+    - container
+
+- name: make sure the container is started
+  shell: lxc-start -d -n {{ tintId }}
+  tags:
+    - container

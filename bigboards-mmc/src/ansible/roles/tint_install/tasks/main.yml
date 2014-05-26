@@ -1,0 +1,18 @@
+---
+- name: gather installed containers
+  shell: lxc-ls
+  register: lxc_list
+
+- name: get the status of the {{ tint_id }} container
+  shell: lxc-info -s --name {{ tint_id }}
+  register: tint_status
+
+- name: make sure the tint container configuration is written to a specific file
+  template: src=container-template.j2 dest=/tmp/tint_id.conf force=yes
+
+- name: make sure the {{ tint_id }} container exists
+  shell: lxc-clone -o bb-template -n {{ tint_id }} -f /tmp/tint_id.conf
+  when: "'{{tint_id}}' not in '''{{lxc_list.stdout}}'''"
+
+- name: make sure the container is started
+  shell: lxc-start -d -n {{ tint_id }}

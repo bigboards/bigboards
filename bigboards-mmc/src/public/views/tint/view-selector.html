@@ -1,0 +1,17 @@
+<div class="header">
+    <div class="hex small" ng-init="iconClass='fa-desktop'" ng-mouseenter="iconClass='fa-arrow-left'" ng-mouseleave="iconClass='fa-desktop'">
+        <div class="content">
+            <a href="#/dashboard">
+                <i class="fa fa-3x" ng-class="iconClass"></i>
+            </a>
+        </div>
+        <div class="corner-1"></div>
+        <div class="corner-2"></div>
+    </div>
+    <h1>{{hex.tint.name}} - Views</h1>
+    <div class="pull-right">
+        <hex type="colored hex-button small" ng-repeat="view in views"><p ng-click="select(view)">{{view.label}}</p></hex>
+    </div>
+</div>
+
+<iframe ng-src="{{url}}"></iframe>

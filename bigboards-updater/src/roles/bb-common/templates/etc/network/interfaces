@@ -1,0 +1,24 @@
+auto lo
+iface lo inet loopback
+
+auto eth0
+iface eth0 inet manual
+
+{% if ansible_local.hex.hex.node.role == 'master' %}
+auto wlan0
+iface wlan0 inet dhcp
+    wireless-essid Haeger-low
+{% endif %}
+
+auto br0
+iface br0 inet static
+    address 172.20.40.{{ ansible_local.hex.hex.node.slot }}
+    netmask 255.255.255.240
+    broadcast 172.20.40.15
+{% if ansible_local.hex.hex.node.role == 'slave' %}
+	gateway 172.20.40.1
+{% endif %}
+    bridge_ports eth0
+    bridge_stp off
+    bridge_fd 0
+    bridge_maxwait 0

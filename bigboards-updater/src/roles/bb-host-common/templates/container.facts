@@ -1,0 +1,8 @@
+{
+  "id": "{{ ansible_local.hex.hex.id }}",
+  "name": "{{ ansible_local.hex.hex.name }}",
+  "container": {
+    "role": "{{ ansible_local.hex.hex.node.role }}",
+    "slot": {{ ansible_local.hex.hex.node.container.slot }}
+  }
+}

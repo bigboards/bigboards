@@ -1,0 +1,9 @@
+Package: bigboards-updater
+Version: 1.0-SNAPSHOT
+Section: base
+Priority: optional
+Architecture: all
+Installed-Size: SIZE
+Depends:
+Maintainer: BigBoards <hello@bigboards.io>
+Description: The BigBoards updater module

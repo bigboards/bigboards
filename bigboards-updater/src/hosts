@@ -1,0 +1,27 @@
+[host:children]
+host-coordinators
+host-workers
+
+[host-coordinators]
+bb1   ansible_ssh_user=bb
+
+[host-workers]
+bb2   ansible_ssh_user=bb
+bb3   ansible_ssh_user=bb
+bb4   ansible_ssh_user=bb
+bb5   ansible_ssh_user=bb
+bb6   ansible_ssh_user=bb
+
+[lxc:children]
+lxc-coordinators
+lxc-workers
+
+[lxc-coordinators]
+vbb1   ansible_ssh_user=bb
+
+[lxc-workers]
+vbb2   ansible_ssh_user=bb
+vbb3   ansible_ssh_user=bb
+vbb4   ansible_ssh_user=bb
+vbb5   ansible_ssh_user=bb
+vbb6   ansible_ssh_user=bb

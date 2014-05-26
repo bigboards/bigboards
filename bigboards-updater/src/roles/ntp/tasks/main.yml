@@ -1,0 +1,8 @@
+---
+- name: Install the NTP daemon
+  apt: state=latest name=ntp
+  notify: Restart NTP
+
+- name: Copy the NTP configuration file
+  template: src=etc/ntp.conf dest=/etc/ntp.conf
+  notify: Restart NTP

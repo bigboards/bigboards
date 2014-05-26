@@ -1,0 +1,67 @@
+---
+- name: be sure the hex facts are correct
+  template: src=hex.fact dest=/etc/ansible/facts.d/hex.fact
+
+- name: be sure the core packages are installed
+  apt: state=latest name={{item}} force=yes update_cache=yes
+  with_items:
+    - lxc
+    - parted
+    - nodejs
+    - bigboards-node
+
+- name: be sure the deprecated packages are uninstalled
+  apt: state=absent name={{item}} force=yes
+  with_items:
+    - libvirt-bin
+    - libvirt0
+
+- name: be sure the bigboards-node configuration file is available
+  template: src=hex-node.yml dest=/opt/bb/hex-node.yml owner=bb group=bigboards
+  notify: Restart BigBoards Node
+
+- name: be sure the harddisk is initialized
+  shell: creates=/dev/sda1 parted /dev/sda mklabel msdos mkpart primary 0% 100%
+
+- name: be sure the harddrive filesystem has been created
+  shell: creates=/root/.sda1.initialized mkfs.ext4 /dev/sda1 && touch /root/.sda1.initialized
+
+- name: be sure the data mountpoint exists
+  file: state=directory path=/data owner=bb group=bigboards
+
+- name: be sure the correct FSTAB file is installed
+  copy: src=etc/fstab dest=/etc/fstab
+
+- name: be sure the data directory is mounted
+  shell: creates=/data/lost+found mount /data
+
+- name: be sure the default lxc bridge is disabled
+  lineinfile: dest=/etc/default/lxc regexp='^USE_LXC_BRIDGE=' line='USE_LXC_BRIDGE="FALSE"'
+
+- name: gather installed containers
+  command: lxc-list
+  register: lxc_list
+
+- name: get the status of the bb-template container
+  command: lxc-info -s --name bb-template
+  register: bb-template_status
+
+- name: be sure the bb-template configuration exists
+  template: src=container.conf dest=/tmp/bb-template.conf
+
+- name: be sure the bb-template container exists
+  shell: executable=/bin/bash export LANG="en_US.UTF-8" && lxc-create -t ubuntu -n bb-template -f /tmp/bb-template.conf --  -b bb --auth-key /opt/bb/.ssh/id_rsa.pub -d
+  async: 600
+  when: "'bb-template' not in '''{{lxc_list.stdout}}'''"
+
+- name: be sure we can sudo with our bb user
+  copy: src=etc/sudoers dest=/var/lib/lxc/bb-template/rootfs/etc/sudoers
+
+- name: be sure the ansible facts directory exists
+  file: state=directory path=/var/lib/lxc/bb-template/rootfs{{item}}
+  with_items:
+    - /etc/ansible
+    - /etc/ansible/facts.d
+
+- name: be sure the container facts are copied over
+  template: src=container.facts dest=/var/lib/lxc/bb-template/rootfs/etc/ansible/facts.d/hex.fact

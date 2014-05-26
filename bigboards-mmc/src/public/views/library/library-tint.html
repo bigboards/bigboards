@@ -1,0 +1,15 @@
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{tint.name}}</h3>
+        <div class="panel-sub-title">by {{tint.owner}}</div>
+    </div>
+    <div class="panel-body">{{tint.description|truncate:50}}</div>
+    <div class="panel-footer">
+        <div class="library-tint-action" ng-click="removeTint()">
+            <span class="fa fa-trash-o"></span>
+        </div>
+        <div class="library-tint-action" ng-click="installTint()">
+            <span class="fa fa-cloud-download"></span>
+        </div>
+    </div>
+</div>

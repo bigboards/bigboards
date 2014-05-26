@@ -1,0 +1,15 @@
+127.0.0.1 localhost
+
+172.20.40.1	bb1.{{ ansible_domain }} bb1
+172.20.40.2	bb2.{{ ansible_domain }} bb2
+172.20.40.3	bb3.{{ ansible_domain }} bb3
+172.20.40.4	bb4.{{ ansible_domain }} bb4
+172.20.40.5	bb5.{{ ansible_domain }} bb5
+172.20.40.6	bb6.{{ ansible_domain }} bb6
+
+172.20.40.8		vbb1.{{ ansible_domain }} vbb1
+172.20.40.9		vbb2.{{ ansible_domain }} vbb2
+172.20.40.10	vbb3.{{ ansible_domain }} vbb3
+172.20.40.11	vbb4.{{ ansible_domain }} vbb4
+172.20.40.12	vbb5.{{ ansible_domain }} vbb5
+172.20.40.13	vbb6.{{ ansible_domain }} vbb6

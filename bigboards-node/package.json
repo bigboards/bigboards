@@ -1,0 +1,18 @@
+{
+  "name": "BigBoards-mmc-node",
+  "description": "This is the node side of the BigBoards management console. This part o.a. pushes the metrics out.",
+  "author": "Wim Van Leuven &lt;wim.vanleuven@bigboards.io&gt;",
+  "version": "1.0.4",
+  "private": true,
+  "dependencies": {
+    "express": "3.4.7",
+    "diskspace": "*",
+    "request": "*",
+    "js-yaml": "~3.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engine": "node >= 0.6.6"
+}

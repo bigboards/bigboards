@@ -1,0 +1,20 @@
+<div class="bb-sidepane" ng-class="currentClass">
+    <div class="bb-sidepane-content" ng-include="currentUrl"> </div>
+    <div class="bb-sidepane-menu">
+        <div class="bb-sidepane-menu-header">
+            <div class="bb-sidepane-menu-item" ng-init="iconClass=icon" ng-mouseenter="iconClass='fa-arrow-left'" ng-mouseleave="iconClass=icon" ng-click="invokeBack()">
+                <i class="fa fa-2x" ng-class="iconClass"></i>
+            </div>
+        </div>
+        <div class="bb-sidepane-menu-actions" ng-repeat="action in actions">
+            <div class="bb-sidepane-menu-item" ng-click="invoke(action)">
+                <i class="fa fa-2x" ng-class="action.iconClass"></i>
+            </div>
+        </div>
+        <div class="bb-sidepane-menu-footer">
+            <div class="bb-sidepane-menu-item" ng-click="toggleTasks()">
+                <i class="fa fa-2x fa-spinner"></i>
+            </div>
+        </div>
+    </div>
+</div>

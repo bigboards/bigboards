@@ -1,0 +1,5 @@
+<div class="tasks" ng-show="visible">
+    <h3 title="{{task.description}}"> {{task.code}} </h3>
+    <div class="task-status" ng-class="labelClass(status.state)">{{ status.state }}</div>
+    <div class="task-status-message">{{status.msg}}</div>
+</div>

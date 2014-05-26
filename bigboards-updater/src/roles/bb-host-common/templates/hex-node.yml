@@ -1,0 +1,3 @@
+slot: {{ ansible_local.hex.hex.node.slot }}
+master: {{ ansible_local.hex.hex.node.master }}
+environment: production

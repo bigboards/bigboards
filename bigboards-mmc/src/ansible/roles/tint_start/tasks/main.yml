@@ -1,0 +1,12 @@
+---
+- name: gather installed containers
+  shell: lxc-ls
+  register: lxc_list
+
+- name: get the status of the {{ tint_id }} container
+  shell: lxc-info -s --name {{ tint_id }}
+  register: tint_status
+
+- name: make sure the container is started
+  shell: lxc-start -d -n {{ tint_id }}
+  when: "'{{tint_id}}' in '''{{lxc_list.stdout}}'''"

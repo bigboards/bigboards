@@ -1,0 +1,9 @@
+Package: bigboards-mmc
+Version: 1.0.5
+Section: base
+Priority: optional
+Architecture: all
+Installed-Size: SIZE
+Depends:
+Maintainer: BigBoards <hello@bigboards.io>
+Description: The BigBoards Management Console

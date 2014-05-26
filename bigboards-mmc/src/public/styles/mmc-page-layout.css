@@ -1,0 +1,200 @@
+/**********************************************************************************************************************
+ * SIDEPANE
+ *********************************************************************************************************************/
+
+.bb-sidepane {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #fafafa;
+    border-right: solid 1px #dedede;
+    color: #515151;
+    padding: 0;
+}
+
+.bb-sidepane.bb-sidepane-slim { width: 50px; }
+.bb-sidepane.bb-sidepane-large { width: 40%; }
+
+.bb-sidepane .bb-sidepane-content {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 50px;
+    background-color: #008888;
+    padding: 10px;
+    color: white;
+}
+
+.bb-sidepane .bb-sidepane-content h1 {
+    color: white;
+    margin: 0;
+    padding: 0;
+    font-size: x-large;
+    text-align: right;
+    height: 40px;
+    border-bottom: solid 1px white;
+    margin-bottom: 20px;
+}
+
+.bb-sidepane.bb-sidepane-slim .bb-sidepane-content { display: none; }
+
+.bb-sidepane .bb-sidepane-menu {
+    width: 50px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.bb-sidepane .bb-sidepane-menu .bb-sidepane-menu-item {
+    display: table-cell;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    text-decoration: none;
+    color: #515151;
+}
+
+.bb-sidepane .bb-sidepane-menu .bb-sidepane-menu-item:hover {
+    color: #008888;
+}
+
+.bb-sidepane .bb-sidepane-menu .bb-sidepane-menu-header {
+    display: table;
+}
+
+.bb-sidepane .bb-sidepane-menu .bb-sidepane-menu-header .bb-sidepane-menu-item,
+.bb-sidepane .bb-sidepane-menu .bb-sidepane-menu-footer .bb-sidepane-menu-item {
+    background-color: #008888;
+    color: white;
+}
+
+bb-sidepane .bb-sidepane-menu-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: table;
+    height: 50px;
+}
+
+/**********************************************************************************************************************
+ * CONTENT
+ *********************************************************************************************************************/
+.bb-content {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+    bottom: 0;
+    right: 0;
+}
+
+/**********************************************************************************************************************
+ * HEADER
+ *********************************************************************************************************************/
+
+.bb-header {
+    position: absolute;
+    top: 0;
+    left: 50px;
+    right: 0;
+    height: 50px;
+}
+
+.bb-header h1 {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    padding: 0;
+    padding-top: 3px;
+    margin: 0;
+    margin-left: 10px;
+    color: #515151;
+}
+
+/**********************************************************************************************************************
+ * TASKS
+ *********************************************************************************************************************/
+
+.tasks {
+    position: absolute;
+    left: 50px;
+    right: 0;
+    bottom: 0;
+    height: 50px;
+    z-index: 100;
+
+    border-top: solid 1px #bbb;
+}
+
+.tasks h3 {
+    font-size: 16px;
+    text-align: center;
+    font-weight: normal;
+    margin: 0;
+    display: inline-block;
+    width: 150px;
+    height: 100%;
+    padding-top: 15px;
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    top: 0;
+}
+
+.tasks .task-status {
+    display: inline-block;
+    position: absolute;
+    left: 150px;
+    bottom: 0;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    text-align: center;
+    color: white;
+    font-size: large;
+    padding-top: 10px;
+}
+
+.tasks .task-status.success { background-color: #5cb85c; }
+.tasks .task-status.failure { background-color: #d9534f; }
+
+.tasks .task-status-message {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 250px;
+    right: 50px;
+    font-size: large;
+    padding: 10px;
+    padding-bottom: 0;
+
+}
+
+.tasks .task-hide {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 50px;
+    background-color: #008888;
+    color: white;
+}
+
+.bb-task-tile {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 50px;
+    height: 50px;
+    background-color: #008888;
+    z-index: 200000;
+}

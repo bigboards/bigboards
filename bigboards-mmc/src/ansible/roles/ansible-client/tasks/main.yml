@@ -1,0 +1,7 @@
+---
+- name: make sure the ansible prerequisites are installed
+  script: ansible-prereqs.sh creates=/root/.ansible_prereqs_installed
+  register: ans_preq
+  changed_when: "'CHANGE' in ans_preq.stdout"
+  tags:
+    - container

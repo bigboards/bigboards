@@ -1,0 +1,3 @@
+---
+- name: be sure the tint sources are available
+  git: repo={{tintUri}} dest=/opt/bb/tints.d/{{tintId}}
