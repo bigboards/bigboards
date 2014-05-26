@@ -1,28 +1,21 @@
-<div class="header">
-    <div class="hex small" ng-init="iconClass='fa-gears'" ng-mouseenter="iconClass='fa-arrow-left'" ng-mouseleave="iconClass='fa-gears'">
-        <div class="content">
-            <a href="#/dashboard">
-                <i class="fa fa-3x" ng-class="iconClass"></i>
-            </a>
-        </div>
-        <div class="corner-1"></div>
-        <div class="corner-2"></div>
-    </div>
-    <h1>{{hex.tint.name}} - Configuration</h1>
-</div>
+<bb-header title="{{hex.tint.name}} Configuration"></bb-header>
 
-<table class="table param-table">
-    <tr class="param" ng-repeat="parameter in configuration">
-        <td class="param-label">{{parameter.label}}</td>
-        <td class="param-value">
-            <div class="input-prepend input-append">
-                <span class="add-on">{{parameter.type}}</span>
-                <input type="text" value="{{parameter.values.all}}">
-                <!--<span class="add-on">.00</span>-->
-            </div>
-        </td>
-        <td class="param-description">
-            <p>{{parameter.description}}</p>
-        </td>
-    </tr>
-</table>
+<bb-content>
+    <table class="table param-table">
+        <tr class="param" ng-repeat="parameter in configuration">
+            <td class="param-label">{{parameter.label}}</td>
+            <td class="param-value">
+                <div class="input-prepend input-append">
+                    <span class="add-on">{{parameter.type}}</span>
+                    <input type="text" value="{{parameter.values.all}}">
+                    <!--<span class="add-on">.00</span>-->
+                </div>
+            </td>
+            <td class="param-description">
+                <p>{{parameter.description}}</p>
+            </td>
+        </tr>
+    </table>
+</bb-content>
+
+<bb-sidepane icon="fa-gears"></bb-sidepane>

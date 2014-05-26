@@ -52,8 +52,27 @@ tintModule.controller('TintViewController', function($rootScope, $scope, $sce, $
 });
 
 tintModule.controller('TintViewSelectorController', function($rootScope, $scope, $sce, $routeParams, $location, socket) {
+    $scope.url = "";
+    $scope.actions = [];
+
     socket.emit('hex:tint:views', null, function(data) {
-        $scope.views = data;
+        if (data.length == 1) {
+            $scope.currentView = data[0];
+            $scope.url = $sce.trustAsResourceUrl($scope.currentView.url.replace('{{external_ip}}', $location.host()));
+        } else {
+            // -- parse the actions
+            data.forEach(function (view) {
+                $scope.actions.push({
+                    iconClass: view.icon,
+                    execute: function() {
+                        $scope.currentView = view;
+                        $scope.url = $sce.trustAsResourceUrl($scope.currentView.url.replace('{{external_ip}}', $location.host()));
+                    }
+                });
+            });
+        }
+
+
     });
 
     // -- if the views are not available we will register a listener so they are handled
