@@ -7,7 +7,7 @@ iface eth0 inet manual
 {% if ansible_local.hex.hex.node.role == 'master' %}
 auto wlan0
 iface wlan0 inet dhcp
-    wireless-essid Haeger-low
+    wireless-essid bb
 {% endif %}
 
 auto br0

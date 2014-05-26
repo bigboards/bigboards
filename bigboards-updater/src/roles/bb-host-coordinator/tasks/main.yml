@@ -59,12 +59,18 @@
   apt: state=latest name={{item}} force=yes update_cache=yes
   with_items:
     - bigboards-mmc
+  notify: Restart BigBoards Management Console
 
 - name: preinitialize the hex
   lineinfile: "dest=/opt/bb/hex.yml regexp='^initialized:' line='initialized: true'"
+  notify: Restart BigBoards Management Console
 
 - name: be sure the ansible hosts configuration is available
   copy: src=hosts dest=/opt/bb/hosts mode=0666 owner=bb group=bigboards
   tags:
     - mmc
 
+- name: be sure the ansible configuration file is available
+  template: src=etc/ansible/ansible.cfg dest=/etc/ansible/ansible.cfg
+  tags:
+    - mmc
