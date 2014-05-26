@@ -15,3 +15,6 @@
 - name: be sure the bigboards apt repository is available
   apt_repository: repo='deb http://apt.bigboards.io/repo binary/' state=present
   notify: Update Apt
+
+- name: be sure the new bash prompt is active
+  lineinfile: dest=/etc/bash.bashrc regexp='^PS1=' line="PS1=$'\e[0;32m\u2b22 {{ ansible_local.hex.hex.name }}\e[0m \u@\h \w\$ '"
