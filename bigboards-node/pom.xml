@@ -97,7 +97,11 @@
                                 copy the deb package to the central deployment folder
                                 -->
                                 <echo message="========== deploy debs ===================" />
-                                <copy file="${project.basedir}/target/dist/${project.name}-${project.version}.deb" todir="${central.deploy.dir}"/>
+                                <copy todir="${central.deploy.dir}">
+                                    <fileset dir="${project.basedir}/target/dist/">
+                                        <exclude name="**/*.deb"/>
+                                    </fileset>
+                                </copy>
                             </target>
                         </configuration>
                         <goals>

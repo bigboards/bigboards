@@ -1,5 +1,5 @@
 Package: bigboards-mmc
-Version: 1.0.5
+Version: VERSION
 Section: base
 Priority: optional
 Architecture: all

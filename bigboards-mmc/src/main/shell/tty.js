@@ -475,10 +475,11 @@ Window.prototype.maximize = function() {
   x = (x * term.cols) | 0;
   y = (y * term.rows) | 0;
 
-  el.style.left = '0px';
-  el.style.top = '0px';
-  el.style.width = '100%';
-  el.style.height = '100%';
+  el.style.left = '0';
+  el.style.top = '0';
+  el.style.bottom = '0';
+  el.style.right= '0';
+  el.style.position= 'absolute';
   term.element.style.width = '100%';
   term.element.style.height = '100%';
   el.style.boxSizing = 'border-box';

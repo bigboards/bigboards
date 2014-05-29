@@ -6,7 +6,7 @@ set -u
 set -e
 
 PROJECT_NAME=bigboards-mmc
-PROJECT_VERSION=1.0-SNAPSHOT
+PROJECT_VERSION=1.0.$(date +"%Y%m%d%H%M")
 
 PROJECT_HOME=${1}
 SRC="/tmp/${PROJECT_NAME}-deb-src"
@@ -21,10 +21,10 @@ rm -rf ${SRC}
 rsync -a ${PROJECT_HOME}/deb/src/ ${SRC}/
 mkdir -p ${SYSROOT}/opt/
 
-mkdir -p ${SYSROOT}/opt/grabble/runtimes/${PROJECT_NAME}/
-rsync -arvv ${PROJECT_HOME}/src/main/* ${SYSROOT}/opt/grabble/runtimes/${PROJECT_NAME}/ --delete
+mkdir -p ${SYSROOT}/opt/bb/runtimes/${PROJECT_NAME}/
+rsync -arvv ${PROJECT_HOME}/src/main/* ${SYSROOT}/opt/bb/runtimes/${PROJECT_NAME}/ --delete
 # In case of a NodeJS project we separately copy the packaje.json file; comment or uncomment wether applicable
-rsync -arvv ${PROJECT_HOME}/package.json ${SYSROOT}/opt/grabble/runtimes/${PROJECT_NAME}/ --delete
+rsync -arvv ${PROJECT_HOME}/package.json ${SYSROOT}/opt/bb/runtimes/${PROJECT_NAME}/ --delete
 
 find ${SRC}/ -type d -exec chmod 0755 {} \;
 find ${SRC}/ -type f -exec chmod go-w {} \;
@@ -42,8 +42,10 @@ echo "sed -e s\"/SIZE/${SIZE}/\" -i \"\" ${DEBIAN}/control"
 if [ "$(uname)" == "Linux" ];
 then
     sed -e s"/SIZE/${SIZE}/" -i"" ${DEBIAN}/control
+    sed -e s"/VERSION/${PROJECT_VERSION}/" -i"" ${DEBIAN}/control
 else
     sed -e s"/SIZE/${SIZE}/" -i "" ${DEBIAN}/control
+    sed -e s"/VERSION/${PROJECT_VERSION}/" -i "" ${DEBIAN}/control
 fi
 
 pushd ${DEBIAN}

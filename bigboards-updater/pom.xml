@@ -29,47 +29,6 @@
                 <version>1.7</version>
                 <executions>
                     <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <configuration>
-                            <target>
-                                <!--
-                                SCM doesn't contain dependencies, so we need to install them
-                                they are placed locally in node_modules folder
-                                private dependencies are extracted using maven-dependency-plugin
-                                We don't fail on error so our build might work offline if all NPM modules
-                                were loaded before.
-                                -->
-                                <echo message="========== installing public dependencies ===================" />
-                                <exec executable="npm" dir="${project.basedir}" failonerror="false">
-                                    <arg value="install" />
-                                </exec>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test</id>
-                        <phase>test</phase>
-                        <configuration>
-                            <target>
-                                <!--
-                                runs tests and exports results in specified location so Jenkins can find them
-                                doesn't fail on error because we want Jenkins to pick up failed tests
-                                -->
-                                <echo message="========== running tests ===================" />
-                                <exec executable="npm" dir="${project.basedir}" failonerror="true">
-                                    <arg value="test" />
-                                </exec>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>package</id>
                         <phase>package</phase>
                         <configuration>
@@ -97,7 +56,11 @@
                                 copy the deb package to the central deployment folder
                                 -->
                                 <echo message="========== deploy debs ===================" />
-                                <copy file="${project.basedir}/target/dist/${project.name}-${project.version}.deb" todir="${central.deploy.dir}"/>
+                                <copy todir="${central.deploy.dir}">
+                                    <fileset dir="${project.basedir}/target/dist/">
+                                        <exclude name="**/*.deb"/>
+                                    </fileset>
+                                </copy>
                             </target>
                         </configuration>
                         <goals>

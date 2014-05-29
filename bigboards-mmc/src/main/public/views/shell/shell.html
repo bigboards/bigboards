@@ -1,14 +1,7 @@
-<div class="header inverse">
-    <div class="hex small" ng-init="iconClass='fa-terminal'" ng-mouseenter="iconClass='fa-arrow-left'" ng-mouseleave="iconClass='fa-terminal'">
-        <div class="content">
-            <a href="#/dashboard">
-                <i class="fa fa-3x" ng-class="iconClass"></i>
-            </a>
-        </div>
-        <div class="corner-1"></div>
-        <div class="corner-2"></div>
-    </div>
-    <h1>Shell</h1>
-</div>
+<bb-header title="Shell"></bb-header>
 
-<iframe ng-src="{{shellUrl}}" init-focus></iframe>
+<bb-content>
+    <iframe ng-src="{{shellUrl}}" init-focus></iframe>
+</bb-content>
+
+<bb-sidepane icon="fa-terminal" actions="actions"></bb-sidepane>
