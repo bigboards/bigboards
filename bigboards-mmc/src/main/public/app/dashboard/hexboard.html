@@ -5,28 +5,7 @@
         <hex></hex>
         <hex></hex>
         <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
-        <hex></hex>
+
     </div>
     <div class="hex-row">
         <hex></hex>
@@ -59,7 +38,7 @@
         <hex-header><h4>Actions</h4></hex-header>
         <hex-button help-ref="actionsShellHelp"><a href="#/shell" target="_blank"><i class="fa fa-terminal fa-3x"></i></a></hex-button>
         <hex-button help-ref="actionsUpdateHelp" ng-click="update()"><i class="fa fa-refresh fa-3x"></i></hex-button>
-        <hex-button help-ref="actionsLibraryHelp"><a href="#/library"><i class="fa fa-tint fa-3x"></i></a></hex-button>
+        <hex-button help-ref="actionsLibraryHelp" attention="'No tint has been installed'"><a href="#/library"><i class="fa fa-tint fa-3x"></i></a></hex-button>
     </div>
     <div class="hex-row">
         <hex type="hex-gap"></hex>
@@ -70,7 +49,10 @@
         <hex></hex>
         <hex-help id="actionsShellHelp"><p>Open a shell</p></hex-help>
         <hex-help id="actionsUpdateHelp"><p>Update the hex</p></hex-help>
-        <hex-help id="actionsLibraryHelp"><p>Open the tint library</p></hex-help>
+        <hex-help id="actionsLibraryHelp">
+            <p ng-if="hex.tint">Open the tint library</p>
+            <p ng-if="!hex.tint">No tint installed yet!</p>
+        </hex-help>
     </div>
     <div class="hex-row">
         <hex></hex>

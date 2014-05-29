@@ -41,9 +41,16 @@ app.directive('hexButton', function() {
         scope: {
             type: '@',
             helpRef: '@',
-            bbClick: '='
+            bbClick: '=',
+            attention: '='
         },
         controller: function ($scope) {
+            $scope.additionalStyle = function() {
+                if ($scope.attention) {
+                    return 'attention attention-warn';
+                } else
+                    return '';
+            };
         },
         link: function ($scope, $element, $attributes) {
             // -- try to find the help element

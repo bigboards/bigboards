@@ -12,13 +12,8 @@ app.config(['$routeProvider', function($routeProvider) {
     $routeProvider
         .when('/dashboard', {
             title: 'Dashboard',
-            templateUrl: 'views/dashboard/hexboard.html',
+            templateUrl: 'app/dashboard/hexboard.html',
             controller: 'DashboardController'
-        })
-        .when('/setup', {
-            title: 'Setup',
-            templateUrl: 'views/setup/setup.html',
-            controller: 'SetupController'
         })
         .when('/tints', {
             title: 'Tint',
@@ -62,25 +57,8 @@ app.config(['$routeProvider', function($routeProvider) {
 }]);
 
 app.run(['$location', '$rootScope', 'socket', function($location, $rootScope, socket) {
-//    $rootScope.$on('viewsLoaded', function(evt) {console.log("Tint views loaded");});
-//    $rootScope.$on('actionsLoaded', function(evt) {console.log("Tint actions loaded");});
-//    $rootScope.$on('configLoaded', function(evt) {console.log("Tint config loaded");});
-
     socket.emit('hex:identify', null, function(data) {
         $rootScope.hex = data;
-
-        // register listener to watch route changes
-        $rootScope.$on( "$routeChangeStart", function(event, next, current) {
-            if (!$rootScope.hex.initialized) {
-                // no logged user, we should be going to #login
-                if ( next.templateUrl == "views/setup/setup.html" ) {
-                    // already going to #login, no redirect needed
-                } else {
-                    // not going to #login, we should redirect now
-                    $location.path( "/setup" );
-                }
-            }
-        });
 
         $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
             if (current.$$route) {
