@@ -12,6 +12,10 @@ Contents:
    :maxdepth: 2
 
    gettingstarted
+   concepts
+   hardware
+   tints
+   faq
 
 
 Indices and tables
