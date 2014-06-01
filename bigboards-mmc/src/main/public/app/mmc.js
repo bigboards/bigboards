@@ -12,7 +12,7 @@ app.config(['$routeProvider', function($routeProvider) {
     $routeProvider
         .when('/dashboard', {
             title: 'Dashboard',
-            templateUrl: 'app/dashboard/hexboard.html',
+            templateUrl: 'app/dashboard/partials/hexboard.html',
             controller: 'DashboardController'
         })
         .when('/tints', {

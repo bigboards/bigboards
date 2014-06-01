@@ -1,0 +1,72 @@
+.nodes {
+    position: absolute;
+    top: 0;
+    left:0;
+    bottom: 0;
+    width: 20%;
+}
+
+.hex-node {
+    margin: 15px;
+    display: block;
+}
+
+.hex-node .hex-node-content {
+    position: relative;
+    margin-left: 26px;
+    height: 100%;
+    min-height: 65px;
+    border: solid 1px #008888;
+}
+
+.hex-node-content.collapsed { max-height: 29px; }
+.hex-node-content.collapsed .hex-node-metrics { display: none; }
+
+.hex-node-content.expanded { max-height: none; }
+.hex-node-content.expanded .hex-node-metrics { display: block; }
+
+.hex-node h3 {
+    padding: 0;
+    margin: 0;
+    font-size: large;
+    margin-top: 21px;
+    margin-left: 30px;
+    margin-bottom: 21px;
+}
+
+.hex-node .hex {
+    background-color: #008888;
+}
+
+.hex-node-metrics {
+    margin-left: 30px;
+}
+
+
+
+.hex-node-metric {
+    padding-right: 10px;
+}
+
+.hex-node-metric h3 {
+    font-size: small;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
+
+.hex-node-metric .value {
+    float: right;
+    display: inline-block;
+}
+
+.hex-node-actions {
+    float: right;
+    padding-top: 14px;
+    padding-right: 14px;
+}
+
+.hex-node-actions .hex {
+    background-color: #dedede;
+    color: #515151;
+}
