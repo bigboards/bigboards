@@ -47,9 +47,9 @@ app.directive('hexButton', function() {
         controller: function ($scope) {
             $scope.additionalStyle = function() {
                 if ($scope.attention) {
-                    return 'attention attention-warn';
+                    return $scope.type + ' attention attention-warn';
                 } else
-                    return '';
+                    return $scope.type;
             };
         },
         link: function ($scope, $element, $attributes) {

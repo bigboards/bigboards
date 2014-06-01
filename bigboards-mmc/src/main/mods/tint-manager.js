@@ -52,19 +52,16 @@ TintManager.prototype.update = function(libraryRecord) {
 /**
  * Install the given tint by passing in its library record.
  *
- * @param libraryRecord the record holding all information about the tint.
+ * @param tint  the tint we want to uninstall.
  */
-TintManager.prototype.uninstall = function(libraryRecord) {
-    if (! libraryRecord.uri) throw new Error("Invalid library record format");
-    if (! libraryRecord.id) throw new Error("Invalid library record format");
+TintManager.prototype.uninstall = function(tint) {
+    if (! tint.uri) throw new errors.IllegalParameterError("Invalid tint format");
+    if (! tint.id) throw new errors.IllegalParameterError("Invalid tint format");
 
-    var self = this;
-
-    return new Ansible.Playbook()
-        .inventory('/opt/bb/hosts')
-        .playbook('uninstall.yml')
-        .exec({cwd: self.tintDirectory + '/' + libraryRecord.id})
-        .then(removeDirectory(self.tintDirectory + '/' + libraryRecord.id));
+    return this.taskManager.invoke('uninstall_tint', {
+        tintId: tint.id,
+        tintUri: tint.uri
+    });
 };
 
 var removeDirectory = function(directory) {

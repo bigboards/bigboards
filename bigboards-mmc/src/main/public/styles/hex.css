@@ -115,3 +115,5 @@
 .hex.colored {
     background-color: #888;
 }
+
+.hex.danger:hover { background-color: #880000; }

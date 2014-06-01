@@ -76,6 +76,7 @@ app.post('/api/v1/library', function(req, res) { routes.libraryAPI.post(req, res
 app.delete('/api/v1/library/:tintId', function(req, res) { routes.libraryAPI.remove(req, res); });
 
 app.post('/api/v1/tints/:tintId', function(req, res) { routes.tintsAPI.install(req, res); });
+app.delete('/api/v1/tints/:tintId', function(req, res) { routes.tintsAPI.uninstall(req, res); });
 
 //app.get('/api/v1/tints/:tint/actions', function(req, res) { routes.tintsAPI.actions(req, res); });
 //app.post('/api/v1/tints/:tint/actions/:action', function(req, res) { routes.tintsAPI.invokeAction(req, res); });

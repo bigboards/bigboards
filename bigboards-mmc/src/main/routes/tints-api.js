@@ -31,6 +31,27 @@ TintsAPI.prototype.install = function(req, res) {
     });
 };
 
+TintsAPI.prototype.uninstall = function(req, res) {
+    // -- get the tint id parameter
+    var tintId = req.body.tintId;
+    if (! tintId) return res.send(400, "No Tint ID has been provided");
+
+    var self = this;
+
+    // -- get the tint from the library
+    return this.library.get(tintId).then(function(tint) {
+        try {
+            self.hex.tintManager.uninstall(tint);
+            res.send(200);
+        } catch (error) {
+            ApiUtils.handleError(res, error);
+        }
+
+    }, function(error) {
+        ApiUtils.handleError(res, error);
+    });
+};
+
 TintsAPI.prototype.list = function(req, res) {
     Tints.list(this.config, function(err, tints) {
         if (err) return res.send(500, err);
