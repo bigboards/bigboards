@@ -15,40 +15,44 @@ app.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'app/dashboard/partials/hexboard.html',
             controller: 'DashboardController'
         })
+
+
         .when('/tints', {
             title: 'Tint',
-            templateUrl: 'views/tint/detail.html',
+            templateUrl: 'app/tint/partials/detail.html',
             controller: 'TintDetailController'
         })
         .when('/tints/actions/:actionId', {
             title: 'Tint',
-            templateUrl: 'views/tint/action-detail.html',
+            templateUrl: 'app/tint/partials/action-detail.html',
             controller: 'TintActionDetailController'
         })
         .when('/tints/views', {
             title: 'Tint',
-            templateUrl: 'views/tint/view-selector.html',
+            templateUrl: 'app/tint/partials/view-selector.html',
             controller: 'TintViewSelectorController'
         })
         .when('/tints/views/:viewId', {
             title: 'Tint',
-            templateUrl: 'views/tint/view.html',
+            templateUrl: 'app/tint/partials/view.html',
             controller: 'TintViewController'
         })
         .when('/tints/configuration', {
             title: 'Tint',
-            templateUrl: 'views/tint/config.html',
+            templateUrl: 'app/tint/partials/config.html',
             controller: 'TintConfigurationController'
         })
+
+
         .when('/library', {
             title: 'Library',
-            templateUrl: 'views/library/library.html',
+            templateUrl: 'app/library/partials/library.html',
             controller: 'LibraryController'
         })
 
         .when('/shell', {
             title: 'Shell',
-            templateUrl: 'views/shell/shell.html',
+            templateUrl: 'app/shell/partials/shell.html',
             controller: 'ShellController'
         })
         .otherwise({

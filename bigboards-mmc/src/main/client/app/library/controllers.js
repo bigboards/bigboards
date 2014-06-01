@@ -8,7 +8,7 @@ libraryModule.controller('LibraryController', function($scope, Library, Tints, s
             iconClass: 'fa-plus',
             execute: function() {
                 $scope.$broadcast('sidebar:show', {
-                    view: 'app/library/views/add.html',
+                    view: 'app/library/partials/add.html',
                     controller: libraryModule.controller,
                     model: {}
                 });

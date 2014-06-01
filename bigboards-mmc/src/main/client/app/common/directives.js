@@ -30,7 +30,7 @@ app.directive('hex', function() {
                 });
             }
         },
-        templateUrl: 'views/common/hex.html'
+        templateUrl: 'app/common/directives/hex.html'
     };
 });
 
@@ -73,7 +73,7 @@ app.directive('hexButton', function() {
                 });
             }
         },
-        templateUrl: 'views/common/hex-button.html'
+        templateUrl: 'app/common/directives/hex-button.html'
     };
 });
 
@@ -84,7 +84,7 @@ app.directive('hexHeader', function() {
         scope: {
             type: '@'
         },
-        templateUrl: 'views/common/hex-header.html'
+        templateUrl: 'app/common/directives/hex-header.html'
     };
 });
 
@@ -95,7 +95,7 @@ app.directive('hexHelp', function() {
         scope: {
             type: '@'
         },
-        templateUrl: 'views/common/hex-help.html'
+        templateUrl: 'app/common/directives/hex-help.html'
     };
 });
 
@@ -116,7 +116,7 @@ app.directive('hexSlot', function() {
                 return '';
             }
         },
-        templateUrl: 'views/common/hex-slot.html'
+        templateUrl: 'app/common/directives/hex-slot.html'
     };
 });
 
@@ -228,7 +228,7 @@ app.directive('metricIndicator', function () {
                 }
             });
         },
-        templateUrl: 'views/common/metric-indicator.html'
+        templateUrl: 'app/common/directives/metric-indicator.html'
     };
 });
 
@@ -255,7 +255,7 @@ app.directive('fldText', function() {
             model: '='
         },
         controller: function ($scope) {},
-        templateUrl: 'app/common/directives/fld_text.html'
+        templateUrl: 'app/common/directives/directives/fld_text.html'
     };
 });
 
@@ -314,7 +314,7 @@ app.directive('tasks', function() {
             });
         },
         link: function ($scope, $element, $attributes) {},
-        templateUrl: 'views/common/tasks.html'
+        templateUrl: 'app/common/directives/tasks.html'
     };
 });
 
@@ -335,7 +335,7 @@ app.directive('bbHeader', function() {
         },
         controller: function ($scope) { },
         link: function ($scope, $element, $attributes) { },
-        templateUrl: 'views/common/header.html'
+        templateUrl: 'app/common/directives/header.html'
     };
 });
 
