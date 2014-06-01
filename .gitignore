@@ -1,3 +1,5 @@
 *.iml
 .idea
 bigboards-docs/build
+target
+node_modules
