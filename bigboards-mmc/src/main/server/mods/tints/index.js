@@ -3,7 +3,7 @@ var fs = require("fs"),
     Ansible = require("node-ansible"),
     async = require("async"),
     Q = require("q"),
-    errors = require("../errors.js");
+    errors = require("../../errors.js");
 
 function TintManager(taskManager, tintDirectory) {
     this.taskManager = taskManager;
@@ -11,9 +11,16 @@ function TintManager(taskManager, tintDirectory) {
 }
 
 /**
- * Get the current tint.
+ * Get the list of installed tints.
  */
-TintManager.prototype.load = function(tintId) {
+TintManager.prototype.list = function() {
+
+};
+
+/**
+ * Get the tint with the given id.
+ */
+TintManager.prototype.get = function(tintId) {
     return new Tint(tintId, this.tintDirectory + '/' + tintId);
 };
 
@@ -35,18 +42,13 @@ TintManager.prototype.install = function(tint) {
 /**
  * Install the given tint by passing in its library record.
  *
- * @param libraryRecord the record holding all information about the tint.
+ * @param tint the tint we want to update
  */
-TintManager.prototype.update = function(libraryRecord) {
-    if (! libraryRecord.uri) throw new Error("Invalid library record format");
-    if (! libraryRecord.id) throw new Error("Invalid library record format");
+TintManager.prototype.update = function(tint) {
+    if (! tint.uri) throw new errors.IllegalParameterError("Invalid tint format");
+    if (! tint.id) throw new errors.IllegalParameterError("Invalid tint format");
 
-    var self = this;
-
-    return new Ansible.Playbook()
-        .inventory('/opt/bb/hosts')
-        .playbook('install.yml')
-        .exec({cwd: self.tintDirectory + '/' + libraryRecord.id});
+    return this.taskManager.invoke('update_tint', { tintId: tint.id });
 };
 
 /**
@@ -58,21 +60,7 @@ TintManager.prototype.uninstall = function(tint) {
     if (! tint.uri) throw new errors.IllegalParameterError("Invalid tint format");
     if (! tint.id) throw new errors.IllegalParameterError("Invalid tint format");
 
-    return this.taskManager.invoke('uninstall_tint', {
-        tintId: tint.id,
-        tintUri: tint.uri
-    });
-};
-
-var removeDirectory = function(directory) {
-    var deferred = Q.defer();
-
-    fs.unlink(directory, function(err) {
-        if (err) return deferred.reject(err);
-        return deferred.resolve();
-    });
-
-    return deferred.promise;
+    return this.taskManager.invoke('uninstall_tint', { tintId: tint.id });
 };
 
 module.exports = TintManager;

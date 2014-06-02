@@ -2,7 +2,7 @@ var Ansible = require('node-ansible'),
     Q = require('q'),
     async = require('async');
 
-module.exports = function(hex) {
+module.exports = function(configuration) {
     return {
         code: 'install_tint',
         description: 'Install the given tint on the hex',
@@ -83,13 +83,16 @@ module.exports = function(hex) {
                 if (error) deferred.reject(error);
                 else {
                     try {
-                        // -- load the tint information
-                        hex.tint = hex.tintManager.load(scope.tintId);
+                        // -- load the hex information
+                        configuration.load().then(function(data) {
+                            data.tint = scope.tintId;
 
-                        // -- update the tint setting in the configuration
-                        hex.configurationManager.save();
-
-                        deferred.resolve(outputBuffer);
+                            configuration.save(data.tint);
+                        }).then(function(data) {
+                            deferred.resolve(outputBuffer);
+                        }, function(error) {
+                            deferred.reject(error);
+                        });
                     } catch (error) {
                         deferred.reject(error);
                     }

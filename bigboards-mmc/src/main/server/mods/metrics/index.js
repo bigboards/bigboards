@@ -1,5 +1,5 @@
-var TimeSeriesClock = require('./../utils/time-series-clock');
-var arrays = require('./../utils/arrays');
+var TimeSeriesClock = require('./../../utils/time-series-clock');
+var arrays = require('./../../utils/arrays');
 
 var util         = require("util");
 var EventEmitter = require('events').EventEmitter;

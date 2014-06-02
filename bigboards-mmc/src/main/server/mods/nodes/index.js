@@ -11,27 +11,29 @@ util.inherits(HexNodeManager, EventEmitter);
 /**
  * Attach a node to the hex.
  *
- * @param hexNode   the node to attach
+ * @param name   the name of the node to attach
  */
-HexNodeManager.prototype.attach = function(hexNode) {
-    this.nodes[hexNode.name] = hexNode;
+HexNodeManager.prototype.attach = function(name) {
+    this.nodes[name] = { name: name };
 
-    this.emit('nodes:attached', hexNode);
+    this.emit('nodes:attached', this.nodes[name]);
 };
 
 /**
  * Detach a node from the hex.
  *
- * @param hexNode   the node to detach
+ * @param name   the name of the node to detach
  */
-HexNodeManager.prototype.detach = function(hexNode) {
+HexNodeManager.prototype.detach = function(name) {
+    var node = this.nodes[name];
+
     /**
      * This can potentially cause problems if the passed in nodes slot and name couple doesn't match any of the
      * existing nodes. In this case only the node or the node name mapping will be removed.
      */
-    delete this.nodes[hexNode.name];
+    delete this.nodes[name];
 
-    this.emit('nodes:detached', hexNode);
+    this.emit('nodes:detached', node);
 };
 
 /**

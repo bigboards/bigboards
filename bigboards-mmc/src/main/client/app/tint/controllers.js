@@ -1,4 +1,6 @@
 tintModule.controller('TintConfigurationController', function($rootScope, $scope, socket) {
+
+
     socket.emit('hex:tint:configuration', null, function(data) {
         $scope.configuration = data;
     });

@@ -3,7 +3,7 @@ var Ansible = require('node-ansible'),
     async = require('async'),
     fs = require('fs');
 
-module.exports = function(hex) {
+module.exports = function(configuration) {
     return {
         code: 'uninstall_tint',
         description: 'Remove the given tint from the hex',
@@ -23,16 +23,16 @@ module.exports = function(hex) {
             async.series([
                 // -- Remove the tint from the configuration
                 function(callback) {
-                    hex.tint = null;
+                    // -- load the hex information
+                    configuration.load().then(function(data) {
+                        data.tint = null;
 
-                    try {
-                        // -- update the tint setting in the configuration
-                        hex.configurationManager.save();
-
+                        configuration.save(data.tint);
+                    }).then(function(data) {
                         callback();
-                    } catch (err) {
-                        callback(err);
-                    }
+                    }, function(error) {
+                        callback(error);
+                    });
                 },
 
                 // -- Remove the tint source from the master node

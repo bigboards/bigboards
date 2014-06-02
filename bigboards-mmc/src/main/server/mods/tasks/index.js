@@ -4,7 +4,7 @@ var util = require("util"),
     winston = require('winston'),
     Q = require('q');
 
-var TaskManager = function(historySize) {
+var TaskManager = function() {
     this.tasks = {};
     this.currentTask = null;
 };

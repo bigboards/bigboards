@@ -21,6 +21,7 @@ module.exports = {
     },
 
     hex: {
+        file: '/opt/bb/hex.yml',
         rootDirectory: '/opt/bb'
     },
 

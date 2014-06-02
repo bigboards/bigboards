@@ -90,7 +90,7 @@ Library.prototype.add = function(tintUri) {
 
                 }
             }
-    });
+        });
 
     return deferrer.promise;
 };
