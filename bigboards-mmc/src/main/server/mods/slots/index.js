@@ -9,6 +9,26 @@ function HexSlotManager(availableSlots) {
     }
 }
 
+HexSlotManager.prototype.list = function() {
+    var result = {};
+
+    this.slots.forEach(function (slot) {
+        var item = { slot: slot.id };
+
+        // -- check if there is an occupant
+        if (slot.isOccupied()) {
+            item.occupant = {
+                name: slot.occupant.name,
+                health: slot.occupant.health
+            };
+        }
+
+        result[slot.id] = item;
+    });
+
+    return result;
+};
+
 HexSlotManager.prototype.slot = function(slotId) {
     return this.slots[slotId];
 };

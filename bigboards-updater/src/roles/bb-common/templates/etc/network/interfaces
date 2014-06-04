@@ -3,6 +3,7 @@ iface lo inet loopback
 
 auto eth0
 iface eth0 inet manual
+#	up /sbin/ifconfig eth0 promisc on
 
 {% if ansible_local.hex.hex.node.role == 'master' %}
 auto wlan0
@@ -22,3 +23,4 @@ iface br0 inet static
     bridge_stp off
     bridge_fd 0
     bridge_maxwait 0
+    #up /sbin/ifconfig eth0 promisc on

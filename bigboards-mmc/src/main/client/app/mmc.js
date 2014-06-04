@@ -60,14 +60,14 @@ app.config(['$routeProvider', function($routeProvider) {
         });
 }]);
 
-app.run(['$location', '$rootScope', 'socket', function($location, $rootScope, socket) {
-    socket.emit('hex:identify', null, function(data) {
+app.run(['$rootScope', 'Identity', function($rootScope, Identity) {
+    Identity.get(function(data) {
         $rootScope.hex = data;
+    });
 
-        $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
-            if (current.$$route) {
-                $rootScope.title = current.$$route.title;
-            }
-        });
+    $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+        if (current.$$route) {
+            $rootScope.title = current.$$route.title;
+        }
     });
 }]);

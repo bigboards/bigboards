@@ -65,3 +65,6 @@
 
 - name: be sure the container facts are copied over
   template: src=container.facts dest=/var/lib/lxc/bb-template/rootfs/etc/ansible/facts.d/hex.fact
+
+- name: be sure the correct actions are undertaken before users can login
+  copy: src=etc/rc.local dest=/etc/rc.local

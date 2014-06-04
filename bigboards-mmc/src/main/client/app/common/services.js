@@ -2,6 +2,24 @@ app.factory('socket', function (socketFactory) {
     return socketFactory();
 });
 
+app.service ('Identity', function($resource) {
+    return $resource('/api/v1/identity');
+});
+
+app.service('Tasks', function($resource) {
+    return $resource('/api/v1/tasks');
+});
+
+app.service('Slots', function($resource) {
+    return $resource('/api/v1/slots');
+});
+
+app.service('Firmware', function($resource) {
+    return $resource('/api/v1/firmware');
+});
+
+
+
 app.service('Tints', function($resource) {
     return $resource('/api/v1/tints/:tintId', {tintId: '@tintId'});
 });
@@ -81,9 +99,7 @@ app.service('Hex', function($resource) {
     return $resource('/api/v1/hex/');
 });
 
-app.service('Tasks', function($resource) {
-    return $resource('/api/v1/tasks');
-});
+
 
 // This service was based on OpenJS library available in BSD License
 // http://www.openjs.com/scripts/events/keyboard_shortcuts/index.php

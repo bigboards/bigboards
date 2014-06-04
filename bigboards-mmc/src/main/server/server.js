@@ -6,7 +6,7 @@ var express = require('express'),
     http = require('http'),
     path = require('path'),
     tty = require('tty.js'),
-    config = require('./config'),
+    serverConfig = require('./config'),
     Container = require('./container'),
     winston = require('winston');
 
@@ -16,12 +16,12 @@ var io = require('socket.io').listen(server);
 
 io.set('log level', 1); // reduce logging
 
-config.environment = app.get('env');
+serverConfig.environment = app.get('env');
 
 /**********************************************************************************************************************
  * Configuration
  *********************************************************************************************************************/
-app.set('port', config.port);
+app.set('port', serverConfig.port);
 app.use(express.bodyParser());
 app.use(express.json());
 app.use(express.urlencoded());
@@ -30,7 +30,7 @@ app.use(express.static(path.join(__dirname, '../client')));
 app.use(app.router);
 
 // development only
-if (config.isDevelopment()) {
+if (serverConfig.isDevelopment()) {
     app.use(express.logger('dev'));
     app.use(express.errorHandler());
 }
@@ -38,14 +38,14 @@ if (config.isDevelopment()) {
 /**********************************************************************************************************************
  * Initialize the hex
  *********************************************************************************************************************/
-var configuration = new Container.Configuration(config.hex.file);
-var firmware = new Container.Firmware();
-var library = new Container.Library(config.library.file);
-var metrics = new Container.Metrics(config.metrics.cache.size, config.metrics.cache.interval);
+var configuration = new Container.Configuration(serverConfig.hex.file);
+var library = new Container.Library(serverConfig.library.file);
+var metrics = new Container.Metrics(serverConfig.metrics.cache.size, serverConfig.metrics.cache.interval);
 var nodes = new Container.Nodes();
 var slots = new Container.Slots(6);
 var tasks = new Container.Tasks();
-var tints = new Container.Tints(tasks, config.tints.rootDirectory);
+var tints = new Container.Tints(tasks, serverConfig.tints.rootDirectory);
+var firmware = new Container.Firmware(tasks);
 
 // -- add tasks to the task manager
 tasks.register(require('./mods/tasks/update.js'));
@@ -58,7 +58,7 @@ tasks.register(require('./mods/tasks/dummy.js'));
 /**********************************************************************************************************************
  * Routes
  *********************************************************************************************************************/
-var routes = new Routes(config, library, metrics, nodes, slots, tasks, tints);
+var routes = new Routes(serverConfig, configuration, firmware, library, metrics, nodes, slots, tasks, tints);
 routes.link(app, io);
 
 /**********************************************************************************************************************

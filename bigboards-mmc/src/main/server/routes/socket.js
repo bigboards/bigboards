@@ -11,7 +11,7 @@ function SocketAPI(config, tasks, metrics, slots) {
 SocketAPI.prototype.link = function(socket) {
     var self = this;
 
-    linkTasks(socket, tasks);
+    linkTasks(socket, this.tasks);
 
     // -- send the information about the hex every second
     setInterval(function () {
