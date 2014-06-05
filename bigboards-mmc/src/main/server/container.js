@@ -3,6 +3,7 @@ var Container = {
 
     Configuration: require('./mods/configuration'),
     Firmware: require('./mods/firmware'),
+    Health: require('./mods/health'),
     Library: require('./mods/library'),
     Metrics: require('./mods/metrics'),
     Nodes: require('./mods/nodes'),

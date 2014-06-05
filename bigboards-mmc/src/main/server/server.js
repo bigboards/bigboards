@@ -46,6 +46,7 @@ var slots = new Container.Slots(6);
 var tasks = new Container.Tasks();
 var tints = new Container.Tints(tasks, serverConfig.tints.rootDirectory, serverConfig.address);
 var firmware = new Container.Firmware(tasks);
+var health = new Container.Health(nodes, metrics);
 
 // -- add tasks to the task manager
 tasks.register(require('./mods/tasks/update.js'));
