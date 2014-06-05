@@ -284,6 +284,14 @@ app.directive('tasks', function() {
 
             $scope.hide = function() {
                 $scope.visible = false;
+                $scope.task = null;
+            };
+
+            $scope.iconClass = function() {
+                if (status.state == 'running') return 'fa-spin fa-refresh';
+                else if (status.state == 'failed') return 'fa-exclamation-triangle';
+                else if (status.state == 'finished') return 'fa-check';
+                else return '';
             };
 
             socket.on('task:started', function(task) {
@@ -296,8 +304,9 @@ app.directive('tasks', function() {
             });
 
             socket.on('task:finished', function(task) {
-                $scope.visible = false;
-                $scope.task = null;
+                $scope.status = {
+                    state: 'finished'
+                };
             });
 
             socket.on('task:failed', function(task) {
