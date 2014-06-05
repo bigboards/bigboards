@@ -85,7 +85,7 @@ TintsAPI.prototype.update = function(req, res) {
  */
 TintsAPI.prototype.uninstall = function(req, res) {
     // -- get the tint id parameter
-    var tintId = req.body.tintId;
+    var tintId = req.param['tintId'];
     if (! tintId) return res.send(400, "No Tint ID has been provided");
 
     var self = this;
@@ -112,12 +112,12 @@ TintsAPI.prototype.uninstall = function(req, res) {
  */
 TintsAPI.prototype.get = function(req, res) {
     // -- get the tint id parameter
-    var tintId = req.body.tintId;
+    var tintId = req.params['tint'];
     if (! tintId) return res.send(400, "No Tint ID has been provided");
 
     return this.tints.get(tintId).then(function(tint) {
         res.send(200, tint);
-    }, function(error) {
+    }).fail(function(error) {
         ApiUtils.handleError(res, error);
     });
 };

@@ -44,7 +44,7 @@ var metrics = new Container.Metrics(serverConfig.metrics.cache.size, serverConfi
 var nodes = new Container.Nodes();
 var slots = new Container.Slots(6);
 var tasks = new Container.Tasks();
-var tints = new Container.Tints(tasks, serverConfig.tints.rootDirectory);
+var tints = new Container.Tints(tasks, serverConfig.tints.rootDirectory, serverConfig.address);
 var firmware = new Container.Firmware(tasks);
 
 // -- add tasks to the task manager

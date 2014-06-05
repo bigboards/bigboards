@@ -35,6 +35,9 @@ HexConfigurationManager.prototype.save = function(hex) {
     var writeFile = Q.denodeify(fs.writeFile);
 
     try {
+        // -- validate the data we want to write
+        if (!hex.id || !hex.name) throw new Error('Invalid configuration object!');
+
         var content = yaml.safeDump(hex);
 
         writeFile(this.hexConfigFile, content).then(function(data) {
