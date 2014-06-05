@@ -370,10 +370,6 @@ app.directive('bbSidepane', function() {
                 }
             };
 
-            $scope.toggleTasks = function() {
-                $rootScope.$broadcast('tasks:toggle');
-            };
-
             $scope.invoke = function(action) {
                 action.execute();
             };
@@ -388,22 +384,6 @@ app.directive('bbSidepane', function() {
 
             $scope.$on('sidebar:hide', function(event, data) {
                 $scope.currentClass = "bb-sidepane-slim";
-            });
-
-            /**********************************************************************************************************
-             * React on Socket Events
-             *********************************************************************************************************/
-            socket.on('task:started', function(task) {
-                $scope.task = task;
-            });
-
-            socket.on('task:success', function(code) {
-                $scope.task = null;
-            });
-
-            socket.on('task:failed', function(error) {
-                $scope.task = null;
-                $scope.taskError = error;
             });
         },
         templateUrl: 'app/common/directives/side_pane.html'

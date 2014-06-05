@@ -1,9 +1,5 @@
-tintModule.controller('TintConfigurationController', function($rootScope, $scope, socket) {
-
-
-    socket.emit('hex:tint:configuration', null, function(data) {
-        $scope.configuration = data;
-    });
+tintModule.controller('TintConfigurationController', function($rootScope, $scope, socket, TintConfig) {
+    $scope.configuration = TintConfig.query({tintId: $scope.hex.tint});
 });
 
 tintModule.controller('TintDetailController', function($rootScope, $scope) {
@@ -31,28 +27,6 @@ tintModule.controller('TintDetailController', function($rootScope, $scope) {
             }
         );
     }
-});
-
-tintModule.controller('TintViewController', function($rootScope, $scope, $sce, $routeParams, Tints) {
-
-
-    // -- if the views are not available we will register a listener so they are handled
-    // -- the moment they do become available
-    if ((! $rootScope.tint.views) || ($rootScope.tint.views.length == 0)) {
-        $rootScope.$on('viewsLoaded', boot);
-    } else {
-        boot();
-    }
-
-    function boot() {
-        $scope.tintId = $routeParams['tintId'];
-        $scope.viewId = $routeParams['viewId'];
-
-        $scope.view = $rootScope.tint.views[$scope.viewId];
-        $scope.url = $sce.trustAsResourceUrl($scope.view.url);
-    }
-
-
 });
 
 tintModule.controller('TintViewSelectorController', function($scope, $sce, $routeParams, $location, Tints) {

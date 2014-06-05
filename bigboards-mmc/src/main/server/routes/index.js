@@ -81,6 +81,8 @@ function linkTintApi(self, server) {
     server.post('/api/v1/tints/:tintId', function(req, res) { self.tintsAPI.update(req, res); });
     server.delete('/api/v1/tints/:tintId', function(req, res) { self.tintsAPI.uninstall(req, res); });
 
+    server.get('/api/v1/tints/:tint/config', function(req, res) { self.tintsAPI.config(req, res); });
+
     winston.log('info', 'linked the tint API');
 }
 

@@ -5,10 +5,9 @@
         <tr class="param" ng-repeat="parameter in configuration">
             <td class="param-label">{{parameter.label}}</td>
             <td class="param-value">
-                <div class="input-prepend input-append">
-                    <span class="add-on">{{parameter.type}}</span>
-                    <input type="text" value="{{parameter.values.all}}">
-                    <!--<span class="add-on">.00</span>-->
+                <div class="input-group">
+                    <span class="input-group-addon">{{parameter.type}}</span>
+                    <input type="text" class="form-control" value="{{parameter.values.all}}" disabled>
                 </div>
             </td>
             <td class="param-description">
