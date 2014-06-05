@@ -18,10 +18,12 @@ app.service('Firmware', function($resource) {
     return $resource('/api/v1/firmware');
 });
 
-
-
 app.service('Tints', function($resource) {
     return $resource('/api/v1/tints/:tintId', {tintId: '@tintId'});
+});
+
+app.service('TintConfig', function($resource) {
+    return $resource('/api/v1/tints/:tintId/config', {tintId: '@tintId'});
 });
 
 app.service('Tint', function($resource, $rootScope, Tints) {

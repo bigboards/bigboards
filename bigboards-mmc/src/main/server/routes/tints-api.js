@@ -122,7 +122,23 @@ TintsAPI.prototype.get = function(req, res) {
     });
 };
 
+/**
+ * Get the configuration of the current tint.
+ *
+ * @param req
+ * @param res
+ */
+TintsAPI.prototype.config = function(req, res) {
+    // -- get the tint id parameter
+    var tintId = req.params['tint'];
+    if (! tintId) return res.send(400, "No Tint ID has been provided");
 
+    return this.tints.config(tintId).then(function(configuration) {
+        res.send(200, configuration);
+    }).fail(function(error) {
+        ApiUtils.handleError(res, error);
+    });
+};
 
 //TintsAPI.prototype.actions = function(req, res) {
 //    var tintId = req.param('tint');
