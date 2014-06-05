@@ -6,7 +6,7 @@ var Ansible = require('node-ansible'),
 module.exports = function(configuration) {
     return {
         code: 'uninstall_tint',
-        description: 'Remove the given tint from the hex',
+        description: 'removing the tint from the hex',
         type: 'ansible',
         parameters: [
             {

@@ -1,6 +1,7 @@
-function MetricAPI(metrics, nodes) {
+function MetricAPI(metrics, nodes, slots) {
     this.metrics = metrics;
     this.nodes = nodes;
+    this.slots = slots;
 }
 
 /**
@@ -13,7 +14,7 @@ MetricAPI.prototype.post = function (req, res) {
     var envelope = req.body;
 
     // -- get the slot
-    var slot = this.nodes.slot(envelope.slot);
+    var slot = this.slots.slot(envelope.slot);
     if (! slot) return res.send(400, 'An invalid slot id was passed.');
 
     // -- get the node

@@ -1,11 +1,12 @@
 var Ansible = require('node-ansible'),
     Q = require('q'),
-    async = require('async');
+    async = require('async'),
+    winston = require('winston');
 
 module.exports = function(configuration) {
     return {
         code: 'install_tint',
-        description: 'Install the given tint on the hex',
+        description: 'installing the tint on the hex',
         type: 'ansible',
         parameters: [
             {
@@ -48,7 +49,7 @@ module.exports = function(configuration) {
                             tintId: scope.tintId,
                             tintUri: scope.tintUri
                         })
-                        .exec({cwd: '/opt/bb/runtimes/bigboards-mmc/ansible'})
+                        .exec({cwd: '/opt/bb/runtimes/bigboards-mmc/server/ansible'})
                         .then(function(result) {
                             if (result.code != 0) callback(new Error(result.output));
                             else {
@@ -80,22 +81,35 @@ module.exports = function(configuration) {
                         });
                 }
             ], function(error) {
-                if (error) deferred.reject(error);
-                else {
-                    try {
+                winston.log('info', 'installation callback reached');
+                try {
+                    if (error) {
+                        winston.log('warn', 'it seems an error has occurred: ' + error);
+                        deferred.reject(error);
+                    } else {
+                        winston.log('info', 'updating the configuration of the hex with the new tint');
                         // -- load the hex information
                         configuration.load().then(function(data) {
+                            winston.log('info', 'configuration loaded');
+
+                            winston.log('info', 'updated the tint to ' + scope.tintId);
                             data.tint = scope.tintId;
 
-                            configuration.save(data.tint);
-                        }).then(function(data) {
-                            deferred.resolve(outputBuffer);
+                            configuration.save(data).then(function(data) {
+                                winston.log('info', 'Hex configuration saved!');
+                                deferred.resolve(outputBuffer);
+                            }).fail(function(error) {
+                                winston.log('info', 'Unable to save the hex configuration: ', error);
+                                deferred.reject(error);
+                            });
+
                         }, function(error) {
+                            winston.log('error', 'installation resolved with error ' + error);
                             deferred.reject(error);
                         });
-                    } catch (error) {
-                        deferred.reject(error);
                     }
+                } catch (error) {
+                    deferred.reject(error);
                 }
             });
 

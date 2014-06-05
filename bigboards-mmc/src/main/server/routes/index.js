@@ -10,7 +10,7 @@ var LibraryAPI = require('./library-api'),
     winston = require('winston');
 
 function Routes(serverConfiguration, configuration, firmware, library, metrics, nodes, slots, tasks, tints) {
-    this.metricAPI = new MetricAPI(metrics, nodes);
+    this.metricAPI = new MetricAPI(metrics, nodes, slots);
     this.socketAPI = new SocketAPI(serverConfiguration, tasks, metrics, slots);
     this.tintsAPI = new TintsAPI(tints, library);
     this.tasksAPI = new TasksAPI(tasks);

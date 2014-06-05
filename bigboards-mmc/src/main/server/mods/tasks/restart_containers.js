@@ -3,7 +3,7 @@ var Ansible = require('node-ansible'),
 
 module.exports = {
     code: 'restart_containers',
-    description: 'Restart the tint containers on the hex',
+    description: 'restarting the tint containers on the hex',
     type: 'ansible',
     execute: function(scope) {
         return new Ansible.AdHoc()

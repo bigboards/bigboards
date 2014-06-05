@@ -10,6 +10,6 @@ libraryModule.directive('libraryTint', function() {
         controller: function ($scope) {
         },
         link: function ($scope, $element, $attributes) {},
-        templateUrl: 'views/library/library-tint.html'
+        templateUrl: 'app/library/partials/library-tint.html'
     };
 });

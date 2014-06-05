@@ -31,6 +31,10 @@ textarea {
     border-color: transparent;
 }
 
+.code {
+    font-family: monospace;
+}
+
 #footer p {
     margin-bottom: 0;
     color: #777777;

@@ -54,7 +54,6 @@ tasks.register(require('./mods/tasks/uninstall_tint.js')( configuration ));
 tasks.register(require('./mods/tasks/restart_containers.js'));
 tasks.register(require('./mods/tasks/dummy.js'));
 
-
 /**********************************************************************************************************************
  * Routes
  *********************************************************************************************************************/

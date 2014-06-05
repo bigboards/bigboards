@@ -3,7 +3,9 @@ function TasksAPI(tasks) {
 }
 
 TasksAPI.prototype.get = function(req, res) {
-    res.send(this.tasks.current());
+    var currentTask = this.tasks.current();
+    if (currentTask == null) res.send(404, 'No task is currently running');
+    else res.send(200, currentTask);
 };
 
 module.exports = TasksAPI;

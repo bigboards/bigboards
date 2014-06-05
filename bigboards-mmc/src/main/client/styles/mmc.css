@@ -314,6 +314,7 @@ iframe {
     border: solid 1px #ddd;
     width: 250px;
     height: 270px;
+    margin: 10px;
 }
 
 .library .panel .panel-heading {

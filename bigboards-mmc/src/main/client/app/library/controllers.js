@@ -26,7 +26,7 @@ libraryModule.controller('LibraryController', function($scope, Library, Tints, s
     };
 
     $scope.installTint =  function(tintId) {
-        Tints.save({tintId: tintId});
+        Tints.save({tint: tintId});
     }
 });
 

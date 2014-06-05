@@ -7,7 +7,7 @@ app.service ('Identity', function($resource) {
 });
 
 app.service('Tasks', function($resource) {
-    return $resource('/api/v1/tasks');
+    return $resource('/api/v1/tasks', {});
 });
 
 app.service('Slots', function($resource) {

@@ -269,22 +269,35 @@ app.directive('tasks', function() {
         },
         controller: function ($scope, Tasks, socket) {
             $scope.visible = false;
-            $scope.status = null;
+            $scope.status = {
+                state: 'running'
+            };
+
+            Tasks.get().$promise.then(function(task) {
+                if (task == null) return;
+
+                $scope.task = task;
+                $scope.visible = true;
+            }, function(error) {
+                // -- disregard the error
+            });
+
+            $scope.hide = function() {
+                $scope.visible = false;
+            };
 
             socket.on('task:started', function(task) {
                 $scope.task = task;
                 $scope.visible = true;
 
                 $scope.status = {
-                    state: 'started'
+                    state: 'running'
                 };
             });
 
             socket.on('task:finished', function(task) {
-                $scope.status = {
-                    state: 'finished',
-                    msg: 'Finished with code ' + task.code
-                };
+                $scope.visible = false;
+                $scope.task = null;
             });
 
             socket.on('task:failed', function(task) {
@@ -292,25 +305,6 @@ app.directive('tasks', function() {
                     state: 'failed',
                     msg: task.error
                 };
-            });
-
-            $scope.labelClass = function(state) {
-                if (state == 'failed') return "failure";
-                if (state == 'finished') return "success";
-
-                return null;
-            };
-
-            $scope.$on('tasks:show', function() {
-                $scope.visible = true;
-            });
-
-            $scope.$on('tasks:hide', function() {
-                $scope.visible = false;
-            });
-
-            $scope.$on('tasks:toggle', function() {
-                $scope.visible = !$scope.visible;
             });
         },
         link: function ($scope, $element, $attributes) {},

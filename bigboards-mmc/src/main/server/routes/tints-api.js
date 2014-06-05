@@ -30,7 +30,7 @@ TintsAPI.prototype.list = function(req, res) {
  */
 TintsAPI.prototype.install = function(req, res) {
     // -- get the tint id parameter
-    var tintId = req.body.tintId;
+    var tintId = req.body.tint;
     if (! tintId) return res.send(400, "No Tint ID has been provided");
 
     var self = this;
