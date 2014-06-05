@@ -33,7 +33,9 @@ tintModule.controller('TintDetailController', function($rootScope, $scope) {
     }
 });
 
-tintModule.controller('TintViewController', function($rootScope, $scope, $sce, $routeParams) {
+tintModule.controller('TintViewController', function($rootScope, $scope, $sce, $routeParams, Tints) {
+
+
     // -- if the views are not available we will register a listener so they are handled
     // -- the moment they do become available
     if ((! $rootScope.tint.views) || ($rootScope.tint.views.length == 0)) {
@@ -53,17 +55,16 @@ tintModule.controller('TintViewController', function($rootScope, $scope, $sce, $
 
 });
 
-tintModule.controller('TintViewSelectorController', function($rootScope, $scope, $sce, $routeParams, $location, socket) {
-    $scope.url = "";
-    $scope.actions = [];
+tintModule.controller('TintViewSelectorController', function($scope, $sce, $routeParams, $location, Tints) {
+    $scope.tint = Tints.get({tintId: $scope.hex.tint}, function(tint) {
+        if (! tint.views) return;
 
-    socket.emit('hex:tint:views', null, function(data) {
-        if (data.length == 1) {
-            $scope.currentView = data[0];
+        if (tint.views.length == 1) {
+            $scope.currentView = tint.views[0];
             $scope.url = $sce.trustAsResourceUrl($scope.currentView.url.replace('{{external_ip}}', $location.host()));
         } else {
             // -- parse the actions
-            data.forEach(function (view) {
+            tint.views.forEach(function (view) {
                 $scope.actions.push({
                     iconClass: view.icon,
                     execute: function() {
@@ -73,23 +74,10 @@ tintModule.controller('TintViewSelectorController', function($rootScope, $scope,
                 });
             });
         }
-
-
     });
 
-    // -- if the views are not available we will register a listener so they are handled
-    // -- the moment they do become available
-//    if ((! $rootScope.tint.views) || ($rootScope.tint.views.length == 0)) {
-//        $rootScope.$on('viewsLoaded', boot);
-//    } else {
-//        boot();
-//    }
-//
-//    function boot() {
-//        $scope.tintId = $routeParams['tintId'];
-//
-//        $scope.views = $rootScope.tint.views;
-//    }
+    $scope.url = "";
+    $scope.actions = [];
 
     $scope.select = function(view) {
         $scope.currentView = view;
