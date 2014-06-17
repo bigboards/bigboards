@@ -3,7 +3,12 @@ dashboardModule.controller('DashboardController', function ($scope, Slots, Firmw
         $scope.slots = data;
     });
 
-    $scope.tint = Tints.get({tintId: $scope.hex.tint});
+    if ($scope.hex)
+        $scope.tint = Tints.get({tintId: $scope.hex.tint});
+    else
+        $scope.$on('identified', function(event, data) {
+            $scope.tint = Tints.get({tintId: $scope.hex.tint});
+        });
 
     socket.on('send:metrics', function(data) {
         $scope.data = data.metrics[0];
@@ -14,6 +19,10 @@ dashboardModule.controller('DashboardController', function ($scope, Slots, Firmw
 
     $scope.update = function() {
         Firmware.save();
+    };
+
+    $scope.tintInstalled = function() {
+        return ($scope.tint && $scope.tint.id);
     };
 });
 

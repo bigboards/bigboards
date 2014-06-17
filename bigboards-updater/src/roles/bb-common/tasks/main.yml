@@ -1,5 +1,4 @@
 ---
-
 - name: be sure the hosts file is accurate
   template: src=etc/hosts dest=/etc/hosts
 

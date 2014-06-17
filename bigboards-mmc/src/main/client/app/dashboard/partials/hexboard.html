@@ -51,8 +51,8 @@
         <hex-help id="actionsShellHelp"><p>Open a shell</p></hex-help>
         <hex-help id="actionsUpdateHelp"><p>Update the hex</p></hex-help>
         <hex-help id="actionsLibraryHelp">
-            <p ng-if="tint">Open the tint library</p>
-            <p ng-if="!tint">No tint installed yet!</p>
+            <p ng-if="tintInstalled()">Open the tint library</p>
+            <p ng-if="!tintInstalled()">No tint installed yet!</p>
         </hex-help>
     </div>
     <div class="hex-row">
@@ -61,10 +61,10 @@
         <hex></hex>
         <hex></hex>
         <hex></hex>
-        <hex-header ng-if="tint"><p>{{tint.manifest.name}}</p></hex-header>
-        <hex-button ng-if="tint" help-ref="tintConfigureHelp"><a href="#/tints/configuration"><i class="fa fa-gears fa-3x"></i></a></hex-button>
-        <hex-button ng-if="tint" help-ref="tintViewsHelp"><a href="#/tints/views"><i class="fa fa-desktop fa-3x"></i></a></hex-button>
-        <hex-button ng-if="tint" help-ref="tintRemoveHelp" type="danger" ng-click="removeTint()"><i class="fa fa-trash-o fa-3x"></i></hex-button>
+        <hex-header ng-if="tintInstalled()"><p>{{tint.manifest.name}}</p></hex-header>
+        <hex-button ng-if="tintInstalled()" help-ref="tintConfigureHelp"><a href="#/tints/configuration"><i class="fa fa-gears fa-3x"></i></a></hex-button>
+        <hex-button ng-if="tintInstalled()" help-ref="tintViewsHelp"><a href="#/tints/views"><i class="fa fa-desktop fa-3x"></i></a></hex-button>
+        <!--<hex-button ng-if="tintInstalled()" help-ref="tintRemoveHelp" type="danger" ng-click="removeTint()"><i class="fa fa-trash-o fa-3x"></i></hex-button>-->
     </div>
     <div class="hex-row">
         <hex type="hex-gap"></hex>
@@ -73,9 +73,9 @@
         <hex></hex>
         <hex></hex>
         <hex></hex>
-        <hex-help ng-if="tint" id="tintConfigureHelp"><p>Configure</p></hex-help>
-        <hex-help ng-if="tint" id="tintViewsHelp"><p>Open View</p></hex-help>
-        <hex-help ng-if="tint" id="tintRemoveHelp"><p>Remove the tint</p></hex-help>
+        <hex-help ng-if="tintInstalled()" id="tintConfigureHelp"><p>Configure</p></hex-help>
+        <hex-help ng-if="tintInstalled()" id="tintViewsHelp"><p>Open View</p></hex-help>
+        <!--<hex-help ng-if="tintInstalled()" id="tintRemoveHelp"><p>Remove the tint</p></hex-help>-->
     </div>
 
     <bb-task-tile></bb-task-tile>

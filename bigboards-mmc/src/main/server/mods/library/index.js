@@ -22,7 +22,7 @@ Library.prototype.get = function(tintId) {
     var deferrer = Q.defer();
     var self = this;
 
-    if (this.libraryContent.length == 0) {
+    if (! this.libraryContent || this.libraryContent.length == 0) {
         this.load().then(function(data) {
             if (data[tintId]) deferrer.resolve(data[tintId]);
             else deferrer.reject(new Error('Unable to find the tint with id ' + tintId, 'not-found-error'));
@@ -44,7 +44,7 @@ Library.prototype.list = function() {
     var deferrer = Q.defer();
     var self = this;
 
-    if (this.libraryContent.length == 0) {
+    if (!this.libraryContent || this.libraryContent.length == 0) {
         this.load().then(function(data) {
             deferrer.resolve(data);
         }, function(error) {
@@ -111,6 +111,7 @@ Library.prototype.load = function() {
     readFile(self.tintRepoConfigFile, 'utf8').done(function(text) {
         try {
             self.libraryContent = yaml.safeLoad(text);
+            if (! self.libraryContent) self.libraryContent = {};
 
             deferrer.resolve(self.libraryContent);
         } catch (err) {

@@ -16,7 +16,11 @@ function TintManager(taskManager, tintDirectory, externalIp) {
  * Get the list of installed tints.
  */
 TintManager.prototype.list = function() {
+    var deferred = Q.defer();
 
+    deferred.resolve(null);
+
+    return deferred.promise;
 };
 
 /**

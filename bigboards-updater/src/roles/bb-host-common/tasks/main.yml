@@ -9,6 +9,7 @@
     - parted
     - nodejs
     - bigboards-node
+    - ebtables
 
 - name: be sure the deprecated packages are uninstalled
   apt: state=absent name={{item}} force=yes

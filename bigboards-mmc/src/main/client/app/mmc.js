@@ -63,6 +63,7 @@ app.config(['$routeProvider', function($routeProvider) {
 app.run(['$rootScope', 'Identity', function($rootScope, Identity) {
     Identity.get(function(data) {
         $rootScope.hex = data;
+        $rootScope.$broadcast('identified', data);
     });
 
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
