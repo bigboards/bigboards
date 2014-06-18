@@ -1,3 +1,6 @@
 ---
 - name: Restart BigBoards Node
   service: state=restarted name=bigboards-node
+
+- name: Restart EBTables
+  service: state=restarted name=ebtables

@@ -69,3 +69,6 @@
 
 - name: be sure the correct actions are undertaken before users can login
   copy: src=etc/rc.local dest=/etc/rc.local
+
+- name: be sure ebtables is started on boot
+  service: name=ebtables state=started enabled=yes
