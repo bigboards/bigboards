@@ -83,16 +83,9 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
     winston.log('info', 'invoking task "%s": %s', taskCode, task.description);
     eventEmitter.emit('task:started', task);
     try {
-        task.execute(executionScope).then(function(data) {
-            if (task.type == 'ansible') {
-                winston.log('info', 'Task invocation finished!');
-
-                deferred.resolve(data);
-                eventEmitter.emit('task:finished', { code: taskCode, result: data.code });
-            } else {
-                winston.log('warn', 'Invalid task type ' + data.code);
-                eventEmitter.emit('task:finished', { code: taskCode, result: data });
-            }
+        task.execute(executionScope).then(function() {
+            eventEmitter.emit('task:finished', { code: taskCode });
+            deferred.resolve();
 
             self.tasks[taskCode].running = false;
             self.currentTask = null;
@@ -113,6 +106,7 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
     } catch (err) {
         deferred.reject(err);
         winston.log('warn', 'Unable to invoke a task: ' + err);
+        winston.log('warn', err.stack);
         eventEmitter.emit('task:failed', { code: taskCode, error: err });
     }
 

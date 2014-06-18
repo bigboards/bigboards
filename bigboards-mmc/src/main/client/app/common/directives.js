@@ -268,16 +268,17 @@ app.directive('tasks', function() {
             bbClick: '='
         },
         controller: function ($scope, Tasks, socket) {
+            $scope.message = "";
             $scope.visible = false;
-            $scope.status = {
-                state: 'running'
-            };
+            $scope.state = 'running';
+            $scope.output = null;
 
             Tasks.get().$promise.then(function(task) {
                 if (task == null) return;
 
                 $scope.task = task;
                 $scope.visible = true;
+                $scope.message = "I'm " + task.description;
             }, function(error) {
                 // -- disregard the error
             });
@@ -288,32 +289,33 @@ app.directive('tasks', function() {
             };
 
             $scope.iconClass = function() {
-                if (status.state == 'running') return 'fa-spin fa-refresh';
-                else if (status.state == 'failed') return 'fa-exclamation-triangle';
-                else if (status.state == 'finished') return 'fa-check';
+                if ($scope.state == 'running') return 'fa-spin fa-refresh';
+                else if ($scope.state == 'failed') return 'fa-exclamation-triangle';
+                else if ($scope.state == 'finished') return 'fa-check';
                 else return '';
             };
 
             socket.on('task:started', function(task) {
                 $scope.task = task;
                 $scope.visible = true;
+                $scope.output = '';
+                $scope.message = "I'm " + task.description;
 
-                $scope.status = {
-                    state: 'running'
-                };
+                $scope.state = 'running';
             });
 
             socket.on('task:finished', function(task) {
-                $scope.status = {
-                    state: 'finished'
-                };
+                $scope.state = 'finished';
+                $scope.message = "Hooray!";
             });
 
             socket.on('task:failed', function(task) {
-                $scope.status = {
-                    state: 'failed',
-                    msg: task.error
-                };
+                $scope.state = 'failed';
+                $scope.message = "Whoops!";
+            });
+
+            socket.on('task:busy', function(progress) {
+                $scope.output += progress.data;
             });
         },
         link: function ($scope, $element, $attributes) {},

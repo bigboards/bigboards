@@ -1,29 +1,28 @@
+<script type="text/ng-template" id="output-play">
+    <h3>{{line.content}}</h3>
+</script>
+<script type="text/ng-template" id="output-task">
+    <h4>{{line.content}}</h4>
+</script>
+<script type="text/ng-template" id="output-node">
+    {{line.node}}: {{line.status}}
+</script>
+
 <div class="tasks" ng-show="visible">
-    <div class="content" >
-        <i class="fa" ng-class="iconClass()"></i>
-        <div ng-if="status.state == 'running'">
-            <h3> I'm {{ task.description }} </h3>
-            <p>
-                If this is taking longer then expected, you may want to login on the hex and have a look at the <span class="code">/var/log/bigboards-mmc.log</span> file. This is currently a work-around until we are able to integrate the feedback into this console.
-            </p>
+    <div class="header">
+        <div class="indicator">
+            <i class="fa" ng-class="iconClass()"></i>
         </div>
 
-        <div ng-if="status.state == 'failed'">
-            <h3> Woops! </h3>
-            <p>
-                Something went wrong while I was {{ task.description }}. Have a look at the <span class="code">/var/log/bigboards-mmc.log</span> file. It will give you some clues on what went wrong.
-            </p>
-
-            <button class="btn btn-default" ng-click="hide()">Proceed with life</button>
+        <div class="title">
+            <h3> {{ message }} </h3>
         </div>
 
-        <div ng-if="status.state == 'finished'">
-            <h3> Hooray! </h3>
-            <p>
-                I was able to successfully {{ task.description }}. You can go back to the dashboard and start your quest for knowledge and productivity.
-            </p>
-
-            <button class="btn btn-default" ng-click="hide()">Proceed with life</button>
+        <div class="actions" ng-if="state != 'running'">
+            <button class="btn btn-default" ng-click="hide()"><i class="fa fa-times"></i></button>
         </div>
+    </div>
+    <div class="output" scroll-glue>
+        <pre>{{output}}</pre>
     </div>
 </div>

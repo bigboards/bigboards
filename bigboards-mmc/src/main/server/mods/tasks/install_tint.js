@@ -1,4 +1,4 @@
-var Ansible = require('node-ansible'),
+var Ansible = require('../ansible/index.js'),
     Q = require('q'),
     async = require('async'),
     winston = require('winston');
@@ -37,8 +37,6 @@ module.exports = function(configuration) {
             scope.tintUri = scope.tintUri.replace(/%username%/g, scope.username);
             scope.tintUri = scope.tintUri.replace(/%password%/g, scope.password);
 
-            var outputBuffer = [];
-
             async.series([
                 // -- Initialize the container
                 function(callback) {
@@ -51,14 +49,12 @@ module.exports = function(configuration) {
                         })
                         .exec({cwd: '/opt/bb/runtimes/bigboards-mmc/server/ansible'})
                         .then(function(result) {
-                            if (result.code != 0) callback(new Error(result.output));
-                            else {
-                                parseAnsibleOutput(outputBuffer, result.output);
-
-                                callback();
-                            }
+                            if (result.code != 0) callback(new Error(result.code));
+                            else callback();
                         }, function(error) {
                             callback(error);
+                        }, function(progress) {
+                            deferred.notify(progress);
                         });
                 },
 
@@ -70,14 +66,12 @@ module.exports = function(configuration) {
                         .variables(scope)
                         .exec({cwd: '/opt/bb/tints.d/' + scope.tintId})
                         .then(function(result) {
-                            if (result.code != 0) callback(new Error(result.output));
-                            else {
-                                parseAnsibleOutput(outputBuffer, result.output);
-
-                                callback();
-                            }
+                            if (result.code != 0) callback(new Error(result.code));
+                            else callback();
                         }, function(error) {
                             callback(error);
+                        }, function(progress) {
+                            deferred.notify(progress);
                         });
                 }
             ], function(error) {
@@ -97,7 +91,7 @@ module.exports = function(configuration) {
 
                             configuration.save(data).then(function(data) {
                                 winston.log('info', 'Hex configuration saved!');
-                                deferred.resolve(outputBuffer);
+                                deferred.resolve();
                             }).fail(function(error) {
                                 winston.log('info', 'Unable to save the hex configuration: ', error);
                                 deferred.reject(error);

@@ -19,9 +19,17 @@
     "tty.js": "~0.2.13",
     "util": "~0.10.2",
     "winston": "^0.7.3",
-    "restler": "3.2.2"
+    "restler": "3.2.2",
+    "shelljs": "~0.2.6",
+    "underscore": "~1.5.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+      "mocha": "~1.17.0",
+      "chai": "~1.8.1",
+      "sinon": "~1.7.3",
+      "chai-as-promised": "~4.1.0",
+      "sinon-chai": "~2.4.0"
+  },
   "scripts": {
     "start": "node server.js"
   },

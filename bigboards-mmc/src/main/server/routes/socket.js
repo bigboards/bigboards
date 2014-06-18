@@ -1,5 +1,6 @@
 var async = require('async'),
-    uuid = require('node-uuid');
+    uuid = require('node-uuid'),
+    ansibleParser = require('../utils/ansible-output-parser');
 
 function SocketAPI(config, tasks, metrics, slots) {
     this.config = config;
@@ -78,7 +79,7 @@ function linkTasks(socket, tasks) {
     });
 
     tasks.on('task:busy', function(data) {
-        socket.emit('task:busy', data);
+        socket.emit('task:busy', data.data);
     });
 }
 
