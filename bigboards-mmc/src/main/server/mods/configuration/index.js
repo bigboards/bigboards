@@ -36,7 +36,7 @@ HexConfigurationManager.prototype.save = function(hex) {
 
     try {
         // -- validate the data we want to write
-        if (!hex.id || !hex.name) throw new Error('Invalid configuration object!');
+        if (!hex || !hex.id || !hex.name) throw new Error('Invalid configuration object!');
 
         var content = yaml.safeDump(hex);
 

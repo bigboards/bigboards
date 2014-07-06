@@ -85,7 +85,7 @@ TintsAPI.prototype.update = function(req, res) {
  */
 TintsAPI.prototype.uninstall = function(req, res) {
     // -- get the tint id parameter
-    var tintId = req.param['tintId'];
+    var tintId = req.params.tintId;
     if (! tintId) return res.send(400, "No Tint ID has been provided");
 
     var self = this;

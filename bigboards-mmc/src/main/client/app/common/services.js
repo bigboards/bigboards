@@ -101,7 +101,120 @@ app.service('Hex', function($resource) {
     return $resource('/api/v1/hex/');
 });
 
+app.factory('ApiFeedback', function($rootScope) {
+    var ApiFeedback = function ApiFeedback() {};
 
+    ApiFeedback.prototype.onSuccess = function(msg, cb) {
+        var self = this;
+
+        return function(data) {
+            try {
+                // -- perform the callback
+                if (cb) cb(data);
+
+                // -- emit the success event
+                self.success(msg);
+            } catch (e) {
+                console.log(e);
+                this.error(
+                    'Something went wrong while processing the feedback from the backend. The call actually made it ' +
+                    'to the backend but the response which was sent back was not processed correctly by your browser. Please refresh the ' +
+                    'page to make sure the state of the backend is represented on your screen.'
+                );
+            }
+        };
+    };
+
+    ApiFeedback.prototype.onError = function(msgs, cb) {
+        var self = this;
+
+        if (!msgs) msgs = {};
+
+        return function(error) {
+            try {
+                // -- perform the callback
+                if (cb) cb(error);
+
+                console.log('HTTP ' + error.status + ':' + error.data);
+
+                if (error.status === 400) { // -- Invalid Request
+                    self.danger(
+                        'The request has been rejected by the server. This probably means wrong data has been sent to ' +
+                        'the server and will most likely be caused by a bug in the software. Please report this on ' +
+                        '<a href="http://issues.bigboards.io" target="_blank">the BigBoards issue tracker</a>'
+                    );
+
+                } else if (error.status === 403) { // -- Forbidden
+                    self.danger(
+                        'Access to the given resource is not allowed. If you think this is incorrect please report this on ' +
+                        '<a href="http://issues.bigboards.io" target="_blank">the BigBoards issue tracker</a>'
+                    );
+
+                } else if (error.status === 404) { // -- Not Found
+                    if (msgs['404']) self.danger(msgs['404']);
+                    else self.danger('The requested item could not be found.');
+
+                } else if (error.status === 500) { // -- Server Error
+                    self.danger(
+                        'The request has generated an error on the server. This will most likely be caused by a bug in ' +
+                        'the software. Please report this on ' +
+                        '<a href="http://issues.bigboards.io" target="_blank">the BigBoards issue tracker</a>'
+                    );
+
+                } else if (error.status === 502 || error.status === 503 || error.status === 504) { // -- Not Available
+                    self.danger(
+                        'The backend is currently not available. The most frequent reason for this is the absence of a ' +
+                        ' running bigboards-mmc server. Try to login to your hex and verify there is a bigboards-mmc server ' +
+                        ' running.'
+                    );
+
+                } else {
+                    self.danger(
+                        'An error has occurred while processing your request. It is not clear if this is caused by a bug ' +
+                        'or by some strange co-incident. Further investigation is needed. Please report this on <a href="http://issues.bigboards.io" target="_blank">the BigBoards issue tracker</a>'
+                    );
+                }
+            } catch (e) {
+                self.danger(
+                    'Something went wrong while processing the feedback from the backend. The call actually made it ' +
+                    'to the backend but the response which was sent back was not processed correctly by your browser. Please refresh the ' +
+                    'page to make sure the state of the backend is represented on your screen.'
+                );
+            }
+        }
+    };
+
+    ApiFeedback.prototype.success = function(message) {
+        $rootScope.$emit({
+            level: 'success',
+            message: message
+        });
+    };
+
+    ApiFeedback.prototype.info = function(message) {
+        $rootScope.$emit({
+            level: 'info',
+            message: message
+        });
+    };
+
+    ApiFeedback.prototype.danger = function(message) {
+        console.log(message);
+        $rootScope.$emit({
+            level: 'danger',
+            message: message
+        });
+    };
+
+    ApiFeedback.prototype.warning = function(message) {
+        $rootScope.$emit({
+            level: 'warning',
+            message: message
+        });
+    };
+
+    return new ApiFeedback();
+});
 
 // This service was based on OpenJS library available in BSD License
 // http://www.openjs.com/scripts/events/keyboard_shortcuts/index.php

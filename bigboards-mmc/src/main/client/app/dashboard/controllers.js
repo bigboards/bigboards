@@ -1,4 +1,4 @@
-dashboardModule.controller('DashboardController', function ($scope, Slots, Firmware, Tints, socket) {
+dashboardModule.controller('DashboardController', function ($scope, Slots, Firmware, Tints, socket, ApiFeedback) {
     Slots.get(function(data) {
         $scope.slots = data;
     });
@@ -18,11 +18,26 @@ dashboardModule.controller('DashboardController', function ($scope, Slots, Firmw
     $scope.currentNode = null;
 
     $scope.update = function() {
-        Firmware.save();
+        Firmware.save(
+            ApiFeedback.onSuccess("Successfully updated the hex to the latest version"),
+            ApiFeedback.onError()
+        );
     };
 
     $scope.tintInstalled = function() {
         return ($scope.tint && $scope.tint.id);
+    };
+
+    $scope.removeTint = function() {
+        var confirmed = confirm("Are you sure? This will remove the current tint from the hex.");
+
+        if (confirmed) {
+            Tints.remove(
+                {tintId: $scope.hex.tint},
+                ApiFeedback.onSuccess("Successfully removed the current tint from the hex"),
+                ApiFeedback.onError()
+            );
+        }
     };
 });
 

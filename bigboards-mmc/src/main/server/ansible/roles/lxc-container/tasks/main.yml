@@ -26,3 +26,6 @@
   shell: lxc-start -d -n {{ tintId }}
   tags:
     - container
+
+- name: wait for the container to be started
+  wait_for: host=v{{ansible_hostname}} port=22
