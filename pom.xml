@@ -13,7 +13,6 @@
         <module>bigboards-mmc</module>
         <module>bigboards-node</module>
         <module>bigboards-updater</module>
-        <module>bigboards-docs</module>
     </modules>
 
     <build>
