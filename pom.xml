@@ -15,6 +15,11 @@
         <module>bigboards-updater</module>
     </modules>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <central.deploy.dir>/data/artifacts/apt</central.deploy.dir>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -44,11 +49,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <central.deploy.dir>/data/artifacts</central.deploy.dir>
-    </properties>
 
     <dependencyManagement />
 
