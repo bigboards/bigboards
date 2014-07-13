@@ -267,7 +267,7 @@ app.directive('tasks', function() {
             helpRef: '@',
             bbClick: '='
         },
-        controller: function ($scope, Tasks, socket) {
+        controller: function ($scope, Tasks, socket, $window) {
             $scope.message = "";
             $scope.visible = false;
             $scope.state = 'running';
@@ -316,6 +316,7 @@ app.directive('tasks', function() {
 
             socket.on('task:busy', function(progress) {
                 $scope.output += progress.data;
+                $window.scrollTo(0,document.body.scrollHeight);
             });
         },
         link: function ($scope, $element, $attributes) {},

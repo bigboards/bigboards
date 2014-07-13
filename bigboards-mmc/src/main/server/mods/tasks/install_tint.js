@@ -64,6 +64,7 @@ module.exports = function(configuration) {
                         .inventory('/opt/bb/hosts')
                         .playbook('install')
                         .variables(scope)
+                        .verbose('vvvv')
                         .exec({cwd: '/opt/bb/tints.d/' + scope.tintId})
                         .then(function(result) {
                             if (result.code != 0) callback(new Error(result.code));
