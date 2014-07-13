@@ -13,8 +13,12 @@
         <module>bigboards-mmc</module>
         <module>bigboards-node</module>
         <module>bigboards-updater</module>
-        <module>bigboards-docs</module>
     </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <central.deploy.dir>/data/artifacts/apt</central.deploy.dir>
+    </properties>
 
     <build>
         <plugins>
@@ -45,11 +49,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <central.deploy.dir>/data/artifacts</central.deploy.dir>
-    </properties>
 
     <dependencyManagement />
 

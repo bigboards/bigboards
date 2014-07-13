@@ -58,7 +58,7 @@
                                 <echo message="========== deploy debs ===================" />
                                 <copy todir="${central.deploy.dir}">
                                     <fileset dir="${project.basedir}/target/dist/">
-                                        <exclude name="**/*.deb"/>
+                                        <include name="**/*.deb"/>
                                     </fileset>
                                 </copy>
                             </target>
