@@ -1,1 +1,1 @@
-var libraryModule = angular.module('bb.library', ['ngResource']);
+var libraryModule = angular.module('bb.library', ['ngResource', 'drFlip']);

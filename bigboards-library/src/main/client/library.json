@@ -3,6 +3,7 @@
         "id": "bigboards.elasticsearch",
         "name": "ElasticSearch",
         "type": "stack",
+        "logo": "http://library.bigboards.io:7007/content/elasticsearch.png",
         "description": "A basic installation of ElasticSearch",
         "owner": {
             "name": "BigBoards",
@@ -16,6 +17,7 @@
         "id": "datacompany.grabble",
         "name": "Grabble",
         "type": "stack",
+        "logo": "http://library.bigboards.io:7007/content/elasticsearch.png",
         "description": "The Grabble project",
         "owner": {
             "name": "BigBoards",
@@ -24,5 +26,19 @@
         },
         "scope": "private",
         "uri": "https://{{username}}:{{password}}@bitbucket.org/datacompany/grabble-tint.git"
+    },
+    {
+        "id": "bigboards.hadoop",
+        "name": "Hadoop",
+        "type": "stack",
+        "logo": "http://library.bigboards.io:7007/content/hadoop.png",
+        "description": "Hadoop, the DataOS.",
+        "owner": {
+            "name": "BigBoards",
+            "email": "hello@bigboards.io",
+            "url": "http://bigboards.io"
+        },
+        "scope": "public",
+        "uri": "https://bitbucket.org/bigboards/bigboards-tint-hadoop.git"
     }
 ]

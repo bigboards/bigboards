@@ -33,7 +33,7 @@ module.exports = {
     },
 
     library: {
-        url: "http://library.bigboards.io"
+        url: "http://library.bigboards.io:7007"
     },
 
     isDevelopment: function () {

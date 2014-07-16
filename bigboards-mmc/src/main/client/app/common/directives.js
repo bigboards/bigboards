@@ -339,7 +339,9 @@ app.directive('bbHeader', function() {
             icon: '@',
             title: '@'
         },
-        controller: function ($scope) { },
+        controller: function ($scope, $location) {
+            $location.path('/dashboard');
+        },
         link: function ($scope, $element, $attributes) { },
         templateUrl: 'app/common/directives/header.html'
     };

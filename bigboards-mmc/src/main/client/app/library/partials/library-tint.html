@@ -1,15 +1,17 @@
-<div class="panel">
-    <div class="panel-heading">
-        <h3 class="panel-title">{{tint.name}}</h3>
-        <div class="panel-sub-title">by {{tint.owner}}</div>
-    </div>
-    <div class="panel-body">{{tint.description|truncate:50}}</div>
-    <div class="panel-footer">
-        <div class="library-tint-action" ng-click="removeTint()">
-            <span class="fa fa-trash-o"></span>
+<dr-flip class="card" ng-class="tint.type" dr-flip-toggle>
+    <dr-flip-front class="card-front">
+        <img class="card-logo" ng-src="{{tint.logo}}">
+        <div class="card-type"></div>
+        <h3>{{tint.name}}</h3>
+    </dr-flip-front>
+    <dr-flip-back class="card-back">
+        <p class="card-description">
+            The {{tint.name}} tint by {{tint.owner.name}} brings you {{tint.description|truncate:200}}
+        </p>
+        <div class="card-actions">
+            <a class="card-action" ng-click="installTint()">
+                <span class="fa fa-cloud-download fa-2x"></span>
+            </a>
         </div>
-        <div class="library-tint-action" ng-click="installTint()">
-            <span class="fa fa-cloud-download"></span>
-        </div>
-    </div>
-</div>
+    </dr-flip-back>
+</dr-flip>

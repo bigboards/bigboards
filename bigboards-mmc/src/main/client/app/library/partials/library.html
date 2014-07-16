@@ -2,8 +2,6 @@
 
 <bb-content>
     <div class="library">
-        <library-tint tint="t" ng-repeat="t in library" on-remove="removeTint(t.id)" on-install="installTint(t.id)"></library-tint>
+        <library-tint tint="t" ng-repeat="t in library" on-install="installTint(t.id)"></library-tint>
     </div>
 </bb-content>
-
-<bb-sidepane icon="fa-tint" actions="actions"></bb-sidepane>

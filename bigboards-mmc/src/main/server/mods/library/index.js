@@ -58,10 +58,10 @@ Library.prototype.refresh = function() {
     var deferrer = Q.defer();
     var self = this;
 
-    request(this.libraryLocation + 'library.json', function(error, response, body) {
+    request(this.libraryLocation + '/library.json', function(error, response, body) {
         if (error) return deferrer.reject(error);
 
-        self.libraryContent = body;
+        self.libraryContent = JSON.parse(body);
 
         return deferrer.resolve(self.libraryContent);
     });

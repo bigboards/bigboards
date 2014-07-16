@@ -1,3 +1,6 @@
+
+@import url('library.css');
+
 /* Sticky footer styles
          -------------------------------------------------- */
 
@@ -297,56 +300,6 @@ iframe {
         padding-left: 20px;
         padding-right: 20px;
     }
-}
-
-/**********************************************************************************************************************
- * Library
- *********************************************************************************************************************/
-.library {
-    width: 100%;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 20px;
-}
-
-.library .panel {
-    display: inline-block;
-    border: solid 1px #ddd;
-    width: 250px;
-    height: 270px;
-    margin: 10px;
-}
-
-.library .panel .panel-heading {
-    width: 100%;
-    padding-top: 50px;
-    padding-bottom: 30px;
-    text-align: center;
-}
-
-.library .panel .panel-heading .panel-title {
-    font-size: x-large;
-}
-
-.library .panel .panel-heading .panel-sub-title {
-    font-size: smaller;
-    color: #bbb;
-}
-
-.library .panel .panel-body {
-    height: 103px;
-    word-wrap: break-word;
-}
-
-.library-tint-action {
-    display: inline-block;
-    margin-left: 10px;
-    margin-right: 10px;
-}
-
-.library-tint-action:hover {
-    color: #008888;
-    cursor: pointer;
 }
 
 .bb-sidepane .bb-sidepane-content .btn-group {
