@@ -33,7 +33,7 @@ module.exports = {
     },
 
     library: {
-        file: "/opt/bb/library.yml"
+        url: "http://library.bigboards.io"
     },
 
     isDevelopment: function () {
