@@ -340,7 +340,9 @@ app.directive('bbHeader', function() {
             title: '@'
         },
         controller: function ($scope, $location) {
-            $location.path('/dashboard');
+            $scope.invokeBack = function() {
+                $location.path('/dashboard');
+            }
         },
         link: function ($scope, $element, $attributes) { },
         templateUrl: 'app/common/directives/header.html'
@@ -418,6 +420,8 @@ app.directive('bbTaskTile', function() {
 
             $scope.task = Tasks.get(function(data) {
                 if (data && data.code) $rootScope.$broadcast('tasks:show');
+            }, function(error) {
+
             });
 
             /**********************************************************************************************************
