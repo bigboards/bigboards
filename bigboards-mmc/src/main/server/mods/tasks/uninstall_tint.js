@@ -1,4 +1,5 @@
 var Ansible = require('../ansible/index.js'),
+    Lxc = require('../lxc/index.js'),
     Q = require('q'),
     async = require('async'),
     fs = require('fs'),
@@ -21,83 +22,57 @@ module.exports = function(configuration) {
 
             var outputBuffer = [];
 
-            async.series([
-                // -- Remove the tint source from the master node
-                function(callback) {
-                    new Ansible.AdHoc()
-                        .inventory('/opt/bb/hosts')
-                        .hosts('host-coordinators')
-                        .module('file')
-                        .asSudo()
-                        .args('state=absent path=/opt/bb/tints.d/' + scope.tintId)
-                        .exec({cwd: '/opt/bb/tints.d/'})
-                        .then(function(result) {
-                            if (result.code != 0) {
-                                winston.log('error', 'Unable to remove tint folder from the master node');
-                                callback(new Error(result.code));
-                            } else {
-                                winston.log('info', 'Successfully removed the tint folder from the master node');
-                                callback();
-                            }
-                        }, function(error) {
-                            winston.log('error', 'Unable to remove tint folder from the master node:', error);
-                            callback(error);
-                        }, function(progress) {
-                            deferred.notify(progress);
-                        });
-                },
+            var flow = [];
 
+            winston.log('info', 'determining the flow of functions to invoke');
+            flow.push(function(callback) {
+                new Ansible.AdHoc()
+                    .inventory('/opt/bb/hosts')
+                    .hosts('host-coordinators')
+                    .module('file')
+                    .asSudo()
+                    .args('state=absent path=/opt/bb/tints.d/' + scope.tintId)
+                    .exec({cwd: '/opt/bb/tints.d/'})
+                    .then(function(result) {
+                        if (result.code != 0) {
+                            winston.log('error', 'Unable to remove tint folder from the master node');
+                            callback(new Error(result.code));
+                        } else {
+                            winston.log('info', 'Successfully removed the tint folder from the master node');
+                            callback();
+                        }
+                    }, function(error) {
+                        winston.log('error', 'Unable to remove tint folder from the master node:', error);
+                        callback(error);
+                    }, function(progress) {
+                        deferred.notify(progress);
+                    });
+            });
+            winston.log('info', 'added the executor for removing the tint');
+
+            if (scope.tintType == 'stack') {
                 // -- Stop the containers
-                function(callback) {
-                    new Ansible.AdHoc()
-                        .inventory('/opt/bb/hosts')
-                        .hosts('host')
-                        .module('shell')
-                        .asSudo()
-                        .args('lxc-stop -n ' + scope.tintId)
-                        .exec({cwd: '/opt/bb/tints.d/'})
-                        .then(function(result) {
-                            if (result.code != 0) {
-                                winston.log('error', 'Unable to stop the LXC Containers');
-                                callback(new Error(result.code));
-                            } else {
-                                winston.log('info', 'Successfully stopped the LXC Containers');
-                                callback();
-                            }
-                        }, function(error) {
-                            winston.log('error', 'Unable to stop LXC Containers: ', error);
-                            callback(error);
-                        }, function(progress) {
-                            deferred.notify(progress);
-                        });
-                },
+                flow.push(function(callback) {
+                    Lxc.stopContainers().then(function() {
+                        callback();
+                    }).fail(function(error) {
+                        callback(error)
+                    });
+                });
+                winston.log('info', 'added the executor for stopping the containers');
 
-                // -- Remove the container from the hex
-                function(callback) {
-                    new Ansible.AdHoc()
-                        .inventory('/opt/bb/hosts')
-                        .hosts('host')
-                        .module('shell')
-                        .asSudo()
-                        .args('lxc-destroy -n ' + scope.tintId)
-                        .exec({cwd: '/opt/bb/tints.d/'})
-                        .then(function(result) {
-                            if (result.code != 0) {
-                                winston.log('error', 'Unable to remove LXC Container from the nodes');
-                                callback(new Error(result.code));
-                            } else {
-                                winston.log('info', 'Successfully removed the LXC Container from the nodes');
-                                callback();
-                            }
-                        }, function(error) {
-                            winston.log('error', 'Unable to remove LXC Container from the nodes: ', error);
-                            callback(error);
-                        }, function(progress) {
-                            deferred.notify(progress);
-                        });
-                }
+                // -- Destroy the containers
+                flow.push(function(callback) {
+                    Lxc.destroyContainers().then(function() {
+                        callback();
+                    }).fail(function(error) {
+                        callback(error)
+                    });
+                });
+                winston.log('info', 'added the executor for destroying the containers');
+            }
 
-            ], function(error) {
+            async.series(flow, function(error) {
                 if (error) {
                     winston.log('error', 'Unable to remove the tint from the hex: ', error);
                     deferred.reject(error);
