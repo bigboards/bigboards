@@ -2,20 +2,14 @@ var fs = require("fs"),
     yaml = require("js-yaml"),
     Q = require("q"),
     exec = require('child_process').exec,
+    request = require('request'),
     winston = require('winston'),
     rest = require('restler');
 
-function Library(tintRepoConfigFile) {
-    this.tintRepoConfigFile = tintRepoConfigFile;
+function Library(libraryLocation) {
+    this.libraryLocation = libraryLocation;
     this.libraryContent = {};
-
-    var self = this;
-    fs.exists(tintRepoConfigFile, function (exists) {
-        if (! exists)
-            self.persist();
-        else
-            self.load();
-    });
+    this.refresh();
 }
 
 Library.prototype.get = function(tintId) {
@@ -23,7 +17,7 @@ Library.prototype.get = function(tintId) {
     var self = this;
 
     if (! this.libraryContent || this.libraryContent.length == 0) {
-        this.load().then(function(data) {
+        this.refresh().then(function(data) {
             if (data[tintId]) deferrer.resolve(data[tintId]);
             else deferrer.reject(new Error('Unable to find the tint with id ' + tintId, 'not-found-error'));
         }, function(error) {
@@ -45,7 +39,7 @@ Library.prototype.list = function() {
     var self = this;
 
     if (!this.libraryContent || this.libraryContent.length == 0) {
-        this.load().then(function(data) {
+        this.refresh().then(function(data) {
             deferrer.resolve(data);
         }, function(error) {
             deferrer.reject(error);
@@ -57,78 +51,22 @@ Library.prototype.list = function() {
     return deferrer.promise;
 };
 
-Library.prototype.add = function(tintUri) {
-    var deferrer = Q.defer();
-    var self = this;
-
-    rest.get(tintUri + '/raw/master/.meta/manifest.yml')
-        .on('complete', function(result) {
-            if (result instanceof Error) {
-                deferrer.reject(result);
-            } else {
-                // -- parse the result as being a yaml file
-                var tint = yaml.safeLoad(result);
-
-                // -- add the repository url to the tint. We don't want to encode that one into the manifest since
-                // -- that would potentially give us contradicting data (different actual URL from what the manifest
-                // -- says)
-                tint.uri = tintUri;
-
-                if (self.libraryContent[tint.id]) {
-                    deferrer.reject(new Error("There is already a tint in the library with the same tint id (" + tint.id + ")"));
-                } else {
-                    self.libraryContent[tint.id] = tint;
-
-                    self.persist().then(function() {
-                        deferrer.resolve(tint);
-                        winston.log('info', "A new tint has been added: " + tintUri);
-
-                    }, function(error) {
-                        deferrer.reject(error);
-                        winston.log('error', error);
-                    });
-
-                }
-            }
-        });
-
-    return deferrer.promise;
-};
-
-Library.prototype.remove = function(tintId) {
-    delete this.libraryContent[tintId];
-    return this.persist();
-};
-
 /**
  * Load the library content from persistent storage.
  */
-Library.prototype.load = function() {
+Library.prototype.refresh = function() {
     var deferrer = Q.defer();
     var self = this;
 
-    var readFile = Q.denodeify(fs.readFile);
-    readFile(self.tintRepoConfigFile, 'utf8').done(function(text) {
-        try {
-            self.libraryContent = yaml.safeLoad(text);
-            if (! self.libraryContent) self.libraryContent = {};
+    request(this.libraryLocation + '/library.json', function(error, response, body) {
+        if (error) return deferrer.reject(error);
 
-            deferrer.resolve(self.libraryContent);
-        } catch (err) {
-            deferrer.reject(err);
-        }
+        self.libraryContent = JSON.parse(body);
+
+        return deferrer.resolve(self.libraryContent);
     });
 
     return deferrer.promise;
-};
-
-/**
- * Persist the library content to persistent storage.
- */
-Library.prototype.persist = function() {
-    var writeFile = Q.denodeify(fs.writeFile);
-
-    return writeFile(this.tintRepoConfigFile, yaml.safeDump(this.libraryContent));
 };
 
 module.exports = Library;

@@ -88,7 +88,7 @@ bb-sidepane .bb-sidepane-menu-footer {
  *********************************************************************************************************************/
 .bb-content {
     position: absolute;
-    top: 50px;
+    top: 90px;
     left: 50px;
     bottom: 0;
     right: 0;
@@ -100,20 +100,31 @@ bb-sidepane .bb-sidepane-menu-footer {
 
 .bb-header {
     position: absolute;
-    top: 0;
-    left: 50px;
+    top: 20px;
+    left: 20px;
     right: 0;
-    height: 50px;
+    height: 70px;
+    display: table;
+}
+
+.bb-header .back-button {
+    display: inline-block;
+    height: 100%;
+    vertical-align: baseline;
+}
+
+.bb-header .back-button:hover {
+    color:#008888;
 }
 
 .bb-header h1 {
     display: inline-block;
     height: 100%;
-    vertical-align: middle;
+    vertical-align: baseline;
     padding: 0;
-    padding-top: 3px;
+    padding-top: 11px;
     margin: 0;
-    margin-left: 10px;
+    margin-left: 20px;
     color: #515151;
 }
 

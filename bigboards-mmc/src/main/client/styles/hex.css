@@ -117,3 +117,18 @@
 }
 
 .hex.danger:hover { background-color: #880000; }
+
+.hex.outlined .content, .hex.outlined .corner-1, .hex.outlined .corner-2{
+     border-left: solid 1px #515151;
+     border-right: solid 1px #515151;
+ }
+
+.hex.outlined {
+    background-color: white;
+    color:#515151;
+}
+
+.hex.outlined:hover {
+    color: white;
+    background-color:#515151;
+}

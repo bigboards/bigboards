@@ -1,0 +1,32 @@
+---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: be sure the sources.list file is pointing to old-releases
+      copy: src=files/sources.list dest=/etc/apt/sources.list owner=root
+      notify:
+        - be sure apt is updated
+
+    - name: retrieve the list of containers
+      command: ls /var/lib/lxc/
+      register: containers
+
+    - name: be sure the sources.list file is pointing to old.releases for all containers
+      copy: src=files/sources.list dest=/var/lib/lxc/{{item}}/rootfs/etc/apt/sources.list owner=root
+      with_items: containers.stdout_lines
+
+    - name: be sure the resolv.conf file is absent in the containers
+      file: state=absent path=/var/lib/lxc/{{item}}/rootfs/etc/resolv.conf
+      with_items: containers.stdout_lines
+
+    - name: be sure the resolv.conf file is bound into the container fs
+      lineinfile: dest=/var/lib/lxc/{{item}}/fstab regexp='^/etc/resolv.conf' state=absent
+      with_items: containers.stdout_lines
+
+    - name: be sure the resolv.conf file is absent in the containers
+      file: state=hard src=/etc/resolv.conf dest=/var/lib/lxc/{{item}}/rootfs/etc/resolv.conf
+      with_items: containers.stdout_lines
+
+  handlers:
+    - name: be sure apt is updated
+      shell: apt-get update

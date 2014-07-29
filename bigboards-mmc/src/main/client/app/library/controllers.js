@@ -1,50 +1,22 @@
 libraryModule.controller('LibraryController', function($scope, Library, Tints, socket) {
     $scope.state = null;
 
-    $scope.library = Library.get();
+    $scope.library = Library.query();
 
     $scope.actions = [
         {
-            iconClass: 'fa-plus',
+            iconClass: 'fa-exchange',
             execute: function() {
-                $scope.$broadcast('sidebar:show', {
-                    view: 'app/library/partials/add.html',
-                    controller: libraryModule.controller,
-                    model: {}
-                });
+                Library.sync();
             }
         }
     ];
 
-    $scope.$on('library:refresh', function(event, data) {
-        $scope.library = Library.get();
-    });
-
-    $scope.removeTint = function(tintId) {
-        Library.remove({tintId: tintId});
-        delete $scope.library[tintId];
-    };
-
     $scope.installTint =  function(tintId) {
         Tints.save({tint: tintId});
-    }
+    };
+
+    $scope.$on('library:refresh', function(event, data) {
+        $scope.library = Library.query();
+    });
 });
-
-libraryModule.controller('LibraryAddController', ['$scope', 'Library', function($scope, Library) {
-    $scope.model = {
-        tintUri: null
-    };
-
-    $scope.add = function() {
-        Library.save({tintUri: $scope.model.tintUri}, function() {
-            $scope.model.tintUri = null;
-            $scope.$emit('sidebar:hide');
-            $scope.$emit('library:refresh');
-        });
-    };
-
-    $scope.cancel = function() {
-        $scope.model.tintUri = null;
-        $scope.$broadcast('sidebar:hide');
-    };
-}]);

@@ -39,7 +39,7 @@ if (serverConfig.isDevelopment()) {
  * Initialize the hex
  *********************************************************************************************************************/
 var configuration = new Container.Configuration(serverConfig.hex.file);
-var library = new Container.Library(serverConfig.library.file);
+var library = new Container.Library(serverConfig.library.url);
 var metrics = new Container.Metrics(serverConfig.metrics.cache.size, serverConfig.metrics.cache.interval);
 var nodes = new Container.Nodes();
 var slots = new Container.Slots(6);

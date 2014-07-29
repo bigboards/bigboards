@@ -62,7 +62,6 @@ function linkTaskApi(self, server) {
 function linkLibraryApi(self, server) {
     server.get('/api/v1/library', function(req, res) { self.libraryAPI.list(req, res); });
     server.post('/api/v1/library', function(req, res) { self.libraryAPI.post(req, res); });
-    server.delete('/api/v1/library/:tintId', function(req, res) { self.libraryAPI.remove(req, res); });
 
     winston.log('info', 'linked the library API');
 }
