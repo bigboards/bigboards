@@ -1,7 +1,4 @@
 ---
-# This playbook deploys the AWX application (database, web and worker) to a
-# single server.
-
 - hosts: host-coordinators
   sudo: yes
   roles:
