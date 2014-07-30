@@ -3,7 +3,7 @@
   sudo: yes
   tasks:
     - name: be sure the sources.list file is pointing to old-releases
-      copy: src=files/sources.list dest=/etc/apt/sources.list owner=root
+      copy: src=sources.list dest=/etc/apt/sources.list owner=root
       notify:
         - be sure apt is updated
 
@@ -12,7 +12,7 @@
       register: containers
 
     - name: be sure the sources.list file is pointing to old.releases for all containers
-      copy: src=files/sources.list dest=/var/lib/lxc/{{item}}/rootfs/etc/apt/sources.list owner=root
+      copy: src=sources.list dest=/var/lib/lxc/{{item}}/rootfs/etc/apt/sources.list owner=root
       with_items: containers.stdout_lines
 
     - name: be sure the resolv.conf file is absent in the containers
