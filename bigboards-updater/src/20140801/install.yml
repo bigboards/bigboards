@@ -1,0 +1,18 @@
+---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: be sure avahi is configured correctly
+      template: src=avahi-daemon.conf dest=/etc/avahi/avahi-daemon.conf owner=root
+      notify:
+        - be sure avahi is restarted
+
+    - name: be sure avahi is started at boot
+      service: name=avahi enabled=true
+
+    - name: be sure an empty hosts file is set
+      copy: src=hosts dest=/etc/hosts owner=root
+
+  handlers:
+    - name: be sure avahi is restarted
+      service: name=avahi state=restarted
