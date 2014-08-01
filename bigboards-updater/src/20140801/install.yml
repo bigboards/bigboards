@@ -8,11 +8,11 @@
         - be sure avahi is restarted
 
     - name: be sure avahi is started at boot
-      service: name=avahi enabled=true
+      service: name=avahi-daemon enabled=true
 
     - name: be sure an empty hosts file is set
       copy: src=files/hosts dest=/etc/hosts owner=root
 
   handlers:
     - name: be sure avahi is restarted
-      service: name=avahi state=restarted
+      service: name=avahi-daemon state=restarted
