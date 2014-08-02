@@ -13,6 +13,11 @@
     - name: be sure an empty hosts file is set
       template: src=templates/hosts dest=/etc/hosts owner=root
 
+    - name: be sure a correct interfaces file is set
+      template: src=templates/interfaces dest=/etc/network/interfaces owner=root
+      notify:
+        - be sure the network is restarted
+
     - name: be sure a correct dhclient.conf file is set
       template: src=templates/dhclient.conf dest=/etc/dhcp/dhclient.conf owner=root
       notify:
