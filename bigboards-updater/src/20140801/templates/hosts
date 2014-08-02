@@ -1,1 +1,1 @@
-127.0.0.1 {{ansible_hostname}}.{{ansible_domain}} {{ansible_hostname}} localhost
+127.0.0.1 {{ansible_hostname}}.{{ansible_local.hex.hex.name}} {{ansible_hostname}} localhost
