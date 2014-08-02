@@ -11,8 +11,24 @@
       service: name=avahi-daemon enabled=true
 
     - name: be sure an empty hosts file is set
-      copy: src=files/hosts dest=/etc/hosts owner=root
+      template: src=templates/hosts dest=/etc/hosts owner=root
+
+    - name: be sure a correct dhclient.conf file is set
+      template: src=templates/dhclient.conf dest=/etc/dhcp/dhclient.conf owner=root
+      notify:
+        - be sure the network is restarted
+
+    - name: be sure a correct rc.local file is set
+      template: src=templates/rc.local dest=/etc/rc.local owner=root
+      notify:
+        - be sure the rc.local script is invoked
 
   handlers:
     - name: be sure avahi is restarted
       service: name=avahi-daemon state=restarted
+
+    - name: be sure the network is restarted
+      service: name=networking state=restarted
+
+    - name: be sure the rc.local script is invoked
+      shell: /etc/rc.local
