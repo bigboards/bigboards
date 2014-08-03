@@ -1,6 +1,0 @@
----
-- name: Restart BigBoards Management Console
-  service: state=restarted name=bigboards-mmc
-
-- name: Restart nginx
-  service: state=restarted name=nginx

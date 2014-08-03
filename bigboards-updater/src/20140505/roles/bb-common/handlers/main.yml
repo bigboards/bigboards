@@ -1,9 +1,0 @@
----
-- name: Update Apt
-  shell: apt-get update
-
-- name: Restart Network
-  service: name=networking state=restarted
-
-- name: Restart SSH
-  service: name=ssh state=restarted

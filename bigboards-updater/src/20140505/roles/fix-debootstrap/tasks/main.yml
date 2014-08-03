@@ -1,5 +1,0 @@
----
-# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=712481
-# http://www.bitsbythepound.com/fix-dpkg-available-file-in-ubuntu-364.html
-- name: make sure the dpkg available file is valid
-  shell: dpkg --clear-avail

@@ -1,6 +1,0 @@
-- name: be sure the current configuration is copied to a safe location
-  shell: cp /tmp/bb-bck/hex.yml /opt/bb/hex.yml
-  ignore_errors: yes
-
-- name: be sure the safe location for backing up the configuration is removed
-  file: state=absent path=/tmp/bb-bck
