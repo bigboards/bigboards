@@ -8,7 +8,8 @@ var express = require('express'),
     tty = require('tty.js'),
     serverConfig = require('./config'),
     Container = require('./container'),
-    winston = require('winston');
+    winston = require('winston'),
+    mdns = require('mdns');
 
 var app = module.exports = express();
 var server = http.createServer(app);
@@ -65,11 +66,36 @@ routes.link(app, io);
  * Start Server
  *********************************************************************************************************************/
 server.listen(app.get('port'), function () {
-    console.log('BigBoards-mmc listening on port ' + app.get('port'));
+    winston.info('BigBoards-mmc listening on port ' + app.get('port'));
 
     // -- Start the metrics gatherer
     metrics.start();
+
+    // -- advertise our master node
+    advertise();
 });
+
+function advertise() {
+    try {
+        var ad = mdns.createAdvertisement(mdns.tcp('http', 'bb-master', configuration.id), app.get('port'));
+        ad.on('error', handleMdnsError);
+        ad.start();
+        winston.info('Advertised the BigBoards Master API using mDNS');
+    } catch (ex) {
+        handleMdnsError(ex);
+    }
+}
+
+function handleMdnsError(error) {
+    switch (error.errorCode) {
+        case mdns.kDNSServiceErr_Unknown:
+            console.warn(error);
+            setTimeout(advertise, 5000);
+            break;
+        default:
+            throw error;
+    }
+}
 
 /**********************************************************************************************************************
  * TTY Server

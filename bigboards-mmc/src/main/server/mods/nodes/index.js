@@ -1,40 +1,35 @@
 var util         = require("util"),
-    EventEmitter = require('events').EventEmitter;
+    EventEmitter = require('events').EventEmitter,
+    mdns         = require('mdns');
 
-function HexNodeManager() {
+function HexNodeManager(hexId) {
     this.nodes = {};
+
+    var self = this;
+    var browser = mdns.createBrowser(mdns.tcp('http', 'bb-node', hexId));
+
+    browser.on('serviceUp', function(service) {
+        self.nodes[service.name] = {
+            name: service.name,
+            host: service.host,
+            port: service.port,
+            addresses: service.addresses
+        };
+
+        this.emit('nodes:attached', self.nodes[name]);
+    });
+
+    browser.on('serviceDown', function(service) {
+        var node = self.nodes[name];
+        delete self.nodes[service.name];
+        this.emit('nodes:detached', node);
+    });
+
+    browser.start();
 }
 
 // -- make sure the metric store inherits from the event emitter
 util.inherits(HexNodeManager, EventEmitter);
-
-/**
- * Attach a node to the hex.
- *
- * @param name   the name of the node to attach
- */
-HexNodeManager.prototype.attach = function(name) {
-    this.nodes[name] = { name: name };
-
-    this.emit('nodes:attached', this.nodes[name]);
-};
-
-/**
- * Detach a node from the hex.
- *
- * @param name   the name of the node to detach
- */
-HexNodeManager.prototype.detach = function(name) {
-    var node = this.nodes[name];
-
-    /**
-     * This can potentially cause problems if the passed in nodes slot and name couple doesn't match any of the
-     * existing nodes. In this case only the node or the node name mapping will be removed.
-     */
-    delete this.nodes[name];
-
-    this.emit('nodes:detached', node);
-};
 
 /**
  * Retrieve the node with the given name.

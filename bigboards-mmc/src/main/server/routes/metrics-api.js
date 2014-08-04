@@ -20,8 +20,7 @@ MetricAPI.prototype.post = function (req, res) {
     // -- get the node
     // -- check if the node is already a member of this hex
     if (! this.nodes.hasNodeWithName(envelope.node)) {
-        // -- add the node to the node manager
-        this.nodes.attach(envelope.node);
+        return res.send(200);
     }
     var node = this.nodes.node(envelope.node);
 

@@ -20,7 +20,6 @@ function MetricStore(cacheSize, cacheInterval) {
         // -- emit the last position of the hex metrics
         self.emit('metrics:hex', self.metrics_hex[position]);
     });
-
 }
 
 // -- make sure the metric store inherits from the event emitter

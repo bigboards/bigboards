@@ -21,7 +21,7 @@ module.exports = {
     },
 
     hex: {
-        file: '/opt/bb/hex.yml',
+        file: '/etc/ansible/facts.d/hex.fact',
         rootDirectory: '/opt/bb'
     },
 
