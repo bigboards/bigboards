@@ -4,7 +4,7 @@ Section: base
 Priority: optional
 Architecture: all
 Installed-Size: SIZE
-Depends:
+Depends: libavahi-compat-libdnssd-dev
 Maintainer: BigBoards <hello@bigboards.io>
 Description: The BigBoards Node Runtime
  The BigBoards node runtime should be installed on each node of your hex. It communicates with the management console

@@ -1,12 +1,70 @@
-<bb-content>
-    <div class="nodes">
-        <hex-node></hex-node>
-        <hex-node></hex-node>
-        <hex-node></hex-node>
-        <hex-node></hex-node>
-        <hex-node></hex-node>
-        <hex-node></hex-node>
-    </div>
-</bb-content>
+<div class="row">
+    <h2 class="col-12">{{hex.name}}</h2>
+</div>
 
-<bb-sidepane icon="fa-desktop" actions="actions"></bb-sidepane>
+<div class="row">
+    <div class="col-sm-3">
+        <indicator metric="load" caption="% load"></indicator>
+    </div>
+    <div class="col-sm-3">
+        <indicator metric="temperature" caption="degrees C"></indicator>
+    </div>
+    <div class="col-sm-3">
+        <indicator metric="memory" caption="% mem usage"></indicator>
+    </div>
+    <div class="col-sm-3">
+        <indicator metric="dataDisk" caption="% disk usage"></indicator>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-7 col-sm-7">
+        <h3>Nodes</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>name</td>
+                    <td class="table-indicator">load</td>
+                    <td class="table-indicator">memory</td>
+                    <td class="table-indicator">disk</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tr ng-repeat="node in nodes">
+                <td>{{node.name}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="col-lg-4 col-sm-4 col-lg-offset-1 col-sm-offset-1">
+        <h3>Tints</h3>
+        <div class="col-lg-4 col-md-4 col-sm-4 tint-type">
+            <div class="tint-icon">
+                <div class="tint-icon-content">
+                    <i class="fa fa-2x fa-align-justify"></i>
+                    <!--<h3 class="panel-title">stack</h3>-->
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 tint-type">
+            <div class="tint-icon">
+                <div class="tint-icon-content">
+                    <i class="fa fa-2x fa-database"></i>
+                    <!--<h3 class="panel-title">data</h3>-->
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 tint-type">
+            <div class="tint-icon">
+                <div class="tint-icon-content">
+                    <i class="fa fa-2x fa-graduation-cap"></i>
+                    <!--<h3 class="panel-title">education</h3>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

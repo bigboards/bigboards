@@ -1,23 +1,23 @@
 var LibraryAPI = require('./library-api'),
     MetricAPI = require('./metrics-api'),
     SocketAPI = require('./socket'),
-    SlotsAPI = require('./slots-api'),
     TasksAPI = require('./tasks-api'),
     TintsAPI = require('./tints-api'),
     IdentityAPI = require('./identity-api'),
     FirmwareAPI = require('./firmware-api'),
+    NodesAPI = require('./nodes-api'),
 
     winston = require('winston');
 
-function Routes(serverConfiguration, configuration, firmware, library, metrics, nodes, slots, tasks, tints) {
-    this.metricAPI = new MetricAPI(metrics, nodes, slots);
-    this.socketAPI = new SocketAPI(serverConfiguration, tasks, metrics, slots);
-    this.tintsAPI = new TintsAPI(tints, library);
-    this.tasksAPI = new TasksAPI(tasks);
-    this.libraryAPI = new LibraryAPI(library);
+function Routes(serverConfiguration, configuration, services) {
+    this.metricAPI = new MetricAPI(services.metrics, services.nodes);
+    this.socketAPI = new SocketAPI(serverConfiguration, services.tasks, services.metrics, services.nodes, services.health);
+    this.tintsAPI = new TintsAPI(services.tints, services.library);
+    this.tasksAPI = new TasksAPI(services.tasks);
+    this.libraryAPI = new LibraryAPI(services.library);
     this.identityAPI = new IdentityAPI(configuration);
-    this.slotsAPI = new SlotsAPI(slots);
-    this.firmwareAPI = new FirmwareAPI(firmware);
+    this.firmwareAPI = new FirmwareAPI(services.firmware);
+    this.nodesAPI = new NodesAPI(services.nodes);
 }
 
 Routes.prototype.link = function(server, io) {
@@ -28,8 +28,8 @@ Routes.prototype.link = function(server, io) {
     linkMetricApi(this, server);
     linkTaskApi(this, server);
     linkLibraryApi(this, server);
+    linkNodesApi(this, server);
     linkTintApi(this, server);
-    linkSlotsApi(this, server);
 
     // -- Initialize Socket.io communication
     io.sockets.on('connection', function(socket) { self.socketAPI.link(socket) });
@@ -48,7 +48,7 @@ function linkIdentityApi(self, server) {
 }
 
 function linkMetricApi(self, server) {
-    server.post('/api/v1/metrics', function(req, res) { self.metricAPI.post(req, res); });
+    server.post('/api/v1/metrics/:node/:metric', function(req, res) { self.metricAPI.post(req, res); });
 
     winston.log('info', 'linked the metric API');
 }
@@ -66,10 +66,11 @@ function linkLibraryApi(self, server) {
     winston.log('info', 'linked the library API');
 }
 
-function linkSlotsApi(self, server) {
-    server.get('/api/v1/slots', function(req, res) { self.slotsAPI.list(req, res); });
+function linkNodesApi(self, server) {
+    server.get('/api/v1/nodes', function(req, res) { self.nodesAPI.list(req, res); });
+    server.get('/api/v1/nodes/:nodeName', function(req, res) { self.nodesAPI.get(req, res); });
 
-    winston.log('info', 'linked the slots API');
+    winston.log('info', 'linked the Nodes API');
 }
 
 function linkTintApi(self, server) {

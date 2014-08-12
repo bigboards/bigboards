@@ -2,13 +2,15 @@ var util         = require("util"),
     EventEmitter = require('events').EventEmitter,
     mdns         = require('mdns');
 
-function HexNodeManager(hexId) {
+function HexNodeManager(hexName) {
     this.nodes = {};
 
     var self = this;
-    var browser = mdns.createBrowser(mdns.tcp('http', 'bb-node', hexId));
+    var browser = mdns.createBrowser(mdns.tcp('bb-node', hexName));
 
     browser.on('serviceUp', function(service) {
+        if (self.nodes[service.name]) return;
+
         self.nodes[service.name] = {
             name: service.name,
             host: service.host,
@@ -16,13 +18,15 @@ function HexNodeManager(hexId) {
             addresses: service.addresses
         };
 
-        this.emit('nodes:attached', self.nodes[name]);
+        self.emit('nodes:attached', self.nodes[service.name]);
     });
 
     browser.on('serviceDown', function(service) {
-        var node = self.nodes[name];
+        if (!self.nodes[service.name]) return;
+
+        var node = self.nodes[service.name];
         delete self.nodes[service.name];
-        this.emit('nodes:detached', node);
+        self.emit('nodes:detached', node);
     });
 
     browser.start();

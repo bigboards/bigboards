@@ -1,63 +1,20 @@
 var async = require('async'),
-    uuid = require('node-uuid'),
-    ansibleParser = require('../utils/ansible-output-parser');
+    uuid = require('node-uuid');
 
-function SocketAPI(config, tasks, metrics, slots) {
+function SocketAPI(config, tasks, metricService, nodeService, healthService) {
     this.config = config;
     this.tasks = tasks;
-    this.metrics = metrics;
-    this.slots = slots;
+    this.metricService = metricService;
+    this.nodeService = nodeService;
+    this.healthService = healthService;
 }
 
 SocketAPI.prototype.link = function(socket) {
     var self = this;
 
     linkTasks(socket, this.tasks);
-
-    // -- send the information about the hex every second
-    setInterval(function () {
-        var result = {};
-
-        async.parallel([
-            function(callback) {
-                self.metrics.get('hex', 1, function(err, data) {
-                    result.metrics = data;
-                    return callback(err);
-                });
-            },
-            function(callback) {
-                result.slots = {};
-
-                for (var slotId in self.slots.slots) {
-                    var slotResult = {
-                        slot: slotId
-                    };
-
-                    // -- get the slot
-                    var slot = self.slots.slot(slotId);
-
-                    // -- check if there is an occupant
-                    if (slot.isOccupied()) {
-                        slotResult.occupant = {
-                            name: slot.occupant.name,
-                            health: slot.occupant.health
-                        };
-                    }
-
-                    result.slots[slotId] = slotResult;
-                }
-
-                return callback();
-            }
-
-        ],function(err) {
-            if (err) return err; // TODO: add error handling
-
-            return socket.emit('send:metrics', result);
-        });
-
-
-    }, 1000);
+    linkNodes(socket, this.nodeService);
+    linkMetrics(socket, this.metricService);
 };
 
 function linkTasks(socket, tasks) {
@@ -80,6 +37,46 @@ function linkTasks(socket, tasks) {
 
     tasks.on('task:busy', function(data) {
         socket.emit('task:busy', data.data);
+    });
+}
+
+function linkMetrics(socket, metricService) {
+    socket.on('connection', function() {
+        socket.emit('metrics:load', metricService.last('load', 'hex'));
+        socket.emit('metrics:temperature', metricService.last('temperature', 'hex'));
+        socket.emit('metrics:memory', metricService.last('memory', 'hex'));
+        socket.emit('metrics:osDisk', metricService.last('osDisk', 'hex'));
+        socket.emit('metrics:dataDisk', metricService.last('dataDisk', 'hex'));
+    });
+
+    metricService.on('metrics:load', function(data) {
+        socket.emit('metrics:load', data);
+    });
+
+    metricService.on('metrics:temperature', function(data) {
+        socket.emit('metrics:temperature', data);
+    });
+
+    metricService.on('metrics:memory', function(data) {
+        socket.emit('metrics:memory', data);
+    });
+
+    metricService.on('metrics:osDisk', function(data) {
+        socket.emit('metrics:osDisk', data);
+    });
+
+    metricService.on('metrics:dataDisk', function(data) {
+        socket.emit('metrics:dataDisk', data);
+    });
+}
+
+function linkNodes(socket, nodeService) {
+    nodeService.on('nodes:attached', function(data) {
+        socket.emit('nodes:attached', data);
+    });
+
+    nodeService.on('nodes:detached', function(data) {
+        socket.emit('nodes:detached', data);
     });
 }
 

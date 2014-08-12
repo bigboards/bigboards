@@ -37,12 +37,12 @@ TimeSeriesClock.prototype.push = function (key, newValue) {
 
 TimeSeriesClock.prototype.keys = function() {
     return this.map;
-}
+};
 
 TimeSeriesClock.prototype.value = function(key, position) {
     var value = this.values[position];
     return value == undefined ? undefined : value[key];
-}
+};
 
 TimeSeriesClock.prototype.all = function () {
     var l = this.size - 1;
@@ -58,6 +58,10 @@ TimeSeriesClock.prototype.all = function () {
 
 TimeSeriesClock.prototype.length = function () {
     return this.map.length();
+};
+
+TimeSeriesClock.prototype.last = function (key) {
+    return this.value(key, this.position - 1);
 };
 
 TimeSeriesClock.prototype.contains = function (key) {

@@ -22,6 +22,7 @@ module.exports = {
 
     hex: {
         file: '/etc/ansible/facts.d/hex.fact',
+        _file: 'src/test/hex.facts',
         rootDirectory: '/opt/bb'
     },
 

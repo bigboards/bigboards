@@ -1,9 +1,12 @@
 var express = require('express'),
     http = require('http'),
     path = require('path'),
+    os = require('os'),
     serverConfig = require('./config'),
     Routes = require('./routes'),
     Configuration = require('./services/configuration'),
+    Postman = require('./services/postman'),
+    NodeService = require('./services/node'),
     winston = require('winston'),
     mdns = require('mdns'),
     Q = require('q');
@@ -28,21 +31,15 @@ app.use(app.router);
  *********************************************************************************************************************/
 var configuration = new Configuration(serverConfig.hex.file);
 
-var nodeService = require('./services/node')();
-var postman = require('./services/postman')(serverConfig.delay, function(callback) {
-    return function () {
-        var result = {};
-        return Q.all([
-            function() { return self.nodeService.name().then(function(data) { result.name = data; }); },
-            function() { return self.nodeService.uptime().then(function(data) { result.uptime = data; }); },
-            function() { return self.nodeService.load().then(function(data) { result.load = data; }); },
-            function() { return self.nodeService.memory().then(function(data) { result.memory = data; }); },
-            function() { return self.nodeService.temperature().then(function(data) { result.temperature = data; }); },
-            function() { return self.nodeService.osDisk().then(function(data) { result.osDisk = data; }); },
-            function() { return self.nodeService.dataDisk().then(function(data) { result.dataDisk = data; }); }
-        ]).then(function() { return result; });
-    }
-});
+var nodeService = new NodeService();
+
+var postman = new Postman(nodeService, os.hostname(), serverConfig.delay, [
+    {metric: 'load', fn: function(nodeService) { return nodeService.load(); }},
+    {metric: 'memory', fn: function(nodeService) { return nodeService.memory(); }},
+    {metric: 'temperature', fn: function(nodeService) { return nodeService.temperature(); }},
+    {metric: 'osDisk', fn: function(nodeService) { return nodeService.osDisk(); }},
+    {metric: 'dataDisk', fn: function(nodeService) { return nodeService.dataDisk(); }}
+]);
 
 /**********************************************************************************************************************
  * Routes
@@ -61,7 +58,7 @@ server.listen(app.get('port'), function () {
         advertise(config);
 
         // -- start browsing for masters
-        browse(config);
+        browse(config, postman);
     });
 });
 
@@ -84,17 +81,19 @@ function handleError(error) {
     }
 }
 
-function browse(config) {
-    var browser = mdns.createBrowser(mdns.tcp('http', 'bb-master', config.id));
+function browse(config, postman) {
+    var browser = mdns.createBrowser(mdns.tcp('bb-master', config.name));
 
     browser.on('serviceUp', function(service) {
-        self.postman.startDelivery(
+        console.log('Found a service with ' + JSON.stringify(service));
+
+        postman.startDelivery(
             'http://' + service.host + ':' + service.port + '/api/v1/metrics'
         );
     });
 
     browser.on('serviceDown', function(service) {
-        self.postman.stopDelivery();
+        postman.stopDelivery();
     });
 
     browser.start();
@@ -103,10 +102,10 @@ function browse(config) {
 
 function advertise(config) {
     try {
-        var ad = mdns.createAdvertisement(mdns.tcp('http', 'bb-node', config.id), app.get('port'));
+        var ad = mdns.createAdvertisement(mdns.tcp('bb-node', config.name), app.get('port'));
         ad.on('error', handleMdnsError);
         ad.start();
-        winston.info('Advertised the BigBoards Master API using mDNS');
+        winston.info('Advertised the BigBoards Node API using mDNS');
     } catch (ex) {
         handleMdnsError(ex);
     }

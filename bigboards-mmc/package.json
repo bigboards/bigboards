@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "async": "~0.2.9",
+    "avahi": "0.0.1",
     "events": "~1.0.0",
     "express": "3.4.7",
     "git": "^0.1.5",
@@ -19,8 +20,8 @@
     "restler": "3.2.2",
     "shelljs": "~0.2.6",
     "socket.io": "~0.9.16",
+    "socket.io-client": "^1.0.6",
     "string": "~1.8.0",
-    "tty.js": "~0.2.13",
     "underscore": "~1.5.2",
     "util": "~0.10.2",
     "winston": "^0.7.3"

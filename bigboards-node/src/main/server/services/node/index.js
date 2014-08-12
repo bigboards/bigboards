@@ -19,20 +19,20 @@ Node.prototype.load = function() {
 
 Node.prototype.memory = function() {
     return Q({
-        used: os.totalmem() - os.freemem(),
-        free: os.freemem(),
-        total: os.totalmem()
+        "used": os.totalmem() - os.freemem(),
+        "free": os.freemem(),
+        "total": os.totalmem()
     });
 };
 
 Node.prototype.osDisk = function() {
     var defer = Q.defer();
 
-    diskspace.check('/', function (total, free) {
+    diskspace.check('/', function (err, total, free, status) {
         defer.resolve({
-            used: total - free,
-            free: free,
-            total: total
+            "used": total - free,
+            "free": free,
+            "total": total
         });
     });
 
@@ -42,11 +42,11 @@ Node.prototype.osDisk = function() {
 Node.prototype.dataDisk = function() {
     var defer = Q.defer();
 
-    diskspace.check('/data', function (total, free) {
+    diskspace.check('/data', function (err, total, free, status) {
         defer.resolve({
-            used: total - free,
-            free: free,
-            total: total
+            "used": total - free,
+            "free": free,
+            "total": total
         });
     });
 
@@ -59,7 +59,9 @@ Node.prototype.temperature = function() {
     fs.readFile('/sys/class/thermal/thermal_zone0/temp', {encoding: 'utf8'}, function(err, data) {
         if (err) return defer.reject(err);
 
-        return defer.resolve(data);
+        var value = parseInt(data.substr(0, data.length -2));
+
+        return defer.resolve(value / 100);
     });
 
     return defer.promise;

@@ -5,8 +5,8 @@ module.exports = {
     port: 7099,
 
     hex: {
-        _file: '/etc/ansible/facts.d/hex.fact',
-        file: 'src/test/hex.facts'
+        file: '/etc/ansible/facts.d/hex.fact',
+        _file: 'src/test/hex.facts'
     },
 
     targetUrl: '',

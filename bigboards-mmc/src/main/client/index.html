@@ -18,14 +18,19 @@
 
     <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="bower_components/fontawesome/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="bower_components/font-awesome-animation/dist/font-awesome-animation.min.css">
     <link rel="stylesheet" type="text/css" href="bower_components/angular-flip-dr/src/flip.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-snap/angular-snap-only.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/snapjs/snap.css">
+
+    <link rel="stylesheet" type="text/css" href="app/dashboard/styles/dashboard.css" />
+
+    <link rel="stylesheet" type="text/css" href="app/dashboard/directives/node/node.css" />
+    <link rel="stylesheet" type="text/css" href="app/dashboard/directives/indicator/indicator.css" />
+    <link rel="stylesheet" type="text/css" href="app/common/directives/menu/menu.css" />
 
     <link rel="stylesheet" type="text/css" href="styles/fonts.css" />
-    <link rel="stylesheet" type="text/css" href="styles/mmc.css" />
-    <link rel="stylesheet" type="text/css" href="styles/hex.css" />
+    <link rel="stylesheet" type="text/css" href="styles/app.css" />
     <link rel="stylesheet" type="text/css" href="styles/mmc-page-layout.css" />
-    <!--<link rel="stylesheet" type="text/css" href="app/dashboard/styles/dashboard.css" />-->
 
 
     <!--[if lt IE 9]>
@@ -33,10 +38,30 @@
     <![endif]-->
 </head>
 
-<body>
+<body ng-controller="ApplicationController">
+<div id="wrap">
+    <snap-drawer>
+        <div id="menu">
+            <div class="menu-logo">
+                <span class="bb-name"></span>
+            </div>
+            <div class="menu-item" ng-repeat="item in menu" ng-click="invokeMenuItem(item)">
+                <span class="caption">{{item.label}}</span>
+            </div>
+        </div>
+    </snap-drawer><snap-content>
+        <div id="menu-quick">
+            <div class="quick-menu-logo" snap-toggle="left">
+                <span class="bb-logo" ></span>
+            </div>
 
-<!-- Part 1: Wrap all page content here -->
-<div id="wrap" ng-view></div>
+            <div class="quick-menu-item" ng-repeat="item in menu" ng-click="invokeMenuItem(item)" ng-class="{'active': item.label == currentItem.label}">
+                <span class="fa fa-2x" ng-class="item.icon"></span>
+            </div>
+        </div>
+        <div id="content" ng-view></div>
+    </snap-content>
+</div>
 
 <tasks></tasks>
 
@@ -44,13 +69,16 @@
 <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
 <script type="text/javascript" src="bower_components/socket.io-client/dist/socket.io.js"></script>
 
+<script type="text/javascript" src="bower_components/snapjs/snap.js"></script>
 <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+<script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
+<script type="text/javascript" src="bower_components/angular-snap/angular-snap.js"></script>
+<script type="text/javascript" src="bower_components/angular-flip-dr/src/angular-flip.js"></script>
 <script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
+<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
 <script type="text/javascript" src="bower_components/angular-socket-io/socket.js"></script>
 <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-<script type="text/javascript" src="bower_components/term.js/src/term.js"></script>
-<script type="text/javascript" src="bower_components/angular-flip-dr/src/angular-flip.js"></script>
+<script type="text/javascript" src="bower_components/d3/d3.js"></script>
 
 <script type="text/javascript" src="app/mmc.js"></script>
 
@@ -64,6 +92,10 @@
 <script type="text/javascript" src="app/dashboard/module.js"></script>
 <script type="text/javascript" src="app/dashboard/controllers.js"></script>
 <script type="text/javascript" src="app/dashboard/directives.js"></script>
+
+<script type="text/javascript" src="app/common/directives/menu/menu.js"></script>
+<script type="text/javascript" src="app/dashboard/directives/node/node.js"></script>
+<script type="text/javascript" src="app/dashboard/directives/indicator/indicator.js"></script>
 
 <script type="text/javascript" src="app/tint/module.js"></script>
 <script type="text/javascript" src="app/tint/controllers.js"></script>

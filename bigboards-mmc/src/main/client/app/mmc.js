@@ -1,18 +1,24 @@
 var app = angular.module( 'mmc', [
     'ngRoute',
+    'ngAnimate',
     'bb.dashboard',
     'bb.tints',
     'bb.library',
     'bb.shell',
+    'snap',
 
     'btford.socket-io'
 ]);
 
-app.config(['$routeProvider', function($routeProvider) {
+app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider, snapRemoteProvider) {
+    snapRemoteProvider.globalOptions = {
+        maxPosition: 200
+    };
+
     $routeProvider
         .when('/dashboard', {
             title: 'Dashboard',
-            templateUrl: 'app/dashboard/partials/hexboard.html',
+            templateUrl: 'app/dashboard/partials/dashboard.html',
             controller: 'DashboardController'
         })
 
@@ -72,3 +78,38 @@ app.run(['$rootScope', 'Identity', function($rootScope, Identity) {
         }
     });
 }]);
+
+app.controller('ApplicationController', function($scope, $location) {
+    $scope.currentItem = null;
+
+    $scope.menu = [
+        {
+            label: 'Dashboard',
+            icon: 'fa-dashboard',
+            path: '/dashboard'
+        },
+        {
+            label: 'Library',
+            icon: 'fa-tint',
+            path: '/library'
+        }
+    ];
+
+    $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+        $scope.menu.forEach(function(item) {
+            if (item.path && current.$$route && item.path == current.$$route.originalPath)
+                $scope.currentItem = item;
+        });
+    });
+
+    $scope.invokeMenuItem = function(item) {
+        if (!$scope.currentItem || item.label != $scope.currentItem.label) {
+            if (item.handler) {
+                item.handler($scope);
+            } else if (item.path) {
+                $location.path(item.path);
+                $scope.$emit('navigate', item);
+            }
+        }
+    };
+});

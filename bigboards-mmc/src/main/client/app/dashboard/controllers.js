@@ -1,6 +1,6 @@
-dashboardModule.controller('DashboardController', function ($scope, Slots, Firmware, Tints, socket, ApiFeedback) {
-    Slots.get(function(data) {
-        $scope.slots = data;
+dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmware, Tints, socket, ApiFeedback) {
+    Nodes.get(function(data) {
+        $scope.nodes = data;
     });
 
     if ($scope.hex)
@@ -13,6 +13,13 @@ dashboardModule.controller('DashboardController', function ($scope, Slots, Firmw
     socket.on('send:metrics', function(data) {
         $scope.data = data.metrics[0];
         $scope.slots = data.slots;
+    });
+
+    socket.on('nodes:attached', function(node) {
+        $scope.nodes[node.name] = node;
+    });
+    socket.on('nodes:detached', function(node) {
+        delete $scope.nodes[node.name];
     });
 
     $scope.currentNode = null;
@@ -38,6 +45,13 @@ dashboardModule.controller('DashboardController', function ($scope, Slots, Firmw
                 ApiFeedback.onError()
             );
         }
+    };
+
+    $scope.metrics = {
+        load: [43, 3, 78, 76, 74],
+        temperature: [47, 47, 48, 49, 48],
+        memory: [52, 52, 52, 63, 63],
+        disk: [3, 3, 3, 3, 3]
     };
 });
 

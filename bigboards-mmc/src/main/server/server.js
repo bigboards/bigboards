@@ -5,12 +5,12 @@ var express = require('express'),
     Routes = require('./routes'),
     http = require('http'),
     path = require('path'),
-    tty = require('tty.js'),
     serverConfig = require('./config'),
     Container = require('./container'),
     winston = require('winston'),
     mdns = require('mdns');
 
+var self = this;
 var app = module.exports = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
@@ -40,44 +40,96 @@ if (serverConfig.isDevelopment()) {
  * Initialize the hex
  *********************************************************************************************************************/
 var configuration = new Container.Configuration(serverConfig.hex.file);
-var library = new Container.Library(serverConfig.library.url);
-var metrics = new Container.Metrics(serverConfig.metrics.cache.size, serverConfig.metrics.cache.interval);
-var nodes = new Container.Nodes();
-var slots = new Container.Slots(6);
-var tasks = new Container.Tasks();
-var tints = new Container.Tints(tasks, serverConfig.tints.rootDirectory, serverConfig.address);
-var firmware = new Container.Firmware(tasks);
-var health = new Container.Health(nodes, metrics);
+var hexConfig = null;
+var services = null;
+configuration.load()
+    .then(function(config) {
+        self.hexConfig = config;
 
-// -- add tasks to the task manager
-tasks.register(require('./mods/tasks/update.js'));
-tasks.register(require('./mods/tasks/install_tint.js')( configuration ));
-tasks.register(require('./mods/tasks/uninstall_tint.js')( configuration ));
-tasks.register(require('./mods/tasks/restart_containers.js'));
-tasks.register(require('./mods/tasks/dummy.js'));
+        winston.info('Read the configuration for ' + config.name);
 
-/**********************************************************************************************************************
- * Routes
- *********************************************************************************************************************/
-var routes = new Routes(serverConfig, configuration, firmware, library, metrics, nodes, slots, tasks, tints);
-routes.link(app, io);
+        // -- Create the services
+        self.services = createServices(config);
+
+        server.listen(app.get('port'), function () {
+            advertise(self.hexConfig);
+
+            winston.info('BigBoards-mmc listening on port ' + app.get('port'));
+        });
+    }).fail(function(error) {
+        winston.log('ERR : '  + error);
+    });
 
 /**********************************************************************************************************************
- * Start Server
+ * Handle all exceptions instead of bailing
  *********************************************************************************************************************/
-server.listen(app.get('port'), function () {
-    winston.info('BigBoards-mmc listening on port ' + app.get('port'));
-
-    // -- Start the metrics gatherer
-    metrics.start();
-
-    // -- advertise our master node
-    advertise();
+process.on('uncaughtException', function(err) {
+    handleError(err);
 });
 
-function advertise() {
+function handleError(error) {
+    console.log(JSON.stringify(error));
+
+    if (error.code == 'EADDRINFO')
+        return;
+
+    switch (error.errorCode) {
+        default:
+            throw error;
+    }
+}
+
+function createServices(config) {
+    var services = {};
+    services.library = new Container.Library(serverConfig.library.url);
+    winston.log('info', 'Create the Library Service');
+
+    services.metrics = new Container.Metrics(serverConfig.metrics.cache.size, serverConfig.metrics.cache.interval);
+    winston.log('info', 'Create the Metrics Service');
+
+    services.slots = new Container.Slots(6);
+    winston.log('info', 'Create the Slots Service');
+
+    services.tasks = new Container.Tasks();
+    winston.log('info', 'Create the Task Service');
+
+    services.tints = new Container.Tints(services.tasks, serverConfig.tints.rootDirectory, serverConfig.address);
+    winston.log('info', 'Create the Tint Service');
+
+    services.firmware = new Container.Firmware(services.tasks);
+    winston.log('info', 'Create the Firmware Service');
+
+    services.nodes = new Container.Nodes(config.name);
+    winston.log('info', 'Create the Node Service');
+
+    services.health = new Container.Health(services.nodes, services.metrics);
+    winston.log('info', 'Create the Health Service');
+
+    // -- add tasks to the task manager
+    services.tasks.register(require('./mods/tasks/update.js'));
+    services.tasks.register(require('./mods/tasks/install_tint.js')( configuration ));
+    services.tasks.register(require('./mods/tasks/uninstall_tint.js')( configuration ));
+    services.tasks.register(require('./mods/tasks/restart_containers.js'));
+    services.tasks.register(require('./mods/tasks/dummy.js'));
+
+    /**********************************************************************************************************************
+     * Routes
+     *********************************************************************************************************************/
+    var routes = new Routes(serverConfig, configuration, services);
+    routes.link(app, io);
+
+    return services;
+}
+
+function advertise(config) {
     try {
-        var ad = mdns.createAdvertisement(mdns.tcp('http', 'bb-master', configuration.id), app.get('port'));
+        var ad = mdns.createAdvertisement(
+            mdns.tcp('bb-master', config.name),
+            app.get('port'),
+            {
+                networkInterface: 'eth0'
+            }
+        );
         ad.on('error', handleMdnsError);
         ad.start();
         winston.info('Advertised the BigBoards Master API using mDNS');
@@ -96,17 +148,3 @@ function handleMdnsError(error) {
             throw error;
     }
 }
-
-/**********************************************************************************************************************
- * TTY Server
- *********************************************************************************************************************/
-var ttyServer = tty.createServer({
-    shell: 'bash',
-    static: path.join(__dirname, 'shell'),
-//    users: {
-//        foo: 'bar'
-//    },
-    port: 57575
-});
-
-ttyServer.listen();

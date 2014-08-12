@@ -10,8 +10,8 @@ app.service('Tasks', function($resource) {
     return $resource('/api/v1/tasks', {});
 });
 
-app.service('Slots', function($resource) {
-    return $resource('/api/v1/slots');
+app.service('Nodes', function($resource) {
+    return $resource('/api/v1/nodes');
 });
 
 app.service('Firmware', function($resource) {

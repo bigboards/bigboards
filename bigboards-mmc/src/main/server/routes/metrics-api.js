@@ -1,7 +1,6 @@
-function MetricAPI(metrics, nodes, slots) {
-    this.metrics = metrics;
-    this.nodes = nodes;
-    this.slots = slots;
+function MetricAPI(metricService, nodeService) {
+    this.metricService = metricService;
+    this.nodeService = nodeService;
 }
 
 /**
@@ -11,35 +10,18 @@ function MetricAPI(metrics, nodes, slots) {
  *  However, the data that is being sent will contain the slot id to which the node is attached.
  */
 MetricAPI.prototype.post = function (req, res) {
-    var envelope = req.body;
+    var node = req.param('node');
+    if (!node) return res.send(400, 'No node has been provided.');
 
-    // -- get the slot
-    var slot = this.slots.slot(envelope.slot);
-    if (! slot) return res.send(400, 'An invalid slot id was passed.');
+    var metric = req.param('metric');
+    if (!metric) return res.send(400, 'No metric has been provided.');
 
-    // -- get the node
-    // -- check if the node is already a member of this hex
-    if (! this.nodes.hasNodeWithName(envelope.node)) {
-        return res.send(200);
-    }
-    var node = this.nodes.node(envelope.node);
+    console.log(req.body);
+    var value = req.body.data;
 
-    // -- link the slot with the node if needed
-    if (slot.occupant == null) {
-        slot.occupy(node);
-    } else if (slot.occupant != node) {
-        slot.eject();
-        slot.occupy(node);
-    }
+    this.metricService.push(node, metric, value);
 
-    // -- update the metrics
-    return this.metrics.push(req.body, function(err, data) {
-        if (err) {
-            return res.send(500, err);
-        }
-
-        return res.json(data);
-    });
+    res.send(200);
 };
 
 module.exports = MetricAPI;

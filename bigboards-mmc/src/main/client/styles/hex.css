@@ -17,6 +17,11 @@
     font-family: "Open Sans";
 }
 
+.hex.medium {
+    width: 76px;
+    height: 44px;
+}
+
 .hex.small {
     width: 50px;
     height: 29px;
