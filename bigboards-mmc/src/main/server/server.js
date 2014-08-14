@@ -4,6 +4,7 @@
 var express = require('express'),
     Routes = require('./routes'),
     http = require('http'),
+    os = require('os'),
     path = require('path'),
     serverConfig = require('./config'),
     Container = require('./container'),
@@ -57,7 +58,7 @@ configuration.load()
             winston.info('BigBoards-mmc listening on port ' + app.get('port'));
         });
     }).fail(function(error) {
-        winston.log('ERR : '  + error);
+        winston.info('ERR : '  + error);
     });
 
 /**********************************************************************************************************************
@@ -127,7 +128,7 @@ function advertise(config) {
             mdns.tcp('bb-master', config.name),
             app.get('port'),
             {
-                networkInterface: 'eth0'
+                networkInterface: (os.platform() == 'darwin') ? 'en0' : 'eth0'
             }
         );
         ad.on('error', handleMdnsError);

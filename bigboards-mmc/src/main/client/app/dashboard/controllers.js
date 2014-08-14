@@ -15,13 +15,6 @@ dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmw
         $scope.slots = data.slots;
     });
 
-    socket.on('nodes:attached', function(node) {
-        $scope.nodes[node.name] = node;
-    });
-    socket.on('nodes:detached', function(node) {
-        delete $scope.nodes[node.name];
-    });
-
     $scope.currentNode = null;
 
     $scope.update = function() {

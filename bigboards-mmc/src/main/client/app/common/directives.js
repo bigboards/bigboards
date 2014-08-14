@@ -99,7 +99,7 @@ app.directive('hexHelp', function() {
     };
 });
 
-app.directive('hexSlot', function() {
+app.directive('hexNode', function() {
     return {
         restrict: 'E',
         scope: {

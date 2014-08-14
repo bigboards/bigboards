@@ -92,7 +92,18 @@ app.controller('ApplicationController', function($scope, $location) {
             label: 'Library',
             icon: 'fa-tint',
             path: '/library'
+        },
+        {
+            label: 'Shell',
+            icon: 'fa-terminal',
+            path: '/shell'
+        },
+        {
+            label: 'Update',
+            icon: 'fa-refresh',
+            path: '/update'
         }
+
     ];
 
     $scope.$on('$routeChangeSuccess', function(event, current, previous) {

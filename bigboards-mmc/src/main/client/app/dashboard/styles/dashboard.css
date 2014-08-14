@@ -45,13 +45,19 @@ table .table-indicator {
 }
 
 h2 {
-    margin-top: 25px;
-    margin-bottom: 25px;
+    padding-top: 24px;
+    padding-bottom: 23px;
+    padding-left: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
 }
 
 h3 {
     margin-top: 40px;
 }
+
 
 
 

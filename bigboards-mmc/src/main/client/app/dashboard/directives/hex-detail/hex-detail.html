@@ -1,0 +1,22 @@
+<div class="hex-detail">
+    <div class="hex-node-list">
+        <div class="node">
+            <span class="node-name">&#11041;</span>
+        </div>
+
+        <div class="node" ng-repeat="node in nodes">
+            <span class="node-name">{{$index + 1}}</span>
+        </div>
+    </div>
+
+    <div class="hex-detail-chart">
+
+    </div>
+
+    <div class="hex-detail-indicators">
+        <indicator metric="load" caption="load"></indicator>
+        <indicator metric="temperature" caption="degrees C"></indicator>
+        <indicator metric="memory" caption="% mem usage"></indicator>
+        <indicator metric="dataDisk" caption="% disk usage"></indicator>
+    </div>
+</div>
