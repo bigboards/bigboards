@@ -8,8 +8,6 @@ dashboardModule.directive('hexDetail', function() {
         },
         controller: function ($scope, Nodes, socket) {
             $scope.nodes = Nodes.get();
-            var colors = d3.scale.category10();
-
             if (! $scope.history) $scope.history = 20;
 
             $scope.data = {
@@ -22,7 +20,7 @@ dashboardModule.directive('hexDetail', function() {
 
             $scope.colorFunction = function() {
                 return function(d, i) {
-                    return colors(i);
+                    return '#008888';
                 };
             };
 
