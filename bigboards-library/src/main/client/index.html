@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js" ng-app="bb.library">
+<head>
+    <meta charset="UTF-8" />
+
+    <!-- Always force latest IE rendering engine or request Chrome Frame -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title ng-bind="title + ' &mdash; Hex'">Hex</title>
+
+    <meta name="description" content="The Tint Library of BigBoards" />
+    <meta name="keywords" content="BigBoards, Tint, Library" />
+    <meta name="author" content="BigBoards" />
+
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-flip-dr/src/flip.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/angular-snap/angular-snap-only.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/snapjs/snap.css">
+
+    <link rel="stylesheet" type="text/css" href="app/app.css" />
+    <link rel="stylesheet" type="text/css" href="app/library.css" />
+
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="bower_components/html5shiv/dist/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body ng-controller="ApplicationController">
+<div id="wrap" class="library">
+    <tint ng-repeat="tint in data" tint="tint"></tint>
+</div>
+
+<tasks></tasks>
+
+<script src="https://togetherjs.com/togetherjs-min.js"></script>
+<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+<script type="text/javascript" src="bower_components/socket.io-client/dist/socket.io.js"></script>
+
+<script type="text/javascript" src="bower_components/snapjs/snap.js"></script>
+<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+<script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
+<script type="text/javascript" src="bower_components/angular-snap/angular-snap.js"></script>
+<script type="text/javascript" src="bower_components/angular-flip-dr/src/angular-flip.js"></script>
+<script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
+<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+<script type="text/javascript" src="bower_components/angular-socket-io/socket.js"></script>
+<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script type="text/javascript" src="bower_components/d3/d3.js"></script>
+
+<script type="text/javascript" src="app/library.js"></script>
+<script type="text/javascript" src="app/services.js"></script>
+<script type="text/javascript" src="app/directives.js"></script>
+<script type="text/javascript" src="app/controllers.js"></script>
+
+<!--<script src="lib/socket.io/socket.io.js"></script>-->
+<!--<script src="lib/term.js/term.js"></script>-->
+<!--<script src="lib/tty.js/tty.js"></script>-->
+</body>
+</html>

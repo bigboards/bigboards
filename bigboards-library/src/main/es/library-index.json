@@ -1,0 +1,32 @@
+{
+    "settings": {
+        "number_of_shards" : 1,
+        "number_of_replicas" : 0
+    },
+    "mappings": {
+        "tints": {
+            "_id" : { "path" : "id"},
+            "_source": { "enabled": true },
+            "_timestamp" : {"enabled": true, "store": "yes"},
+            "dynamic": false,
+            "properties": {
+                "id": {"type": "string" },
+                "name": { "type": "string" },
+                "type": { "type": "string" },
+                "logo": { "type": "string" },
+                "description": { "type": "string" },
+                "owner": {
+                    "type" : "object",
+                    "dynamic" : false,
+                    "properties" : {
+                        "name": { "type": "string" },
+                        "email": { "type": "string" },
+                        "url": { "type": "string" }
+                    }
+                },
+                "scope": {"type": "string"},
+                "uri": {"type":"string"}
+            }
+        }
+    }
+}

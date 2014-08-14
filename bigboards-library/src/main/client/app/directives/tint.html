@@ -1,0 +1,30 @@
+<!-- All data you can work with
+    <div class="tint">
+    <p>id: {{tint.id}}</p>
+    <p>name: {{tint.name}}</p>
+    <p>type: {{tint.type}}</p>
+    <p>stack: {{tint.stack}}</p>
+    <img src="{{tint.logo}}"/>
+    <p>description: {{tint.description}}</p>
+    <p>owner: {{tint.owner}}</p>
+    <p>scope: {{tint.scope}}</p>
+    <p>uri: {{tint.uri}}</p>
+</div>-->
+
+<dr-flip class="card" ng-class="tint.type" dr-flip-toggle>
+    <dr-flip-front class="card-front">
+        <img class="card-logo" ng-src="{{tint.logo}}">
+        <div class="card-type"></div>
+        <h3>{{tint.name}}</h3>
+    </dr-flip-front>
+    <dr-flip-back class="card-back">
+        <p class="card-description">
+            The {{tint.name}} tint by {{tint.owner.name}} brings you {{tint.description|truncate:200}}
+        </p>
+        <div class="card-actions">
+            <a class="card-action">
+                <span class="fa fa-cloud-download fa-2x"></span>
+            </a>
+        </div>
+    </dr-flip-back>
+</dr-flip>
