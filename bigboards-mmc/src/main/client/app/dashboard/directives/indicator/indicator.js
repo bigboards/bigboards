@@ -4,7 +4,8 @@ dashboardModule.directive('indicator', function($window) {
         restrict: 'E',
         scope: {
             metric: '@',
-            caption: '@'
+            caption: '@',
+            unit: '@'
         },
         controller: function ($scope, socket) {
             $scope.data = [];

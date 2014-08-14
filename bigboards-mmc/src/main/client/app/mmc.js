@@ -6,7 +6,7 @@ var app = angular.module( 'mmc', [
     'bb.library',
     'bb.shell',
     'snap',
-
+    'nvd3ChartDirectives',
     'btford.socket-io'
 ]);
 
