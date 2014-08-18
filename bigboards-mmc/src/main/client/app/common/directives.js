@@ -335,16 +335,6 @@ app.directive('bbHeader', function() {
     return {
         restrict: 'E',
         transclude: true,
-        scope: {
-            icon: '@',
-            title: '@'
-        },
-        controller: function ($scope, $location) {
-            $scope.invokeBack = function() {
-                $location.path('/dashboard');
-            }
-        },
-        link: function ($scope, $element, $attributes) { },
         templateUrl: 'app/common/directives/header.html'
     };
 });

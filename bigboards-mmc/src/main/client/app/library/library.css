@@ -7,16 +7,16 @@
 
 .library .card {
     display: inline-block;
-    width: 170px;
-    height: 160px;
+    width: 200px;
+    height: 190px;
     margin: 10px;
-    background-color: white;
 }
 
 .library .card .card-front {
     width: 100%;
     text-align: center;
     border: solid 1px #ddd;
+    background-color: white;
 }
 
 .library .card .card-back {
@@ -24,12 +24,13 @@
     padding: 10px;
     text-align: center;
     border: solid 1px #ddd;
+    background-color: white;
 }
 
 .library .card .card-front .card-logo {
     max-height: 100px;
     max-width: 100px;
-    margin-top: 15px;
+    margin-top: 30px;
     filter: brightness(0);
     -webkit-filter: brightness(0);
     -moz-filter: brightness(0);
