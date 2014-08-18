@@ -2,6 +2,7 @@ var os = require('os');
 
 module.exports = {
     environment: "development",
+    runtype: 'static',
 
     port: process.env.PORT || 7007,
     host: os.hostname(),

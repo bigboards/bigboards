@@ -30,39 +30,46 @@ if (serverConfig.isDevelopment()) {
     app.use(express.errorHandler());
 }
 
-// Start elasticSearch
-var es = elasticSearch.Client({host : serverConfig.host + ':' + serverConfig.es_port });
-
-app.get("/library.json", function (req, res) {
-    es.search({
-        index: 'bigboards',
-        type: 'tints',
-
-        // Paging
-        from: req.query.from,
-        size: req.query.size || 100,
-
-        // Sorting: "field1:asc,field2:desc,..."
-        sort: req.query.sort,
-
-        // Basic querying
-        q: req.query.q || "*:*"
-
-    }, function(err, response, status) {
-        if (err) {
-            winston.error(err.message);
-            res.json(500, ["We are currently doing some maintenance"]);
-            return;
-        }
-
-        if (status == 200) {
-            res.json(status, response.hits.hits.map(function(document){return document._source;}));
-            return;
-        }
-
-        res.json(status, [])
+if (serverConfig.runtype == 'static') {
+    app.get("/library.json", function (req, res) {
+        res.sendfile(path.resolve(path.join(__dirname + '/../es/library.json')));
     });
-});
+
+} else {
+    // Start elasticSearch
+    var es = elasticSearch.Client({host : serverConfig.host + ':' + serverConfig.es_port });
+
+    app.get("/library.json", function (req, res) {
+        es.search({
+            index: 'bigboards',
+            type: 'tints',
+
+            // Paging
+            from: req.query.from,
+            size: req.query.size || 100,
+
+            // Sorting: "field1:asc,field2:desc,..."
+            sort: req.query.sort,
+
+            // Basic querying
+            q: req.query.q || "*:*"
+
+        }, function(err, response, status) {
+            if (err) {
+                winston.error(err.message);
+                res.json(500, ["We are currently doing some maintenance"]);
+                return;
+            }
+
+            if (status == 200) {
+                res.json(status, response.hits.hits.map(function(document){return document._source;}));
+                return;
+            }
+
+            res.json(status, [])
+        });
+    });
+}
 
 /**********************************************************************************************************************
  * Start Server
