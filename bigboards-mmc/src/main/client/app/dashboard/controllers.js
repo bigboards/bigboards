@@ -1,21 +1,18 @@
 dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmware, Tints, socket, ApiFeedback) {
-    Nodes.get(function(data) {
-        $scope.nodes = data;
-    });
+    $scope.nodes = Nodes.get();
+    $scope.tints = Tints.query();
 
-    if ($scope.hex)
-        $scope.tint = Tints.get({tintId: $scope.hex.tint});
-    else
-        $scope.$on('identified', function(event, data) {
-            $scope.tint = Tints.get({tintId: $scope.hex.tint});
-        });
+//    if ($scope.hex) {
+//        $scope.tints = Tints.get();
+//    } else {
+//        $scope.$on('identified', function () {
+//            $scope.tints = Tints.get();
+//        });
+//    }
 
-    socket.on('send:metrics', function(data) {
-        $scope.data = data.metrics[0];
-        $scope.slots = data.slots;
-    });
-
-    $scope.currentNode = null;
+    $scope.hasInstalledTints = function() {
+        return this.tints.length > 0;
+    };
 
     $scope.update = function() {
         Firmware.save(
@@ -38,13 +35,6 @@ dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmw
                 ApiFeedback.onError()
             );
         }
-    };
-
-    $scope.metrics = {
-        load: [43, 3, 78, 76, 74],
-        temperature: [47, 47, 48, 49, 48],
-        memory: [52, 52, 52, 63, 63],
-        disk: [3, 3, 3, 3, 3]
     };
 });
 

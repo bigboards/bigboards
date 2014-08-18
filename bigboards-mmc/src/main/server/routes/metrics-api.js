@@ -16,7 +16,6 @@ MetricAPI.prototype.post = function (req, res) {
     var metric = req.param('metric');
     if (!metric) return res.send(400, 'No metric has been provided.');
 
-    console.log(req.body);
     var value = req.body.data;
 
     this.metricService.push(node, metric, value);

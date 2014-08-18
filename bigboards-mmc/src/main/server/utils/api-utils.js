@@ -1,4 +1,9 @@
+var winston = require('winston');
+
 module.exports.handleError = function(res, error) {
+    winston.info(error);
+    winston.info(error.stack);
+
     if (!error) return res.send(500, 'No reason given');
 
     if (error.name == 'NotFoundError') {

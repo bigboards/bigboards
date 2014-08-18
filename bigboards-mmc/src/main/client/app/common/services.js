@@ -19,7 +19,7 @@ app.service('Firmware', function($resource) {
 });
 
 app.service('Tints', function($resource) {
-    return $resource('/api/v1/tints/:tintId', {tintId: '@tintId'});
+    return $resource('/api/v1/tints/:type/:id', {id: '@id', type: '@type'});
 });
 
 app.service('TintConfig', function($resource) {
