@@ -10,6 +10,6 @@ libraryModule.directive('libraryTint', function() {
 
         },
         link: function ($scope, $element, $attributes) {},
-        templateUrl: 'app/library/partials/library-tint.html'
+        templateUrl: 'app/library/directives/library-tint/library-tint.html'
     };
 });

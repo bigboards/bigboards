@@ -18,7 +18,7 @@ app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider, sna
     $routeProvider
         .when('/dashboard', {
             title: 'Dashboard',
-            templateUrl: 'app/dashboard/partials/dashboard.html',
+            templateUrl: 'app/dashboard/dashboard.html',
             controller: 'DashboardController'
         })
 
@@ -52,13 +52,13 @@ app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider, sna
 
         .when('/library', {
             title: 'Library',
-            templateUrl: 'app/library/partials/library.html',
+            templateUrl: 'app/library/library.html',
             controller: 'LibraryController'
         })
 
         .when('/shell', {
             title: 'Shell',
-            templateUrl: 'app/shell/partials/shell.html',
+            templateUrl: 'app/shell/shell.html',
             controller: 'ShellController'
         })
         .otherwise({
