@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 
+# -- add the bigboards system user
+adduser --system bb
+
 pushd /opt/bb/runtimes/bigboards-mmc
+# -- install the nodejs api dependencies
 npm install
-bower install --config.interactive=false
+
+# -- change the rights to the bigboards directory
+chown bb -R /opt/bb/runtimes/bigboards-mmc
+
+# -- make sure bower installs all dependencies
+sudo -u bb bower install --config.interactive=false
 popd
