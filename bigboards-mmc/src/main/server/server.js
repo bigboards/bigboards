@@ -128,7 +128,7 @@ function advertise(config) {
             mdns.tcp('bb-master', config.name),
             app.get('port'),
             {
-                networkInterface: (os.platform() == 'darwin') ? 'en0' : 'eth0'
+                networkInterface: (os.platform() == 'darwin') ? 'en0' : 'br0'
             }
         );
         ad.on('error', handleMdnsError);
