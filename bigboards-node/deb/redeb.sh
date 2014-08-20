@@ -22,7 +22,7 @@ rsync -a ${PROJECT_HOME}/deb/src/ ${SRC}/
 mkdir -p ${SYSROOT}/opt/
 
 mkdir -p ${SYSROOT}/opt/bb/runtimes/${PROJECT_NAME}/
-rsync -arvv ${PROJECT_HOME}/src/main/* ${SYSROOT}/opt/bb/runtimes/${PROJECT_NAME}/ --delete
+rsync -arvv ${PROJECT_HOME}/src/main/ ${SYSROOT}/opt/bb/runtimes/${PROJECT_NAME}/ --delete
 # In case of a NodeJS project we separately copy the packaje.json file; comment or uncomment wether applicable
 rsync -arvv ${PROJECT_HOME}/package.json ${SYSROOT}/opt/bb/runtimes/${PROJECT_NAME}/ --delete
 
