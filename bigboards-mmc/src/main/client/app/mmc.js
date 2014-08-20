@@ -21,41 +21,11 @@ app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider, sna
             templateUrl: 'app/dashboard/dashboard.html',
             controller: 'DashboardController'
         })
-
-
-        .when('/tints', {
-            title: 'Tint',
-            templateUrl: 'app/tint/partials/detail.html',
-            controller: 'TintDetailController'
-        })
-        .when('/tints/actions/:actionId', {
-            title: 'Tint',
-            templateUrl: 'app/tint/partials/action-detail.html',
-            controller: 'TintActionDetailController'
-        })
-        .when('/tints/views', {
-            title: 'Tint',
-            templateUrl: 'app/tint/partials/view-selector.html',
-            controller: 'TintViewSelectorController'
-        })
-        .when('/tints/views/:viewId', {
-            title: 'Tint',
-            templateUrl: 'app/tint/partials/view.html',
-            controller: 'TintViewController'
-        })
-        .when('/tints/configuration', {
-            title: 'Tint',
-            templateUrl: 'app/tint/partials/config.html',
-            controller: 'TintConfigurationController'
-        })
-
-
         .when('/library', {
             title: 'Library',
             templateUrl: 'app/library/library.html',
             controller: 'LibraryController'
         })
-
         .when('/shell', {
             title: 'Shell',
             templateUrl: 'app/shell/shell.html',
