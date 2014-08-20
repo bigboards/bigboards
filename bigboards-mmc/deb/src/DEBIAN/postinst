@@ -2,5 +2,5 @@
 
 pushd /opt/bb/runtimes/bigboards-mmc
 npm install
-bower install
+bower install --config.interactive=false
 popd
