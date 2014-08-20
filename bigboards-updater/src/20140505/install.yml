@@ -1,4 +1,10 @@
 ---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: be sure bower is installed
+      npm: name=bower global=yes
+
 - hosts: host-coordinators
   sudo: yes
   tasks:
@@ -28,6 +34,9 @@
 
     - name: be sure the data directory is mounted
       shell: creates=/data/lost+found mount /data
+
+    - name: be sure bower is installed
+      npm: name=bower global=yes
 
     - name: be sure the bigboards node is installed
       apt: state=latest name=bigboards-node force=yes update_cache=yes
