@@ -20,5 +20,8 @@
     "angular-flip-dr": "~0.0.6",
     "angular-snap": "~1.5.4",
     "angularjs-nvd3-directives": "~0.0.7"
+  },
+  "resolutions": {
+    "d3": "~3.4.1"
   }
 }
