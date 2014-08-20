@@ -1,6 +1,5 @@
 var app = angular.module( 'mmc', [
     'ngRoute',
-    'ngAnimate',
     'bb.dashboard',
     'bb.tints',
     'bb.library',
