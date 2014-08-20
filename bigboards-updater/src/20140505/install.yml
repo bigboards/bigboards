@@ -4,6 +4,8 @@
   tasks:
     - name: be sure bower is installed
       npm: name=bower global=yes
+    - name: be sure node and nodejs are pointing to the same command
+      file: state=link src=/usr/bin/nodejs dest=/usr/bin/node
 
 - hosts: host-coordinators
   sudo: yes
