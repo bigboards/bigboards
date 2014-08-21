@@ -17,14 +17,18 @@
         - /opt/serf
         - /opt/serf/bin
         - /opt/serf/events.d
+        - /etc/serf
 
     - name: be sure the serf etc-hosts handler is picked up by serf
-      copy: src=files/opt/serf/events.d/{{ item }} dest=/opt/serf/events.d/{{ item }}
+      copy: src=files/opt/serf/events.d/{{ item }} dest=/opt/serf/events.d/{{ item }} mode=777
       with_items:
         - etc-hosts.handler
 
     - name: be sure the serf for ARM binary is available
       copy: src=files/opt/serf/bin/serf dest=/opt/serf/bin/serf mode=777
+
+    - name: be sure the serf configuration file is available
+      template: src=templates/etc/serf/serf.conf dest=/etc/serf/serf.conf
 
     - name: be sure the serf init script is installed
       copy: src=files/etc/init/serf.conf dest=/etc/init/serf.conf
