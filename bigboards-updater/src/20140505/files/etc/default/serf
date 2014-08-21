@@ -8,4 +8,4 @@ EVENTS_DIR="${SERF_HOME}/events.d"
 EVENT_HANDLER_SUFFIX=".handler"
 
 # Additional options
-OPTIONS="-node ${HOSTNAME}"
+OPTIONS="-node=${HOSTNAME}"
