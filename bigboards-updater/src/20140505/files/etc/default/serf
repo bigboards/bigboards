@@ -1,0 +1,7 @@
+## SERF Agent Config File
+SERF_HOME=/opt/serf
+EVENTS_DIR="${SERF_HOME}/events.d"
+EVENT_HANDLER_SUFFIX=".handler"
+
+# Additional options
+OPTIONS="-node ${HOSTNAME}"
