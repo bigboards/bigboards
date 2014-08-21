@@ -1,6 +1,10 @@
 ## SERF Agent Config File
 SERF_HOME=/opt/serf
+
+# The directory where the event handlers are located
 EVENTS_DIR="${SERF_HOME}/events.d"
+
+# The suffix the event handler files should have to be picked up by serf
 EVENT_HANDLER_SUFFIX=".handler"
 
 # Additional options
