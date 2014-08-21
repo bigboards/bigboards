@@ -19,7 +19,7 @@
         - /opt/serf/events.d
 
     - name: be sure the serf for ARM binary is available
-      copy: src=files/opt/serf/bin/serf dest=/opt/serf/bin/serf
+      copy: src=files/opt/serf/bin/serf dest=/opt/serf/bin/serf mode=777
 
     - name: be sure the serf init script is installed
       copy: src=files/etc/init/serf.conf dest=/etc/init/serf.conf
