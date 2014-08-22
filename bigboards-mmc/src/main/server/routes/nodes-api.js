@@ -13,7 +13,11 @@ NodesAPI.prototype.get = function (req, res) {
 };
 
 NodesAPI.prototype.list = function (req, res) {
-    res.json(this.nodeService.nodes);
+    this.nodeService.nodes().then(function(data) {
+        return res.send(200, data);
+    }, function (err) {
+        return res.send(500, err);
+    });
 };
 
 module.exports = NodesAPI;

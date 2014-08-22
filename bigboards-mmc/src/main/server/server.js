@@ -9,12 +9,15 @@ var express = require('express'),
     serverConfig = require('./config'),
     Container = require('./container'),
     winston = require('winston'),
+    Serfer = require('serfer/src/'),
+    Q = require('q'),
     mdns = require('mdns');
 
 var self = this;
 var app = module.exports = express();
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
+var serfer = new Serfer();
 
 io.set('log level', 1); // reduce logging
 
@@ -43,8 +46,11 @@ if (serverConfig.isDevelopment()) {
 var configuration = new Container.Configuration(serverConfig.hex.file);
 var hexConfig = null;
 var services = null;
-configuration.load()
-    .then(function(config) {
+
+    Q.all([
+        configuration.load(),
+        serfer.connect()
+    ]).then(function(config) {
         self.hexConfig = config;
 
         winston.info('Read the configuration for ' + config.name);
@@ -53,7 +59,7 @@ configuration.load()
         self.services = createServices(config);
 
         server.listen(app.get('port'), function () {
-            advertise(self.hexConfig);
+//            advertise(self.hexConfig);
 
             winston.info('BigBoards-mmc listening on port ' + app.get('port'));
         });
@@ -100,11 +106,11 @@ function createServices(config) {
     services.firmware = new Container.Firmware(services.tasks);
     winston.log('info', 'Create the Firmware Service');
 
-    services.nodes = new Container.Nodes(config.name);
+    services.nodes = new Container.Nodes(serfer);
     winston.log('info', 'Create the Node Service');
 
-    services.health = new Container.Health(services.nodes, services.metrics);
-    winston.log('info', 'Create the Health Service');
+    //services.health = new Container.Health(services.nodes, services.metrics);
+    //winston.log('info', 'Create the Health Service');
 
     // -- add tasks to the task manager
     services.tasks.register(require('./mods/tasks/update.js'));

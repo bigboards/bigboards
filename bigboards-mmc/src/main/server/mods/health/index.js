@@ -3,17 +3,16 @@ function HexHealthManager(nodeService, metricService) {
     this.metricService = metricService;
 
     this.healthCache = {};
+    var self = this;
 
     // -- initialize the nodes health
-    var nodes = this.nodeService.nodes;
-    for (var key in nodes) {
-        if (nodes.hasOwnProperty(key)) {
-            this.healthCache[key] = -1.0;
-        }
-    }
+    this.nodeService.nodes().then(function(nodes) {
+        nodes.forEach(function (node) {
+            self.healthCache[node['Name']] = -1.0;
+        });
+    });
 
     // -- every second we will check for health issues
-    var self = this;
     setInterval(function() { self.checkNodeAvailability() }, 333);
 }
 
@@ -25,13 +24,15 @@ HexHealthManager.prototype.health = function(nodeName) {
  * Go through all nodes inside the hex and check if they are still available.
  */
 HexHealthManager.prototype.checkNodeAvailability = function() {
-    // -- iterate all node names
-    var nodes = this.nodeService.nodes;
-    for (var nodeName in nodes) {
-        if (nodes.hasOwnProperty(nodeName)) {
-            this.healthCache[nodeName] = getHealthiness(nodeName, this.metricService.last('load', nodeName));
-        }
-    }
+    var self = this;
+
+    this.nodeService.nodes().then(function(nodes) {
+        nodes.forEach(function (node) {
+            var nodeName = node['Name'];
+
+            self.healthCache[nodeName] = getHealthiness(nodeName, self.metricService.last('load', nodeName));
+        });
+    });
 };
 
 function getHealthiness(nodeName, metrics) {
