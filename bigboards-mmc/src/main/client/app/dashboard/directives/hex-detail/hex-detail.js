@@ -7,7 +7,7 @@ dashboardModule.directive('hexDetail', function() {
             history: '@'
         },
         controller: function ($scope, Nodes, socket) {
-            $scope.nodes = Nodes.get();
+            $scope.nodes = Nodes.query();
             if (! $scope.history) $scope.history = 20;
 
             $scope.data = {

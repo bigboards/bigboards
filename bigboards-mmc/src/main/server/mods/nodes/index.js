@@ -24,7 +24,7 @@ HexNodeManager.prototype.nodes = function() {
             });
         });
 
-        return result;
+        return result.sort();
     });
 };
 
