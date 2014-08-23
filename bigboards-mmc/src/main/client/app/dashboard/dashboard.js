@@ -1,14 +1,6 @@
 dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmware, Tints, socket, ApiFeedback) {
-    $scope.nodes = Nodes.get();
+    $scope.nodes = Nodes.query();
     $scope.tints = Tints.query();
-
-//    if ($scope.hex) {
-//        $scope.tints = Tints.get();
-//    } else {
-//        $scope.$on('identified', function () {
-//            $scope.tints = Tints.get();
-//        });
-//    }
 
     $scope.hasInstalledTints = function() {
         return this.tints.length > 0;

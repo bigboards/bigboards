@@ -2,6 +2,37 @@
 
 <hex-detail></hex-detail>
 
+<table class="table">
+    <thead>
+        <tr>
+            <td></td>
+            <td>role</td>
+            <td>name</td>
+            <td>status</td>
+            <td class="metric-column">temp</td>
+            <td class="metric-column">load</td>
+            <td class="metric-column">mem</td>
+            <td class="metric-column">disk</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tr ng-repeat="node in nodes">
+        <td>{{$index + 1}}</td>
+        <td>{{node.tags.role}}</td>
+        <td>{{node.name}}</td>
+        <td>{{node.status}}</td>
+        <td>34 °C</td>
+        <td>2.04</td>
+        <td>0.03%</td>
+        <td>30%</td>
+        <td>
+            <div class="action">
+                <span class="fa fa-terminal"></span>
+            </div>
+        </td>
+    </tr>
+</table>
+
 <div class="tints">
     <h3 ng-if="!hasInstalledTints()">Currently there is no stack tint installed. You may go to the <a href="#/library">library</a> to install one</h3>
 

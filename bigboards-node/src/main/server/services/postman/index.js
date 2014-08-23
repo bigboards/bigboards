@@ -1,21 +1,18 @@
-var request = require('request'),
-    winston = require('winston'),
+var winston = require('winston'),
     Q = require('q');
 
-function PostMan(nodeService, node, delay, containers) {
+function PostMan(nodeService, node, serfer, delay, containers) {
     this.nodeService = nodeService;
-    this.node = node;
-    this.url = null;
     this.delay = delay;
+    this.serfer = serfer;
+    this.node = node;
 
     this.containers = containers;
 
     this.intervalHandle = null;
 }
 
-PostMan.prototype.startDelivery = function(url) {
-    this.url = url;
-
+PostMan.prototype.startDelivery = function() {
     if (this.intervalHandle) return;
 
     var self = this;
@@ -25,14 +22,14 @@ PostMan.prototype.startDelivery = function(url) {
             Q(container.fn(self.nodeService)).then(function(value) {
                 if (container.previous || container.previous != value) {
                     container.previous = value;
-                    self.postMessage(container.metric, value);
+                    self.serfer.userEvent('metric', JSON.stringify({node: self.node, metric: container.metric, value: value}), false);
                 }
             });
 
         });
     }, this.delay);
 
-    winston.info('Started delivering every ' + this.delay + ' ms. to ' + url)
+    winston.info('Started delivering metrics every ' + this.delay + ' ms.')
 };
 
 PostMan.prototype.stopDelivery = function() {
@@ -42,36 +39,6 @@ PostMan.prototype.stopDelivery = function() {
     this.intervalHandle = null;
 
     winston.info('Stopped delivering');
-};
-
-/**
- * Function that actually post any message to a uri.
- *
- * @param metric the metric to post
- * @param value what to post
- */
-PostMan.prototype.postMessage = function(metric, value) {
-    try {
-        var requestMessage = {
-            uri: this.url + '/' + this.node + '/' + metric,
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({ "data": value })
-        };
-
-        request.post(requestMessage, function (error, response, body) {
-            // -- todo: change this to error level
-            if (error) return winston.log('info', "Error caught on posting metrics!", error);
-
-            if (response.statusCode != 200)
-            // -- todo: change this to warning level
-                winston.log('info', "Problem posting metrics!", response.statusCode, body);
-
-        });
-    } catch (error) {
-        winston.info('Unable to post value ' + value + ' for metric ' + metric);
-    }
 };
 
 module.exports = PostMan;

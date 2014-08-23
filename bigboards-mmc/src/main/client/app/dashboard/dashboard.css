@@ -87,10 +87,17 @@
 
 
 table {
-    margin-left: 20px;
+    margin: 0;
+    border: none;
+    border-top: solid 1px #dedede;
+    border-bottom: solid 1px #dedede;
+    margin-top: 10px;
+    font-size: smaller;
     background-color: white;
-    border: solid 1px #515151;
-    margin-top: 20px;
+}
+
+.table .metric-column {
+    width: 50px;
 }
 
 table .table-indicator {

@@ -58,9 +58,14 @@ var services = null;
         // -- Create the services
         self.services = createServices(config);
 
-        server.listen(app.get('port'), function () {
-//            advertise(self.hexConfig);
+        serfer.stream('*').progress(function(data) {
+            if (!data.data || data.data['Name'] != 'metric') return;
 
+            var payload = JSON.parse(data.data['Payload']);
+            self.services.metrics.push(payload.node, payload.metric, payload.value);
+        });
+
+        server.listen(app.get('port'), function () {
             winston.info('BigBoards-mmc listening on port ' + app.get('port'));
         });
     }).fail(function(error) {

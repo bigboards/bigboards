@@ -10,7 +10,7 @@ module.exports = {
     },
 
     targetUrl: '',
-    delay: 2000,
+    delay: 5000,
     host: os.hostname()
 };
 
