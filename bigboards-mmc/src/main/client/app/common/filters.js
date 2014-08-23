@@ -10,19 +10,19 @@ app.filter('bytes', function() {
 
 app.filter('percentMetric', function() {
     return function(uft) {
-        return (uft.total == 0) ? 0 : (uft.used / uft.total);
+        return (uft.total == 0) ? 0 : ((uft.used / uft.total) * 100);
     }
 });
 
 app.filter('temperature', function() {
     return function(temperature) {
-        return (isNaN(temperature)) ? 'na' : temperature + '°C';
+        return (isNaN(temperature)) ? '-' : temperature;
     }
 });
 
 app.filter('loadMetric', function() {
     return function(load) {
-        return (isNaN(load[0])) ? 'na' : load[0];
+        return (isNaN(load[0])) ? '-' : load[0];
     }
 });
 
