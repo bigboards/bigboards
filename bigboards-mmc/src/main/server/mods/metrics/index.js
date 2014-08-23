@@ -1,11 +1,17 @@
-var arrays = require('./../../utils/arrays');
+var arrays = require('./../../utils/arrays'),
+    TimeSeriesClock = require('../../utils/simple-time-series-clock');
 
 var util         = require("util");
 var EventEmitter = require('events').EventEmitter;
 
 function MetricStore(cacheSize, cacheInterval) {
     var self = this;
-    this.cacheSize = cacheSize;
+    this.tsc = new TimeSeriesClock(cacheSize, cacheInterval);
+    this.tsc.on('tick', function() {
+        var last = self.tsc.last();
+        self.emit('metrics', last);
+    });
+    this.tsc.start();
 
     this.metrics = {
         'load': {hex: []},
@@ -36,32 +42,10 @@ function MetricStore(cacheSize, cacheInterval) {
 util.inherits(MetricStore, EventEmitter);
 
 MetricStore.prototype.push = function(node, metric, value) {
-    if (! this.metrics[metric][node])
-        this.metrics[metric][node] = [];
+    var v = {};
+    v[metric] = this.metricExtractors[metric](value);
 
-    // -- make sure we only show x amount of values
-    if (this.metrics[metric][node].length = this.cacheSize)
-        this.metrics[metric][node].shift();
-
-    // -- push the value on the metric stack
-    this.metrics[metric][node].push(this.metricExtractors[metric](value));
-
-    this.emit('metrics:' + metric, {node: node, value: value});
-
-    // -- time to rollup
-    if (node != 'hex') {
-        var hexValues = [];
-        for (var nodeName in this.metrics[metric]) {
-            if (this.metrics[metric].hasOwnProperty(nodeName)) {
-                if (nodeName == 'hex') continue;
-                if (!this.metrics[metric][nodeName] || this.metrics[metric][nodeName].length == 0) continue;
-
-                hexValues.push(this.metrics[metric][nodeName][this.metrics[metric][nodeName].length - 1]);
-            }
-        }
-
-        this.push('hex', metric, this.metricRollups[metric](hexValues));
-    }
+    this.tsc.push(node, v);
 };
 
 MetricStore.prototype.list = function(metric, node) {
@@ -71,12 +55,22 @@ MetricStore.prototype.list = function(metric, node) {
     return this.metrics[metric][node];
 };
 
-MetricStore.prototype.last = function(metric, node) {
-    if (!metric) return null;
-    if (!node) node = 'hex';
-    if (!this.metrics[metric][node] || this.metrics[metric][node].length == 0) return null;
+MetricStore.prototype.current = function(metric, node) {
+    var currentValues;
 
-    return this.metrics[metric][node][this.metrics[metric][node].length - 1];
+    if (node) {
+        currentValues = this.tsc.current(node);
+        return (metric) ? currentValues[metric] : currentValues;
+    } else {
+        var result = {};
+        currentValues = this.tsc.current();
+
+        for (var k in currentValues.keys) {
+            result[k].push((metric) ? currentValues[k][metric] : currentValues[k]);
+        }
+
+        return result;
+    }
 };
 
 module.exports = MetricStore;

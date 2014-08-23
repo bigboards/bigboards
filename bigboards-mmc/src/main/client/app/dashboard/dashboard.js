@@ -1,6 +1,11 @@
 dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmware, Tints, socket, ApiFeedback) {
     $scope.nodes = Nodes.query();
     $scope.tints = Tints.query();
+    $scope.metrics = {};
+
+    socket.on('metrics', function(data) {
+        $scope.metrics = data;
+    });
 
     $scope.hasInstalledTints = function() {
         return this.tints.length > 0;

@@ -13,8 +13,8 @@ function TimeSeriesClock(size, interval) {
 
     return this;
 }
-util.inherits(TimeSeriesClock, events.EventEmitter);
 
+util.inherits(TimeSeriesClock, events.EventEmitter);
 
 TimeSeriesClock.prototype.push = function (key, newValue) {
     if (!this.contains(key)) {
@@ -90,11 +90,11 @@ TimeSeriesClock.prototype.logicalPosition = function(i)  {
     }
 
     return result;
-}
+};
 
 TimeSeriesClock.prototype.previousPosition = function(currentPosition)  {
     return currentPosition > 0 ? currentPosition - 1 : this.size - currentPosition - 1;
-}
+};
 
 TimeSeriesClock.prototype.advance = function () {
     this.position += 1;

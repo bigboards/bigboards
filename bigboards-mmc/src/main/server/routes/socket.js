@@ -42,31 +42,11 @@ function linkTasks(socket, tasks) {
 
 function linkMetrics(socket, metricService) {
     socket.on('connection', function() {
-        socket.emit('metrics:load', metricService.last('load', 'hex'));
-        socket.emit('metrics:temperature', metricService.last('temperature', 'hex'));
-        socket.emit('metrics:memory', metricService.last('memory', 'hex'));
-        socket.emit('metrics:osDisk', metricService.last('osDisk', 'hex'));
-        socket.emit('metrics:dataDisk', metricService.last('dataDisk', 'hex'));
+        socket.emit('metrics', metricService.current());
     });
 
-    metricService.on('metrics:load', function(data) {
-        socket.emit('metrics:load', data);
-    });
-
-    metricService.on('metrics:temperature', function(data) {
-        socket.emit('metrics:temperature', data);
-    });
-
-    metricService.on('metrics:memory', function(data) {
-        socket.emit('metrics:memory', data);
-    });
-
-    metricService.on('metrics:osDisk', function(data) {
-        socket.emit('metrics:osDisk', data);
-    });
-
-    metricService.on('metrics:dataDisk', function(data) {
-        socket.emit('metrics:dataDisk', data);
+    metricService.on('metrics', function(data) {
+        socket.emit('metrics', data);
     });
 }
 

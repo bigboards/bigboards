@@ -21,10 +21,10 @@
         <td>{{node.tags.role}}</td>
         <td>{{node.name}}</td>
         <td>{{node.status}}</td>
-        <td>34 °C</td>
-        <td>2.04</td>
-        <td>0.03%</td>
-        <td>30%</td>
+        <td>{{metrics[node].temperature}}</td>
+        <td>{{metrics[node].load}}</td>
+        <td>{{metrics[node].memory}}</td>
+        <td>{{metrics[node].dataDisk}}</td>
         <td>
             <div class="action">
                 <span class="fa fa-terminal"></span>
