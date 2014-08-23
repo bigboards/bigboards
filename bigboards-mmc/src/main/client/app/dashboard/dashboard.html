@@ -9,7 +9,7 @@
             <td>role</td>
             <td>name</td>
             <td>status</td>
-            <td class="metric-column">temp</td>
+            <td class="metric-column">°C</td>
             <td class="metric-column">load</td>
             <td class="metric-column">mem</td>
             <td class="metric-column">disk</td>
@@ -21,10 +21,10 @@
         <td>{{node.tags.role}}</td>
         <td>{{node.name}}</td>
         <td>{{node.status}}</td>
-        <td>{{metrics[node].temperature}}</td>
-        <td>{{metrics[node].load}}</td>
-        <td>{{metrics[node].memory}}</td>
-        <td>{{metrics[node].dataDisk}}</td>
+        <td>{{getMetric(node, 'temperature') | temperature | number : 1}}</td>
+        <td>{{getMetric(node, 'load') | loadMetric | number : 2}}</td>
+        <td>{{getMetric(node, 'memory') | percentMetric | number : 2}}</td>
+        <td>{{getMetric(node, 'dataDisk') | percentMetric | number : 2}}</td>
         <td>
             <div class="action">
                 <span class="fa fa-terminal"></span>

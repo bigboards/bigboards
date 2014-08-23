@@ -56,13 +56,22 @@ Node.prototype.dataDisk = function() {
 Node.prototype.temperature = function() {
     var defer = Q.defer();
 
-    fs.readFile('/sys/class/thermal/thermal_zone0/temp', {encoding: 'utf8'}, function(err, data) {
-        if (err) return defer.reject(err);
+    var file = '/sys/class/thermal/thermal_zone0/temp';
 
-        var value = parseInt(data.substr(0, data.length -2));
+    fs.exists(file, function(exists) {
+        if (exists) {
+            fs.readFile('/sys/class/thermal/thermal_zone0/temp', {encoding: 'utf8'}, function (err, data) {
+                if (err) return defer.reject(err);
 
-        return defer.resolve(value / 100);
+                var value = parseInt(data.substr(0, data.length - 2));
+
+                return defer.resolve(value / 100);
+            });
+        } else {
+            defer.resolve(null);
+        }
     });
+
 
     return defer.promise;
 };

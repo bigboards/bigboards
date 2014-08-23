@@ -8,6 +8,24 @@ app.filter('bytes', function() {
     }
 });
 
+app.filter('percentMetric', function() {
+    return function(uft) {
+        return (uft.total == 0) ? 0 : (uft.used / uft.total);
+    }
+});
+
+app.filter('temperature', function() {
+    return function(temperature) {
+        return (isNaN(temperature)) ? 'na' : temperature + '°C';
+    }
+});
+
+app.filter('loadMetric', function() {
+    return function(load) {
+        return (isNaN(load[0])) ? 'na' : load[0];
+    }
+});
+
 /**
  * Truncate Filter
  * @Param text

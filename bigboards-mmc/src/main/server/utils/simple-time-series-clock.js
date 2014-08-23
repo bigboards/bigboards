@@ -39,7 +39,8 @@ TimeSeriesClock.prototype.all = function(key) {
 };
 
 TimeSeriesClock.prototype.current = function (key) {
-    return (!key) ? this.values[this.position] : this.value(key, this.position);
+    var result = (!key) ? this.values[this.position] : this.value(key, this.position);
+    return (result) ? result : {};
 };
 
 TimeSeriesClock.prototype.last = function (key) {
@@ -47,15 +48,17 @@ TimeSeriesClock.prototype.last = function (key) {
 };
 
 TimeSeriesClock.prototype.advance = function () {
-    // -- we will update the current value with the last known value. This way we will never have an invalid
-    // -- value if we just advanced
-    this.values[this.position + 1] = this.values[this.position];
-
-    this.position += 1;
+    var lastValue = this.values[this.position];
 
     // -- shift the first value if the number of values is greater then the size of the TSC.
-    if (this.values.length > this.size)
+    if (this.position == this.size)
         this.values.shift();
+    else
+        this.position += 1;
+
+    // -- we will update the current value with the last known value. This way we will never have an invalid
+    // -- value if we just advanced
+    this.values[this.position] = lastValue;
 
     this.emit("tick", this.position);
 

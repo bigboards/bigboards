@@ -1,11 +1,22 @@
 dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmware, Tints, socket, ApiFeedback) {
     $scope.nodes = Nodes.query();
     $scope.tints = Tints.query();
-    $scope.metrics = {};
+
+    $scope.model = {
+        metrics: {}
+    };
 
     socket.on('metrics', function(data) {
-        $scope.metrics = data;
+        $scope.model.metrics = data;
     });
+
+    $scope.getMetric = function(node, metric) {
+        if (! $scope.model.metrics) return 'na';
+        if (! $scope.model.metrics[node.name]) return 'na';
+        if (! $scope.model.metrics[node.name][metric]) return 'na';
+
+        return $scope.model.metrics[node.name][metric];
+    };
 
     $scope.hasInstalledTints = function() {
         return this.tints.length > 0;

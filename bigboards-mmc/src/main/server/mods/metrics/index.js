@@ -42,10 +42,9 @@ function MetricStore(cacheSize, cacheInterval) {
 util.inherits(MetricStore, EventEmitter);
 
 MetricStore.prototype.push = function(node, metric, value) {
-    var v = {};
-    v[metric] = this.metricExtractors[metric](value);
-
-    this.tsc.push(node, v);
+    var current = this.tsc.current(node);
+    current[metric] = value;
+    this.tsc.push(node, current);
 };
 
 MetricStore.prototype.list = function(metric, node) {

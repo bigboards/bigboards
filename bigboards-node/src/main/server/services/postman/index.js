@@ -22,10 +22,11 @@ PostMan.prototype.startDelivery = function() {
             Q(container.fn(self.nodeService)).then(function(value) {
                 if (container.previous || container.previous != value) {
                     container.previous = value;
-                    self.serfer.userEvent('metric', JSON.stringify({node: self.node, metric: container.metric, value: value}), false);
+                    var payload = {node: self.node, metric: container.metric, value: value};
+
+                    self.serfer.userEvent('metric', JSON.stringify(payload), false);
                 }
             });
-
         });
     }, this.delay);
 
