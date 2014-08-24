@@ -4,6 +4,7 @@ var app = angular.module( 'mmc', [
     'bb.tints',
     'bb.library',
     'bb.shell',
+    'bb.tasks',
     'snap',
     'nvd3ChartDirectives',
     'btford.socket-io'
@@ -30,6 +31,18 @@ app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider, sna
             templateUrl: 'app/shell/shell.html',
             controller: 'ShellController'
         })
+
+        .when('/tasks', {
+            title: 'Tasks',
+            templateUrl: 'app/tasks/tasks.html',
+            controller: 'TaskListController'
+        })
+        .when('/tasks/:id', {
+            title: 'Tasks',
+            templateUrl: 'app/tasks/detail.html',
+            controller: 'TaskDetailController'
+        })
+
         .otherwise({
             redirectTo: '/dashboard'
         });
@@ -61,6 +74,11 @@ app.controller('ApplicationController', function($scope, $location) {
             label: 'Library',
             icon: 'fa-tint',
             path: '/library'
+        },
+        {
+            label: 'Tasks',
+            icon: 'fa-tasks',
+            path: '/tasks'
         },
         {
             label: 'Shell',
