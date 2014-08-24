@@ -5,6 +5,7 @@ var app = angular.module( 'mmc', [
     'bb.library',
     'bb.shell',
     'bb.tasks',
+    'bb.update',
     'snap',
     'nvd3ChartDirectives',
     'btford.socket-io'
@@ -37,10 +38,21 @@ app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider, sna
             templateUrl: 'app/tasks/tasks.html',
             controller: 'TaskListController'
         })
+        .when('/tasks/:id/output', {
+            title: 'Tasks',
+            templateUrl: 'app/tasks/output.html',
+            controller: 'TaskOutputController'
+        })
         .when('/tasks/:id', {
             title: 'Tasks',
             templateUrl: 'app/tasks/detail.html',
             controller: 'TaskDetailController'
+        })
+
+        .when('/update', {
+            title: 'Update',
+            templateUrl: 'app/update/update.html',
+            controller: 'UpdateController'
         })
 
         .otherwise({
@@ -61,7 +73,7 @@ app.run(['$rootScope', 'Identity', function($rootScope, Identity) {
     });
 }]);
 
-app.controller('ApplicationController', function($scope, $location) {
+app.controller('ApplicationController', function($scope, $location, Firmware) {
     $scope.currentItem = null;
 
     $scope.menu = [
