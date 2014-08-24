@@ -6,10 +6,6 @@ libraryModule.directive('libraryTint', function() {
             bbClick: '=',
             'installTint': '&onInstall'
         },
-        controller: function ($scope) {
-
-        },
-        link: function ($scope, $element, $attributes) {},
         templateUrl: 'app/library/directives/library-tint/library-tint.html'
     };
 });
