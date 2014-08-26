@@ -89,7 +89,7 @@ function linkTintApi(self, server) {
     server.post('/api/v1/tints/:type/:id/config', function(req, res) { self.tintsAPI.configure(req, res); });
 
     // -- install, update, delete
-    server.post('/api/v1/tints', function(req, res) { self.tintsAPI.install(req, res); });
+    server.put('/api/v1/tints/:type/:id', function(req, res) { self.tintsAPI.install(req, res); });
     server.post('/api/v1/tints/:type/:id', function(req, res) { self.tintsAPI.update(req, res); });
     server.delete('/api/v1/tints/:type/:id', function(req, res) { self.tintsAPI.uninstall(req, res); });
 

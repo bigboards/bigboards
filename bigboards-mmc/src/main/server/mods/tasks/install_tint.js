@@ -90,8 +90,9 @@ module.exports = function(configuration) {
                             winston.log('info', 'configuration loaded');
 
                             winston.log('info', 'updated the ' + scope.tintType + ' tint to ' + scope.tintId);
-                            if (! data.tint) data.tint = {};
-                            data.tint[scope.tintType] = scope.tintId;
+                            if (! data.tints) data.tints = {};
+                            if (! data.tints[scope.tintType]) data.tints[scope.tintType] = [];
+                            data.tints[scope.tintType].push(scope.tintId);
 
                             configuration.save(data).then(function(data) {
                                 winston.log('info', 'Hex configuration saved!');

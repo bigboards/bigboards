@@ -19,7 +19,11 @@ app.service('Firmware', function($resource) {
 });
 
 app.service('Tints', function($resource) {
-    return $resource('/api/v1/tints/:type/:id', {id: '@id', type: '@type'});
+    return $resource('/api/v1/tints/:type/:id', {id: '@id', type: '@type'}, {
+        'install': { method: 'PUT', isArray: false},
+        'uninstall': { method: 'POST', isArray: true},
+        'update': { method: 'POST', isArray: true}
+    });
 });
 
 app.service('TintConfig', function($resource) {
