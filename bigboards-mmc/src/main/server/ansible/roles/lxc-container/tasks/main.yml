@@ -26,5 +26,5 @@
   tags:
     - container
 
-- name: wait for the container to be started
-  wait_for: host=v{{ansible_hostname}} port=22
+- name: wait for the container ({{ansible_local.hex.id}}-v{{ansible_hostname}}) to be started
+  wait_for: host={{ansible_local.hex.id}}-v{{ansible_hostname}} port=22
