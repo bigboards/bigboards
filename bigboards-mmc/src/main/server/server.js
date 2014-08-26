@@ -2,6 +2,7 @@
  * Module dependencies
  *********************************************************************************************************************/
 var express = require('express'),
+    params = require('express-params'),
     Routes = require('./routes'),
     http = require('http'),
     os = require('os'),
@@ -14,8 +15,10 @@ var express = require('express'),
     mdns = require('mdns');
 
 var self = this;
-var app = module.exports = express();
+var app = express();
 var server = http.createServer(app);
+params.extend(app);
+
 var io = require('socket.io').listen(server);
 var serfer = new Serfer();
 

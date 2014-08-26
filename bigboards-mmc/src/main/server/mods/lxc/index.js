@@ -2,7 +2,7 @@ var Ansible = require('../ansible/index.js'),
     Q = require('q'),
     winston = require('winston');
 
-module.exports.initializeContainers = function() {
+module.exports.initializeContainers = function(scope) {
     var deferred = Q.defer();
 
     new Ansible.Playbook()
@@ -25,7 +25,7 @@ module.exports.initializeContainers = function() {
     return deferred.promise;
 };
 
-module.exports.destroyContainers = function() {
+module.exports.destroyContainers = function(scope) {
     var deferred = Q.defer();
 
     new Ansible.AdHoc()
@@ -47,7 +47,7 @@ module.exports.destroyContainers = function() {
     return deferred.promise;
 };
 
-module.exports.stopContainers = function() {
+module.exports.stopContainers = function(scope) {
     var deferred = Q.defer();
 
     new Ansible.AdHoc()

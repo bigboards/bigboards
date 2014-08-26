@@ -18,13 +18,17 @@ Library.prototype.get = function(tintId) {
 
     if (! this.libraryContent || this.libraryContent.length == 0) {
         this.refresh().then(function(data) {
-            if (data[tintId]) deferrer.resolve(data[tintId]);
+            var tint = getFromLibrary(self.libraryContent, tintId);
+
+            if (tint) deferrer.resolve(tint);
             else deferrer.reject(new Error('Unable to find the tint with id ' + tintId, 'not-found-error'));
         }, function(error) {
             deferrer.reject(error);
         });
     } else {
-        if (self.libraryContent[tintId]) deferrer.resolve(self.libraryContent[tintId]);
+        var tint = getFromLibrary(self.libraryContent, tintId);
+
+        if (tint) deferrer.resolve(tint);
         else deferrer.reject(new Error('Unable to find the tint with id ' + tintId, 'not-found-error'));
     }
 
@@ -68,5 +72,12 @@ Library.prototype.refresh = function() {
 
     return deferrer.promise;
 };
+
+function getFromLibrary(library, id) {
+    for (var i = 0; i < library.length; i++)
+        if (library[i].id == id) return library[i];
+
+    return null;
+}
 
 module.exports = Library;
