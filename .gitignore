@@ -3,3 +3,4 @@
 bigboards-docs/build
 target
 node_modules
+bigboards-mmc/src/main/client/bower_components

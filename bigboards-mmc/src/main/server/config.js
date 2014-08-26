@@ -33,6 +33,10 @@ module.exports = {
         }
     },
 
+    firmware: {
+        patchesDirectory: "/opt/bb/runtimes/bigboards-updater"
+    },
+
     library: {
         url: "http://library.bigboards.io"
     },

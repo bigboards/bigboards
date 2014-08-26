@@ -32,3 +32,13 @@ module.exports.readDir = function(dir) {
 
     return deferred.promise;
 };
+
+module.exports.fileName = function(path) {
+    if (path) {
+        var start = path.lastIndexOf("/")+1;
+        var end = path.length;
+        return path.substring(start, end);
+    }
+
+    return undefined;
+}
