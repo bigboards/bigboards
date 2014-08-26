@@ -18,9 +18,17 @@ TasksAPI.prototype.get = function(req, res) {
     else res.send(200, currentTask);
 };
 
+TasksAPI.prototype.invoke = function(req, res) {
+    var id = req.param('id');
+    if (!id) return res.send(400, 'no task id has been provided');
+
+    var parameters = req.body.data;
+    this.tasks.invoke(id, parameters);
+};
+
 TasksAPI.prototype.history = function(req, res) {
     var id = req.param('id');
-    if (!id) return res.send(404, 'no task id has been provided');
+    if (!id) return res.send(400, 'no task id has been provided');
 
     res.send(500, 'This feature has not been implemented yet.');
 };

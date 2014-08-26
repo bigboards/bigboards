@@ -21,6 +21,8 @@ tasksModule.controller('TaskDetailController', function($scope, Tasks, socket, $
 });
 
 tasksModule.controller('TaskOutputController', function($scope, Tasks, socket, $routeParams) {
+
+
     socket.on('task:started', function(task) {
         $scope.task = task;
         $scope.output = '';

@@ -57,6 +57,7 @@ function linkTaskApi(self, server) {
     server.get('/api/v1/tasks', function(req, res) { self.tasksAPI.list(req, res); });
     server.get('/api/v1/tasks/:id', function(req, res) { self.tasksAPI.list(req, res); });
     server.get('/api/v1/tasks/:id/history', function(req, res) { self.tasksAPI.history(req, res); });
+    server.post('/api/v1/tasks/:id', function(req, res) { self.tasksAPI.invoke(req, res); });
 
     winston.log('info', 'linked the tasks API');
 }
