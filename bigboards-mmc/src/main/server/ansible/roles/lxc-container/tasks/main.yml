@@ -11,6 +11,11 @@
   tags:
     - container
 
+- name: make sure the lxc autostart directory is available
+  file: state=directory path=/etc/lxc/auto
+  tags:
+    - container
+
 - name: make sure the container is started at boot
   file: state=link src=/var/lib/lxc/{{tintId}}/config dest=/etc/lxc/auto/{{tintId}}
   tags:
