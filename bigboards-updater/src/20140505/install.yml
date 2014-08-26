@@ -4,6 +4,7 @@
   tasks:
     - name: be sure the serf configuration file is available
       template: src=templates/etc/serf/serf.conf dest=/etc/serf/serf.conf
+      notify: Restart Serf
 
     - name: be sure the harddisk is initialized
       shell: creates=/dev/sda1 parted /dev/sda mklabel msdos mkpart primary 0% 100%
@@ -27,6 +28,9 @@
   handlers:
     - name: Restart BigBoards Node
       service: state=restarted name=bigboards-node
+    - name: Restart Serf
+      service: state=restarted name=serf
+
 
 - hosts: host-coordinators
   sudo: yes
