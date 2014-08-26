@@ -2,50 +2,9 @@
 - hosts: host
   sudo: yes
   tasks:
-    - name: be sure git is installed
-      apt: state=latest name=git
-
-    - name: be sure bower is installed
-      npm: name=bower global=yes
-
-    - name: be sure node and nodejs are pointing to the same command
-      file: state=link src=/usr/bin/nodejs dest=/usr/bin/node
-
-    - name: be sure the serf directory structure is available
-      file: state=directory name={{item}}
-      with_items:
-        - /opt/serf
-        - /opt/serf/bin
-        - /opt/serf/events.d
-        - /etc/serf
-
-    - name: be sure the serf for ARM binary is available
-      copy: src=files/opt/serf/bin/serf dest=/opt/serf/bin/serf mode=777
-
     - name: be sure the serf configuration file is available
       template: src=templates/etc/serf/serf.conf dest=/etc/serf/serf.conf
 
-    - name: be sure the serf init script is installed
-      copy: src=files/etc/init/serf.conf dest=/etc/init/serf.conf
-
-    - name: be sure the serf init configuration is installed
-      copy: src=files/etc/default/serf dest=/etc/default/serf
-
-- hosts: host-coordinators
-  sudo: yes
-  tasks:
-    - name: be sure the bigboards management console is installed
-      apt: state=latest name={{item}} force=yes update_cache=yes
-      with_items:
-        - bigboards-mmc
-      notify: Restart BigBoards Management Console
-  handlers:
-    - name: Restart BigBoards Management Console
-      service: state=restarted name=bigboards-mmc
-
-- hosts: host
-  sudo: yes
-  tasks:
     - name: be sure the harddisk is initialized
       shell: creates=/dev/sda1 parted /dev/sda mklabel msdos mkpart primary 0% 100%
 
@@ -61,9 +20,6 @@
     - name: be sure the data directory is mounted
       shell: creates=/data/lost+found mount /data
 
-    - name: be sure bower is installed
-      npm: name=bower global=yes
-
     - name: be sure the bigboards node is installed
       apt: state=latest name=bigboards-node force=yes update_cache=yes
       notify: Restart BigBoards Node
@@ -71,3 +27,15 @@
   handlers:
     - name: Restart BigBoards Node
       service: state=restarted name=bigboards-node
+
+- hosts: host-coordinators
+  sudo: yes
+  tasks:
+    - name: be sure the bigboards management console is installed
+      apt: state=latest name={{item}} force=yes update_cache=yes
+      with_items:
+        - bigboards-mmc
+      notify: Restart BigBoards Management Console
+  handlers:
+    - name: Restart BigBoards Management Console
+      service: state=restarted name=bigboards-mmc
