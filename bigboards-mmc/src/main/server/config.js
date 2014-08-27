@@ -34,7 +34,8 @@ module.exports = {
     },
 
     firmware: {
-        patchesDirectory: "/opt/bb/runtimes/bigboards-updater"
+        patchesDirectory: "/opt/bb/runtimes/bigboards-updater",
+        versionsFile: "/opt/bb/.versions"
     },
 
     library: {

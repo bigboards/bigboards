@@ -18,6 +18,12 @@ app.service('Firmware', function($resource) {
     return $resource('/api/v1/firmware');
 });
 
+app.service('Patches', function($resource) {
+    return $resource('/api/v1/patches/:patch', {patch: '@patch'}, {
+        'install': {method: 'PUT', isArray: false}
+    });
+});
+
 app.service('Tints', function($resource) {
     return $resource('/api/v1/tints/:type/:id', {id: '@id', type: '@type'}, {
         'install': { method: 'PUT', isArray: false},

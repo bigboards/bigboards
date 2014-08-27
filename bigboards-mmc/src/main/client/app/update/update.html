@@ -1,7 +1,23 @@
 <bb-header>Update</bb-header>
 
 <div class="update">
-    <div class="output" scroll-glue>
-        <pre>{{output}}</pre>
-    </div>
+    <!--<h3>Patches</h3>-->
+    <table class="table">
+        <thead>
+        <tr>
+            <td>name</td>
+            <td>installed on</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tr ng-repeat="patch in patches">
+            <td>{{patch.name}}</td>
+            <td>{{patch.installedOn}}</td>
+            <td>
+                <a ng-if="!patch.installedOn && ($index == 0 || patches[$index - 1].installedOn)" href="#/patches/{{patch.name}}" class="btn btn-xs btn-default">
+                    <i class="fa fa-cloud-download"></i>
+                </a>
+            </td>
+        </tr>
+    </table>
 </div>
