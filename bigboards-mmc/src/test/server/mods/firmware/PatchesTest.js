@@ -1,8 +1,10 @@
+var fs = require('fs');
+var should = require('should');
+var tmp = require('tmp');
+
 var Firmware = require('../../../../main/server/mods/firmware');
 var config = require('../../../../main/server/config');
 var fsUtil = require('../../../../main/server/utils/fs-utils');
-var should = require('should');
-var tmp = require('tmp');
 
 describe('firmware', function () {
 
@@ -10,7 +12,7 @@ describe('firmware', function () {
         var firmware;
 
         beforeEach(function () {
-            firmware = new Firmware(config.firmware.patchesDirectory, null);
+            firmware = new Firmware(config.firmware.patchesDirectory, null, null);
         });
 
         it('should have an patches directory', function () {
@@ -27,9 +29,9 @@ describe('firmware', function () {
     describe('patches', function () {
 
         it('should error on non-existing folder', function (done) {
-            var firmware = new Firmware('/some/dummy/directory', null);
+            var firmware = new Firmware('/some/dummy/directory', null, null);
 
-            firmware.patches().catch(function (error) {
+            firmware.availablePatches().fail(function (error) {
                 error.should.throw();
                 done();
             });
@@ -39,11 +41,11 @@ describe('firmware', function () {
             tmp.dir(function tempDirCreated(err, dir) {
                 if (err) done(err);
 
-                var firmware = new Firmware(dir, null);
-                firmware.patches().then(function (patches) {
+                var firmware = new Firmware(dir, null, null);
+                firmware.availablePatches().then(function (patches) {
                     patches.should.be.an.instanceOf(Array).and.have.lengthOf(0);
                     done();
-                }).catch(function (error) {
+                }).fail(function (error) {
                     done(error);
                 });
             });
@@ -56,14 +58,14 @@ describe('firmware', function () {
                 tmp.file({dir: dir}, function tmpFileCreated(err, file) {
                     if (err) done(err);
 
-                    var firmware = new Firmware(dir, null);
-                    firmware.patches().then(function (patches) {
+                    var firmware = new Firmware(dir, null, null);
+                    firmware.availablePatches().then(function (patches) {
                         patches.should.be.an.instanceOf(Array).and.have.lengthOf(1);
 
                         var fileName = fsUtil.fileName(file);
-                        patches.should.containEql(fileName);
+                        patches.should.containEql({name: fileName, installedOn: undefined});
                         done();
-                    }).catch(function (error) {
+                    }).fail(function (error) {
                         done(error);
                     });
                 });
@@ -79,18 +81,82 @@ describe('firmware', function () {
                     tmp.file({dir: dir}, function tmpFileCreated(err, fileTwo) {
                         if (err) done(err);
 
-                        var firmware = new Firmware(dir, null);
-                        firmware.patches().then(function (patches) {
+                        var firmware = new Firmware(dir, null, null);
+                        firmware.availablePatches().then(function (patches) {
                             patches.should.be.an.instanceOf(Array).and.have.lengthOf(2);
 
                             var fileName = fsUtil.fileName(file);
                             var fileTwoName = fsUtil.fileName(fileTwo);
-                            patches.should.containEql(fileName);
-                            patches.should.containEql(fileTwoName);
+                            patches.should.containEql({name: fileName, installedOn: undefined});
+                            patches.should.containEql({name: fileTwoName, installedOn: undefined});
                             done();
-                        }).catch(function (error) {
+                        }).fail(function (error) {
                             done(error);
                         });
+                    });
+                });
+            });
+        });
+    });
+
+    describe('asPatch', function() {
+        it('should return a patch object', function() {
+            Firmware.asPatch('a', 'b').should.eql({name: 'a', installedOn: 'b'});
+        });
+    });
+
+    describe('lineAsPatch', function() {
+        it('should return a patch object', function() {
+            Firmware.lineAsPatch('a | b').should.eql({name: 'a', installedOn: 'b'});
+        });
+        it('should return a patch object with undefined installedOn when no timestamp', function() {
+            Firmware.lineAsPatch('a').should.eql({name: 'a', installedOn: undefined});
+        });
+        it('should return a patch object with undefined name', function() {
+            Firmware.lineAsPatch('| b').should.eql({name: undefined, installedOn: 'b'});
+        });
+        it('should return a patch object with undefined installedOn when only pipe', function() {
+            Firmware.lineAsPatch('a |').should.eql({name: 'a', installedOn: undefined});
+        });
+    });
+
+    describe('installedPatches', function() {
+        it('should error on non-existing versions file', function(done) {
+            var firmware = new Firmware(null, '/some/file/that/does/not/exist.txt', null);
+            firmware.installedPatches().fail(function (error) {
+                error.should.throw();
+                done();
+            });
+        });
+
+        it('should return empty list on empty versions', function(done) {
+            tmp.file(function tmpFileCreated(err, file) {
+                if (err) done(err); // err is not good
+
+                var firmware = new Firmware(null, file, null);
+                firmware.installedPatches().then(function(patches) {
+                    patches.should.be.an.instanceOf(Array).and.have.lengthOf(0);
+                    done();
+                }).fail(function(error) {
+                    done(error);
+                });
+            });
+        });
+
+        it('should return simple list on simple versions', function(done) {
+            tmp.file(function tmpFileCreated(err, file) {
+                if (err) done(err);
+
+                fs.appendFile(file, 'patch | timestamp ', function (err) {
+                    if (err) done(err);
+
+                    var firmware = new Firmware(null, file, null);
+                    firmware.installedPatches().then(function(patches) {
+                        patches.should.be.an.instanceOf(Array).and.have.lengthOf(1);
+                        patches.should.containEql({name: 'patch', installedOn: 'timestamp'});
+                        done();
+                    }).fail(function(error) {
+                        done(error);
                     });
                 });
             });
