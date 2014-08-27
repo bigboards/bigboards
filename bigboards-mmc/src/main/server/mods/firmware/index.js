@@ -10,6 +10,15 @@ var Firmware = function(patchesDirectory, versionsFile, tasks) {
 };
 
 /**
+ * Apply the requested patch to the firmware
+ *
+ * @returns {*}
+ */
+Firmware.prototype.patch = function(patch) {
+    return this.tasks.invoke('patch', patch);
+};
+
+/**
  * Update the firmware to the latest version.
  *
  * @returns {*}
@@ -57,7 +66,9 @@ Firmware.prototype.patches = function() {
         } catch (ex) {
             return deferred.reject(ex)
         }
-    })
+    }).fail(function(error) {
+        return deferred.reject(error)
+    });
 
     return deferred.promise;
 };

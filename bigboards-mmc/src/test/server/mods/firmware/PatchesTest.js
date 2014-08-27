@@ -176,6 +176,17 @@ describe('firmware', function () {
     });
 
     describe('patches', function() {
+        it('should fail when available patches do not exist', function(done) {
+            tmp.file(function tmpFileCreated(err, file) {
+                var firmware = new Firmware('/some/dummy/directory', file, null);
+
+                firmware.patches().fail(function (error) {
+                    error.should.throw();
+                    done();
+                });
+            });
+        });
+
         it('should return an empty list when no available and no installed patches', function(done) {
             tmp.dir(function tmpDirCreated(err, dir) {
                 if (err) done(err);
