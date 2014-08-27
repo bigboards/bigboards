@@ -92,11 +92,11 @@ app.controller('ApplicationController', function($scope, $location, Firmware) {
             icon: 'fa-tasks',
             path: '/tasks'
         },
-        {
-            label: 'Shell',
-            icon: 'fa-terminal',
-            path: '/shell'
-        },
+//        {
+//            label: 'Shell',
+//            icon: 'fa-terminal',
+//            path: '/shell'
+//        },
         {
             label: 'Update',
             icon: 'fa-refresh',
