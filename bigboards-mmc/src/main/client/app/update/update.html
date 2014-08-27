@@ -1,8 +1,15 @@
 <bb-header>Update</bb-header>
 
 <div class="update">
-    <h3>Patches</h3>
+    <!--<h3>Patches</h3>-->
     <table class="table">
+        <thead>
+        <tr>
+            <td>name</td>
+            <td>installed on</td>
+            <td></td>
+        </tr>
+        </thead>
         <tr ng-repeat="patch in patches">
             <td>{{patch.name}}</td>
             <td>{{patch.installedOn}}</td>
