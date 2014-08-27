@@ -1,18 +1,22 @@
 tasksModule.controller('TaskListController', function($scope, Tasks, socket) {
     $scope.tasks = Tasks.get();
 
-    $scope.task = Tasks.get({id: 'current'});
+    $scope.current = Tasks.get({id: 'current'});
+
+    $scope.hasCurrentTask = function() {
+        return ($scope.current && $scope.current.description);
+    };
 
     socket.on('task:started', function(task) {
-        $scope.task = task;
+        $scope.current = task;
     });
 
     socket.on('task:finished', function(task) {
-        $scope.task = null;
+        $scope.current = null;
     });
 
     socket.on('task:failed', function(task) {
-        $scope.task = null;
+        $scope.current = null;
     });
 });
 
@@ -21,8 +25,6 @@ tasksModule.controller('TaskDetailController', function($scope, Tasks, socket, $
 });
 
 tasksModule.controller('TaskOutputController', function($scope, Tasks, socket, $routeParams) {
-
-
     socket.on('task:started', function(task) {
         $scope.task = task;
         $scope.output = '';

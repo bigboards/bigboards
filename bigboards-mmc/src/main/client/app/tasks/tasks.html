@@ -2,7 +2,13 @@
 
 <div class="tasks">
     <h3>Current Task</h3>
-    <p>There is no task currently running</p>
+    <div ng-if="hasCurrentTask()" class="current-task">
+        <p>I am {{current.description}}</p>
+        <div class="task-actions">
+            <a class="btn btn-default btn-xs" href="#/tasks/{{current.id}}/output">Follow</a>
+        </div>
+    </div>
+    <p ng-if="!hasCurrentTask()">There is no task currently running</p>
 
     <h3>Available Tasks</h3>
     <table class="table">

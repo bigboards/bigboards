@@ -5,6 +5,31 @@
     color: #515151;
 }
 
+.tasks .current-task {
+    position: relative;
+    background-color: white;
+    border-top: solid 1px #dedede;
+    border-bottom: solid 1px #dedede;
+
+    min-height: 40px;
+    width: 100%;
+}
+
+.tasks .current-task p {
+    position: absolute;
+    left: 20px;
+    bottom: 0;
+    top: 0;
+    padding-top: 9px;
+}
+
+.tasks .current-task .task-actions {
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+    top: 0;
+    padding-top: 8px;
+}
 
 .tasks h3:first-child {
     margin-top: 0;
