@@ -1,6 +1,7 @@
 var Q = require('q');
 var fs = require('fs');
-var VersionsLiner = require('./versions_liner')
+var stream = require('stream');
+var readline = require('readline');
 
 var Firmware = function(patchesDirectory, versionsFile, tasks) {
     this.patchesDirectory = patchesDirectory;
@@ -23,13 +24,49 @@ Firmware.prototype.update = function() {
  * @returns [{name: versions.name, installedOn: versions.timestamp}]
  */
 Firmware.prototype.patches = function() {
-    var promises = [];
-    promises.push(availablePatches);
-    promises.push(installedPatches);
+    var deferred = Q.defer();
 
-    return availablePatches.call(this);
+    var promises = [];
+    promises.push(this.availablePatches());
+    promises.push(this.installedPatches());
+
+    Q.all(promises).then(function (results) {
+        var result = [];
+
+        // Copy all installed patches to result
+        var installedPatches = results[1];
+        installedPatches.forEach(function (installedPatch) {
+            result.push(installedPatch);
+        });
+
+        // Next, complement with available versions, not yet installed
+        var availablePatches = results[0];
+        availablePatches.forEach(function (availablePatch) {
+            if (!result.filter(function(element) { return element.name == availablePatch.name; }).length > 0) {
+                result.push(availablePatch);
+            }
+        });
+
+        // Finally, sort the result
+        result.sort(function(a, b) {
+           return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+        });
+
+        try {
+            return deferred.resolve(result);
+        } catch (ex) {
+            return deferred.reject(ex)
+        }
+    })
+
+    return deferred.promise;
 };
 
+/**
+ * List the available firmware patches.
+ *
+ * @returns [{name: versions.name, installedOn: versions.timestamp}]
+ */
 Firmware.prototype.availablePatches = function () {
     var deferred = Q.defer();
 
@@ -52,43 +89,41 @@ Firmware.prototype.availablePatches = function () {
     return deferred.promise;
 };
 
+/**
+ * List the installed firmware patches.
+ *
+ * @returns [{name: versions.name, installedOn: versions.timestamp}]
+ */
 Firmware.prototype.installedPatches = function() {
     var deferred = Q.defer();
     var result = [];
 
     var versionsSource = fs.createReadStream(this.versionsFile);
-    var versionsLiner = new VersionsLiner();
-    versionsSource.pipe(versionsLiner);
-
-    // On data, append as patch
-    versionsLiner.on('readable', function() {
-        var line;
-        while (line = versionsLiner.read()) {
-            result.push(Firmware.lineAsPatch(line));
-
-            try {
-                return deferred.resolve(result);
-            } catch (ex) {
-                return deferred.reject(ex)
-            }
-        }
+    versionsSource.on('error', function(error) {
+        return deferred.reject(error);
     });
 
-    // In case of EOF, return result
-    versionsLiner.on('end', function() {
+    var dummyOutputStream = new stream;
+    dummyOutputStream.readable = true;
+    dummyOutputStream.writable = true;
+
+    var reader = readline.createInterface({
+        input: versionsSource,
+        output: dummyOutputStream,
+        terminal: false
+    });
+
+    reader.on('line', function(line) {
+        result.push(Firmware.lineAsPatch(line));
+    });
+    reader.on('close', function() {
+        reader.close();
+
         try {
             return deferred.resolve(result);
         } catch (ex) {
             return deferred.reject(ex)
         }
-    });
-
-    // In case of error, return to fail
-    versionsSource.on('error', function(error) {
-        return deferred.reject(error);
-    });
-    versionsLiner.on('error', function(error) {
-        return deferred.reject(error);
     });
 
     return deferred.promise;

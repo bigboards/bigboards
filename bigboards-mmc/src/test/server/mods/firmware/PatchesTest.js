@@ -143,23 +143,122 @@ describe('firmware', function () {
             });
         });
 
-        it('should return simple list on simple versions', function(done) {
-            tmp.file(function tmpFileCreated(err, file) {
+        it('should return simple list on our test versions', function(done) {
+            var file = './bigboards-mmc/src/test/server/mods/firmware/versions.tst';
+            var firmware = new Firmware(null, file, null);
+            firmware.installedPatches().then(function(patches) {
+                patches.should.be.an.instanceOf(Array).and.have.lengthOf(1);
+                patches.should.containEql({name: 'zpatch', installedOn: 'timestamp'});
+                done();
+            }).fail(function(error) {
+                done(error);
+            });
+        });
+
+//        it('should return simple list on simple versions', function(done) {
+//            tmp.file(function tmpFileCreated(err, file) {
+//                if (err) done(err);
+//
+//                fs.appendFile(file, 'patch | timestamp ', function (err) {
+//                    if (err) done(err);
+//
+//                    var firmware = new Firmware(null, file, null);
+//                    firmware.installedPatches().then(function(patches) {
+//                        patches.should.be.an.instanceOf(Array).and.have.lengthOf(1);
+//                        patches.should.containEql({name: 'patch', installedOn: 'timestamp'});
+//                        done();
+//                    }).fail(function(error) {
+//                        done(error);
+//                    });
+//                });
+//            });
+//        });
+    });
+
+    describe('patches', function() {
+        it('should return an empty list when no available and no installed patches', function(done) {
+            tmp.dir(function tmpDirCreated(err, dir) {
                 if (err) done(err);
 
-                fs.appendFile(file, 'patch | timestamp ', function (err) {
+                tmp.file(function tmpFileCreated(err, file) {
                     if (err) done(err);
 
-                    var firmware = new Firmware(null, file, null);
-                    firmware.installedPatches().then(function(patches) {
-                        patches.should.be.an.instanceOf(Array).and.have.lengthOf(1);
-                        patches.should.containEql({name: 'patch', installedOn: 'timestamp'});
+                    var firmware = new Firmware(dir, file, null);
+                    firmware.patches().then(function(patches) {
+                        patches.should.be.instanceOf(Array).and.have.lengthOf(0);
                         done();
-                    }).fail(function(error) {
-                        done(error);
+                    }).fail(function(err) {
+                        done(err);
                     });
                 });
             });
         });
+
+        it('should return the installed patches list when no available patches', function(done) {
+            tmp.dir(function tmpDirCreated(err, dir) {
+                if (err) done(err);
+
+                var file = './bigboards-mmc/src/test/server/mods/firmware/versions.tst';
+                var firmware = new Firmware(dir, file, null);
+                firmware.patches().then(function(patches) {
+                    patches.should.be.instanceOf(Array).and.have.lengthOf(1);
+                    patches.should.containEql({name: 'zpatch', installedOn: 'timestamp'});
+                    done();
+                }).fail(function(err) {
+                    done(err);
+                });
+            });
+        });
+
+        it('should return the available patches when no installed patches', function(done) {
+            tmp.dir(function tmpDirCreated(err, dir) {
+                if (err) done(err);
+
+                tmp.file({dir: dir}, function tmpPatchCreated(err, patch) {
+                    if (err) done(err);
+
+                    tmp.file(function tmpFileCreated(err, file) {
+                        if (err) done(err);
+
+                        var firmware = new Firmware(dir, file, null);
+                        firmware.patches().then(function(patches) {
+                            patches.should.be.instanceOf(Array).and.have.lengthOf(1);
+
+                            var patchName = fsUtil.fileName(patch);
+                            patches.should.containEql({name: patchName, installedOn: undefined});
+                            done();
+                        }).fail(function(err) {
+                            done(err);
+                        });
+                    });
+                });
+            });
+        });
+
+        it('should return an the available and installed patches', function(done) {
+            tmp.dir(function tmpDirCreated(err, dir) {
+                if (err) done(err);
+
+                tmp.file({dir: dir}, function tmpPatchCreated(err, patch) {
+                    if (err) done(err);
+
+                    var file = './bigboards-mmc/src/test/server/mods/firmware/versions.tst';
+                    var firmware = new Firmware(dir, file, null);
+                    firmware.patches().then(function(patches) {
+                        patches.should.be.instanceOf(Array).and.have.lengthOf(2);
+
+                        var patchName = fsUtil.fileName(patch);
+
+                        // tmp-... < zpatch
+                        patches[0].should.eql({name: patchName, installedOn: undefined});
+                        patches[1].should.eql({name: 'zpatch', installedOn: 'timestamp'});
+                        done();
+                    }).fail(function(err) {
+                        done(err);
+                    });
+                });
+            });
+        });
+
     });
 });
