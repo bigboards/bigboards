@@ -260,9 +260,9 @@ describe('firmware', function () {
 
                         var patchName = fsUtil.fileName(patch);
 
-                        // tmp-... < zpatch
-                        patches[0].should.eql({name: patchName, installedOn: undefined});
-                        patches[1].should.eql({name: 'zpatch', installedOn: 'timestamp'});
+                        // installed before available
+                        patches[0].should.eql({name: 'zpatch', installedOn: 'timestamp'});
+                        patches[1].should.eql({name: patchName, installedOn: undefined});
                         done();
                     }).fail(function(err) {
                         done(err);
@@ -271,5 +271,23 @@ describe('firmware', function () {
             });
         });
 
+    });
+
+    describe('comparePatches', function() {
+        it('should compare patchs by installedOn then by name', function() {
+            Firmware.comparePatches({name: 'a', installedOn: '1'}, {name: 'b', installedOn: '2'}).should.eql(-1);
+            Firmware.comparePatches({name: 'a', installedOn: '2'}, {name: 'b', installedOn: '1'}).should.eql(1);
+            Firmware.comparePatches({name: 'a', installedOn: '1'}, {name: 'b', installedOn: '1'}).should.eql(-1);
+            Firmware.comparePatches({name: 'b', installedOn: '1'}, {name: 'a', installedOn: '1'}).should.eql(1);
+            Firmware.comparePatches({name: 'a', installedOn: '1'}, {name: 'a', installedOn: '1'}).should.eql(0);
+        });
+
+        it('should compare installed patchs before available patches', function() {
+            Firmware.comparePatches({name: 'a', installedOn: '1'}, {name: 'b', installedOn: undefined}).should.eql(-1);
+            Firmware.comparePatches({name: 'a', installedOn: undefined}, {name: 'b', installedOn: '1'}).should.eql(1);
+            Firmware.comparePatches({name: 'a', installedOn: undefined}, {name: 'b', installedOn: undefined}).should.eql(-1);
+            Firmware.comparePatches({name: 'b', installedOn: undefined}, {name: 'a', installedOn: undefined}).should.eql(1);
+            Firmware.comparePatches({name: 'a', installedOn: undefined}, {name: 'a', installedOn: undefined}).should.eql(0);
+        });
     });
 });

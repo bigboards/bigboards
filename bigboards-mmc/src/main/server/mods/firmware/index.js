@@ -57,9 +57,7 @@ Firmware.prototype.patches = function() {
         });
 
         // Finally, sort the result
-        result.sort(function(a, b) {
-           return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-        });
+        result.sort(Firmware.comparePatches);
 
         try {
             return deferred.resolve(result);
@@ -156,3 +154,26 @@ Firmware.lineAsPatch = function(line) {
 
     return Firmware.asPatch(patchName, installedOn);
 };
+
+/**
+ * Compare patch a and b
+ *
+ * @param a patch to compare
+ * @param b patch to compare with
+ * @returns compare first on installedOn (undefined > defined), then by name
+ */
+Firmware.comparePatches = function(a, b) {
+    if (!a.installedOn && b.installedOn)
+        return 1;
+
+    if (a.installedOn && !b.installedOn)
+        return -1;
+
+    if (a.installedOn < b.installedOn)
+        return -1;
+
+    if (a.installedOn > b.installedOn)
+        return 1;
+
+    return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+}
