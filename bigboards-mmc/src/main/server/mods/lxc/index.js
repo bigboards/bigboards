@@ -8,6 +8,7 @@ module.exports.initializeContainers = function(scope) {
     new Ansible.Playbook()
         .inventory('/opt/bb/hosts')
         .playbook('container-init')
+        .verbose('vvvv')
         .variables({
             tintId: scope.tintId,
             tintUri: scope.tintUri
