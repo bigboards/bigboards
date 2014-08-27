@@ -21,6 +21,19 @@
   tags:
     - container
 
+- name: make sure the ansible facts directory exists
+  file: state=directory path=/var/lib/lxc/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}/rootfs/{{item}}
+  with_items:
+    - etc/ansible
+    - etc/ansible/facts.d
+  tags:
+    - container
+
+- name: make sure the ansible facts are copied over
+  shell: creates=/var/lib/lxc/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}/rootfs/etc/ansible/facts.d/hex.fact cp /etc/ansible/facts.d/hex.fact /var/lib/lxc/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}/rootfs/etc/ansible/facts.d/hex.fact
+  tags:
+    - container
+
 - name: make sure the container is started
   shell: lxc-start -d -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
   tags:
