@@ -7,7 +7,7 @@
 
 - name: make sure the {{ tintId }} container exists
   shell: lxc-clone -o bb-template -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
-  when: "'{{ tintId }}' not in '''{{lxc_list.stdout}}'''"
+  when: "'{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}' not in '''{{lxc_list.stdout}}'''"
   tags:
     - container
 
@@ -17,12 +17,12 @@
     - container
 
 - name: make sure the container is started at boot
-  file: state=link src=/var/lib/lxc/{{tintId}}/config dest=/etc/lxc/auto/{{tintId}}
+  file: state=link src=/var/lib/lxc/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}/config dest=/etc/lxc/auto/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
   tags:
     - container
 
 - name: make sure the container is started
-  shell: lxc-start -d -n {{ tintId }}
+  shell: lxc-start -d -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
   tags:
     - container
 

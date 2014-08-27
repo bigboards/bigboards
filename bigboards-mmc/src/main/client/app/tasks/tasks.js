@@ -1,7 +1,7 @@
 tasksModule.controller('TaskListController', function($scope, Tasks, socket) {
     $scope.tasks = Tasks.get();
 
-    $scope.task = Tasks.get({id: 'current'});
+    $scope.current = Tasks.get({id: 'current'});
 
     socket.on('task:started', function(task) {
         $scope.task = task;
