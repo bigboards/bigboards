@@ -14,7 +14,7 @@
             <td>{{patch.name}}</td>
             <td>{{patch.installedOn}}</td>
             <td>
-                <a ng-if="!patch.installedOn" href="#/patches/{{patch.name}}" class="btn btn-xs btn-default">
+                <a ng-if="!patch.installedOn && ($index == 0 || patches[$index - 1].installedOn)" href="#/patches/{{patch.name}}" class="btn btn-xs btn-default">
                     <i class="fa fa-cloud-download"></i>
                 </a>
             </td>
