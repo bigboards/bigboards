@@ -1,14 +1,14 @@
 127.0.0.1   localhost
 
-172.20.40.1     {{ hex.name }}-n1
-172.20.40.2     {{ hex.name }}-n2
-172.20.40.3     {{ hex.name }}-n3
-172.20.40.4     {{ hex.name }}-n4
-172.20.40.5     {{ hex.name }}-n5
-172.20.40.6     {{ hex.name }}-n6
-172.20.40.7     {{ hex.name }}-v1
-172.20.40.8     {{ hex.name }}-v2
-172.20.40.9     {{ hex.name }}-v3
-172.20.40.10    {{ hex.name }}-v4
-172.20.40.11    {{ hex.name }}-v5
-172.20.40.12    {{ hex.name }}-v6
+172.20.40.1     {{ ansible_local.hex.name }}-n1
+172.20.40.2     {{ ansible_local.hex.name }}-n2
+172.20.40.3     {{ ansible_local.hex.name }}-n3
+172.20.40.4     {{ ansible_local.hex.name }}-n4
+172.20.40.5     {{ ansible_local.hex.name }}-n5
+172.20.40.6     {{ ansible_local.hex.name }}-n6
+172.20.40.7     {{ ansible_local.hex.name }}-v1
+172.20.40.8     {{ ansible_local.hex.name }}-v2
+172.20.40.9     {{ ansible_local.hex.name }}-v3
+172.20.40.10    {{ ansible_local.hex.name }}-v4
+172.20.40.11    {{ ansible_local.hex.name }}-v5
+172.20.40.12    {{ ansible_local.hex.name }}-v6
