@@ -1,7 +1,16 @@
 <bb-header>Update</bb-header>
 
 <div class="update">
-    <div class="output" scroll-glue>
-        <pre>{{output}}</pre>
-    </div>
+    <h3>Patches</h3>
+    <table class="table">
+        <tr ng-repeat="patch in patches">
+            <td>{{patch.name}}</td>
+            <td>{{patch.installedOn}}</td>
+            <td>
+                <a ng-if="!patch.installedOn" href="#/patches/{{patch.name}}" class="btn btn-xs btn-default">
+                    <i class="fa fa-check"></i>
+                </a>
+            </td>
+        </tr>
+    </table>
 </div>

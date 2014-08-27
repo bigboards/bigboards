@@ -1,5 +1,3 @@
-updateModule.controller('UpdateController', function($scope, Library, Firmware, socket) {
-    Firmware.save();
-
-
+updateModule.controller('UpdateController', function($scope, Library, Firmware, Patches, socket) {
+    $scope.patches = Patches.get();
 });
