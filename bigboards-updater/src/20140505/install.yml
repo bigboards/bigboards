@@ -2,6 +2,9 @@
 - hosts: host
   sudo: yes
   tasks:
+    - name: be sure the hosts file holds the nodes and containers
+      template: src=templates/etc/hosts dest=/etc/hosts
+
     - name: be sure the serf configuration file is available
       template: src=templates/etc/serf/serf.conf dest=/etc/serf/serf.conf
       notify: Restart Serf
