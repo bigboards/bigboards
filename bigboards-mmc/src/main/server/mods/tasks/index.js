@@ -16,19 +16,19 @@ TaskManager.prototype.current = function() {
 
 TaskManager.prototype.registerDefaultTasks = function(configuration) {
     // -- dummy
-    this.register(require('./dummy/dummy'));
+    this.register(require('./dummy/dummy')(configuration));
 
     // -- lxc tasks
-    this.register(require('./lxc/lxc_destroy'));
-    this.register(require('./lxc/lxc_restart'));
+    this.register(require('./lxc/lxc_destroy')(configuration));
+    this.register(require('./lxc/lxc_restart')(configuration));
 
     // -- tint tasks
-    this.register(require('./tints/tint_install'));
-    this.register(require('./tints/tint_uninstall'));
+    this.register(require('./tints/tint_install')(configuration));
+    this.register(require('./tints/tint_uninstall')(configuration));
 
     // -- update / patch
-    this.register(require('./patch/update'));
-    this.register(require('./patch/patch_install'));
+    this.register(require('./patch/update')(configuration));
+    this.register(require('./patch/patch_install')(configuration));
 };
 
 /**

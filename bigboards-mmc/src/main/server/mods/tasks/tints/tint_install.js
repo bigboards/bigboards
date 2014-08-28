@@ -3,7 +3,7 @@ var Q = require('q'),
 
 var TaskUtils = require('../../../utils/task-utils');
 
-module.exports = function() {
+module.exports = function(configuration) {
     return {
         code: 'tint_install',
         description: 'installing the tint on the hex',
