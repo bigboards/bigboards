@@ -9,6 +9,31 @@ Node.prototype.name = function() {
     return Q(os.hostname());
 };
 
+Node.prototype.ipAddress = function() {
+    var result = undefined;
+    var interfaces = os.networkInterfaces();
+    if (interfaces) {
+        var itf = interfaces['br0'];
+        if (itf) {
+            itf.forEach(function(address) {
+                if (address.family == 'IPv4' && address.internal == false) {
+                    result = address.address;
+                }
+            });
+        } else {
+            var itf = interfaces['en0'];
+            if (itf) {
+                itf.forEach(function(address) {
+                    if (address.family == 'IPv4' && address.internal == false) {
+                        result = address.address;
+                    }
+                });
+            }
+        }
+    }
+    return Q(result);
+}
+
 Node.prototype.uptime = function() {
     return Q(os.uptime());
 };
