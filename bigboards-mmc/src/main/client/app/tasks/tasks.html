@@ -12,6 +12,14 @@
 
     <h3>Available Tasks</h3>
     <table class="table">
+        <thead>
+            <tr>
+                <th class="col-sm-1">type</th>
+                <th class="col-sm-1">code</th>
+                <th>description</th>
+                <th class="col-sm-1"></th>
+            </tr>
+        </thead>
         <tr ng-repeat="task in tasks">
             <td>{{task.type}}</td>
             <td>{{task.code}}</td>
