@@ -40,22 +40,41 @@ tasksModule.controller('TaskInvocationController', function($scope, Tasks, socke
 });
 
 tasksModule.controller('TaskOutputController', function($scope, Tasks, socket, $routeParams) {
+    $scope.output = '';
+
     socket.on('task:started', function(task) {
         $scope.task = task;
-        $scope.output = '';
-        $scope.message = "I'm " + task.description;
-
         $scope.state = 'running';
+
+        $scope.output += 'We have started the following task:\n';
+        $scope.output += '\tcode: ' + task.code + '\n';
+        $scope.output += '\tdescription: ' + task.description + '\n';
+        $scope.output += '--------------------------------------------------------------------------------\n';
+        $scope.output += '\n\n';
+
     });
 
     socket.on('task:finished', function(task) {
         $scope.state = 'finished';
-        $scope.message = "Hooray!";
+
+        $scope.output += '\n\n\n';
+        $scope.output += '--------------------------------------------------------------------------------\n';
+        $scope.output += 'Hooray!\n';
+        $scope.output += 'We have successfully finished our task:\n';
+        $scope.output += '\tcode: ' + task.code + '\n';
+        $scope.output += '\tdescription: ' + task.description + '\n';
     });
 
     socket.on('task:failed', function(task) {
         $scope.state = 'failed';
         $scope.message = "Whoops!";
+
+        $scope.output += '\n\n\n';
+        $scope.output += '--------------------------------------------------------------------------------\n';
+        $scope.output += 'Whoops!\n';
+        $scope.output += 'We have FAILED to execute our task:\n';
+        $scope.output += '\tcode: ' + task.code + '\n';
+        $scope.output += '\tdescription: ' + task.description + '\n';
     });
 
     socket.on('task:busy', function(progress) {

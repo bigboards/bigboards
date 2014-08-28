@@ -8,26 +8,26 @@ module.exports = function(configuration) {
         type: 'ansible',
         parameters: [
             {
-                key: 'duration',
-                description: 'The duration of the dummy task',
-                required: false
-            },
-            {
-                key: 'error',
-                description: 'The error message to display. If the error message is not specified, the task will succeed',
+                key: 'loops',
+                description: 'The number of 1 sec loops',
                 required: false
             }
         ],
         execute: function (scope) {
-            var duration = scope.duration ? scope.duration : 5000;
-            var error = scope.error;
+            var loops = scope.loops ? parseInt(scope.loops) : 10;
 
             var deferrer = Q.defer();
 
-            setTimeout(function () {
-                if (error) deferrer.reject(error);
-                else deferrer.resolve();
-            }, duration);
+            var counter = loops;
+            var intervalHandle = setInterval(function() {
+                if (counter == 0) {
+                    clearInterval(intervalHandle);
+                    deferrer.resolve();
+                } else {
+                    deferrer.notify({data: 'Dummy task tick\n'});
+                    counter--;
+                }
+            }, 1000);
 
             return deferrer.promise;
         }
