@@ -3,15 +3,15 @@
   shell: lxc-ls
   register: lxc_list
 
-- name: get the status of the {{ tint_id }} container
-  shell: lxc-info -s --name {{ tint_id }}
+- name: get the status of the {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }} container
+  shell: lxc-info -s --name {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
   register: tint_status
 
 - name: make sure the container is stopped
-  shell: lxc-stop -n {{ tint_id }}
-  when: "'{{tint_id}}' in '''{{lxc_list.stdout}}'''"
+  shell: lxc-stop -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
+  when: "'{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}' in '''{{lxc_list.stdout}}'''"
 
 - name: make sure the container is destroyed
-  shell: lxc-destroy -n {{ tint_id }}
-  when: "'{{tint_id}}' in '''{{lxc_list.stdout}}'''"
+  shell: lxc-destroy -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
+  when: "'{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}' in '''{{lxc_list.stdout}}'''"
 
