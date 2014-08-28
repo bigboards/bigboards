@@ -6,6 +6,7 @@
             <th></th>
             <th>role</th>
             <th>name</th>
+            <th>address</th>
             <th>status</th>
             <th class="metric-column">°C</th>
             <th class="metric-column">load</th>
@@ -19,6 +20,7 @@
         <td>{{$index + 1}}</td>
         <td>{{node.tags.role}}</td>
         <td>{{node.name}}</td>
+        <td>{{getMetric(node, 'ipAddress')}}</td>
         <td>{{node.status}}</td>
         <td>{{getMetric(node, 'temperature')}}°C</td>
         <td>{{getMetric(node, 'load') | loadMetric | number : 2}}</td>

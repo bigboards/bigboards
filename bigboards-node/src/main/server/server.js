@@ -36,6 +36,7 @@ var configuration = new Configuration(serverConfig.hex.file);
 var nodeService = new NodeService();
 
 var postman = new Postman(nodeService, os.hostname(), serfer, serverConfig.delay, [
+    {metric: 'ipAddress', fn: function(nodeService) { return nodeService.ipAddress(); }},
     {metric: 'load', fn: function(nodeService) { return nodeService.load(); }},
     {metric: 'memory', fn: function(nodeService) { return nodeService.memory(); }},
     {metric: 'temperature', fn: function(nodeService) { return nodeService.temperature(); }},
