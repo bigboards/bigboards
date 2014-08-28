@@ -5,7 +5,7 @@
     <div ng-if="hasCurrentTask()" class="current-task">
         <p>I am {{current.description}}</p>
         <div class="task-actions">
-            <a class="btn btn-default btn-xs" href="#/tasks/{{current.id}}/output">Follow</a>
+            <a class="btn btn-default btn-xs" href="#/tasks/{{current.code}}/output">Follow</a>
         </div>
     </div>
     <p ng-if="!hasCurrentTask()">There is no task currently running</p>
