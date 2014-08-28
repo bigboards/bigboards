@@ -121,12 +121,7 @@ function createServices(config) {
     //winston.log('info', 'Create the Health Service');
 
     // -- add tasks to the task manager
-    services.tasks.register(require('./mods/tasks/update.js'));
-    services.tasks.register(require('./mods/tasks/install_patch.js')( configuration ));
-    services.tasks.register(require('./mods/tasks/install_tint.js')( configuration ));
-    services.tasks.register(require('./mods/tasks/uninstall_tint.js')( configuration ));
-    services.tasks.register(require('./mods/tasks/restart_containers.js'));
-    services.tasks.register(require('./mods/tasks/dummy.js'));
+    services.tasks.registerDefaultTasks(configuration);
 
     /**********************************************************************************************************************
      * Routes

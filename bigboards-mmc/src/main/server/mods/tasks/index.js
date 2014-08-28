@@ -1,6 +1,5 @@
 var util = require("util"),
     EventEmitter = require('events').EventEmitter,
-    uuid = require('node-uuid'),
     winston = require('winston'),
     Q = require('q');
 
@@ -13,6 +12,23 @@ util.inherits(TaskManager, EventEmitter);
 
 TaskManager.prototype.current = function() {
     return this.currentTask;
+};
+
+TaskManager.prototype.registerDefaultTasks = function(configuration) {
+    // -- dummy
+    this.register(require('./dummy/dummy'));
+
+    // -- lxc tasks
+    this.register(require('./lxc/lxc_destroy'));
+    this.register(require('./lxc/lxc_restart'));
+
+    // -- tint tasks
+    this.register(require('./tints/tint_install'));
+    this.register(require('./tints/tint_uninstall'));
+
+    // -- update / patch
+    this.register(require('./patch/update'));
+    this.register(require('./patch/patch_install'));
 };
 
 /**

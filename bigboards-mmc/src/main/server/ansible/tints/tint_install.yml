@@ -1,0 +1,73 @@
+---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: get the list of containers
+      shell: lxc-ls
+      register: lxc_list
+      tags:
+        - container
+
+    - name: make sure the {{ tintId }} container exists
+      shell: lxc-clone -o bb-template -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
+      when: "'{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}' not in '''{{lxc_list.stdout}}'''"
+      tags:
+        - container
+
+    - name: make sure the lxc autostart directory is available
+      file: state=directory path=/etc/lxc/auto
+      tags:
+        - container
+
+    - name: make sure the container is started at boot
+      file: state=link src=/var/lib/lxc/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}/config dest=/etc/lxc/auto/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
+      tags:
+        - container
+
+    - name: make sure the ansible facts directory exists
+      file: state=directory path=/var/lib/lxc/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}/rootfs/{{item}}
+      with_items:
+        - etc/ansible
+        - etc/ansible/facts.d
+      tags:
+        - container
+
+    - name: make sure the hosts file is copied over
+      shell: cp /etc/hosts /var/lib/lxc/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}/rootfs/etc/hosts
+      tags:
+        - container
+
+    - name: make sure the ansible facts are copied over
+      shell: creates=/var/lib/lxc/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}/rootfs/etc/ansible/facts.d/hex.fact cp /etc/ansible/facts.d/hex.fact /var/lib/lxc/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}/rootfs/etc/ansible/facts.d/hex.fact
+      tags:
+        - container
+
+    - name: make sure the container is started
+      shell: lxc-start -d -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
+      tags:
+        - container
+
+    - debug: msg="Waiting for virtual node {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }} to become available."
+
+    - name: wait for the container to be started
+      wait_for: host={{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }} port=22
+
+- hosts: lxc
+  sudo: yes
+  gather_facts: no
+  tasks:
+    - name: make sure the ansible prerequisites are installed
+      script: ansible-prereqs.sh creates=/root/.ansible_prereqs_installed
+      register: ans_preq
+      changed_when: "'CHANGE' in ans_preq.stdout"
+      tags:
+        - container
+
+- hosts: host-coordinators
+  sudo: yes
+  tasks:
+    - name: be sure the tint directory exists
+      file: state=directory path=/opt/bb/tints.d/{{tintType}}
+
+    - name: be sure the tint sources are available
+      git: repo={{tintUri}} dest=/opt/bb/tints.d/{{tintType}}/{{tintId}}

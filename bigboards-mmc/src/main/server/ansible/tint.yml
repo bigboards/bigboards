@@ -1,8 +1,0 @@
----
-- hosts: lxc
-  sudo: yes
-  roles:
-    - {role: tint_install, when: "action == 'install'" }
-    - {role: tint_uninstall, when: "action == 'uninstall'" }
-    - {role: tint_start, when: "action == 'start' || action == 'restart'" }
-    - {role: tint_stop, when: "action == 'stop' || action == 'restart'" }
