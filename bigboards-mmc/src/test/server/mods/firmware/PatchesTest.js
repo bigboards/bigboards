@@ -26,7 +26,7 @@ describe('firmware', function () {
         });
     });
 
-    describe('patches', function () {
+    describe('availablePatches', function () {
 
         it('should error on non-existing folder', function (done) {
             var firmware = new Firmware('/some/dummy/directory', null, null);
@@ -51,7 +51,7 @@ describe('firmware', function () {
             });
         });
 
-        it('should return a one-element list on a simple folder', function (done) {
+        it('should return a empty list for files', function (done) {
             tmp.dir(function tempDirCreated(err, dir) {
                 if (err) done(err);
 
@@ -60,10 +60,28 @@ describe('firmware', function () {
 
                     var firmware = new Firmware(dir, null, null);
                     firmware.availablePatches().then(function (patches) {
+                        patches.should.be.an.instanceOf(Array).and.have.lengthOf(0);
+                        done();
+                    }).fail(function (error) {
+                        done(error);
+                    });
+                });
+            });
+        });
+
+        it('should return a one-element list on a simple folder', function (done) {
+            tmp.dir(function tempDirCreated(err, dir) {
+                if (err) done(err);
+
+                tmp.dir({dir: dir}, function tmpFileCreated(err, patch) {
+                    if (err) done(err);
+
+                    var firmware = new Firmware(dir, null, null);
+                    firmware.availablePatches().then(function (patches) {
                         patches.should.be.an.instanceOf(Array).and.have.lengthOf(1);
 
-                        var fileName = fsUtil.fileName(file);
-                        patches.should.containEql({name: fileName, installedOn: undefined});
+                        var patchName = fsUtil.fileName(patch);
+                        patches.should.containEql({name: patchName, installedOn: undefined});
                         done();
                     }).fail(function (error) {
                         done(error);
@@ -76,19 +94,19 @@ describe('firmware', function () {
             tmp.dir(function tempDirCreated(err, dir) {
                 if (err) done(err);
 
-                tmp.file({dir: dir}, function tmpFileCreated(err, file) {
+                tmp.dir({dir: dir}, function tmpFileCreated(err, patch) {
 
-                    tmp.file({dir: dir}, function tmpFileCreated(err, fileTwo) {
+                    tmp.dir({dir: dir}, function tmpFileCreated(err, patchTwo) {
                         if (err) done(err);
 
                         var firmware = new Firmware(dir, null, null);
                         firmware.availablePatches().then(function (patches) {
                             patches.should.be.an.instanceOf(Array).and.have.lengthOf(2);
 
-                            var fileName = fsUtil.fileName(file);
-                            var fileTwoName = fsUtil.fileName(fileTwo);
-                            patches.should.containEql({name: fileName, installedOn: undefined});
-                            patches.should.containEql({name: fileTwoName, installedOn: undefined});
+                            var patchName = fsUtil.fileName(patch);
+                            var patchTwoName = fsUtil.fileName(patchTwo);
+                            patches.should.containEql({name: patchName, installedOn: undefined});
+                            patches.should.containEql({name: patchTwoName, installedOn: undefined});
                             done();
                         }).fail(function (error) {
                             done(error);
@@ -225,7 +243,7 @@ describe('firmware', function () {
             tmp.dir(function tmpDirCreated(err, dir) {
                 if (err) done(err);
 
-                tmp.file({dir: dir}, function tmpPatchCreated(err, patch) {
+                tmp.dir({dir: dir}, function tmpPatchCreated(err, patch) {
                     if (err) done(err);
 
                     tmp.file(function tmpFileCreated(err, file) {
@@ -250,7 +268,7 @@ describe('firmware', function () {
             tmp.dir(function tmpDirCreated(err, dir) {
                 if (err) done(err);
 
-                tmp.file({dir: dir}, function tmpPatchCreated(err, patch) {
+                tmp.dir({dir: dir}, function tmpPatchCreated(err, patch) {
                     if (err) done(err);
 
                     var file = './bigboards-mmc/src/test/server/mods/firmware/versions.tst';

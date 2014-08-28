@@ -2,6 +2,7 @@ var Q = require('q');
 var fs = require('fs');
 var stream = require('stream');
 var readline = require('readline');
+var string_utils = require('../../utils/string-utils')
 
 var Firmware = function(patchesDirectory, versionsFile, tasks) {
     this.patchesDirectory = patchesDirectory;
@@ -85,7 +86,10 @@ Firmware.prototype.availablePatches = function () {
 
         var result = [];
         data.forEach(function (fileName) {
-            result.push(Firmware.asPatch(fileName, undefined));
+            var fullFileName = string_utils.endsWith(dir, "/") ? dir + fileName : dir + "/" + fileName;
+            if (fs.lstatSync(fullFileName).isDirectory()) {
+                result.push(Firmware.asPatch(fileName, undefined));
+            }
         })
 
         try {
