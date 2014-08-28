@@ -60,54 +60,64 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
 
     var deferred = Q.defer();
 
-    if (!taskCode) deferred.reject(new Error('Invalid task code'));
+    if (!taskCode) {
+        deferred.reject(new Error('Invalid task code'));
+    } else {
+        var task = this.tasks[taskCode];
+        if (!task) {
+            deferred.reject(new Error('Invalid task code'));
+        }
+        else {
+            if (task.running) {
+                deferred.reject(new Error('the task with code ' + taskCode + ' is already being invoked'));
+                return;
+            }
+            else {
+                this.tasks[taskCode].running = true;
+                this.currentTask = this.tasks[taskCode];
 
-    var task = this.tasks[taskCode];
-    if (!this.tasks[taskCode]) deferred.reject(new Error('Invalid task code'));
+                var executionScope = {};
+                task.parameters.forEach(function (parameter) {
+                    if ((!parameters) || (parameter.required && !parameters[parameter.key])) {
+                        deferred.reject(new Error('Executing ' + taskCode + ' requires parameter ' + parameter.key + ' but it has not been provided'));
+                        return;
+                    }
 
-    if (task.running)
-        deferred.reject(new Error('the task with code ' + taskCode + ' is already being invoked'));
+                    executionScope[parameter.key] = parameters[parameter.key];
+                });
 
-    this.tasks[taskCode].running = true;
-    this.currentTask = this.tasks[taskCode];
+                // -- invoke the task
+                winston.log('info', 'invoking task "%s": %s', taskCode, task.description);
+                eventEmitter.emit('task:started', task);
+                try {
+                    task.execute(executionScope).then(function () {
+                        eventEmitter.emit('task:finished', { code: taskCode });
+                        deferred.resolve();
 
-    var executionScope = {};
-    task.parameters.forEach(function(parameter) {
-        if ((!parameters) || (parameter.required && !parameters[parameter.key]))
-            deferred.reject(new Error('Executing ' + taskCode + ' requires parameter ' + parameter.key + ' but it has not been provided'));
+                        self.tasks[taskCode].running = false;
+                        self.currentTask = null;
 
-        executionScope[parameter.key] = parameters[parameter.key];
-    });
+                    }, function (error) {
+                        winston.log('warn', 'Task invocation resulted in an error: ' + error);
+                        winston.log('warn', error.stack);
 
-    // -- invoke the task
-    winston.log('info', 'invoking task "%s": %s', taskCode, task.description);
-    eventEmitter.emit('task:started', task);
-    try {
-        task.execute(executionScope).then(function() {
-            eventEmitter.emit('task:finished', { code: taskCode });
-            deferred.resolve();
+                        self.tasks[taskCode].running = false;
+                        self.currentTask = null;
 
-            self.tasks[taskCode].running = false;
-            self.currentTask = null;
-
-        }, function(error) {
-            winston.log('warn', 'Task invocation resulted in an error: ' + error);
-            winston.log('warn', error.stack);
-
-            self.tasks[taskCode].running = false;
-            self.currentTask = null;
-
-            deferred.reject(error);
-            eventEmitter.emit('task:failed', { code: taskCode, error: error });
-        }, function(progress) {
-            deferred.notify(progress);
-            eventEmitter.emit('task:busy', { code: taskCode, data: progress });
-        });
-    } catch (err) {
-        deferred.reject(err);
-        winston.log('warn', 'Unable to invoke a task: ' + err);
-        winston.log('warn', err.stack);
-        eventEmitter.emit('task:failed', { code: taskCode, error: err });
+                        deferred.reject(error);
+                        eventEmitter.emit('task:failed', { code: taskCode, error: error });
+                    }, function (progress) {
+                        deferred.notify(progress);
+                        eventEmitter.emit('task:busy', { code: taskCode, data: progress });
+                    });
+                } catch (err) {
+                    deferred.reject(err);
+                    winston.log('warn', 'Unable to invoke a task: ' + err);
+                    winston.log('warn', err.stack);
+                    eventEmitter.emit('task:failed', { code: taskCode, error: err });
+                }
+            }
+        }
     }
 
     return deferred.promise;
