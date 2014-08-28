@@ -1,6 +1,5 @@
 var util = require("util"),
     EventEmitter = require('events').EventEmitter,
-    uuid = require('node-uuid'),
     winston = require('winston'),
     Q = require('q');
 
@@ -13,6 +12,27 @@ util.inherits(TaskManager, EventEmitter);
 
 TaskManager.prototype.current = function() {
     return this.currentTask;
+};
+
+TaskManager.prototype.get = function(code) {
+    return this.tasks[code];
+};
+
+TaskManager.prototype.registerDefaultTasks = function(configuration) {
+    // -- dummy
+    this.register(require('./dummy/dummy')(configuration));
+
+    // -- lxc tasks
+    this.register(require('./lxc/lxc_destroy')(configuration));
+    this.register(require('./lxc/lxc_restart')(configuration));
+
+    // -- tint tasks
+    this.register(require('./tints/tint_install')(configuration));
+    this.register(require('./tints/tint_uninstall')(configuration));
+
+    // -- update / patch
+    this.register(require('./patch/update')(configuration));
+    this.register(require('./patch/patch_install')(configuration));
 };
 
 /**
@@ -76,15 +96,22 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
                 this.tasks[taskCode].running = true;
                 this.currentTask = this.tasks[taskCode];
 
+                // -- set an empty list for the parameters
+                if (! parameters) parameters = {};
+
                 var executionScope = {};
+                var parameterError = null;
                 task.parameters.forEach(function (parameter) {
-                    if ((!parameters) || (parameter.required && !parameters[parameter.key])) {
-                        deferred.reject(new Error('Executing ' + taskCode + ' requires parameter ' + parameter.key + ' but it has not been provided'));
+                    if (parameter.required && !parameters[parameter.key]) {
+                        parameterError = new Error('Executing ' + taskCode + ' requires parameter ' + parameter.key + ' but it has not been provided');
                         return;
                     }
 
                     executionScope[parameter.key] = parameters[parameter.key];
                 });
+
+                if (parameterError)
+                    return deferred.reject(parameterError);
 
                 // -- invoke the task
                 winston.log('info', 'invoking task "%s": %s', taskCode, task.description);

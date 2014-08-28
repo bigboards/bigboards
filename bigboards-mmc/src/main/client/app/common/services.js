@@ -7,7 +7,9 @@ app.service ('Identity', function($resource) {
 });
 
 app.service('Tasks', function($resource) {
-    return $resource('/api/v1/tasks/:id', {id: '@id'});
+    return $resource('/api/v1/tasks/:id', {id: '@id'}, {
+        'invoke': { method: 'POST', isArray: false}
+    });
 });
 
 app.service('Nodes', function($resource) {

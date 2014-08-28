@@ -24,6 +24,21 @@ tasksModule.controller('TaskDetailController', function($scope, Tasks, socket, $
     $scope.task = Tasks.get({id: $routeParams.id});
 });
 
+tasksModule.controller('TaskInvocationController', function($scope, Tasks, socket, $routeParams, $location) {
+    $scope.task = Tasks.get({id: $routeParams.id});
+    $scope.invokeParams = {};
+
+    $scope.invokeTask = function() {
+        Tasks.invoke(
+            {'id': $routeParams.id},
+            $scope.invokeParams,
+            function(value, responseHeaders) {
+                $location.path('/tasks/' + $routeParams + '/output');
+            }
+        );
+    };
+});
+
 tasksModule.controller('TaskOutputController', function($scope, Tasks, socket, $routeParams) {
     socket.on('task:started', function(task) {
         $scope.task = task;
