@@ -35,7 +35,7 @@ TintsAPI.prototype.list = function(req, res) {
  */
 TintsAPI.prototype.get = function(req, res) {
     // -- get the tint parameters
-    var tintId = req.params['id'];
+    var tintId = req.params['tintId'];
     if (! tintId) return res.send(400, "No Tint ID has been provided");
 
     var tintType = req.params['type'];
@@ -58,7 +58,7 @@ TintsAPI.prototype.getConfiguration = function(req, res) {
     var type = req.params['type'];
     if (! type) return res.send(400, "No type has been provided");
 
-    var tintId = req.params['tint'];
+    var tintId = req.params['tintId'];
     if (! tintId) return res.send(400, "No Tint ID has been provided");
 
     return this.tints
@@ -79,7 +79,7 @@ TintsAPI.prototype.configure = function(req, res) {
     var type = req.params['type'];
     if (! type) return res.send(400, "No type has been provided");
 
-    var tintId = req.params['id'];
+    var tintId = req.params['tintId'];
     if (! tintId) return res.send(400, "No Tint ID has been provided");
 
     return this.tints
@@ -100,7 +100,7 @@ TintsAPI.prototype.install = function(req, res) {
     var type = req.params['type'];
     if (! type) return res.send(400, "No type has been provided");
 
-    var tintId = req.params['id'];
+    var tintId = req.params['tintId'];
     if (! tintId) return res.send(400, "No Tint ID has been provided");
 
     var self = this;
@@ -131,7 +131,7 @@ TintsAPI.prototype.update = function(req, res) {
     var type = req.params['type'];
     if (! type) return res.send(400, "No type has been provided");
 
-    var tintId = req.params['id'];
+    var tintId = req.params['tintId'];
     if (! tintId) return res.send(400, "No Tint ID has been provided");
 
     var self = this;
@@ -161,7 +161,7 @@ TintsAPI.prototype.uninstall = function(req, res) {
     var type = req.params['type'];
     if (! type) return res.send(400, "No type has been provided");
 
-    var tintId = req.params['id'];
+    var tintId = req.params['tintId'];
     if (! tintId) return res.send(400, "No Tint ID has been provided");
 
     var self = this;

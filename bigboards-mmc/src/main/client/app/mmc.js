@@ -48,6 +48,11 @@ app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider, sna
             templateUrl: 'app/tasks/detail.html',
             controller: 'TaskDetailController'
         })
+        .when('/tasks/:id/invoke', {
+            title: 'Tasks',
+            templateUrl: 'app/tasks/invoke.html',
+            controller: 'TaskInvocationController'
+        })
 
         .when('/update', {
             title: 'Update',

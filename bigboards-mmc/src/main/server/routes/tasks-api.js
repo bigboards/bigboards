@@ -1,29 +1,30 @@
-function TasksAPI(tasks) {
-    this.tasks = tasks;
+function TasksAPI(taskService) {
+    this.taskService = taskService;
 }
 
 TasksAPI.prototype.list = function(req, res) {
-    var id = req.param('id');
-    if (id) {
-        if (id == 'current') res.send(200, this.tasks.current());
-        else res.send(200, this.tasks.tasks[id]);
-    } else {
-        res.send(200, this.tasks.tasks);
-    }
+    res.send(200, this.taskService.tasks);
 };
 
 TasksAPI.prototype.get = function(req, res) {
-    var currentTask = this.tasks.current();
-    if (currentTask == null) res.send(404, 'No task is currently running');
-    else res.send(200, currentTask);
+    var id = req.param('id');
+
+    var result = (id == 'current') ? this.taskService.current() : this.taskService.get(id);
+
+    if (!result) res.send(404, 'No task found with id ' + id);
+    else res.send(200, result);
 };
 
 TasksAPI.prototype.invoke = function(req, res) {
     var id = req.param('id');
     if (!id) return res.send(400, 'no task id has been provided');
 
+    // TODO: add logic for not running more then one task
+
     var parameters = req.body.data;
-    this.tasks.invoke(id, parameters);
+    this.taskService.invoke(id, parameters);
+
+    res.send(200, 'The task with id ' + id + ' has been invoked');
 };
 
 TasksAPI.prototype.history = function(req, res) {

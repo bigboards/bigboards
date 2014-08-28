@@ -1,0 +1,19 @@
+<bb-header>Tasks :: Invoke</bb-header>
+
+<div class="tasks">
+    <p>{{task.description}}</p>
+
+    <div class="task-parameters">
+        <div class="task-parameter" ng-repeat="parameter in task.parameters">
+            <div class="task-parameter-label">
+                <span class="key">{{parameter.key}}</span>
+                <span class="description">{{parameter.description}}</span>
+            </div>
+            <div class="">
+                <input type="text" ng-model="invokeParams[parameter.key]">
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-info" ng-click="invokeTask()">Launch!</button>
+</div>
