@@ -5,15 +5,22 @@ var Ansible = require('../ansible/index.js'),
 module.exports.initializeContainers = function(scope) {
     var deferred = Q.defer();
 
-    new Ansible.Playbook()
+    var verbose = false;
+    if (scope.verbose) {
+        verbose = (scope.verbose == 'yes') || (scope.verbose == 'true');
+    }
+
+    var pb = new Ansible.Playbook()
         .inventory('/opt/bb/hosts')
         .playbook('container-init')
-        .verbose('vvvv')
         .variables({
             tintId: scope.tintId,
             tintUri: scope.tintUri
-        })
-        .exec({cwd: '/opt/bb/runtimes/bigboards-mmc/server/ansible'})
+        });
+
+    if (verbose) pb.verbose('vvvv');
+
+    pb.exec({cwd: '/opt/bb/runtimes/bigboards-mmc/server/ansible'})
         .then(function(result) {
             if (result.code != 0) deferred.reject(new Error(result.code));
             else deferred.resolve();

@@ -34,6 +34,11 @@ module.exports = function(configuration) {
                 key: 'password',
                 description: 'The password of the user having access to the tint',
                 required: false
+            },
+            {
+                key: 'verbose',
+                description: 'Used to print additional debug information',
+                required: false
             }
         ],
         execute: function(scope) {
@@ -42,6 +47,11 @@ module.exports = function(configuration) {
             // -- replace the username and password in the tint uri
             scope.tintUri = scope.tintUri.replace(/%username%/g, scope.username);
             scope.tintUri = scope.tintUri.replace(/%password%/g, scope.password);
+
+            var verbose = false;
+            if (scope.verbose) {
+                verbose = (scope.verbose == 'yes') || (scope.verbose == 'true');
+            }
 
             var flow = [];
 
@@ -60,12 +70,14 @@ module.exports = function(configuration) {
             }
 
             flow.push(function(callback) {
-                new Ansible.Playbook()
+                var pb = new Ansible.Playbook()
                     .inventory('/opt/bb/hosts')
                     .playbook('install')
-                    .variables(scope)
-                    .verbose('vvvv')
-                    .exec({cwd: '/opt/bb/tints.d/' + scope.tintId})
+                    .variables(scope);
+
+                if (verbose) pb.verbose('vvvv');
+
+                pb.exec({cwd: '/opt/bb/tints.d/' + scope.tintId})
                     .then(function(result) {
                         if (result.code != 0) callback(new Error(result.code));
                         else callback();
