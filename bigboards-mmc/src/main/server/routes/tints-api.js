@@ -34,12 +34,15 @@ TintsAPI.prototype.list = function(req, res) {
  * @param res
  */
 TintsAPI.prototype.get = function(req, res) {
-    // -- get the tint id parameter
+    // -- get the tint parameters
     var tintId = req.params['id'];
     if (! tintId) return res.send(400, "No Tint ID has been provided");
 
+    var tintType = req.params['type'];
+    if (! tintType) return res.send(400, "No Tint type has been provided");
+
     return this.tints
-        .get(tintId)
+        .get(tintType, tintId)
         .then(function(tint) { res.send(200, tint); })
         .fail(function(error) { ApiUtils.handleError(res, error); });
 };
