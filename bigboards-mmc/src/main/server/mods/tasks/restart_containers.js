@@ -11,6 +11,7 @@ module.exports = {
             .hosts('lxc')
             .module('shell')
             .asSudo()
-            .args('reboot ');
+            .args('reboot ')
+            .exec();
     }
 };
