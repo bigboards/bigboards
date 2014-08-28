@@ -51,7 +51,7 @@
       notify: Restart BigBoards Management Console
 
     - name: be sure the ansible hex facts are writable by the mmc
-      file: path=/etc/ansible/facts.d/hex.fact state=file mode=774
+      file: path=/etc/ansible/facts.d/hex.fact state=file mode=664
   handlers:
     - name: Restart BigBoards Management Console
       service: state=restarted name=bigboards-mmc
