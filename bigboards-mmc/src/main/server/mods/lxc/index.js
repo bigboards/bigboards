@@ -15,6 +15,7 @@ module.exports.initializeContainers = function(scope) {
         .playbook('container-init')
         .variables({
             tintId: scope.tintId,
+            tintType: scope.tintType,
             tintUri: scope.tintUri
         });
 
@@ -33,38 +34,26 @@ module.exports.initializeContainers = function(scope) {
     return deferred.promise;
 };
 
-module.exports.destroyContainers = function(scope) {
+module.exports.destroyContainer = function(scope) {
     var deferred = Q.defer();
 
-    new Ansible.AdHoc()
+    var verbose = false;
+    if (scope.verbose) {
+        verbose = (scope.verbose == 'yes') || (scope.verbose == 'true');
+    }
+
+    var pb = new Ansible.Playbook()
         .inventory('/opt/bb/hosts')
-        .hosts('host')
-        .module('shell')
-        .asSudo()
-        .args('lxc-destroy -n ' + scope.tintId)
-        .exec({cwd: '/opt/bb/tints.d/'})
-        .then(function(result) {
-            if (result.code != 0) deferred.reject(new Error(result.code));
-            else deferred.resolve();
-        }, function(error) {
-            deferred.reject(error);
-        }, function(progress) {
-            deferred.notify(progress);
+        .playbook('container-destroy')
+        .variables({
+            tintId: scope.tintId,
+            tintType: scope.tintType,
+            tintUri: scope.tintUri
         });
 
-    return deferred.promise;
-};
+    if (verbose) pb.verbose('vvvv');
 
-module.exports.stopContainers = function(scope) {
-    var deferred = Q.defer();
-
-    new Ansible.AdHoc()
-        .inventory('/opt/bb/hosts')
-        .hosts('host')
-        .module('shell')
-        .asSudo()
-        .args('lxc-stop -n ' + scope.tintId)
-        .exec({cwd: '/opt/bb/tints.d/'})
+    pb.exec({cwd: '/opt/bb/runtimes/bigboards-mmc/server/ansible'})
         .then(function(result) {
             if (result.code != 0) deferred.reject(new Error(result.code));
             else deferred.resolve();

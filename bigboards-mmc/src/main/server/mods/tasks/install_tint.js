@@ -77,7 +77,7 @@ module.exports = function(configuration) {
 
                 if (verbose) pb.verbose('vvvv');
 
-                pb.exec({cwd: '/opt/bb/tints.d/' + scope.tintId})
+                pb.exec({cwd: '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId})
                     .then(function(result) {
                         if (result.code != 0) callback(new Error(result.code));
                         else callback();
@@ -96,28 +96,8 @@ module.exports = function(configuration) {
                         winston.log('warn', 'it seems an error has occurred: ' + error);
                         deferred.reject(error);
                     } else {
-                        winston.log('info', 'updating the configuration of the hex with the new tint');
-                        // -- load the hex information
-                        configuration.load().then(function(data) {
-                            winston.log('info', 'configuration loaded');
-
-                            winston.log('info', 'updated the ' + scope.tintType + ' tint to ' + scope.tintId);
-                            if (! data.tints) data.tints = {};
-                            if (! data.tints[scope.tintType]) data.tints[scope.tintType] = [];
-                            data.tints[scope.tintType].push(scope.tintId);
-
-                            configuration.save(data).then(function(data) {
-                                winston.log('info', 'Hex configuration saved!');
-                                deferred.resolve();
-                            }).fail(function(error) {
-                                winston.log('info', 'Unable to save the hex configuration: ', error);
-                                deferred.reject(error);
-                            });
-
-                        }, function(error) {
-                            winston.log('error', 'installation resolved with error ' + error);
-                            deferred.reject(error);
-                        });
+                        winston.log('info', 'installed the ' + scope.tintId + ' tint');
+                        deferred.resolve();
                     }
                 } catch (error) {
                     deferred.reject(error);
@@ -128,10 +108,6 @@ module.exports = function(configuration) {
         }
     };
 };
-
-function initializeContainer(callback) {
-
-}
 
 function parseAnsibleOutput(buffer, ansibleOutput) {
     var lines = ansibleOutput.split('\n');

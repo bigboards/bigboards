@@ -12,7 +12,7 @@
             <th class="metric-column">mem</th>
             <th class="metric-column">os</th>
             <th class="metric-column">data</th>
-            <th></td>
+            <th></th>
         </tr>
     </thead>
     <tr ng-repeat="node in nodes">
@@ -45,13 +45,13 @@
         </div>
 
         <div class="tint-actions">
-            <div class="tint-action">
-                <span class="fa fa-cogs"></span>
-            </div>
+            <!--<div class="tint-action">-->
+                <!--<span class="fa fa-cogs"></span>-->
+            <!--</div>-->
             <div class="tint-action">
                 <span class="fa fa-desktop"></span>
             </div>
-            <div class="tint-action danger">
+            <div class="tint-action danger" ng-click="removeTint(tint)">
                 <span class="fa fa-trash-o"></span>
             </div>
         </div>

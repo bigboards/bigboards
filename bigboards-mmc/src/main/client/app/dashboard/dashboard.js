@@ -29,16 +29,12 @@ dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmw
         );
     };
 
-    $scope.tintInstalled = function() {
-        return ($scope.tint && $scope.tint.id);
-    };
-
-    $scope.removeTint = function() {
+    $scope.removeTint = function(tint) {
         var confirmed = confirm("Are you sure? This will remove the current tint from the hex.");
 
         if (confirmed) {
             Tints.remove(
-                {tintId: $scope.hex.tint},
+                {tintId: tint.id, tintType: tint.type},
                 ApiFeedback.onSuccess("Successfully removed the current tint from the hex"),
                 ApiFeedback.onError()
             );

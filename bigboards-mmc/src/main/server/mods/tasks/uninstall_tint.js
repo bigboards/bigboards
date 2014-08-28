@@ -15,12 +15,20 @@ module.exports = function(configuration) {
                 key: 'tintId',
                 description: 'The unique id of the tint',
                 required: true
+            },
+            {
+                key: 'tintType',
+                description: 'The type of tint we are uninstalling. Can be stack, edu or data',
+                required: true
+            },
+            {
+                key: 'verbose',
+                description: 'Used to print additional debug information',
+                required: false
             }
         ],
         execute: function(scope) {
             var deferred = Q.defer();
-
-            var outputBuffer = [];
 
             var flow = [];
 
@@ -31,8 +39,8 @@ module.exports = function(configuration) {
                     .hosts('host-coordinators')
                     .module('file')
                     .asSudo()
-                    .args('state=absent path=/opt/bb/tints.d/' + scope.tintId)
-                    .exec({cwd: '/opt/bb/tints.d/'})
+                    .args('state=absent path=/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId)
+                    .exec({cwd: '/opt/bb/tints.d/' + scope.tintType})
                     .then(function(result) {
                         if (result.code != 0) {
                             winston.log('error', 'Unable to remove tint folder from the master node');
@@ -51,25 +59,14 @@ module.exports = function(configuration) {
             winston.log('info', 'added the executor for removing the tint');
 
             if (scope.tintType == 'stack') {
-                // -- Stop the containers
                 flow.push(function(callback) {
-                    Lxc.stopContainers().then(function() {
+                    Lxc.destroyContainer().then(function() {
                         callback();
                     }).fail(function(error) {
                         callback(error)
                     });
                 });
-                winston.log('info', 'added the executor for stopping the containers');
-
-                // -- Destroy the containers
-                flow.push(function(callback) {
-                    Lxc.destroyContainers().then(function() {
-                        callback();
-                    }).fail(function(error) {
-                        callback(error)
-                    });
-                });
-                winston.log('info', 'added the executor for destroying the containers');
+                winston.log('info', 'added the executor for destroying the container');
             }
 
             async.series(flow, function(error) {
@@ -77,23 +74,8 @@ module.exports = function(configuration) {
                     winston.log('error', 'Unable to remove the tint from the hex: ', error);
                     deferred.reject(error);
                 } else {
-                    // -- load the hex information
-                    configuration.load().then(function(data) {
-                        data.tint = null;
-
-                        configuration.save(data).then(function(data) {
-                            winston.log('info', 'Hex configuration saved!');
-                            winston.log('info', 'Tint successfully uninstalled!');
-                            deferred.resolve();
-                        }).fail(function(error) {
-                            winston.log('info', 'Unable to save the hex configuration: ', error);
-                            deferred.reject(error);
-                        });
-                    }, function(error) {
-                        deferred.reject(error);
-                    }, function(progress) {
-                        deferred.notify(progress);
-                    });
+                    winston.log('info', 'Tint ' + scope.tintId + ' successfully uninstalled!');
+                    deferred.resolve();
                 }
             });
 
