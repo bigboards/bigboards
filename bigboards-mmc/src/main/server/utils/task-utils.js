@@ -63,7 +63,7 @@ module.exports.removeFile = function(path, verbose, cwd) {
         .hosts('host-coordinators')
         .module('file')
         .asSudo()
-        .args(args);
+        .args("state=absent path=" + path);
 
     if (verbose)
         pb.verbose('vvvv');

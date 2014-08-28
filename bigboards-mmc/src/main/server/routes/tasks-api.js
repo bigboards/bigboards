@@ -21,10 +21,15 @@ TasksAPI.prototype.invoke = function(req, res) {
 
     // TODO: add logic for not running more then one task
 
-    var parameters = req.body.data;
-    this.taskService.invoke(id, parameters);
-
-    res.send(200, 'The task with id ' + id + ' has been invoked');
+    var parameters = req.body;
+    this.taskService
+        .invoke(id, parameters)
+        .then(function() {
+            res.send(200, 'The task with id ' + id + ' has been invoked');
+        })
+        .fail(function(error) {
+            res.send(500, error.message);
+        });
 };
 
 TasksAPI.prototype.history = function(req, res) {
