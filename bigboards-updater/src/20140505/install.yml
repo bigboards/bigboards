@@ -32,7 +32,7 @@
       notify: Restart BigBoards Node
 
     - name: be sure the data disk is mounted in the containers
-      lineinfile: dest=/var/lib/lxc/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}/fstab regexp="/data " insertafter="^/opt/bb " line="/data  data  none  bind  0 0"
+      lineinfile: dest=/var/lib/lxc/bb-template/fstab regexp="/data " insertafter="^/opt/bb " line="/data  data  none  bind  0 0"
 
   handlers:
     - name: Restart BigBoards Node
