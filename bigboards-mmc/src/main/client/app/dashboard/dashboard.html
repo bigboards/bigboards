@@ -50,9 +50,9 @@
             <!--<div class="tint-action">-->
                 <!--<span class="fa fa-cogs"></span>-->
             <!--</div>-->
-            <div class="tint-action" ng-click="dashboardTint(tint)">
-                <span class="fa fa-desktop"></span>
-            </div>
+            <a class="tint-action"href="#/tints/{{tint.type}}/{{tint.id}}">
+                <i class="fa fa-desktop"></i>
+            </a>
             <div class="tint-action danger" ng-click="removeTint(tint)">
                 <span class="fa fa-trash-o"></span>
             </div>

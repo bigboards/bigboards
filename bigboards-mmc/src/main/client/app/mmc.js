@@ -55,6 +55,12 @@ app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider, sna
             controller: 'UpdateController'
         })
 
+        .when('/tints/:type/:id', {
+            title: 'Tint',
+            templateUrl: 'app/tint/partials/detail.html',
+            controller: 'TintDetailController'
+        })
+
         .otherwise({
             redirectTo: '/dashboard'
         });
