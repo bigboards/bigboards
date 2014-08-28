@@ -294,7 +294,10 @@ TintManager.prototype.uninstall = function(tint) {
     if (! tint.id) throw new errors.IllegalParameterError("Invalid tint format: no tint id has been given");
     if (! tint.type) throw new errors.IllegalParameterError("Invalid tint format: no tint type has been given");
 
-    return this.taskManager.invoke('uninstall_tint', { tintId: tint.id });
+    return this.taskManager.invoke('uninstall_tint', {
+        tintId: tint.id,
+        tintType: tint.type
+    });
 };
 
 
