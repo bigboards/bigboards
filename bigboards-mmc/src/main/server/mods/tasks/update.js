@@ -5,9 +5,12 @@ module.exports = {
     description: 'updating the firmware on the hex',
     type: 'ansible',
     execute: function(scope) {
-        return new Ansible.Playbook()
+        return new Ansible.AdHoc()
             .inventory('/opt/bb/hosts')
-            .playbook('update')
+            .hosts('host-coordinators')
+            .module('shell')
+            .asSudo()
+            .args('./update.sh')
             .exec({cwd: '/opt/bb/runtimes/bigboards-updater'});
     }
 };

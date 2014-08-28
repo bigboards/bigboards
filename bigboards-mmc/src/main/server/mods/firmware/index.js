@@ -15,7 +15,7 @@ var Firmware = function(patchesDirectory, versionsFile, tasks) {
  * @returns {*}
  */
 Firmware.prototype.patch = function(patch) {
-    return this.tasks.invoke('install_patch', patch);
+    return this.tasks.invoke('install_patch', {patchName: patch});
 };
 
 /**
