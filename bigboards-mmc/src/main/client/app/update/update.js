@@ -1,4 +1,4 @@
-updateModule.controller('UpdateController', function($scope, $location, Patches, ApiFeedback) {
+updateModule.controller('UpdateController', function($scope, $location, Firmware, Patches, ApiFeedback) {
     $scope.patches = Patches.query();
 
     $scope.installPatch = function(name) {
@@ -9,5 +9,15 @@ updateModule.controller('UpdateController', function($scope, $location, Patches,
             },
             ApiFeedback.onError()
         );
+    }
+
+    $scope.update = function() {
+        Firmware.install(
+            function() {
+                // navigate to tasks/update/output
+                $location = "/#/tasks/update/output";
+            },
+            ApiFeedback.onError()
+        )
     }
 });

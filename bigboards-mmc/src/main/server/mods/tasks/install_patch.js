@@ -20,6 +20,7 @@ module.exports = function (configuration) {
                 .module('shell')
                 .asSudo()
                 .args('./patch.sh ' + scope.patchName)
+                .verbose('vvvv')
                 .exec({cwd: '/opt/bb/runtimes/bigboards-updater'});
         }
     };

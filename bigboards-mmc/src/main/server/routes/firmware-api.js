@@ -22,7 +22,7 @@ FirmwareAPI.prototype.patch = function(req, res) {
 FirmwareAPI.prototype.update = function(req, res) {
     return this.firmware.update()
         .then(function(data) { res.send(200, data);})
-        .fail(function (error) { ApiUtils.handleError(res, error); })
+        .fail(function(error) { ApiUtils.handleError(res, error); })
         .done();
 };
 
