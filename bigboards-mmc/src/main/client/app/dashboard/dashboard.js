@@ -34,7 +34,7 @@ dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmw
 
         if (confirmed) {
             Tints.remove(
-                {tintId: tint.id, tintType: tint.type},
+                {id: tint.id, type: tint.type},
                 ApiFeedback.onSuccess("Successfully removed the current tint from the hex"),
                 ApiFeedback.onError()
             );
