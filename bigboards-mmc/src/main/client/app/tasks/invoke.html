@@ -1,4 +1,4 @@
-<bb-header>Tasks :: Invoke</bb-header>
+<bb-header>Tasks - Invoke</bb-header>
 
 <div class="tasks">
     <p>{{task.description}}</p>
@@ -9,11 +9,13 @@
                 <span class="key">{{parameter.key}}</span>
                 <span class="description">{{parameter.description}}</span>
             </div>
-            <div class="">
+            <div class="task-parameter-value">
                 <input type="text" ng-model="invokeParams[parameter.key]">
             </div>
         </div>
     </div>
 
-    <button class="btn btn-info" ng-click="invokeTask()">Launch!</button>
+    <div class="invoke-actions">
+        <button class="btn btn-info" ng-click="invokeTask()">Launch!</button>
+    </div>
 </div>
