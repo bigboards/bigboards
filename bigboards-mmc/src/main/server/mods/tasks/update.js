@@ -10,6 +10,7 @@ module.exports = {
             .hosts('host-coordinators')
             .module('shell')
             .asSudo()
+            .verbose('vvvv')
             .args('./update.sh')
             .exec({cwd: '/opt/bb/runtimes/bigboards-updater'});
     }
