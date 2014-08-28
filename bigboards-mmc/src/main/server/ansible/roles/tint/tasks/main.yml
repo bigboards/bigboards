@@ -1,3 +1,6 @@
 ---
+- name: be sure the tint directory exists
+  file: state=directory path=/opt/bb/tints.d/{{tintType}}
+
 - name: be sure the tint sources are available
-  git: repo={{tintUri}} dest=/opt/bb/tints.d/{{tintId}}
+  git: repo={{tintUri}} dest=/opt/bb/tints.d/{{tintType}}/{{tintId}}
