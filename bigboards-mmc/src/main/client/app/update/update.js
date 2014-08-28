@@ -4,8 +4,8 @@ updateModule.controller('UpdateController', function($scope, $location, Firmware
     $scope.installPatch = function(name) {
         Patches.install({patch: name},
             function() {
-                // navigate to tasks/install_patch/output
-                $location = "/#/tasks/install_patch/output";
+                // navigate to /tasks/install_patch/output
+                $location.path('/tasks/install_patch/output');
             },
             ApiFeedback.onError()
         );
@@ -14,8 +14,8 @@ updateModule.controller('UpdateController', function($scope, $location, Firmware
     $scope.update = function() {
         Firmware.install(
             function() {
-                // navigate to tasks/update/output
-                $location = "/#/tasks/update/output";
+                // navigate to /tasks/update/output
+                $location.path('/tasks/update/output');
             },
             ApiFeedback.onError()
         )
