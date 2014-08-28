@@ -26,6 +26,15 @@ app.filter('loadMetric', function() {
     }
 });
 
+app.filter('externalIp', function($location) {
+    return function(url) {
+        var external_ip = $location.host();
+        var result = url.replace('{{external_ip}}', external_ip);
+
+        return  result;
+    }
+});
+
 /**
  * Truncate Filter
  * @Param text
@@ -34,20 +43,20 @@ app.filter('loadMetric', function() {
  * @return string
  */
 app.filter('truncate', function () {
-        return function (text, length, end) {
-            if (isNaN(length))
-                length = 10;
+    return function (text, length, end) {
+        if (isNaN(length))
+            length = 10;
 
-            if (end === undefined)
-                end = "...";
+        if (end === undefined)
+            end = "...";
 
-            if (text.length <= length || text.length - end.length <= length) {
-                return text;
-            }
-            else {
-                return String(text).substring(0, length-end.length) + end;
-            }
+        if (text.length <= length || text.length - end.length <= length) {
+            return text;
+        }
+        else {
+            return String(text).substring(0, length-end.length) + end;
+        }
 
-        };
-    });
+    };
+});
 
