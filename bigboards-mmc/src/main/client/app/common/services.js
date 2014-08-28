@@ -15,7 +15,9 @@ app.service('Nodes', function($resource) {
 });
 
 app.service('Firmware', function($resource) {
-    return $resource('/api/v1/firmware');
+    return $resource('/api/v1/firmware', undefined, {
+        'install': {method: 'POST', isArray: false}
+    });
 });
 
 app.service('Patches', function($resource) {
