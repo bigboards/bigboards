@@ -1,4 +1,4 @@
-dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmware, Tints, socket, ApiFeedback) {
+dashboardModule.controller('DashboardController', function ($scope, $location, Nodes, Firmware, Tints, socket, ApiFeedback) {
     $scope.nodes = Nodes.query();
     $scope.tints = Tints.query();
 
@@ -28,6 +28,13 @@ dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmw
             ApiFeedback.onError()
         );
     };
+
+    $scope.dashboardTint = function(tint) {
+        var type = tint.type;
+        var id = tint.id;
+
+        $location.path('/tints/' + type + '/' + id);
+    }
 
     $scope.removeTint = function(tint) {
         var confirmed = confirm("Are you sure? This will remove the current tint from the hex.");
