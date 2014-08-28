@@ -31,6 +31,9 @@
       apt: state=latest name=bigboards-node force=yes update_cache=yes
       notify: Restart BigBoards Node
 
+    - name: be sure the data disk is mounted in the containers
+      lineinfile: dest=/var/lib/lxc/{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}/ regexp="/data " insertafter="^/opt/bb " line="/data  data  none  bind  0 0"
+
   handlers:
     - name: Restart BigBoards Node
       service: state=restarted name=bigboards-node
@@ -46,6 +49,9 @@
       with_items:
         - bigboards-mmc
       notify: Restart BigBoards Management Console
+
+    - name: be sure the ansible hex facts are writable by the mmc
+      file: path=/etc/ansible/facts.d/hex.fact state=present mode=774
   handlers:
     - name: Restart BigBoards Management Console
       service: state=restarted name=bigboards-mmc
