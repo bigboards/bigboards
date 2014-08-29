@@ -264,7 +264,7 @@ TintManager.prototype.install = function(tint) {
     if (! tint.id) throw new errors.IllegalParameterError("Invalid tint format: no tint id has been given");
     if (! tint.type) throw new errors.IllegalParameterError("Invalid tint format: no tint type has been given");
 
-    return this.taskManager.invoke('install_tint', {
+    return this.taskManager.invoke('tint_install', {
         tintId: tint.id,
         tintUri: tint.uri,
         tintType: tint.type
@@ -281,7 +281,7 @@ TintManager.prototype.update = function(tint) {
     if (! tint.id) throw new errors.IllegalParameterError("Invalid tint format: no tint id has been given");
     if (! tint.type) throw new errors.IllegalParameterError("Invalid tint format: no tint type has been given");
 
-    return this.taskManager.invoke('update_tint', { tintId: tint.id });
+    return this.taskManager.invoke('tint_update', { tintId: tint.id });
 };
 
 /**
@@ -294,7 +294,7 @@ TintManager.prototype.uninstall = function(tint) {
     if (! tint.id) throw new errors.IllegalParameterError("Invalid tint format: no tint id has been given");
     if (! tint.type) throw new errors.IllegalParameterError("Invalid tint format: no tint type has been given");
 
-    return this.taskManager.invoke('uninstall_tint', {
+    return this.taskManager.invoke('tint_uninstall', {
         tintId: tint.id,
         tintType: tint.type
     });
