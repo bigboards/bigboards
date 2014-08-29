@@ -116,6 +116,8 @@ app.controller('ApplicationController', function($scope, $location, Firmware) {
 
     ];
 
+    $scope.firmware = Firmware.get();
+
     $scope.$on('$routeChangeSuccess', function(event, current, previous) {
         $scope.menu.forEach(function(item) {
             if (item.path && current.$$route && item.path == current.$$route.originalPath)

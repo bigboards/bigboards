@@ -26,4 +26,11 @@ FirmwareAPI.prototype.update = function(req, res) {
         .done();
 };
 
+FirmwareAPI.prototype.current = function(req, res) {
+    return this.firmware.current()
+        .then(function(data) { res.send(200, data);})
+        .fail(function(error) { ApiUtils.handleError(res, error); })
+        .done();
+};
+
 module.exports = FirmwareAPI;

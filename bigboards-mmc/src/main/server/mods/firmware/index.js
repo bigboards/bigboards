@@ -10,6 +10,14 @@ var Firmware = function(patchesDirectory, versionsFile, tasks) {
     this.tasks = tasks;
 };
 
+Firmware.prototype.current = function() {
+    return this.currentVersion().then(function(version) {
+        return {
+            version: version
+        };
+    });
+}
+
 /**
  * Apply the requested patch to the firmware
  *
@@ -141,6 +149,28 @@ Firmware.prototype.installedPatches = function() {
 
     return deferred.promise;
 };
+
+/**
+ * Retrieve the latest installed patch as version number
+ *
+ * @type {name: string, installedOn: timestamp} as latest installed patch
+ */
+Firmware.prototype.currentVersion = function() {
+    var deferred = Q.defer();
+
+    this.installedPatches().then(function(installedPatches) {
+        installedPatches.sort(Firmware.comparePatches);
+        var result = installedPatches[installedPatches.length - 1];
+
+        try {
+            return deferred.resolve(result);
+        } catch (ex) {
+            return deferred.reject(ex)
+        }
+    });
+
+    return deferred.promise;
+}
 
 module.exports = Firmware;
 
