@@ -39,6 +39,7 @@ function linkFirmwareAPI(self, server) {
     server.get('/api/v1/patches', function(req, res) { self.firmwareAPI.patches(req, res); });
     server.put('/api/v1/patches/:patch', function(req, res) { self.firmwareAPI.patch(req, res); });
     server.post('/api/v1/firmware', function(req, res) { self.firmwareAPI.update(req, res); });
+    server.get('/api/v1/firmware', function(req, res) { self.firmwareAPI.current(req, res); });
 
     winston.log('info', 'linked the firmware API');
 }

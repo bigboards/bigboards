@@ -16,9 +16,9 @@ module.exports = function(configuration) {
             var verbose = (scope.verbose && ((scope.verbose == 'yes') || (scope.verbose == 'true')));
 
             return TaskUtils.runShellCommand(
-                './update.sh',
+                '/opt/bb/runtimes/bigboards-updater/update.sh',
                 verbose,
-                '/opt/bb/runtimes/bigboards-updater'
+                undefined //'/opt/bb/runtimes/bigboards-updater'
             );
         }
     }
