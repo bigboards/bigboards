@@ -40,6 +40,8 @@
     - name: be sure the data disk can be mounted inside the container
       lineinfile: dest=/var/lib/lxc/bb-template/config regexp="lxc.aa_profile" line="lxc.aa_profile = unconfined"
 
+    - name: be sure the data disk can be mounted inside the container
+      lineinfile: dest=/var/lib/lxc/bb-template/config regexp="lxc.start.auto" line="lxc.start.auto = 1"
   handlers:
     - name: Restart BigBoards Node
       service: state=restarted name=bigboards-node
