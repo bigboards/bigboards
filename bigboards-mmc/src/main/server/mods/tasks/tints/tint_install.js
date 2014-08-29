@@ -45,19 +45,14 @@ module.exports = function(configuration) {
             scope.tintUri = scope.tintUri.replace(/%username%/g, scope.username);
             scope.tintUri = scope.tintUri.replace(/%password%/g, scope.password);
 
-            var flow = [];
-
-            winston.log('info', 'determining the flow of functions to invoke');
-
             if (scope.tintType == 'stack') {
-                flow.push(TaskUtils.runPlaybook('tints/tint_install', scope));
-                winston.log('info', 'added the LXC container initialization');
+                return TaskUtils
+                    .runPlaybook('tints/tint_install', scope)
+                    .then(TaskUtils.runPlaybook('install', scope, '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId));
+            } else {
+                return TaskUtils
+                    .runPlaybook('install', scope, '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId);
             }
-
-            flow.push(TaskUtils.runPlaybook('install', scope, '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId));
-            winston.log('info', 'added the tint playbook execution');
-
-            return Q.all(flow);
         }
     };
 };
