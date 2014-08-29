@@ -11,6 +11,7 @@
     - name: be sure the containers are stopped
       shell: lxc-stop -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
       when: "'{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}' in '''{{lxc_list.stdout}}'''"
+      ignore_errors: yes
       tags:
         - container
 
