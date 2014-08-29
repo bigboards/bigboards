@@ -21,9 +21,9 @@ module.exports = function () {
             var verbose = (scope.verbose && ((scope.verbose == 'yes') || (scope.verbose == 'true')));
 
             return TaskUtils.runShellCommand(
-                './patch.sh ' + scope.patchName,
+                '/opt/bb/runtimes/bigboards-updater/patch.sh ' + scope.patchName,
                 verbose,
-                '/opt/bb/runtimes/bigboards-updater'
+                undefined //'/opt/bb/runtimes/bigboards-updater'
             );
         }
     };
