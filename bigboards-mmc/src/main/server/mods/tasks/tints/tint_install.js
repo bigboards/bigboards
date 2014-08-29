@@ -48,7 +48,9 @@ module.exports = function(configuration) {
             if (scope.tintType == 'stack') {
                 return TaskUtils
                     .runPlaybook('tints/tint_install', scope)
-                    .then(TaskUtils.runPlaybook('install', scope, '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId));
+                    .then(function() {
+                        return TaskUtils.runPlaybook('install', scope, '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId);
+                    });
             } else {
                 return TaskUtils
                     .runPlaybook('install', scope, '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId);
