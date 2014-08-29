@@ -31,8 +31,14 @@
       apt: state=latest name=bigboards-node force=yes update_cache=yes
       notify: Restart BigBoards Node
 
+    - name: be sure the data mountpoint exists inside the container too
+      file: state=directory path=/var/lib/lxc/bb-template/rootfs/data owner=bb group=bigboards
+
     - name: be sure the data disk is mounted in the containers
       lineinfile: dest=/var/lib/lxc/bb-template/fstab regexp="/data " insertafter="^/opt/bb " line="/data  data  none  bind  0 0"
+
+    - name: be sure the data disk can be mounted inside the container
+      lineinfile: dest=/var/lib/lxc/bb-template/config regexp="lxc.aa_profile" line="lxc.aa_profile = unconfined"
 
   handlers:
     - name: Restart BigBoards Node
