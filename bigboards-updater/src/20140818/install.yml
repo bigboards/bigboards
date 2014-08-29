@@ -1,9 +1,0 @@
----
-- hosts: host
-  sudo: yes
-  tasks:
-    - name: be sure the old bigboards repository is removed
-      apt_repository: repo='deb http://apt.bigboards.io/repo binary/' state=absent validate_certs=no update_cache=yes
-
-    - name: be sure the correct bigboards repository is set
-      apt_repository: repo='deb http://apt.bigboards.io/repo snapshots/' state=present validate_certs=no update_cache=yes
