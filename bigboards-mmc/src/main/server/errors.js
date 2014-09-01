@@ -13,3 +13,27 @@ function IllegalParameterError(message) {
 }
 IllegalParameterError.prototype = Object.create(Error.prototype);
 module.exports.IllegalParameterError = IllegalParameterError;
+
+function TasksRunnerBusyError(message) {
+    this.name = "TasksRunnerBusyError";
+    this.message = message;
+    this.stack = Error().stack;
+}
+TasksRunnerBusyError.prototype = Object.create(Error.prototype);
+module.exports.TasksRunnerBusyError = TasksRunnerBusyError;
+
+function TaskAlreadyStartedError(message) {
+    this.name = "TaskAlreadyStartedError";
+    this.message = message;
+    this.stack = Error().stack;
+}
+TaskAlreadyStartedError.prototype = Object.create(Error.prototype);
+module.exports.TaskAlreadyStartedError = TaskAlreadyStartedError;
+
+function TaskParameterError(message) {
+    this.name = "TaskParameterError";
+    this.message = message;
+    this.stack = Error().stack;
+}
+TaskParameterError.prototype = Object.create(Error.prototype);
+module.exports.TaskParameterError = TaskParameterError;

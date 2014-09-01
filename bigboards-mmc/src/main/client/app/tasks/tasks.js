@@ -28,6 +28,10 @@ tasksModule.controller('TaskInvocationController', function($scope, Tasks, socke
     $scope.task = Tasks.get({id: $routeParams.id});
     $scope.invokeParams = {};
 
+    $scope.hasCurrentTask = function() {
+        return ($scope.task && $scope.task.description);
+    };
+
     $scope.invokeTask = function() {
         Tasks.invoke(
             {'id': $routeParams.id},

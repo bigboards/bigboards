@@ -3,6 +3,8 @@ var util = require("util"),
     winston = require('winston'),
     Q = require('q');
 
+var Errors = require('../../errors');
+
 var TaskManager = function() {
     this.tasks = {};
     this.currentTask = null;
@@ -80,6 +82,11 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
 
     var deferred = Q.defer();
 
+    if (this.currentTask) {
+        deferred.reject(new Errors.TasksRunnerBusyError('the task runner is already busy executing tasks.'));
+        return deferred.promise;
+    }
+
     if (!taskCode) {
         deferred.reject(new Error('Invalid task code'));
     } else {
@@ -89,7 +96,7 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
         }
         else {
             if (task.running) {
-                deferred.reject(new Error('the task with code ' + taskCode + ' is already being invoked'));
+                deferred.reject(new Errors.TaskAlreadyStartedError('the task with code ' + taskCode + ' is already being invoked'));
                 return deferred.promise;
             }
             else {
@@ -102,7 +109,7 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
                 var parameterError = null;
                 task.parameters.forEach(function (parameter) {
                     if (parameter.required && !parameters[parameter.key]) {
-                        parameterError = new Error('Executing ' + taskCode + ' requires parameter ' + parameter.key + ' but it has not been provided');
+                        parameterError = new Errors.TaskParameterError('Executing ' + taskCode + ' requires parameter ' + parameter.key + ' but it has not been provided');
                         return;
                     }
 

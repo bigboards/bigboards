@@ -28,7 +28,9 @@ TasksAPI.prototype.invoke = function(req, res) {
             res.send(200, 'The task with id ' + id + ' has been invoked');
         })
         .fail(function(error) {
-            res.send(500, error.message);
+            if (error.name == 'TasksRunnerBusyError') {
+                res.send(406, error.message);
+            } else res.send(500, error.message);
         });
 };
 
