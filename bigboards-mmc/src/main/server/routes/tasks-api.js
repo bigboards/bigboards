@@ -19,8 +19,6 @@ TasksAPI.prototype.invoke = function(req, res) {
     var id = req.param('id');
     if (!id) return res.send(400, 'no task id has been provided');
 
-    // TODO: add logic for not running more then one task
-
     var parameters = req.body;
     this.taskService
         .invoke(id, parameters)

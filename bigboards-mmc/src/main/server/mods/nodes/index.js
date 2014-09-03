@@ -1,5 +1,7 @@
 var util         = require("util"),
-    EventEmitter = require('events').EventEmitter;
+    EventEmitter = require('events').EventEmitter,
+    Restler      = require('restler'),
+    Q = require('q');
 
 function HexNodeManager(serfer) {
     this.serfer = serfer;
@@ -14,18 +16,44 @@ HexNodeManager.prototype.node = function(nodeName) {
 
 HexNodeManager.prototype.nodes = function() {
     var self = this;
-    return this.serfer.members().then(function(members) {
-        var result = [];
-        members.forEach(function(member) {
-            result.push({
-                name: member['Name'],
-                status: member['Status'],
-                tags: member['Tags']
+    return this.serfer.members()
+        .then(function(members) {
+            var result = [];
+
+            var arr = [];
+            members.forEach(function(member) { arr.push(nodeDetails(member)); });
+
+            return Q.all(arr);
+        })
+        .then(function(result) {
+            return result.sort(function (a, b) {
+                return a.name.localeCompare(b.name);
             });
         });
-
-        return result.sort();
-    });
 };
 
 module.exports = HexNodeManager;
+
+function nodeDetails(member) {
+    var defer = Q.defer();
+
+    Restler
+        .get('http://' + toAddress(member['Addr']) + ':7099/api/v1/node')
+        .on('complete', function(result) {
+            if (result instanceof Error) defer.reject(result);
+            else {
+                result['tags'] = member['Tags'];
+                result['status'] = member['Status'];
+
+                defer.resolve(result);
+            }
+        });
+
+    return defer.promise;
+}
+
+function toAddress(addressBuffer) {
+    return {
+        ip: addressBuffer[12] + '.' + addressBuffer[13] + '.' + addressBuffer[14] + '.' + addressBuffer[15]
+    }
+}

@@ -1,38 +1,28 @@
 var os = require('os'),
     diskspace = require('diskspace'),
     fs = require('fs'),
-    Q = require('q');
+    Q = require('q'),
+    utils = require('../../utils'),
+    exec = require('child_process').exec;
 
-function Node() { }
+function Node(hexName, sequence, internalInterfaceName, externalInterfaceName) {
+    this.hexName = hexName;
+    this.sequence = sequence;
+    this.internalInterfaceName = internalInterfaceName;
+    this.externalInterfaceName = externalInterfaceName;
+}
 
 Node.prototype.name = function() {
     return Q(os.hostname());
 };
 
-Node.prototype.ipAddress = function() {
-    var result = undefined;
-    var interfaces = os.networkInterfaces();
-    if (interfaces) {
-        var itf = interfaces['br0'];
-        if (itf) {
-            itf.forEach(function(address) {
-                if (address.family == 'IPv4' && address.internal == false) {
-                    result = address.address;
-                }
-            });
-        } else {
-            var itf = interfaces['en0'];
-            if (itf) {
-                itf.forEach(function(address) {
-                    if (address.family == 'IPv4' && address.internal == false) {
-                        result = address.address;
-                    }
-                });
-            }
-        }
-    }
-    return Q(result);
-}
+Node.prototype.externalIpAddress = function() {
+    return utils.net.exteralIpAddress(this.externalInterfaceName);
+};
+
+Node.prototype.internalIpAddress = function() {
+    return utils.net.exteralIpAddress(this.internalInterfaceName);
+};
 
 Node.prototype.uptime = function() {
     return Q(os.uptime());
@@ -132,4 +122,68 @@ Node.prototype.cpu = function(cpus) {
     });
 };
 
+Node.prototype.container = function() {
+    var self = this;
+
+    return utils.net
+        .interalIpAddress(this.internalInterfaceName)
+        .then(function(nodeInternalIp) {
+            return getContainerInfo(self.hexName + '-v' + self.sequence, nodeInternalIp);
+        });
+};
+
 module.exports = Node;
+
+function getContainerInfo(containerName, nodeInternalIp) {
+    var defer = Q.defer();
+
+    exec('sudo lxc-info -i -s -n ' + containerName, function(error, stdout, stderr) {
+        if (error !== null) return defer.reject(error);
+
+        var result = {
+            name: containerName,
+            status: null,
+            internalIp: null,
+            externalIp: null
+        };
+
+        var lines = stdout.toString().split('\n');
+        lines.forEach(function(line) {
+            var lineArray = line.split(':');
+            var value = lineArray[1].trim();
+
+            if (lineArray[0] == 'State') {
+                result.status = value;
+            } else if (lineArray[0] == 'IP') {
+                try {
+                    if (sameNetwork(nodeInternalIp, value)) result.internalIp = value;
+                    else result.externalIp = value;
+                } catch (err) {
+                    defer.reject(err);
+                }
+            }
+        });
+
+        defer.resolve(result);
+    });
+
+    return defer.promise;
+}
+
+function sameNetwork(address1, address2) {
+    // -- once we have configurable internal addresses this will probably change. We can use the netmask or ip module
+    // -- from npm to make this more efficient.
+
+    // -- for now we will just check if the first 3 blocks of both addresses are the same
+    var arr1 = address1.split('.');
+    var arr2 = address2.split('.');
+
+    if (arr1.length != 4) throw new Error('Invalid IP address format!');
+    if (arr2.length != 4) throw new Error('Invalid IP address format!');
+
+    for (var i = 0; i < 3; i++)
+        if (arr1[i] != arr2[i])
+            return false;
+
+    return true;
+}

@@ -35,6 +35,15 @@ app.filter('externalIp', function($location) {
     }
 });
 
+app.filter('configured', function($location) {
+    return function(url) {
+//        var external_ip = $location.host();
+//        var result = url.replace('{{external_ip}}', external_ip);
+//
+//        return  result;
+    }
+});
+
 /**
  * Truncate Filter
  * @Param text

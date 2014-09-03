@@ -11,6 +11,10 @@ module.exports = {
 
     targetUrl: '',
     delay: 5000,
-    host: os.hostname()
+    host: os.hostname(),
+    net: {
+        internal: { itf: 'br1' },
+        external: { itf: 'br0' }
+    }
 };
 

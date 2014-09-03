@@ -6,8 +6,10 @@
             <th></th>
             <th>role</th>
             <th>name</th>
-            <th>address</th>
-            <th>status</th>
+            <th>node ip</th>
+            <th>node status</th>
+            <th>container ip</th>
+            <th>container status</th>
             <th class="metric-column">°C</th>
             <th class="metric-column">load</th>
             <th class="metric-column">mem</th>
@@ -19,9 +21,11 @@
     <tr ng-repeat="node in nodes">
         <td>{{$index + 1}}</td>
         <td>{{node.tags.role}}</td>
-        <td>{{node.name}}</td>
-        <td>{{getMetric(node, 'ipAddress')}}</td>
+        <td>{{getMetric(node, 'container').name}}</td>
+        <td>{{getMetric(node, 'network').externalIp}}</td>
         <td>{{node.status}}</td>
+        <td>{{getMetric(node, 'container').externalIp}}</td>
+        <td>{{getMetric(node, 'container').status}}</td>
         <td>{{getMetric(node, 'temperature')}}°C</td>
         <td>{{getMetric(node, 'load') | loadMetric | number : 2}}</td>
         <td>{{getMetric(node, 'memory') | percentMetric | number : 1}}%</td>

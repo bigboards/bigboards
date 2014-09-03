@@ -6,6 +6,7 @@ var LibraryAPI = require('./library-api'),
     IdentityAPI = require('./identity-api'),
     FirmwareAPI = require('./firmware-api'),
     NodesAPI = require('./nodes-api'),
+    HexAPI = require('./hex-api'),
 
     winston = require('winston');
 
@@ -18,6 +19,7 @@ function Routes(serverConfiguration, configuration, services) {
     this.identityAPI = new IdentityAPI(configuration);
     this.firmwareAPI = new FirmwareAPI(services.firmware);
     this.nodesAPI = new NodesAPI(services.nodes);
+    this.hexAPI = new HexAPI();
 }
 
 Routes.prototype.link = function(server, io) {
@@ -30,6 +32,7 @@ Routes.prototype.link = function(server, io) {
     linkLibraryApi(this, server);
     linkNodesApi(this, server);
     linkTintApi(this, server);
+    linkHexApi(this, server);
 
     // -- Initialize Socket.io communication
     io.sockets.on('connection', function(socket) { self.socketAPI.link(socket) });
@@ -42,6 +45,12 @@ function linkFirmwareAPI(self, server) {
     server.get('/api/v1/firmware', function(req, res) { self.firmwareAPI.current(req, res); });
 
     winston.log('info', 'linked the firmware API');
+}
+
+function linkHexApi(self, server) {
+    server.get('/api/v1/hex/master', function(req, res) { self.hexAPI.getMaster(req, res); });
+
+    winston.log('info', 'linked the Configuration API');
 }
 
 function linkIdentityApi(self, server) {

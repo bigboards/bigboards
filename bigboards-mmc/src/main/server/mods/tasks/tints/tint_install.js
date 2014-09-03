@@ -1,5 +1,6 @@
 var Q = require('q'),
-    winston = require('winston');
+    winston = require('winston'),
+    fs = require('fs');
 
 var TaskUtils = require('../../../utils/task-utils');
 

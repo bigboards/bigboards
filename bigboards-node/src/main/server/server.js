@@ -12,9 +12,8 @@ var express = require('express'),
     mdns = require('mdns'),
     Q = require('q');
 
-var app = module.exports = express();
+var app = express();
 var server = http.createServer(app);
-var self = this;
 var serfer = new Serfer();
 
 /**********************************************************************************************************************
@@ -33,15 +32,26 @@ app.use(app.router);
  *********************************************************************************************************************/
 var configuration = new Configuration(serverConfig.hex.file);
 
-var nodeService = new NodeService();
+var nodeService = new NodeService(
+    configuration.name,
+    configuration.sequence,
+    serverConfig.net.internal.itf,
+    serverConfig.net.external.itf
+);
 
 var postman = new Postman(nodeService, os.hostname(), serfer, serverConfig.delay, [
-    {metric: 'ipAddress', fn: function(nodeService) { return nodeService.ipAddress(); }},
     {metric: 'load', fn: function(nodeService) { return nodeService.load(); }},
     {metric: 'memory', fn: function(nodeService) { return nodeService.memory(); }},
     {metric: 'temperature', fn: function(nodeService) { return nodeService.temperature(); }},
     {metric: 'osDisk', fn: function(nodeService) { return nodeService.osDisk(); }},
-    {metric: 'dataDisk', fn: function(nodeService) { return nodeService.dataDisk(); }}
+    {metric: 'dataDisk', fn: function(nodeService) { return nodeService.dataDisk(); }},
+    {metric: 'network', fn: function(nodeService) {
+        return {
+            internalIp: nodeService.internalIpAddress(),
+            externalIp: nodeService.externalIpAddress()
+        };
+    }},
+    {metric: 'container', fn: function(nodeService) { return nodeService.container(); }}
 ]);
 
 /**********************************************************************************************************************
@@ -55,6 +65,7 @@ routes.link(app);
  *********************************************************************************************************************/
 serfer.connect().then(function() {
     postman.startDelivery();
+    var self = this;
 
     server.listen(app.get('port'), function () {
         winston.info('BigBoards-node listening on port ' + app.get('port'));
