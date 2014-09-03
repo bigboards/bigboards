@@ -24,10 +24,10 @@ NodeAPI.prototype.get = function(req, res) {
         self.nodeService.container().then(function(data) {
             result.container = data;
         })
-    ]).done(function() {
+    ]).then(function() {
         return res.json(200, result);
     }).fail(function(error) {
-        return res.send(500, error);
+        return res.send(500, error.message);
     });
 };
 

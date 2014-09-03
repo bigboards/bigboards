@@ -138,7 +138,10 @@ function getContainerInfo(containerName, nodeInternalIp) {
     var defer = Q.defer();
 
     exec('sudo lxc-info -i -s -n ' + containerName, function(error, stdout, stderr) {
-        if (error !== null) return defer.reject(error);
+        if (error !== null) {
+            defer.reject(error);
+            return;
+        }
 
         var result = {
             name: containerName,
