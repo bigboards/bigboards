@@ -153,6 +153,8 @@ function getContainerInfo(containerName, nodeInternalIp) {
         var lines = stdout.toString().split('\n');
         lines.forEach(function(line) {
             var lineArray = line.split(':');
+            if (lineArray.length != 2) return;
+
             var value = lineArray[1].trim();
 
             if (lineArray[0] == 'State') {
