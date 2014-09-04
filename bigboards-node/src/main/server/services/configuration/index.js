@@ -7,26 +7,19 @@ function HexConfigurationManager(hexConfigFile) {
 }
 
 HexConfigurationManager.prototype.load = function() {
-    var deferrer = Q.defer();
+    var deferred = Q.defer();
 
-    var readFile = Q.denodeify(fs.readFile);
+    fs.readFile(this.hexConfigFile, {encoding: 'utf8'}, function(err, data) {
+        if (err) return deferred.reject(err);
 
-    readFile(this.hexConfigFile, {encoding: 'utf8'}).then(function(data) {
         try {
-            var config = JSON.parse(data);
-
-            winston.log('info', 'read the configuration file');
-            deferrer.resolve(config);
-        } catch (error) {
-            winston.log('error', 'error while reading the configuration file: ' + error);
-            winston.log('error', error.stack);
-            deferrer.reject(error);
+            return deferred.resolve(JSON.parse(data));
+        } catch (ex) {
+            return deferred.reject(ex)
         }
-    }).fail(function(error) {
-        deferrer.reject(error);
     });
 
-    return deferrer.promise;
+    return deferred.promise;
 };
 
 HexConfigurationManager.prototype.save = function(hex) {

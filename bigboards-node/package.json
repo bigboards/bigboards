@@ -5,10 +5,10 @@
   "version": "1.0.4",
   "private": true,
   "dependencies": {
+    "body-parser": "^1.7.0",
     "diskspace": "^0.1.7",
     "express": "^3.4.7",
     "js-yaml": "~3.0.2",
-    "mdns": "^2.2.0",
     "q": "^1.0.1",
     "request": "^2.39.0",
     "serfer": "^0.1.1",
