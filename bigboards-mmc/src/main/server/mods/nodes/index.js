@@ -38,7 +38,7 @@ function nodeDetails(member) {
     var defer = Q.defer();
 
     Restler
-        .get('http://' + toAddress(member['Addr']) + ':7099/api/v1/node')
+        .get('http://' + toAddress(member['Addr']).ip + ':7099/api/v1/node')
         .on('complete', function(result) {
             if (result instanceof Error) defer.reject(result);
             else {
