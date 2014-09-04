@@ -17,11 +17,11 @@ Node.prototype.name = function() {
 };
 
 Node.prototype.externalIpAddress = function() {
-    return utils.net.exteralIpAddress(this.externalInterfaceName);
+    return utils.net.ipAddress(this.externalInterfaceName);
 };
 
 Node.prototype.internalIpAddress = function() {
-    return utils.net.exteralIpAddress(this.internalInterfaceName);
+    return utils.net.ipAddress(this.internalInterfaceName);
 };
 
 Node.prototype.uptime = function() {
@@ -178,6 +178,9 @@ function getContainerInfo(containerName, nodeInternalIp) {
 function sameNetwork(address1, address2) {
     // -- once we have configurable internal addresses this will probably change. We can use the netmask or ip module
     // -- from npm to make this more efficient.
+
+    if (! address1) return false;
+    if (! address2) return false;
 
     // -- for now we will just check if the first 3 blocks of both addresses are the same
     var arr1 = address1.split('.');

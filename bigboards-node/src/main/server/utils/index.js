@@ -26,12 +26,15 @@ module.exports.net = {
 
             if (! itf) defer.resolve();
             else {
+                var addr = null;
                 for (var address in itf) {
-                    if (! address.family == family) continue;
+                    if (address.family != family) continue;
                     if (address.internal != internal) continue;
 
-                    defer.resolve(address.address);
+                    addr = address.address;
                 }
+
+                defer.resolve(addr);
             }
         }
 

@@ -43,6 +43,11 @@ serfer.connect()
                 serverConfig.net.external.itf
             );
 
+            winston.log('info', 'Internal Network Interface: ' + serverConfig.net.internal.itf);
+            winston.log('info', 'Internal Network Address: ' + nodeService.internalIpAddress());
+            winston.log('info', 'External Network Interface: ' + serverConfig.net.external.itf);
+            winston.log('info', 'External Network Address: ' + nodeService.externalIpAddress());
+
             var postman = new Postman(nodeService, os.hostname(), serfer, serverConfig.delay, [
                 {metric: 'load', fn: function (nodeService) {
                     return nodeService.load();
