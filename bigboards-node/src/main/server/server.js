@@ -72,24 +72,3 @@ configuration.load().then(function(config) {
         });
     });
 });
-
-
-
-/**********************************************************************************************************************
- * Handle all exceptions instead of bailing
- *********************************************************************************************************************/
-process.on('uncaughtException', function(err) {
-    handleError(err);
-});
-
-function handleError(error) {
-    console.log(JSON.stringify(error));
-
-    if (error.code == 'EADDRINFO')
-        return;
-
-    switch (error.errorCode) {
-        default:
-            throw error;
-    }
-}
