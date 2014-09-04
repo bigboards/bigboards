@@ -14,9 +14,8 @@ module.exports.net = {
     exteralIpAddress: function(externalInterfaceName) {
         return this.ipAddress(externalInterfaceName);
     },
-    ipAddress: function(itfName, family, internal) {
+    ipAddress: function(itfName, family) {
         if (!family) family = 'IPv4';
-        if (internal === null) internal = false;
 
         var defer = Q.defer();
 
@@ -27,12 +26,11 @@ module.exports.net = {
             if (! itf) defer.resolve();
             else {
                 var addr = null;
-                for (var address in itf) {
-                    if (address.family != family) continue;
-                    if (address.internal != internal) continue;
+                itf.forEach(function(address) {
+                    if (address.family != family) return;
 
                     addr = address.address;
-                }
+                });
 
                 defer.resolve(addr);
             }
