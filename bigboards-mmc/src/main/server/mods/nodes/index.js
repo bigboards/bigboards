@@ -53,7 +53,9 @@ function nodeDetails(member) {
 }
 
 function toAddress(addressBuffer) {
+    var l = addressBuffer.length;
+
     return {
-        ip: addressBuffer[12] + '.' + addressBuffer[13] + '.' + addressBuffer[14] + '.' + addressBuffer[15]
+        ip: addressBuffer[l-4] + '.' + addressBuffer[l-3] + '.' + addressBuffer[l-2] + '.' + addressBuffer[l - 1]
     }
 }
