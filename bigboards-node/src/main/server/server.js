@@ -44,14 +44,7 @@ configuration.load().then(function(config) {
         {metric: 'memory', fn: function(nodeService) { return nodeService.memory(); }},
         {metric: 'temperature', fn: function(nodeService) { return nodeService.temperature(); }},
         {metric: 'osDisk', fn: function(nodeService) { return nodeService.osDisk(); }},
-        {metric: 'dataDisk', fn: function(nodeService) { return nodeService.dataDisk(); }},
-        {metric: 'network', fn: function(nodeService) {
-            return {
-                internalIp: nodeService.internalIpAddress(),
-                externalIp: nodeService.externalIpAddress()
-            };
-        }},
-        {metric: 'container', fn: function(nodeService) { return nodeService.container(); }}
+        {metric: 'dataDisk', fn: function(nodeService) { return nodeService.dataDisk(); }}
     ]);
 
     /**********************************************************************************************************************
