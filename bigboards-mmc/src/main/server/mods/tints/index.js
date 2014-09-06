@@ -1,16 +1,16 @@
 var fs = require("fs"),
     Tint = require("./tint.js"),
-    Ansible = require("node-ansible"),
     async = require("async"),
     Q = require("q"),
     errors = require("../../errors.js"),
     yaml = require("js-yaml"),
     fsu = require('../../utils/fs-utils');
 
-function TintManager(taskManager, tintDirectory, externalIp) {
-    this.taskManager = taskManager;
+function TintManager(taskService, tintDirectory, externalIp, templater) {
+    this.taskManager = taskService;
     this.tintDirectory = tintDirectory;
     this.externalIp = externalIp;
+    this.templater = templater;
 }
 
 TintManager.prototype.listAll = function() {
@@ -51,7 +51,7 @@ TintManager.prototype.listByType = function(type) {
             var promises = [];
 
             files.forEach(function(file) {
-                promises.push(readManifest(self.tintDirectory + '/' + type + '/' + file));
+                promises.push(readManifest(self.templater, self.tintDirectory + '/' + type + '/' + file));
             });
 
             return Q.all(promises);
@@ -62,7 +62,7 @@ TintManager.prototype.listByType = function(type) {
  * Get the tint with the given id.
  */
 TintManager.prototype.get = function(type, id) {
-    return readManifest(this.tintDirectory + '/' + type + '/' + id);
+    return readManifest(this.templater, this.tintDirectory + '/' + type + '/' + id);
 };
 
 /**
@@ -301,11 +301,11 @@ TintManager.prototype.uninstall = function(tint) {
 };
 
 
-function readManifest(tintDir) {
-    return fsu
-        .readFile(tintDir + "/.meta/manifest.yml")
-        .then(function(data) {
-            return yaml.safeLoad(data);
+function readManifest(templater, tintDir) {
+    return templater
+        .template(tintDir + "/.meta/manifest.yml")
+        .then(function(output) {
+            return yaml.safeLoad(output);
         });
 }
 

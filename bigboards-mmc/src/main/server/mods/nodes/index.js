@@ -1,7 +1,7 @@
 var util         = require("util"),
     EventEmitter = require('events').EventEmitter,
     Restler      = require('restler'),
-    Q = require('q');
+    Q            = require('q');
 
 function HexNodeManager(serfer) {
     this.serfer = serfer;
@@ -11,15 +11,15 @@ function HexNodeManager(serfer) {
 util.inherits(HexNodeManager, EventEmitter);
 
 HexNodeManager.prototype.node = function(nodeName) {
-    return this.serfer.membersFiltered(null, null, nodeName);
+    return this.serfer.membersFiltered(null, null, nodeName)
+        .then(function(member) {
+            return nodeDetails(member);
+        });
 };
 
 HexNodeManager.prototype.nodes = function() {
-    var self = this;
     return this.serfer.members()
         .then(function(members) {
-            var result = [];
-
             var arr = [];
             members.forEach(function(member) { arr.push(nodeDetails(member)); });
 

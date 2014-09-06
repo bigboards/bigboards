@@ -12,7 +12,8 @@ var express = require('express'),
     winston = require('winston'),
     Serfer = require('serfer/src/'),
     Q = require('q'),
-    mdns = require('mdns');
+    mdns = require('mdns'),
+    Templater = require('./utils/templater');
 
 var self = this;
 var app = express();
@@ -96,6 +97,8 @@ function handleError(error) {
 
 function createServices(config) {
     var services = {};
+    var templater = new Templater(config, services);
+
     services.library = new Container.Library(serverConfig.library.url);
     winston.log('info', 'Create the Library Service');
 
@@ -108,7 +111,7 @@ function createServices(config) {
     services.tasks = new Container.Tasks();
     winston.log('info', 'Create the Task Service');
 
-    services.tints = new Container.Tints(services.tasks, serverConfig.tints.rootDirectory, serverConfig.address);
+    services.tints = new Container.Tints(services.tasks, serverConfig.tints.rootDirectory, serverConfig.address, templater);
     winston.log('info', 'Create the Tint Service');
 
     services.firmware = new Container.Firmware(serverConfig.firmware.patchesDirectory, serverConfig.firmware.versionsFile, services.tasks);
