@@ -302,7 +302,7 @@ TintManager.prototype.uninstall = function(tint) {
 
 
 function readManifest(nodeService, templater, tintDir) {
-    nodeService
+    return nodeService
         .nodes()
         .then(function (nodes) {
             return yaml.safeLoad(templater.template(tintDir + "/.meta/manifest.yml", nodes));
