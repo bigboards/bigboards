@@ -305,12 +305,8 @@ function readManifest(nodeService, templater, tintDir) {
     nodeService
         .nodes()
         .then(function (nodes) {
-            return templater.template(tintDir + "/.meta/manifest.yml", nodes);
-        })
-        .then(function(output) {
-            return yaml.safeLoad(output);
+            return yaml.safeLoad(templater.template(tintDir + "/.meta/manifest.yml", nodes));
         });
-
 }
 
 module.exports = TintManager;
