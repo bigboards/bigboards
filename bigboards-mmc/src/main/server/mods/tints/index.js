@@ -51,7 +51,7 @@ TintManager.prototype.listByType = function(type) {
             var promises = [];
 
             files.forEach(function(file) {
-                promises.push(readManifest(self.templater, self.tintDirectory + '/' + type + '/' + file));
+                promises.push(readManifest(self.nodeService, self.templater, self.tintDirectory + '/' + type + '/' + file));
             });
 
             return Q.all(promises);
@@ -62,7 +62,7 @@ TintManager.prototype.listByType = function(type) {
  * Get the tint with the given id.
  */
 TintManager.prototype.get = function(type, id) {
-    return readManifest(this.templater, this.tintDirectory + '/' + type + '/' + id);
+    return readManifest(this.nodeService, this.templater, this.tintDirectory + '/' + type + '/' + id);
 };
 
 /**
@@ -301,8 +301,8 @@ TintManager.prototype.uninstall = function(tint) {
 };
 
 
-function readManifest(templater, tintDir) {
-    this.nodeService
+function readManifest(nodeService, templater, tintDir) {
+    nodeService
         .nodes()
         .then(function (nodes) {
             return templater.template(tintDir + "/.meta/manifest.yml", nodes);
