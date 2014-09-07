@@ -6,11 +6,12 @@ var fs = require("fs"),
     yaml = require("js-yaml"),
     fsu = require('../../utils/fs-utils');
 
-function TintManager(taskService, tintDirectory, externalIp, templater) {
+function TintManager(taskService, tintDirectory, externalIp, templater, nodeService) {
     this.taskManager = taskService;
     this.tintDirectory = tintDirectory;
     this.externalIp = externalIp;
     this.templater = templater;
+    this.nodeService = nodeService;
 }
 
 TintManager.prototype.listAll = function() {
@@ -302,11 +303,15 @@ TintManager.prototype.uninstall = function(tint) {
 
 
 function readManifest(templater, tintDir) {
-    return templater
-        .template(tintDir + "/.meta/manifest.yml")
+    this.nodeService
+        .nodes()
+        .then(function (nodes) {
+            return templater.template(tintDir + "/.meta/manifest.yml", nodes);
+        })
         .then(function(output) {
             return yaml.safeLoad(output);
         });
+
 }
 
 module.exports = TintManager;

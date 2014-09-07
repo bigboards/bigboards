@@ -6,7 +6,7 @@ function Templater(configuration, services) {
     this.services = services;
 }
 
-Templater.prototype.template = function(file) {
+Templater.prototype.template = function(file, nodes) {
     var deferrer = Q.defer();
 
     try {
@@ -18,23 +18,19 @@ Templater.prototype.template = function(file) {
         };
 
         scope.nodes = {};
-        this.services.nodes.nodes().then(function (nodes) {
-            nodes.forEach(function (node) {
-                scope.nodes[node.name] = {
-                    ip: node.network.externalIp,
-                    status: node.status
-                };
+        nodes.forEach(function (node) {
+            scope.nodes[node.name] = {
+                ip: node.network.externalIp,
+                status: node.status
+            };
 
-                scope.nodes[node.container.name] = {
-                    ip: node.container.externalIp,
-                    status: node.container.status
-                };
-            });
-
-            deferrer.resolve(swig.renderFile(file, scope));
-        }).fail(function(error) {
-            deferrer.reject(error);
+            scope.nodes[node.container.name] = {
+                ip: node.container.externalIp,
+                status: node.container.status
+            };
         });
+
+        deferrer.resolve(swig.renderFile(file, scope));
     } catch (error) {
         deferrer.reject(error);
     }
