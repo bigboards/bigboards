@@ -111,14 +111,14 @@ function createServices(config) {
     services.tasks = new Container.Tasks();
     winston.log('info', 'Create the Task Service');
 
-    services.tints = new Container.Tints(services.tasks, serverConfig.tints.rootDirectory, serverConfig.address, templater, services.nodes);
-    winston.log('info', 'Create the Tint Service');
-
     services.firmware = new Container.Firmware(serverConfig.firmware.patchesDirectory, serverConfig.firmware.versionsFile, services.tasks);
     winston.log('info', 'Create the Firmware Service');
 
     services.nodes = new Container.Nodes(serfer);
     winston.log('info', 'Create the Node Service');
+
+    services.tints = new Container.Tints(services.tasks, services.nodes, serverConfig.tints.rootDirectory, templater);
+    winston.log('info', 'Create the Tint Service');
 
     //services.health = new Container.Health(services.nodes, services.metrics);
     //winston.log('info', 'Create the Health Service');

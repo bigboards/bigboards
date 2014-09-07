@@ -6,10 +6,9 @@ var fs = require("fs"),
     yaml = require("js-yaml"),
     fsu = require('../../utils/fs-utils');
 
-function TintManager(taskService, tintDirectory, externalIp, templater, nodeService) {
+function TintManager(taskService, nodeService, tintDirectory, templater) {
     this.taskManager = taskService;
     this.tintDirectory = tintDirectory;
-    this.externalIp = externalIp;
     this.templater = templater;
     this.nodeService = nodeService;
 }
