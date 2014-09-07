@@ -54,7 +54,8 @@ var services = null;
     Q.all([
         configuration.load(),
         serfer.connect()
-    ]).then(function(config) {
+    ]).then(function(res) {
+        var config = res[0];
         self.hexConfig = config;
 
         winston.info('Read the configuration for ' + config.name);
@@ -97,7 +98,7 @@ function handleError(error) {
 
 function createServices(config) {
     var services = {};
-    var templater = new Templater(config, services);
+    var templater = new Templater(config);
 
     services.library = new Container.Library(serverConfig.library.url);
     winston.log('info', 'Create the Library Service');
