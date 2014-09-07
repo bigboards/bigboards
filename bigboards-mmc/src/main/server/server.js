@@ -111,7 +111,7 @@ function createServices(config) {
     services.tasks = new Container.Tasks();
     winston.log('info', 'Create the Task Service');
 
-    services.tints = new Container.Tints(services.tasks, serverConfig.tints.rootDirectory, serverConfig.address, templater);
+    services.tints = new Container.Tints(services.tasks, serverConfig.tints.rootDirectory, serverConfig.address, templater, services.nodes);
     winston.log('info', 'Create the Tint Service');
 
     services.firmware = new Container.Firmware(serverConfig.firmware.patchesDirectory, serverConfig.firmware.versionsFile, services.tasks);
