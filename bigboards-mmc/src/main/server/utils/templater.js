@@ -10,8 +10,6 @@ Templater.prototype.template = function(file) {
     var deferrer = Q.defer();
 
     try {
-        var template = swig.compileFile(file);
-
         var scope = {};
 
         scope.hex = {
@@ -33,7 +31,7 @@ Templater.prototype.template = function(file) {
                 };
             });
 
-            deferrer.resolve(template(scope));
+            deferrer.resolve(swig.renderFile(file, scope));
         }).fail(function(error) {
             deferrer.reject(error);
         });
