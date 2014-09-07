@@ -50,7 +50,7 @@ Templater.prototype.template = function(file, nodes) {
         };
     });
 
-    return swig.renderFile(file, { locals: scope });
+    return swig.renderFile(file, scope);
 };
 
 module.exports = Templater;
