@@ -37,7 +37,7 @@ tasksModule.controller('TaskInvocationController', function($scope, Tasks, socke
             {'id': $routeParams.id},
             $scope.invokeParams,
             function(value, responseHeaders) {
-                $location.path('/tasks/' + $routeParams + '/output');
+                $location.path('/tasks/' + $routeParams.id + '/output');
             }
         );
     };
