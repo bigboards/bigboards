@@ -131,8 +131,8 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
                         self.currentTask = null;
 
                     }, function (error) {
-                        winston.log('warn', 'Task invocation resulted in an error: ' + error);
-                        winston.log('warn', error.stack);
+                        winston.log('info', 'Task invocation resulted in an error: ' + error);
+                        winston.log('info', error.stack);
 
                         self.currentTask = null;
 
@@ -144,8 +144,8 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
                     deferred.resolve();
                 } catch (err) {
                     deferred.reject(err);
-                    winston.log('warn', 'Unable to invoke a task: ' + err);
-                    winston.log('warn', err.stack);
+                    winston.log('info', 'Unable to invoke a task: ' + err);
+                    winston.log('info', err.stack);
                     eventEmitter.emit('task:failed', { code: taskCode, error: err });
                 }
             }

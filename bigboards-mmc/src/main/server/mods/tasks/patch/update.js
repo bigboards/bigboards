@@ -17,7 +17,7 @@ module.exports = function(configuration) {
 
             return TaskUtils.runShellCommand(
                 '/opt/bb/runtimes/bigboards-updater/update.sh',
-                verbose, false,
+                verbose, true,
                 undefined //'/opt/bb/runtimes/bigboards-updater'
             );
         }

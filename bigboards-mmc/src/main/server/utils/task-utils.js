@@ -31,7 +31,7 @@ module.exports.runPlaybook = function(playbook, scope, workingDir) {
     return deferred.promise;
 };
 
-module.exports.runShellCommand = function(args, verbose, asSudo, cwd) {
+module.exports.runShellCommand = function(args, verbose, sudo, cwd) {
     var deferred = Q.defer();
 
     var pb = new Ansible.AdHoc()
@@ -40,7 +40,7 @@ module.exports.runShellCommand = function(args, verbose, asSudo, cwd) {
         .module('shell')
         .args(args);
 
-    if (asSudo)
+    if (sudo)
         pb.asSudo();
 
     if (verbose)
