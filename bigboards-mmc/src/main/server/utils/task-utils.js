@@ -31,15 +31,17 @@ module.exports.runPlaybook = function(playbook, scope, workingDir) {
     return deferred.promise;
 };
 
-module.exports.runShellCommand = function(args, verbose, cwd) {
+module.exports.runShellCommand = function(args, verbose, asSudo, cwd) {
     var deferred = Q.defer();
 
     var pb = new Ansible.AdHoc()
         .inventory('/opt/bb/hosts')
         .hosts('host-coordinators')
         .module('shell')
-        .asSudo()
         .args(args);
+
+    if (asSudo)
+        pb.asSudo();
 
     if (verbose)
         pb.verbose('vvvv');

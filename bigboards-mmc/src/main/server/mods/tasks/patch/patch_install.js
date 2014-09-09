@@ -22,7 +22,7 @@ module.exports = function () {
 
             return TaskUtils.runShellCommand(
                 '/opt/bb/runtimes/bigboards-updater/patch.sh ' + scope.patchName,
-                verbose,
+                verbose, false,
                 undefined //'/opt/bb/runtimes/bigboards-updater'
             );
         }
