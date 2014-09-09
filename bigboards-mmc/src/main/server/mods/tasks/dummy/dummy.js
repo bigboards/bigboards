@@ -1,5 +1,5 @@
-var Ansible = require('node-ansible'),
-    Q = require('q');
+var Q = require('q'),
+    TaskUtils = require('../../../utils/task-utils');
 
 module.exports = function(configuration) {
     return {
@@ -14,22 +14,7 @@ module.exports = function(configuration) {
             }
         ],
         execute: function (scope) {
-            var loops = scope.loops ? parseInt(scope.loops) : 10;
-
-            var deferrer = Q.defer();
-
-            var counter = loops;
-            var intervalHandle = setInterval(function() {
-                if (counter == 0) {
-                    clearInterval(intervalHandle);
-                    deferrer.resolve();
-                } else {
-                    deferrer.notify({data: 'Dummy task tick\n'});
-                    counter--;
-                }
-            }, 1000);
-
-            return deferrer.promise;
+            return TaskUtils.runPlaybook('dummy/dummy', scope);
         }
     }
 };

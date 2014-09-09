@@ -1,9 +1,11 @@
-var Ansible = require('node-ansible'),
+var Ansible = require('../mods/ansible/index.js'),
+    path = require('path'),
     Q = require('q');
 
 module.exports.runPlaybook = function(playbook, scope, workingDir) {
     var deferred = Q.defer();
-    var cwd = '/opt/bb/runtimes/bigboards-mmc/server/ansible';
+//    var cwd = '/opt/bb/runtimes/bigboards-mmc/server/ansible';
+    var cwd = path.join(__dirname, '../ansible');
 
     if (workingDir) cwd = workingDir;
 

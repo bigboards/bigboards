@@ -17,7 +17,8 @@ AbstractAnsibleCommand.prototype = {
     if (errors.length > 0) {
       var error = new Error('Ansible execution was mis-configured');
       error.reason = errors;
-      return deferred.reject(error)
+      deferred.reject(error);
+      return deferred.promise;
     }
 
     var currentWorkingDir = null;

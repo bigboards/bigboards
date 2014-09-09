@@ -63,7 +63,9 @@ var services = null;
         // -- Create the services
         self.services = createServices(config);
 
-        serfer.stream('*').progress(function(data) {
+        var streamHandler = serfer.stream('*');
+
+        streamHandler.on('data', function(data) {
             if (!data.data || data.data['Name'] != 'metric') return;
 
             var payload = JSON.parse(data.data['Payload']);
