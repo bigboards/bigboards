@@ -11,6 +11,7 @@
 
     - name: be sure the containers are stopped
       shell: lxc-stop -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
+      ignore_errors: true
       when: "'{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}' in '''{{lxc_list.stdout}}'''"
 
     - name: update the hosts file for the nodes with the new addresses
