@@ -41,7 +41,7 @@
       with_items: lxc_list.stdout
 
     - name: restart the network
-      shell: ifdown br1 && ifup br1
+      shell: sudo ifdown br1 && sudo ifup br1
 
     - name: be sure the containers are started again
       shell: lxc-start -d -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
