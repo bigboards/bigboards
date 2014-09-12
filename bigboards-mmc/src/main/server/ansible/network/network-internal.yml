@@ -38,7 +38,7 @@
 
     - name: update the hosts file for the containers and remove the old addresses
       template: src=hosts dest=/var/lib/lxc/{{item}}/rootfs/etc/hosts owner=root group=root
-      with_items: lxc_list
+      with_items: lxc_list.stdout
 
     - name: restart the network
       shell: ifdown br1 && ifup br1
