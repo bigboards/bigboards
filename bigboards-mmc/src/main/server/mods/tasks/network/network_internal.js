@@ -2,8 +2,8 @@ var TaskUtils = require('../../../utils/task-utils');
 
 module.exports = function(configuration) {
     return {
-        code: 'lxc_restart',
-        description: 'restarting the lxc containers on the hex',
+        code: 'network_internal',
+        description: 'change the ip range for the internal network',
         type: 'ansible',
         parameters: [
             {
