@@ -24,6 +24,9 @@ TaskManager.prototype.registerDefaultTasks = function(configuration) {
     // -- dummy
     this.register(require('./dummy/dummy')(configuration));
 
+    // -- network
+    this.register(require('./network/network_internal')(configuration));
+
     // -- lxc tasks
     this.register(require('./lxc/lxc_destroy')(configuration));
     this.register(require('./lxc/lxc_restart')(configuration));
