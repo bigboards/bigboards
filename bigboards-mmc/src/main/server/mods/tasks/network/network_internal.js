@@ -1,0 +1,24 @@
+var TaskUtils = require('../../../utils/task-utils');
+
+module.exports = function(configuration) {
+    return {
+        code: 'lxc_restart',
+        description: 'restarting the lxc containers on the hex',
+        type: 'ansible',
+        parameters: [
+            {
+                key: 'ip_prefix',
+                description: 'The ip prefix to use for the addresses. This is a string in the form of xxx.xxx.xxx and is used to prepend to the node sequence',
+                required: true
+            },
+            {
+                key: 'verbose',
+                description: 'Used to print additional debug information',
+                required: false
+            }
+        ],
+        execute: function (scope) {
+            return TaskUtils.runPlaybook('network/network-internal', scope);
+        }
+    }
+};

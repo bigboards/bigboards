@@ -14,7 +14,7 @@
       tags:
         - container
 
-    - name: be sure the containers are destroyed
+    - name: be sure the containers are started again
       shell: lxc-start -d -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
       when: "'{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}' in '''{{lxc_list.stdout}}'''"
       tags:
