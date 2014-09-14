@@ -6,9 +6,6 @@
       shell: lxc-ls
       register: lxc_list
 
-    - name: stop the serf daemon
-      service: name=serf state=stopped
-
     - name: be sure the containers are stopped
       shell: lxc-stop -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
       ignore_errors: true
@@ -41,7 +38,8 @@
       with_items: lxc_list.stdout
 
     - name: restart the network
-      shell: sudo ifdown br1 && sudo ifup br1
+      command: "sudo ifdown br1 && sudo ifup br1"
+      ignore_errors: yes
       async: 30
       poll: 0
 
@@ -49,5 +47,8 @@
       shell: lxc-start -d -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
       when: "'{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}' in '''{{lxc_list.stdout}}'''"
 
-    - name: start the serf daemons again
-      service: name=serf state=started
+- hosts: host-workers
+  sudo: yes
+  tasks:
+    - name: join the master node again
+      command: serf join {{ ansible_local.hex.name }}-n1
