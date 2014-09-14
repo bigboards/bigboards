@@ -38,7 +38,7 @@
       with_items: lxc_list.stdout
 
     - name: restart the network
-      command: "sudo ifdown br1 && sudo ifup br1"
+      command: "sudo ifdown br1; sudo ifup br1"
       ignore_errors: yes
       async: 30
       poll: 0
