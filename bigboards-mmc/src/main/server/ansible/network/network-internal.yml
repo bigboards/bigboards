@@ -37,21 +37,9 @@
       template: src=hosts dest=/var/lib/lxc/{{item}}/rootfs/etc/hosts owner=root group=root
       with_items: lxc_list.stdout
 
-- hosts: host-workers
-  sudo: yes
-  tasks:
     - name: restart the network
-      command: "service networking restart"
+      service: name=networking state=restarted
 
-- hosts: host-coordinators
-  sudo: yes
-  tasks:
-    - name: restart the network
-      command: "service networking restart"
-
-- hosts: host
-  sudo: yes
-  tasks:
     - name: be sure the containers are started again
       shell: lxc-start -d -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
       when: "'{{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}' in '''{{lxc_list.stdout}}'''"
