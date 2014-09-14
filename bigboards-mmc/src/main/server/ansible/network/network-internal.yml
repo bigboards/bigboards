@@ -37,15 +37,8 @@
       template: src=hosts dest=/var/lib/lxc/{{item}}/rootfs/etc/hosts owner=root group=root
       with_items: lxc_list.stdout
 
-
-- hosts: host
-  sudo: yes
-  tasks:
     - name: restart the network
-      command: "sudo ifdown br1; sudo ifup br1"
-      ignore_errors: yes
-      async: 30
-      poll: 0
+      command: "service networking restart"
 
     - name: be sure the containers are started again
       shell: lxc-start -d -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }}
