@@ -37,6 +37,9 @@
       template: src=hosts dest=/var/lib/lxc/{{item}}/rootfs/etc/hosts owner=root group=root
       with_items: lxc_list.stdout
 
+- hosts: host
+  sudo: yes
+  tasks:
     - name: restart the network
       service: name=networking state=restarted
 
