@@ -14,19 +14,28 @@
     - name: update the network configuration on all nodes
       template: src=interfaces dest=/etc/network/interfaces owner=root group=root
 
+- hosts: host-coordinators
+  sudo: yes
+  tasks:
+    - name: add an ip alias
+      shell: ip addr add {{ip_prefix}}.1/24 dev br1
+
+- hosts: host-workers
+  sudo: yes
+  tasks:
     - name: restart the network
       service: name=networking state=restarted
-
-    - name: update the hosts file for the nodes and remove the old addresses
-      template: src=hosts dest=/etc/hosts owner=root group=root
-
-    - name: update the hosts file for the containers and remove the old addresses
-      template: src=hosts dest=/var/lib/lxc/{{item}}/rootfs/etc/hosts owner=root group=root
-      with_items: lxc_list.stdout
 
 - hosts: host-coordinators
   sudo: yes
   tasks:
+    - name: restart the network
+      service: name=networking state=restarted
+    - name: update the hosts file for the nodes and remove the old addresses
+      template: src=hosts dest=/etc/hosts owner=root group=root
+    - name: update the hosts file for the containers and remove the old addresses
+      template: src=hosts dest=/var/lib/lxc/{{item}}/rootfs/etc/hosts owner=root group=root
+      with_items: lxc_list.stdout
     - name: restart the serf agent
       service: name=serf state=restarted
 
