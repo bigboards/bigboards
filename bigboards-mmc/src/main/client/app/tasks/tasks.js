@@ -62,6 +62,14 @@ tasksModule.controller('TaskOutputController', function($scope, Tasks, socket, $
         $scope.state = 'finished';
 
         $scope.output += '\n\n\n';
+
+        if (task.data && task.data.msg) {
+            $scope.output += '--------------------------------------------------------------------------------\n';
+            $scope.output += '\n\n\n';
+            $scope.output += task.data.msg;
+        }
+
+        $scope.output += '\n\n\n';
         $scope.output += '--------------------------------------------------------------------------------\n';
         $scope.output += 'Hooray!\n';
         $scope.output += 'We have successfully finished our task:\n';

@@ -18,7 +18,11 @@ module.exports = function(configuration) {
             }
         ],
         execute: function (scope) {
-            return TaskUtils.runPlaybook('network/network-internal', scope);
+            return TaskUtils
+                .runPlaybook('network/network-internal', scope)
+                .then(function(data) {
+                    return {msg: 'Please disconnect and reconnect the power to the hex to fixate the internal changes.'};
+                });
         }
     }
 };

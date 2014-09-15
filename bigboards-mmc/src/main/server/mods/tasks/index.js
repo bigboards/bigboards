@@ -128,8 +128,8 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
                 winston.log('info', 'invoking task "%s": %s', taskCode, task.description);
                 eventEmitter.emit('task:started', task);
                 try {
-                    task.execute(executionScope).then(function () {
-                        eventEmitter.emit('task:finished', { code: taskCode });
+                    task.execute(executionScope).then(function (data) {
+                        eventEmitter.emit('task:finished', { code: taskCode, description: task.description, data: data });
 
                         self.currentTask = null;
 
@@ -139,7 +139,7 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
 
                         self.currentTask = null;
 
-                        eventEmitter.emit('task:failed', { code: taskCode, error: error });
+                        eventEmitter.emit('task:failed', { code: taskCode, description: task.description, error: error });
                     }, function (progress) {
                         eventEmitter.emit('task:busy', { code: taskCode, data: progress });
                     });
@@ -149,7 +149,7 @@ TaskManager.prototype.invoke = function(taskCode, parameters) {
                     deferred.reject(err);
                     winston.log('info', 'Unable to invoke a task: ' + err);
                     winston.log('info', err.stack);
-                    eventEmitter.emit('task:failed', { code: taskCode, error: err });
+                    eventEmitter.emit('task:failed', { code: taskCode, description: task.description, error: err });
                 }
             }
         }
