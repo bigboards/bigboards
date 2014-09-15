@@ -3,6 +3,11 @@
  *********************************************************************************************************************/
 .tasks {
     color: #515151;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 80px;
 }
 
 .tasks .current-task {
@@ -85,4 +90,14 @@
 .invoke-actions {
     width: 100%;
     padding: 20px;
+}
+
+.tasks .output {
+    overflow-y: scroll;
+    height: 100%;
+    width: 100%;
+    display: block;
+    min-height: 100%;
+    border: none;
+    background-color: transparent;
 }

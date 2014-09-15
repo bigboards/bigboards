@@ -93,7 +93,7 @@ body {
     top:0;
     bottom:0;
     background-color: #efefef;
-    overflow: scroll;
+    overflow: hidden;
 }
 
 .bb-logo {
