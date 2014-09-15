@@ -24,7 +24,7 @@
   sudo: yes
   tasks:
     - name: restart the network
-      service: name=networking state=restarted
+      shell: /etc/init.d/networking restart
       async: 30
       poll: 0
 
@@ -32,7 +32,7 @@
   sudo: yes
   tasks:
     - name: restart the network
-      service: name=networking state=restarted
+      shell: /etc/init.d/networking restart
     - name: update the hosts file for the nodes and remove the old addresses
       template: src=hosts dest=/etc/hosts owner=root group=root
     - name: update the hosts file for the containers and remove the old addresses
