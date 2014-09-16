@@ -14,6 +14,10 @@
     - name: update the network configuration on all nodes
       template: src=interfaces dest=/etc/network/interfaces owner=root group=root
 
+    - name: update the network configuration on all nodes
+      template: src=interfaces-container dest=dest=/var/lib/lxc/{{item}}/rootfs/etc/network/interfaces owner=root group=root
+      with_items: lxc_list.stdout
+
     - name: update the hosts file for the nodes and remove the old addresses
       template: src=hosts dest=/etc/hosts owner=root group=root
 
