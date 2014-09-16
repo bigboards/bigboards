@@ -1,4 +1,4 @@
-libraryModule.controller('LibraryController', function($scope, Library, Tints, socket) {
+libraryModule.controller('LibraryController', function($scope, Library, Tints, socket, $location) {
     $scope.state = null;
 
     $scope.library = Library.query();
@@ -12,13 +12,14 @@ libraryModule.controller('LibraryController', function($scope, Library, Tints, s
         }
     ];
 
-    $scope.installTint =  function(type, id) {
-        Tints.install({type: type, id: encodeURIComponent(id)});
+    $scope.refresh = function() {
+        $scope.library = Library.sync();
     };
 
-    $scope.$on('library:refresh', function(event, data) {
-        $scope.library = Library.query();
-    });
+    $scope.installTint =  function(type, id) {
+        Tints.install({type: type, id: encodeURIComponent(id)});
+        $location.path('#/tasks/tint_install/output');
+    };
 });
 
 libraryModule.service('Library', function($resource) {
