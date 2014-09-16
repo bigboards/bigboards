@@ -126,13 +126,11 @@ app.controller('ApplicationController', function($scope, $location, Firmware) {
     });
 
     $scope.invokeMenuItem = function(item) {
-        if (!$scope.currentItem) {
-            if (item.handler) {
-                item.handler($scope);
-            } else if (item.path) {
-                $location.path(item.path);
-                $scope.$emit('navigate', item);
-            }
+        if (item.handler) {
+            item.handler($scope);
+        } else if (item.path) {
+            $location.path(item.path);
+            $scope.$emit('navigate', item);
         }
     };
 });
