@@ -45,6 +45,9 @@
     - name: wait for the container to be started
       shell: lxc-wait -n {{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }} -t 5 -s RUNNING
 
+    - name: wait until the network connection is available
+      wait_for: host={{ ansible_local.hex.name }}-v{{ ansible_local.hex.node.sequence }} port=22
+
 - hosts: lxc
   sudo: yes
   gather_facts: no
