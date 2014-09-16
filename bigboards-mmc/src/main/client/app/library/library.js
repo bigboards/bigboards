@@ -18,7 +18,7 @@ libraryModule.controller('LibraryController', function($scope, Library, Tints, s
 
     $scope.installTint =  function(type, id) {
         Tints.install({type: type, id: encodeURIComponent(id)});
-        $location.path('#/tasks/tint_install/output');
+        $location.path('/tasks/tint_install/output');
     };
 });
 
