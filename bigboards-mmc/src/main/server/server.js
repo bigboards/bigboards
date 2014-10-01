@@ -48,7 +48,6 @@ if (serverConfig.isDevelopment()) {
  * Initialize the hex
  *********************************************************************************************************************/
 var configuration = new Container.Configuration(serverConfig.hex.file);
-var hexConfig = null;
 var services = null;
 
     Q.all([
