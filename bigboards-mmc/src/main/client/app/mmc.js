@@ -112,6 +112,11 @@ app.controller('ApplicationController', function($scope, $location, Firmware) {
             label: 'Update',
             icon: 'fa-refresh',
             path: '/update'
+        },
+        {
+            label: 'Documentation',
+            icon: 'fa-book',
+            url: 'http://docs.bigboards.io'
         }
 
     ];
@@ -131,6 +136,9 @@ app.controller('ApplicationController', function($scope, $location, Firmware) {
         } else if (item.path) {
             $location.path(item.path);
             $scope.$emit('navigate', item);
+        } else if (item.url) {
+            console.log('goto ' + item.url);
+            window.open(item.url,'_blank');
         }
     };
 });
