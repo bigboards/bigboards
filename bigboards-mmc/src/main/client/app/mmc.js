@@ -11,11 +11,7 @@ var app = angular.module( 'mmc', [
     'btford.socket-io'
 ]);
 
-app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider, snapRemoteProvider) {
-    snapRemoteProvider.globalOptions = {
-        maxPosition: 200
-    };
-
+app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider) {
     $routeProvider
         .when('/dashboard', {
             title: 'Dashboard',

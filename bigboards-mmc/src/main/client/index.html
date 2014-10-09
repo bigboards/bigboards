@@ -28,7 +28,8 @@
     <link rel="stylesheet" type="text/css" href="app/dashboard/directives/hex-detail/hex-detail.css" />
     <link rel="stylesheet" type="text/css" href="app/dashboard/directives/indicator/indicator.css" />
 
-    <link rel="stylesheet" type="text/css" href="app/common/directives/menu/menu.css" />
+    <link rel="stylesheet" type="text/css" href="app/common/directives/menu-item/menu-item.css" />
+    <link rel="stylesheet" type="text/css" href="app/common/directives/docs-toggle/docs-toggle.css" />
     <link rel="stylesheet" type="text/css" href="app/common/directives/tasks/tasks.css" />
 
     <link rel="stylesheet" type="text/css" href="app/library/library.css" />
@@ -52,33 +53,37 @@
 
 <body ng-controller="ApplicationController">
 <div id="wrap">
-    <snap-drawer>
-        <div id="menu">
-            <div class="menu-logo">
-                <span class="bb-name"></span>
-            </div>
-            <div class="menu-item" ng-repeat="item in menu" ng-click="invokeMenuItem(item)">
-                <span class="caption">{{item.label}}</span>
-            </div>
-        </div>
-        <div id="firmware-version">
-            <span class="caption">firmware {{firmware.version.name}}</span>
-        </div>
-    </snap-drawer><snap-content>
-        <div id="menu-quick">
-            <div class="quick-menu-logo" snap-toggle="left">
-                <span class="bb-logo" ></span>
-            </div>
 
-            <div class="quick-menu-item" ng-repeat="item in menu" ng-click="invokeMenuItem(item)" ng-class="{'active': item.label == currentItem.label}">
-                <span class="fa fa-2x" ng-class="item.icon"></span>
+    <div id="header">
+        <div class="brand"></div>
+        <div class="title">Hi! I'm {{ hex.name }}</div>
+        <div class="actions">
+            <!--<div class="dynamic-actions">-->
+
+            <!--</div>-->
+            <div class="static-actions">
+                <menu-item label="Dashboard" icon="fa-dashboard" path="/"></menu-item>
+                <menu-item label="Library" icon="fa-tint" path="/library"></menu-item>
+                <menu-item label="Tasks" icon="fa-tasks" path="/tasks"></menu-item>
+                <menu-item label="Update" icon="fa-refresh" path="/library"></menu-item>
+                <docs-toggle content-element-id="content" docs-element-id="docs"></docs-toggle>
             </div>
         </div>
-        <div id="content" ng-view></div>
-    </snap-content>
+    </div>
+    <div id="content" ng-view></div>
+    <div id="docs"></div>
+        <!--<div id="menu">-->
+            <!--<div class="menu-logo">-->
+                <!--<span class="bb-name"></span>-->
+            <!--</div>-->
+            <!--<div class="menu-item" ng-repeat="item in menu" ng-click="invokeMenuItem(item)">-->
+                <!--<span class="caption">{{item.label}}</span>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div id="firmware-version">-->
+            <!--<span class="caption">firmware {{firmware.version.name}}</span>-->
+        <!--</div>-->
 </div>
-
-<!--<tasks></tasks>-->
 
 <script src="https://togetherjs.com/togetherjs-min.js"></script>
 <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
@@ -104,7 +109,8 @@
 
 <script type="text/javascript" src="app/common/directives/bb-header/bb-header.js"></script>
 <script type="text/javascript" src="app/common/directives/init-focus/init-focus.js"></script>
-<script type="text/javascript" src="app/common/directives/menu/menu.js"></script>
+<script type="text/javascript" src="app/common/directives/menu-item/menu-item.js"></script>
+<script type="text/javascript" src="app/common/directives/docs-toggle/docs-toggle.js"></script>
 <script type="text/javascript" src="app/common/directives/tasks/tasks.js"></script>
 <script type="text/javascript" src="app/common/directives/text-field/text-field.js"></script>
 <script type="text/javascript" src="app/common/directives/scroll-glue/scroll-glue.js"></script>

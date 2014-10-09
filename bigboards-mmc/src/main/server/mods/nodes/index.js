@@ -27,6 +27,7 @@ HexNodeManager.prototype.nodes = function() {
         })
         .then(function(result) {
             return result.sort(function (a, b) {
+                // FIXME: This failes if name is null for some misterious reason. Find the reason.
                 return a.name.localeCompare(b.name);
             });
         });
