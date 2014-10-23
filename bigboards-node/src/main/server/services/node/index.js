@@ -3,7 +3,8 @@ var os = require('os'),
     fs = require('fs'),
     Q = require('q'),
     utils = require('../../utils'),
-    exec = require('child_process').exec;
+    exec = require('child_process').exec,
+    winston = require('winston');
 
 function Node(hexName, sequence, internalInterfaceName, externalInterfaceName) {
     this.hexName = hexName;
@@ -129,6 +130,9 @@ Node.prototype.container = function() {
         .interalIpAddress(this.internalInterfaceName)
         .then(function(nodeInternalIp) {
             return getContainerInfo(self.hexName + '-v' + self.sequence, nodeInternalIp);
+        })
+        .fail(function(error) {
+            winston.log('Unable to get the container information: ' + error.message);
         });
 };
 

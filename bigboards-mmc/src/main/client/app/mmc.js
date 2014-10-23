@@ -83,50 +83,12 @@ app.run(['$rootScope', 'Identity', function($rootScope, Identity) {
 app.controller('ApplicationController', function($scope, $location, Firmware) {
     $scope.currentItem = null;
 
-    $scope.menu = [
-        {
-            label: 'Dashboard',
-            icon: 'fa-dashboard',
-            path: '/dashboard'
-        },
-        {
-            label: 'Library',
-            icon: 'fa-tint',
-            path: '/library'
-        },
-        {
-            label: 'Tasks',
-            icon: 'fa-tasks',
-            path: '/tasks'
-        },
-//        {
-//            label: 'Shell',
-//            icon: 'fa-terminal',
-//            path: '/shell'
-//        },
-        {
-            label: 'Update',
-            icon: 'fa-refresh',
-            path: '/update'
-        }
-
-    ];
-
     $scope.firmware = Firmware.get();
 
-    $scope.$on('$routeChangeSuccess', function(event, current, previous) {
-        $scope.menu.forEach(function(item) {
-            if (item.path && current.$$route && item.path == current.$$route.originalPath)
-                $scope.currentItem = item;
-        });
-    });
-
-    $scope.invokeMenuItem = function(item) {
-        if (item.handler) {
-            item.handler($scope);
-        } else if (item.path) {
-            $location.path(item.path);
-            $scope.$emit('navigate', item);
-        }
-    };
+//    $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+//        $scope.menu.forEach(function(item) {
+//            if (item.path && current.$$route && item.path == current.$$route.originalPath)
+//                $scope.currentItem = item;
+//        });
+//    });
 });

@@ -21,7 +21,9 @@ HexNodeManager.prototype.nodes = function() {
     return this.serfer.members()
         .then(function(members) {
             var arr = [];
-            members.forEach(function(member) { arr.push(nodeDetails(member)); });
+            members.forEach(function(member) {
+                arr.push(nodeDetails(member));
+            });
 
             return Q.all(arr);
         })
@@ -41,7 +43,12 @@ function nodeDetails(member) {
     Restler
         .get('http://' + toAddress(member['Addr']).ip + ':7099/api/v1/node')
         .on('complete', function(result) {
-            if (result instanceof Error) defer.reject(result);
+            if (result instanceof Error) {
+                result['tags'] = [];
+                result['status'] = 'Unknown';
+
+                defer.resolve(result);
+            }
             else {
                 result['tags'] = member['Tags'];
                 result['status'] = member['Status'];

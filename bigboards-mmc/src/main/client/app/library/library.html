@@ -1,8 +1,13 @@
-<bb-header>Library</bb-header>
+<div class="container-fluid">
+    <bb-header title="Library">
+        <div class="pull-right">
+            <button class="btn btn-default" ng-click="refresh()"><span class="fa fa-2x fa-refresh"></span></button>
+        </div>
+    </bb-header>
 
-<div class="library">
-    <button class="btn btn-default" ng-click="refresh()">Refresh the library</button>
-    <div class="tints">
-        <library-tint tint="t" ng-repeat="t in library" on-install="installTint(t.type, t.id)"></library-tint>
+    <div class="row library">
+        <div class="tints">
+            <library-tint tint="t" ng-repeat="t in library" on-install="installTint(t.type, t.id)"></library-tint>
+        </div>
     </div>
 </div>

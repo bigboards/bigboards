@@ -1,5 +1,3 @@
-<bb-header>Hi, I'm {{hex.name}}</bb-header>
-
 <table class="table">
     <thead>
         <tr>
@@ -21,7 +19,7 @@
     <tr ng-repeat="node in nodes">
         <td>{{$index + 1}}</td>
         <td>{{node.tags.role}}</td>
-        <td>{{node.container.name}}</td>
+        <td>{{node.name}}</td>
         <td>{{node.network.externalIp}}</td>
         <td>{{node.status}}</td>
         <td>{{node.container.externalIp}}</td>
