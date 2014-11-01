@@ -3,6 +3,7 @@ var app = angular.module( 'mmc', [
     'bb.dashboard',
     'bb.tints',
     'bb.library',
+    'bb.learn',
     'bb.shell',
     'bb.tasks',
     'bb.update',
@@ -27,6 +28,11 @@ app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider) {
             title: 'Shell',
             templateUrl: 'app/shell/shell.html',
             controller: 'ShellController'
+        })
+        .when('/learn', {
+            title: 'Learn',
+            templateUrl: 'app/learn/learn.html',
+            controller: 'LearnController'
         })
 
         .when('/tasks', {

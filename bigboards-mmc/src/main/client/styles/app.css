@@ -12,6 +12,10 @@ body {
     right:0;
 }
 
+#wrap.splitview #content {
+    width: 50%;
+}
+
 #header {
     position: absolute;
     top: 0;
@@ -61,19 +65,26 @@ body {
     height: 100%;
 }
 
+.plate {
+    background-color: white;
+
+    -webkit-box-shadow: 4px -4px 10px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    4px -4px 10px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         4px -4px 10px 0px rgba(50, 50, 50, 0.75);
+
+    height: 100%;
+}
+
 #content {
     position: absolute;
     top: 75px;
     left: 0;
     bottom: 0;
     width: 100%;
-
-    background-color: white;
-
-    -webkit-box-shadow: 4px -4px 10px 0px rgba(50, 50, 50, 0.75);
-    -moz-box-shadow:    4px -4px 10px 0px rgba(50, 50, 50, 0.75);
-    box-shadow:         4px -4px 10px 0px rgba(50, 50, 50, 0.75);
+    padding: 0;
 }
+
+#content .row { margin: 0; }
 
 #docs {
     position: absolute;

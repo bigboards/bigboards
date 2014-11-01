@@ -5,12 +5,14 @@ app.directive('docsToggle', function() {
             docsElement: '@docsElementId',
             contentElement: '@contentElementId'
         },
-        controller: function ($scope) {
+        controller: function ($scope, $route) {
             $scope.visible = false;
 
             $scope.toggle = function() {
                 if ($scope.visible) $scope.$emit('docs:hide');
                 else $scope.$emit('docs:show');
+
+                $route.reload();
             };
 
             $scope.$on('docs:show', function() { $scope.visible = true; });
@@ -20,10 +22,10 @@ app.directive('docsToggle', function() {
             $scope.$watch('visible', function() {
                 if (!$scope.visible) {
                     $('#' + $scope.docsElement).hide();
-                    $('#' + $scope.contentElement).css('width', '100%');
+                    $('#wrap').removeClass('splitview');
                 } else {
                     $('#' + $scope.docsElement).show();
-                    $('#' + $scope.contentElement).css('width', '50%');
+                    $('#wrap').addClass('splitview');
                 }
             });
 

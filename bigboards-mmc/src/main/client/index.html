@@ -33,6 +33,7 @@
     <link rel="stylesheet" type="text/css" href="app/common/directives/tasks/tasks.css" />
 
     <link rel="stylesheet" type="text/css" href="app/library/library.css" />
+    <link rel="stylesheet" type="text/css" href="app/learn/learn.css" />
 
     <link rel="stylesheet" type="text/css" href="app/tasks/tasks.css" />
     <link rel="stylesheet" type="text/css" href="app/tints/tints.css" />
@@ -66,11 +67,11 @@
                 <menu-item label="Library" icon="fa-tint" path="/library"></menu-item>
                 <menu-item label="Tasks" icon="fa-tasks" path="/tasks"></menu-item>
                 <menu-item label="Update" icon="fa-refresh" path="/library"></menu-item>
-                <docs-toggle content-element-id="content" docs-element-id="docs"></docs-toggle>
+                <menu-item label="Learn" icon="fa-graduation-cap" path="/learn"></menu-item>
             </div>
         </div>
     </div>
-    <div id="content" ng-view></div>
+    <div id="content" class="container-fluid" ng-view></div>
     <div id="docs"></div>
         <!--<div id="menu">-->
             <!--<div class="menu-logo">-->
@@ -132,6 +133,8 @@
 
 <script type="text/javascript" src="app/tasks/module.js"></script>
 <script type="text/javascript" src="app/tasks/tasks.js"></script>
+
+<script type="text/javascript" src="app/learn/module.js"></script>
 
 <script type="text/javascript" src="app/library/module.js"></script>
 <script type="text/javascript" src="app/library/library.js"></script>

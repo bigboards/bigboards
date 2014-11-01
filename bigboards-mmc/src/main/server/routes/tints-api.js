@@ -7,20 +7,24 @@ function TintsAPI(tints, library) {
     this.library = library;
 }
 
-/**
- * List the tints currently installed on this hex.
- *
- * @param req
- * @param res
- */
-TintsAPI.prototype.list = function(req, res) {
-    var type = req.params['type'];
+TintsAPI.prototype.stack = function(req, res) {
+    return this.tints.stack().then(function(tints) {
+        res.send(200, tints);
+    }, function(error) {
+        ApiUtils.handleError(res, error);
+    });
+};
 
-    var promise = null;
-    if (type) promise = this.tints.listByType(type);
-    else promise = this.tints.listAll();
+TintsAPI.prototype.data = function(req, res) {
+    return this.tints.data().then(function(tints) {
+        res.send(200, tints);
+    }, function(error) {
+        ApiUtils.handleError(res, error);
+    });
+};
 
-    return promise.then(function(tints) {
+TintsAPI.prototype.edu = function(req, res) {
+    return this.tints.edu().then(function(tints) {
         res.send(200, tints);
     }, function(error) {
         ApiUtils.handleError(res, error);
