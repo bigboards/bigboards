@@ -1,0 +1,32 @@
+{
+  "name": "angular-flip-dr",
+  "version": "0.0.6",
+  "main": [
+    "./src/angular-flip.js",
+    "./src/flip.css"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.2",
+    "jquery": "~2.0"
+  },
+  "homepage": "https://github.com/Design-Royale/angular-flip",
+  "_release": "0.0.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.6",
+    "commit": "a068a76457c72eec8f2db7a2590c3fe523a9f861"
+  },
+  "_source": "git://github.com/Design-Royale/angular-flip.git",
+  "_target": "~0.0.6",
+  "_originalSource": "angular-flip-dr"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "togetherjs",
+  "homepage": "https://github.com/mozilla/togetherjs",
+  "version": "0.5.5",
+  "_release": "0.5.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.5.5",
+    "commit": "149868326c17fb6fe575a42247a2a7cf1a0c3f91"
+  },
+  "_source": "git://github.com/mozilla/togetherjs.git",
+  "_target": "~0.5.5",
+  "_originalSource": "togetherjs"
+}

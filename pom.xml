@@ -10,10 +10,11 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>bigboards-mmc</module>
+        <module>bigboards-mmc-api</module>
         <module>bigboards-node</module>
         <module>bigboards-updater</module>
         <module>bigboards-library</module>
+        <module>bigboards-mmc-web</module>
     </modules>
 
     <properties>
