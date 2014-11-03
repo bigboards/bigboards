@@ -1,0 +1,99 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-init="
+    app.settings.asideFolded = true;
+    app.settings.asideDock = false;
+  " data-ng-controller="NodeCtrl">
+  <!-- main -->
+  <div class="col">
+    <!-- main header -->
+    <div class="bg-light lter b-b wrapper-md">
+      <div class="row">
+        <div class="col-sm-6 col-xs-12">
+          <h1 class="m-n font-thin h3 text-black">{{ node.name }}</h1>
+          <small class="text-muted">Hi! My name is {{ hex.identity.name }}</small>
+        </div>
+      </div>
+    </div>
+    <!-- / main header -->
+    <div class="wrapper-md">
+        <div class="panel wrapper .no-padder">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4>Node Details</h4>
+                    <table class="table">
+                        <tr>
+                            <td>Hostname</td>
+                            <td>{{node.name}}</td>
+                        </tr>
+                        <tr>
+                            <td>Internal IP</td>
+                            <td>{{node.network.internalIp}}</td>
+                        </tr>
+                        <tr>
+                            <td>External IP</td>
+                            <td>{{node.network.externalIp}}</td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td>{{node.status}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <h4>Container Details</h4>
+                    <table class="table">
+                        <tr>
+                            <td>Hostname</td>
+                            <td>{{node.container.name}}</td>
+                        </tr>
+                        <tr>
+                            <td>Internal IP</td>
+                            <td>{{node.container.internalIp}}</td>
+                        </tr>
+                        <tr>
+                            <td>External IP</td>
+                            <td>{{node.container.externalIp}}</td>
+                        </tr>
+                        <tr>
+                            <td>Status</td>
+                            <td>{{node.container.status}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-4">
+                    <div class="panel b-a m-n">
+                        <div class="hbox text-center b-b b-light text-sm">
+                            <a href="" class="col padder-v text-muted b-r b-light">
+                                <i class="icon-call-end block m-b-xs fa-2x"></i>
+                                <span>Call</span>
+                            </a>
+                            <a href="" class="col padder-v text-muted b-r b-light">
+                                <i class="icon-pointer block m-b-xs fa-2x"></i>
+                                <span>Location</span>
+                            </a>
+                            <a href="" class="col padder-v text-muted">
+                                <i class="icon-cursor block m-b-xs fa-2x"></i>
+                                <span>Direction</span>
+                            </a>
+                        </div>
+                        <div class="hbox text-center text-sm">
+                            <a href="" class="col padder-v text-muted b-r b-light">
+                                <i class="icon-plus block m-b-xs fa-2x"></i>
+                                <span>Add a tip</span>
+                            </a>
+                            <a href="" class="col padder-v text-muted b-r b-light">
+                                <i class="fa fa-refresh block m-b-xs fa-2x"></i>
+                                <span>Recreate Container</span>
+                            </a>
+                            <a href="" class="col padder-v text-muted">
+                                <i class="fa fa-terminal block m-b-xs fa-2x"></i>
+                                <span>Terminal</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!-- / main -->
+</div>

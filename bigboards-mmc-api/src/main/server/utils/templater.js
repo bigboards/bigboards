@@ -40,7 +40,7 @@ Templater.prototype.template = function(file, nodes) {
     scope.nodes = {};
     nodes.forEach(function (node) {
         scope.nodes[node.name] = {
-            ip: node.network.externalIp,
+            ip: (node.network) ? node.network.externalIp : 'none',
             status: node.status
         };
 

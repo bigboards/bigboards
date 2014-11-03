@@ -2,7 +2,7 @@
 <html lang="en" data-ng-app="app">
 <head>
   <meta charset="utf-8" />
-  <title>Be Angular | Bootstrap Admin Web App with AngularJS</title>
+  <title>BigBoards</title>
   <meta name="description" content="app, web app, responsive, responsive layout, admin, admin panel, admin dashboard, flat, flat ui, ui kit, AngularJS, ui route, charts, widgets, components" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <link rel="stylesheet" href="css/bootstrap.css" type="text/css" />
@@ -11,10 +11,11 @@
   <link rel="stylesheet" href="css/simple-line-icons.css" type="text/css" />
   <link rel="stylesheet" href="css/font.css" type="text/css" />
   <link rel="stylesheet" href="css/app.css" type="text/css" />
+
+  <link rel="stylesheet" href="bower_components/angularjs-toaster/toaster.css" type="text/css" />
 </head>
 <body ng-controller="AppCtrl">
   <div class="app" id="app" ng-class="{'app-header-fixed':app.settings.headerFixed, 'app-aside-fixed':app.settings.asideFixed, 'app-aside-folded':app.settings.asideFolded, 'app-aside-dock':app.settings.asideDock, 'container':app.settings.container}" ui-view></div>
-
 
   <!-- jQuery -->
   <script src="bower_components/jquery/jquery.min.js"></script>
@@ -43,29 +44,31 @@
   <script src="bower_components/socket.io-client/dist/socket.io.js"></script>
   <script src="bower_components/angular-socket-io/socket.js"></script>
 
+  <script src="bower_components/angularjs-toaster/toaster.js"></script>
+
   <!-- App -->
-  <script src="js/app.js"></script>
-  <script src="js/config.js"></script>
-  <script src="js/config.lazyload.js"></script>
-  <script src="js/config.router.js"></script>
-  <script src="js/services/bb-services.js"></script>
-  <script src="js/main.js"></script>
-  <script src="js/services/ui-load.js"></script>
-  <script src="js/filters/fromNow.js"></script>
-  <script src="js/directives/setnganimate.js"></script>
-  <script src="js/directives/ui-butterbar.js"></script>
-  <script src="js/directives/ui-focus.js"></script>
-  <script src="js/directives/ui-fullscreen.js"></script>
-  <script src="js/directives/ui-jq.js"></script>
-  <script src="js/directives/ui-module.js"></script>
-  <script src="js/directives/ui-nav.js"></script>
-  <script src="js/directives/ui-scroll.js"></script>
-  <script src="js/directives/ui-shift.js"></script>
-  <script src="js/directives/ui-toggleclass.js"></script>
-  <script src="js/directives/ui-validate.js"></script>
-  <script src="js/controllers/bootstrap.js"></script>
-  <script src="js/controllers/node.js"></script>
-  <script src="js/controllers/tint.js"></script>
+  <script src="app/app.js"></script>
+  <script src="app/settings.js"></script>
+  <script src="app/config.js"></script>
+  <script src="app/config.lazyload.js"></script>
+  <script src="app/config.router.js"></script>
+
+  <script src="app/common/services/ui-load.js"></script>
+  <script src="app/common/services/bb-services.js"></script>
+
+  <script src="app/common/directives/setnganimate.js"></script>
+  <script src="app/common/directives/ui-butterbar.js"></script>
+  <script src="app/common/directives/ui-focus.js"></script>
+  <script src="app/common/directives/ui-fullscreen.js"></script>
+  <script src="app/common/directives/ui-jq.js"></script>
+  <script src="app/common/directives/ui-module.js"></script>
+  <script src="app/common/directives/ui-nav.js"></script>
+  <script src="app/common/directives/ui-scroll.js"></script>
+  <script src="app/common/directives/ui-shift.js"></script>
+  <script src="app/common/directives/ui-toggleclass.js"></script>
+  <script src="app/common/directives/ui-validate.js"></script>
+
+  <script src="app/common/controllers/app-controller.js"></script>
   <!-- Lazy loading -->
 </body>
 </html>
