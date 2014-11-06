@@ -2,6 +2,13 @@ function LibraryAPI(library) {
     this.library = library;
 }
 
+/**
+ * @api {get} /api/v1/library/:tintId Get the library item for the tint with the given id.
+ * @apiName GetLibraryItem
+ * @apiGroup Library
+ *
+ * @apiParam {String} tintId The id of the library item.
+ */
 LibraryAPI.prototype.get = function(req, res) {
     var tintId = req.param('tintId');
     if (! tintId) return res.send(400, "No Node name has been provided");
