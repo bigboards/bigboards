@@ -2,5 +2,8 @@
 .idea
 bigboards-docs/build
 target
-node_modules
-bigboards-mmc/src/main/client/bower_components
+**/node_modules/
+**/bower_components/
+**/dist/
+**/node/
+bigboards-mmc-api/src/main/client/bower_components/
