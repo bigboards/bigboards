@@ -91,7 +91,10 @@ process.on('uncaughtException', function(err) {
 });
 
 function handleError(error) {
-    console.log(JSON.stringify(error));
+    // TODO must we console-log the message? Or only winston-log it?
+    var msg = JSON.stringify(error);
+    console.log(msg);
+    winston.log('error', msg);
 
     if (error.code == 'EADDRINFO')
         return;
