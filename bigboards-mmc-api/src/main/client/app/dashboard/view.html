@@ -1,7 +1,7 @@
 <div class="hbox hbox-auto-xs hbox-auto-sm" ng-init="
     app.settings.asideFolded = false; 
     app.settings.asideDock = false;
-  ">
+  " data-ng-controller="DashboardCtrl">
   <!-- main -->
   <div class="col">
     <!-- main header -->
@@ -48,6 +48,11 @@
                                 <th>State</th>
                                 <th>Internal Ip</th>
                                 <th>External Ip</th>
+                                <th class="col-md-1 text-center">ºC</th>
+                                <th class="col-md-1 text-center"><i class="fa fa-cogs"></i></th>
+                                <th class="col-md-1 text-center"><i class="fa fa-cubes"></i></th>
+                                <th class="col-md-1 text-center"><i class="fa fa-hdd-o"></i></th>
+                                <th class="col-md-1 text-center"><i class="fa fa-database"></i></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,6 +62,11 @@
                                 <td>{{node.status}}</td>
                                 <td>{{node.container.internalIp}}</td>
                                 <td>{{node.container.externalIp}}</td>
+                                <td class="text-center">{{getMetric(node, 'temperature') | temperature}}°C</td>
+                                <td class="text-center">{{getMetric(node, 'load') | loadMetric | number : 2}}</td>
+                                <td><progressbar value="getMetric(node, 'memory') | percentMetric | number : 1" type="primary" class="progress-xs m-t-xs m-b-none dker"></progressbar></td>
+                                <td><progressbar value="getMetric(node, 'osDisk') | percentMetric | number : 1" type="primary" class="progress-xs m-t-xs m-b-none dker"></progressbar></td>
+                                <td><progressbar value="getMetric(node, 'dataDisk') | percentMetric | number : 1" type="primary" class="progress-xs m-t-xs m-b-none dker"></progressbar></td>
                             </tr>
                         </tbody>
                     </table>
