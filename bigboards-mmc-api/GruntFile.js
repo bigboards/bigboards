@@ -6,6 +6,9 @@ module.exports = function(grunt) {
     var gruntConfig = require('./grunt');
     gruntConfig.package = require('./package.json');
 
+    gtx.loadNpmTasks("grunt-bower-install-simple");
+    gtx.registerTask("bower-install", [ "bower-install-simple" ]);
+
     gtx.config(gruntConfig);
 
     // We need our bower components in order to develop
