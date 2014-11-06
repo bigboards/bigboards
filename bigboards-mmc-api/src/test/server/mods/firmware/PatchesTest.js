@@ -136,6 +136,9 @@ describe('firmware', function () {
         it('should return a patch object with undefined installedOn when only pipe', function() {
             Firmware.lineAsPatch('a |').should.eql({name: 'a', installedOn: undefined});
         });
+        it('should return a patch object with patch name when folder/', function() {
+            Firmware.lineAsPatch('a/ | b').should.eql({name: 'a', installedOn: 'b'});
+        });
     });
 
     describe('installedPatches', function() {

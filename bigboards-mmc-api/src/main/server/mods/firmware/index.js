@@ -183,7 +183,7 @@ Firmware.lineAsPatch = function(line) {
     var patchName = pipePosition >= 0 ? line.substring(0, pipePosition).trim() : line;
     var installedOn = pipePosition >= 0 ? line.substring(pipePosition + 1).trim() : undefined
 
-    patchName = patchName == '' ? undefined : patchName;
+    patchName = patchName == '' ? undefined : (patchName.substr(-1) === '/') ? patchName.substring(0, patchName.length - 1) : patchName;
     installedOn = installedOn == '' ? undefined : installedOn;
 
     return Firmware.asPatch(patchName, installedOn);
