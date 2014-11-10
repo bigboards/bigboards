@@ -144,7 +144,7 @@
                         </goals>
 
                         <configuration>
-                            <arguments>release build:dist</arguments>
+                            <arguments>build:dist</arguments>
                         </configuration>
                     </execution>
                 </executions>

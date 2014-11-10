@@ -6,6 +6,8 @@ module.exports = function(grunt) {
     var gruntConfig = require('./grunt');
     gruntConfig.package = require('./package.json');
 
+    gtx.loadNpmTasks('grunt-debug-task');
+
     gtx.loadNpmTasks("grunt-bower-install-simple");
     gtx.registerTask("bower-install", [ "bower-install-simple" ]);
 
@@ -13,9 +15,9 @@ module.exports = function(grunt) {
 
     // We need our bower components in order to develop
     gtx.alias('build:dev',  ['recess:app', 'copy:dev']);
-    gtx.alias('build:dist', ['bower-install-simple', 'clean:dist', 'copy:dist', 'clean:dists', 'recess:min', 'concat:dist', 'uglify:dist']);
+    gtx.alias('build:dist', ['bower-install:dev', 'clean:dist', 'copy:dist', 'clean:dists', 'recess:min', 'concat:dist', 'uglify:dist']);
 
-    gtx.alias('release', ['bower-install-simple', 'build:dev', 'changelog:release', 'bump-commit']);
+    gtx.alias('release', ['bower-install:dev', 'build:dev', 'changelog:release', 'bump-commit']);
     gtx.alias('release-patch', ['bump-only:patch', 'release']);
     gtx.alias('release-minor', ['bump-only:minor', 'release']);
     gtx.alias('release-major', ['bump-only:major', 'release']);
