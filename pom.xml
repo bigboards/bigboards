@@ -14,7 +14,6 @@
         <module>bigboards-node</module>
         <module>bigboards-updater</module>
         <module>bigboards-library</module>
-        <module>bigboards-mmc-web</module>
     </modules>
 
     <properties>
