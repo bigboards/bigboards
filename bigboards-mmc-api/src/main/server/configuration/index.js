@@ -4,7 +4,20 @@ var fs = require("fs"),
 
 function HexConfigurationManager(hexConfigFile) {
     this.hexConfigFile = hexConfigFile;
+    this.config = null;
 }
+
+HexConfigurationManager.prototype.get = function() {
+    var self = this;
+    if (!this.config) {
+        return this.load().then(function(config) {
+            self.config = config;
+            return self.config;
+        })
+    } else {
+        return Q(self.config);
+    }
+};
 
 HexConfigurationManager.prototype.load = function() {
     var deferrer = Q.defer();
@@ -30,6 +43,7 @@ HexConfigurationManager.prototype.load = function() {
 };
 
 HexConfigurationManager.prototype.save = function(hex) {
+    var self = this;
     var deferrer = Q.defer();
     var writeFile = Q.denodeify(fs.writeFile);
 
@@ -40,11 +54,13 @@ HexConfigurationManager.prototype.save = function(hex) {
     try {
         var content = JSON.stringify(hex);
 
-        writeFile(this.hexConfigFile, content).then(function(data) {
-            deferrer.resolve();
-        }).fail(function(error) {
-            deferrer.reject(error);
-        });
+        writeFile(this.hexConfigFile, content)
+            .then(function(data) {
+                self.config = content;
+                deferrer.resolve();
+            }).fail(function(error) {
+                deferrer.reject(error);
+            });
     } catch (error) {
         deferrer.reject(error);
     }

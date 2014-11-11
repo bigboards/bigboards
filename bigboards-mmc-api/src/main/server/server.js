@@ -3,16 +3,15 @@
  *********************************************************************************************************************/
 var express = require('express'),
     params = require('express-params'),
-    Routes = require('./routes'),
     http = require('http'),
     os = require('os'),
     path = require('path'),
     serverConfig = require('./config'),
     Container = require('./container'),
+    Services = require('./services'),
     winston = require('winston'),
     Serfer = require('serfer/src/'),
     Q = require('q'),
-    mdns = require('mdns'),
     Templater = require('./utils/templater');
 
 var self = this;
@@ -55,33 +54,30 @@ if (serverConfig.isDevelopment()) {
 var configuration = new Container.Configuration(serverConfig.hex.file);
 var services = null;
 
-    Q.all([
-        configuration.load(),
-        serfer.connect()
-    ]).then(function(res) {
-        var config = res[0];
-        self.hexConfig = config;
-
-        winston.info('Read the configuration for ' + config.name);
+//    Q.all([
+//        configuration.load()
+////        serfer.connect()
+//    ]).then(function(res) {
+//        var config = res[0];
 
         // -- Create the services
-        self.services = createServices(config);
+        self.services = createServices(serverConfig, configuration);
 
-        var streamHandler = serfer.stream('*');
-
-        streamHandler.on('data', function(data) {
-            if (!data.data || data.data['Name'] != 'metric') return;
-
-            var payload = JSON.parse(data.data['Payload']);
-            self.services.metrics.push(payload.node, payload.metric, payload.value);
-        });
+//        var streamHandler = serfer.stream('*');
+//
+//        streamHandler.on('data', function(data) {
+//            if (!data.data || data.data['Name'] != 'metric') return;
+//
+//            var payload = JSON.parse(data.data['Payload']);
+//            self.services.metrics.push(payload.node, payload.metric, payload.value);
+//        });
 
         server.listen(app.get('port'), function () {
             winston.info('BigBoards-mmc listening on port ' + app.get('port'));
         });
-    }).fail(function(error) {
-        winston.info('ERR : '  + error);
-    });
+//    }).fail(function(error) {
+//        winston.info('ERR : '  + error);
+//    });
 
 /**********************************************************************************************************************
  * Handle all exceptions instead of bailing
@@ -105,70 +101,45 @@ function handleError(error) {
     }
 }
 
-function createServices(config) {
-    var services = {};
+function createServices(serverConfig, config) {
     var templater = new Templater(config);
+    winston.log('info', 'Service Registration:');
 
-    services.library = new Container.Library(serverConfig.library.url);
-    winston.log('info', 'Create the Library Service');
+    var services = {};
+    services.hex = new Services.Hex.Service(serverConfig, config, templater, services);
+    Services.Hex.link(app, services);
 
-    services.metrics = new Container.Metrics(serverConfig.metrics.cache.size, serverConfig.metrics.cache.interval);
-    winston.log('info', 'Create the Metrics Service');
 
-    services.slots = new Container.Slots(6);
-    winston.log('info', 'Create the Slots Service');
 
-    services.tasks = new Container.Tasks();
-    winston.log('info', 'Create the Task Service');
-
-    services.firmware = new Container.Firmware(serverConfig.firmware.patchesDirectory, serverConfig.firmware.versionsFile, services.tasks);
-    winston.log('info', 'Create the Firmware Service');
-
-    services.nodes = new Container.Nodes(serfer);
-    winston.log('info', 'Create the Node Service');
-
-    services.tints = new Container.Tints(services.tasks, services.nodes, serverConfig.tints.rootDirectory, templater);
-    winston.log('info', 'Create the Tint Service');
-
-    //services.health = new Container.Health(services.nodes, services.metrics);
-    //winston.log('info', 'Create the Health Service');
+//    services.library = new Container.Library(serverConfig.library.url);
+//    winston.log('info', 'Create the Library Service');
+//
+//    services.metrics = new Container.Metrics(serverConfig.metrics.cache.size, serverConfig.metrics.cache.interval);
+//    winston.log('info', 'Create the Metrics Service');
+//
+//    services.slots = new Container.Slots(6);
+//    winston.log('info', 'Create the Slots Service');
+//
+//    services.tasks = new Container.Tasks();
+//    winston.log('info', 'Create the Task Service');
+//
+//    services.firmware = new Container.Firmware(serverConfig.firmware.patchesDirectory, serverConfig.firmware.versionsFile, services.tasks);
+//    winston.log('info', 'Create the Firmware Service');
+//
+//    services.nodes = new Container.Nodes(serfer);
+//    winston.log('info', 'Create the Node Service');
+//
+//    services.tints = new Container.Tints(services.tasks, services.nodes, serverConfig.tints.rootDirectory, templater);
+//    winston.log('info', 'Create the Tint Service');
 
     // -- add tasks to the task manager
-    services.tasks.registerDefaultTasks(configuration);
+//    services.tasks.registerDefaultTasks(configuration);
 
     /**********************************************************************************************************************
      * Routes
      *********************************************************************************************************************/
-    var routes = new Routes(serverConfig, configuration, services);
-    routes.link(app, io);
+//    var routes = new Routes(serverConfig, configuration, services);
+//    routes.link(app, io);
 
     return services;
-}
-
-function advertise(config) {
-    try {
-        var ad = mdns.createAdvertisement(
-            mdns.tcp('bb-master', config.name),
-            app.get('port'),
-            {
-                networkInterface: (os.platform() == 'darwin') ? 'en0' : 'br0'
-            }
-        );
-        ad.on('error', handleMdnsError);
-        ad.start();
-        winston.info('Advertised the BigBoards Master API using mDNS');
-    } catch (ex) {
-        handleMdnsError(ex);
-    }
-}
-
-function handleMdnsError(error) {
-    switch (error.errorCode) {
-        case mdns.kDNSServiceErr_Unknown:
-            console.warn(error);
-            setTimeout(advertise, 5000);
-            break;
-        default:
-            throw error;
-    }
 }
