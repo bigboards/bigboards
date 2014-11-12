@@ -49,7 +49,7 @@ HexService.prototype.listTints = function(type) {
                     var promises = [];
 
                     tints.forEach(function(tint) {
-                        promises.push(parseManifest(self.services.node, self.templater, self.settings.tints.rootDirectory + '/' + type + '/' + owner + '/' + tint));
+                        promises.push(parseManifest(self.templater, self.settings.tints.rootDirectory + '/' + type + '/' + owner + '/' + tint));
                     });
 
                     return Q.all(promises);
@@ -61,7 +61,7 @@ HexService.prototype.listTints = function(type) {
 };
 
 HexService.prototype.getTint = function(type, owner, tint) {
-    return parseManifest(self.services.node, self.templater, self.settings.tints.rootDirectory + '/' + type + '/' + owner + '/' + tint)
+    return parseManifest(self.templater, self.settings.tints.rootDirectory + '/' + type + '/' + owner + '/' + tint)
 };
 
 HexService.prototype.removeTint = function(type, owner, tint) {
@@ -83,9 +83,9 @@ HexService.prototype.installTint = function(type, owner, tint, uri) {
     return this.services.task.invoke('tint_install', { tint: t });
 };
 
-function parseManifest(nodeService, templater, tintDir) {
-    return nodeService
-        .nodes()
+function parseManifest(templater, tintDir) {
+    return this
+        .listNodes()
         .then(function (nodes) {
             return yaml.safeLoad(templater.template(tintDir + "/tint.yml", nodes));
         });

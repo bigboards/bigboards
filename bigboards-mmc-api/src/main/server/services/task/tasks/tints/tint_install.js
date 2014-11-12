@@ -1,28 +1,19 @@
 var Q = require('q'),
     winston = require('winston'),
+    yaml = require("js-yaml"),
     fs = require('fs');
 
 var TaskUtils = require('../../../utils/task-utils');
 
-module.exports = function(configuration) {
+module.exports = function(configuration, services) {
     return {
         code: 'tint_install',
         description: 'installing the tint on the hex',
         type: 'ansible',
         parameters: [
             {
-                key: 'tintId',
-                description: 'The unique id of the tint',
-                required: true
-            },
-            {
-                key: 'tintUri',
-                description: 'The Uri pointing to the tint git repository.',
-                required: true
-            },
-            {
-                key: 'tintType',
-                description: 'The type of tint we are installing. Can be stack, edu or data',
+                key: 'tint',
+                description: 'The tint',
                 required: true
             },
             {
@@ -43,19 +34,26 @@ module.exports = function(configuration) {
         ],
         execute: function(scope) {
             // -- replace the username and password in the tint uri
-            scope.tintUri = scope.tintUri.replace(/%username%/g, scope.username);
-            scope.tintUri = scope.tintUri.replace(/%password%/g, scope.password);
+            scope.tint.uri = scope.tint.uri.replace(/%username%/g, scope.username);
+            scope.tint.uri = scope.tint.uri.replace(/%password%/g, scope.password);
 
-            if (scope.tintType == 'stack') {
-                return TaskUtils
-                    .runPlaybook('tints/tint_install', scope)
-                    .then(function() {
-                        return TaskUtils.runPlaybook('install', scope, '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId);
+            // -- generate the playbook out of the tint definition
+            services.hex
+                .getTint(scope.tint.type, scope.tint.owner, scope.tint.tint)
+                .then(function(t) {
+                    var defer = Q.defer();
+
+                    fs.writeFile('/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId + '/install.yml', yaml.safeDump(t.play), function(err) {
+                        if (err) defer.reject(err);
+                        else {
+                            defer.resolve(
+                                TaskUtils.runPlaybook('install', scope, '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId)
+                            );
+                        }
                     });
-            } else {
-                return TaskUtils
-                    .runPlaybook('install', scope, '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId);
-            }
+
+                    return defer.promise;
+                });
         }
     };
 };
