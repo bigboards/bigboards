@@ -1,0 +1,27 @@
+case $reason in
+        BOUND|RENEW|REBIND|REBOOT)
+                IFCFG="ifconfig $interface"
+                IP=$($IFCFG | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+                BCAST=$($IFCFG | grep 'Bcast:' | awk '{ print $3}' | cut -d: -f2)
+                MASK=$($IFCFG | grep 'Mask:' | awk '{ print $4}' | cut -d: -f2)
+                MAC=$($IFCFG | grep 'HWaddr ' |  awk '{ print $5}')
+
+                # update the tag for the network interface on the serf agent
+                /opt/serf/bin/serf tags \
+                    -set network.$interface.ip=$IP
+                    -set network.$interface.mac=$MAC
+                    -set network.$interface.netmask=$MASK
+                    -set network.$interface.broadcast=$BCAST
+
+                echo "serf dhcp server linked" >> /tmp/serf-dhcp
+                ;;
+        EXPIRE|FAIL|RELEASE|STOP)
+                /opt/serf/bin/serf tags \
+                    -delete network.$IFACE.ip \
+                    -delete network.$IFACE.mac \
+                    -delete network.$IFACE.broadcast \
+                    -delete network.$IFACE.netmask
+
+                echo "serf dhcp server unlinked" >> /tmp/serf-dhcp
+                ;;
+esac

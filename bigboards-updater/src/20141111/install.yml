@@ -1,0 +1,17 @@
+---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: be sure the serf files are up to date
+      copy: src=files/{{ item }} dest=/{{ item }}
+      with_items:
+        - etc/default/serf
+        - etc/init/serf.conf
+        - etc/network/if-down.d/serf
+        - etc/network/if-up.d/serf
+        - etc/dhcp/dhclient-exit-hooks.d/serf
+      notify: Restart Serf
+
+  handlers:
+    - name: Restart Serf
+      service: name=serf state=restarted
