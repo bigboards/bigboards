@@ -4,15 +4,23 @@ var Q = require('q'),
     yaml = require("js-yaml"),
     fsu = require('../../utils/fs-utils');
 
-function HexService(settings, configuration, templater, services) {
+function HexService(settings, configuration, templater, services, serf) {
     this.settings = settings;
     this.configuration = configuration;
     this.templater = templater;
     this.services = services;
+    this.serf = serf;
 }
 
 HexService.prototype.get = function() {
     return this.configuration.get();
+};
+
+/*********************************************************************************************************************
+ * NODES
+ *********************************************************************************************************************/
+HexService.prototype.listNodes = function() {
+    return this.serf.members();
 };
 
 /*********************************************************************************************************************

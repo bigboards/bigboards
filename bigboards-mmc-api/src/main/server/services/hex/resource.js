@@ -1,11 +1,20 @@
-var ApiUtils = require('../../utils/api-utils');
+var ApiUtils = require('../../utils/api-utils'),
+    Q = require('q');
 
-function HexResource(hexService) {
+function HexResource(hexService, serf) {
     this.hexService = hexService;
+    this.serf = serf;
 }
 
 HexResource.prototype.get = function(req, res) {
     return ApiUtils.handlePromise(res, this.hexService.get());
+};
+
+/*********************************************************************************************************************
+ * NODES
+ *********************************************************************************************************************/
+HexResource.prototype.listNodes = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.listNodes());
 };
 
 /*********************************************************************************************************************
