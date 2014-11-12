@@ -2,6 +2,7 @@ var Q = require('q'),
     uuid = require('node-uuid'),
     Errors = require('../../errors'),
     yaml = require("js-yaml"),
+    mkdirp = require('mkdirp'),
     fsu = require('../../utils/fs-utils');
 
 function HexService(settings, configuration, templater, services, serf) {
@@ -10,6 +11,10 @@ function HexService(settings, configuration, templater, services, serf) {
     this.templater = templater;
     this.services = services;
     this.serf = serf;
+
+    mkdirp.sync(this.settings.tints.rootDirectory + '/stack');
+    mkdirp.sync(this.settings.tints.rootDirectory + '/dataset');
+    mkdirp.sync(this.settings.tints.rootDirectory + '/tutor');
 }
 
 HexService.prototype.get = function() {
@@ -70,7 +75,7 @@ HexService.prototype.installTint = function(type, owner, tint, uri) {
         type: type
     };
 
-    return this.taskManager.invoke('tint_install', { tint: t });
+    return this.services.task.invoke('tint_install', { tint: t });
 };
 
 function parseManifest(nodeService, templater, tintDir) {

@@ -20,6 +20,10 @@ module.exports = {
         }
     },
 
+    dir: {
+        tasks: '/var/log/bigboards/tasks'
+    },
+
     hex: {
         file: '/etc/ansible/facts.d/hex.fact',
         _file: 'src/test/hex.facts',

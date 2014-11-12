@@ -1,4 +1,5 @@
 module.exports = {
     Hex: require('./hex'),
-    Library: require('./library')
+    Library: require('./library'),
+    Task: require('./task')
 };

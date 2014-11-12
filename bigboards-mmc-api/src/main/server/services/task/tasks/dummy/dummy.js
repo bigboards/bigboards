@@ -1,5 +1,5 @@
 var Q = require('q'),
-    TaskUtils = require('../../../utils/task-utils');
+    TaskUtils = require('../../../../utils/task-utils');
 
 module.exports = function(configuration) {
     return {
