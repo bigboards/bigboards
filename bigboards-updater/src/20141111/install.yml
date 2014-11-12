@@ -15,6 +15,9 @@
     - name: be sure docker is installed
       apt: name=docker.io state=latest
 
+    - name: make sure the bigboards log directory is available
+      file: state=directory path=/var/log/bigboards owner=bb mode=666
+
   handlers:
     - name: Restart Serf
       service: name=serf state=restarted

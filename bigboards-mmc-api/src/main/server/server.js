@@ -26,11 +26,13 @@ serfer.connect().then(function() {
     var configuration = new Container.Configuration(serverConfig.hex.file);
 
     var services = initializeServices(serverConfig, configuration, serfer, app, io);
+    services.task.registerDefaultTasks();
 
     server.listen(app.get('port'), function () {
         winston.info('BigBoards-mmc listening on port ' + app.get('port'));
     });
-
+}).fail(function(error) {
+    handleError(error);
 });
 
 process.on('uncaughtException', function(err) {
@@ -82,6 +84,9 @@ function initializeServices(serverConfig, config, serf, app, io) {
     winston.log('info', 'Service Registration:');
 
     var services = {};
+
+    services.task = new Services.Task.Service(serverConfig);
+    Services.Task.link(app, services);
 
     services.hex = new Services.Hex.Service(serverConfig, config, templater, services, serf);
     Services.Hex.link(app, services);

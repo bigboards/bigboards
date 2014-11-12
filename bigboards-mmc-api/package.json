@@ -5,6 +5,7 @@
   "version": "1.0.5",
   "private": true,
   "dependencies": {
+    "always-tail": "^0.1.1",
     "async": "~0.2.9",
     "events": "~1.0.0",
     "express": "3.4.7",
@@ -12,6 +13,7 @@
     "git": "^0.1.5",
     "ini": "~1.1.0",
     "js-yaml": "~3.0.1",
+    "mkdirp": "^0.5.0",
     "node-ansible": "^0.2.1",
     "node-uuid": "^1.4.1",
     "nodeunit": "^0.9.0",
