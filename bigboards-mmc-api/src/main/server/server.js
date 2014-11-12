@@ -25,7 +25,7 @@ serfer.connect().then(function() {
 
     var configuration = new Container.Configuration(serverConfig.hex.file);
 
-    var services = initializeServices(serverConfig, configuration, app, io);
+    var services = initializeServices(serverConfig, configuration, serfer, app, io);
 
     server.listen(app.get('port'), function () {
         winston.info('BigBoards-mmc listening on port ' + app.get('port'));
@@ -77,13 +77,13 @@ function initializeSocketIO(server) {
     return io;
 }
 
-function initializeServices(serverConfig, config, app, io) {
+function initializeServices(serverConfig, config, serf, app, io) {
     var templater = new Templater(config);
     winston.log('info', 'Service Registration:');
 
     var services = {};
 
-    services.hex = new Services.Hex.Service(serverConfig, config, templater, services);
+    services.hex = new Services.Hex.Service(serverConfig, config, templater, services, serf);
     Services.Hex.link(app, services);
 
     return services;
