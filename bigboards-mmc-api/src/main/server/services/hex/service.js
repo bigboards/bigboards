@@ -18,7 +18,12 @@ function HexService(settings, configuration, templater, services, serf) {
 }
 
 HexService.prototype.get = function() {
-    return this.configuration.get();
+    return this.configuration.get().then(function(data) {
+        return {
+            id: data.id,
+            name: data.name
+        }
+    });
 };
 
 /*********************************************************************************************************************
