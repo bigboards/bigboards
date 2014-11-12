@@ -12,6 +12,9 @@
         - etc/dhcp/dhclient-exit-hooks.d/serf
       notify: Restart Serf
 
+    - name: be sure docker is installed
+      apt: name=docker.io state=latest
+
   handlers:
     - name: Restart Serf
       service: name=serf state=restarted
