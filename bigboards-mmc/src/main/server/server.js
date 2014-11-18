@@ -12,7 +12,6 @@ var express = require('express'),
     winston = require('winston'),
     Serfer = require('serfer/src/'),
     Q = require('q'),
-    mdns = require('mdns'),
     Templater = require('./utils/templater');
 
 var self = this;
@@ -135,32 +134,4 @@ function createServices(config) {
     routes.link(app, io);
 
     return services;
-}
-
-function advertise(config) {
-    try {
-        var ad = mdns.createAdvertisement(
-            mdns.tcp('bb-master', config.name),
-            app.get('port'),
-            {
-                networkInterface: (os.platform() == 'darwin') ? 'en0' : 'br0'
-            }
-        );
-        ad.on('error', handleMdnsError);
-        ad.start();
-        winston.info('Advertised the BigBoards Master API using mDNS');
-    } catch (ex) {
-        handleMdnsError(ex);
-    }
-}
-
-function handleMdnsError(error) {
-    switch (error.errorCode) {
-        case mdns.kDNSServiceErr_Unknown:
-            console.warn(error);
-            setTimeout(advertise, 5000);
-            break;
-        default:
-            throw error;
-    }
 }
