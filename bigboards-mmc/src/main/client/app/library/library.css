@@ -1,0 +1,104 @@
+/**********************************************************************************************************************
+ * Library
+ *********************************************************************************************************************/
+.library {
+    width: 100%;
+}
+
+.library .card {
+    display: inline-block;
+    width: 250px;
+    height: 150px;
+    margin: 10px;
+
+    text-align: center;
+    border: solid 1px #ddd;
+    background-color: white;
+    position: relative;
+}
+
+.library .card .card-logo img {
+    max-height: 40px;
+    max-width: 65px;
+    margin-top: 10px;
+}
+
+.library .card .card-logo {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 75px;
+    height: 75px;
+}
+
+.library .card .card-title {
+    font-size: large;
+    font-weight: 300;
+    margin-top: 15px;
+    color: #515151;
+    text-align: left;
+
+    position: absolute;
+    top: 0;
+    left: 75px;
+    right: 0;
+    height: 50px;
+}
+
+.library .card .card-description {
+    font-size: small;
+    font-weight: 300;
+    padding: 10px;
+
+    text-align: left;
+
+    position: absolute;
+    top: 50px;
+    left: 75px;
+    right: 0;
+    height: 50px;
+}
+
+.library .card .card-actions {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 30px;
+}
+
+.library .card .card-actions .card-action {
+    text-decoration: none;
+    color: white;
+    height: 100%;
+    padding-right: 7px;
+    padding-top: 3px;
+    display: block;
+}
+
+.library .card .card-actions .card-action:hover {
+    cursor: pointer;
+}
+
+.library .card .card-type {
+    position: absolute;
+    bottom: 0;
+    top: 7px;
+    left: 7px;
+    color: white;
+    font-size: small;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
+.card.stack .card-type { border-color: transparent transparent rgb(32,124,229) transparent; }
+.card.stack { border-left: solid 5px rgb(32,124,229); }
+.card.stack .card-actions .card-action:hover { color: rgb(32,124,229); }
+
+.card.data .card-type { border-color: transparent #880000 transparent transparent; }
+.card.data .card-actions { background-color: #880000; }
+.card.data .card-actions .card-action:hover { color: #880000; }
+
+.card.edu .card-type { border-color: transparent #008800 transparent transparent; }
+.card.edu .card-actions { background-color: #008800; }
+.card.edu .card-actions .card-action:hover { color: #008800; }

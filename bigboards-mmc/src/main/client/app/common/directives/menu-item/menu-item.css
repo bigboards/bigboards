@@ -1,0 +1,9 @@
+.menu-item {
+    display: inline-block;
+    min-width: 75px;
+    height: 100%;
+    vertical-align: middle;
+    text-align: center;
+    padding-top: 25px;
+    cursor: pointer;
+}

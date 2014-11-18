@@ -1,0 +1,11 @@
+id: bigboards.spark
+name: Apache Spark
+owner: BigBoards
+type: stack
+description: The apache Spark computation engine
+views:
+  - id: web
+    label: Console
+    url: http://{{hex.name}}-v1:8080/
+    description: >
+      The Spark Web Console.

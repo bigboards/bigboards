@@ -1,0 +1,100 @@
+var app = angular.module( 'mmc', [
+    'ngRoute',
+    'bb.dashboard',
+    'bb.tints',
+    'bb.library',
+    'bb.learn',
+    'bb.shell',
+    'bb.tasks',
+    'bb.update',
+    'snap',
+    'nvd3ChartDirectives',
+    'btford.socket-io'
+]);
+
+app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider) {
+    $routeProvider
+        .when('/dashboard', {
+            title: 'Dashboard',
+            templateUrl: 'app/dashboard/dashboard.html',
+            controller: 'DashboardController'
+        })
+        .when('/library', {
+            title: 'Library',
+            templateUrl: 'app/library/library.html',
+            controller: 'LibraryController'
+        })
+        .when('/shell', {
+            title: 'Shell',
+            templateUrl: 'app/shell/shell.html',
+            controller: 'ShellController'
+        })
+        .when('/learn', {
+            title: 'Learn',
+            templateUrl: 'app/learn/learn.html',
+            controller: 'LearnController'
+        })
+
+        .when('/tasks', {
+            title: 'Tasks',
+            templateUrl: 'app/tasks/tasks.html',
+            controller: 'TaskListController'
+        })
+        .when('/tasks/:id/output', {
+            title: 'Tasks',
+            templateUrl: 'app/tasks/output.html',
+            controller: 'TaskOutputController'
+        })
+        .when('/tasks/:id', {
+            title: 'Tasks',
+            templateUrl: 'app/tasks/detail.html',
+            controller: 'TaskDetailController'
+        })
+        .when('/tasks/:id/invoke', {
+            title: 'Tasks',
+            templateUrl: 'app/tasks/invoke.html',
+            controller: 'TaskInvocationController'
+        })
+
+        .when('/update', {
+            title: 'Update',
+            templateUrl: 'app/update/update.html',
+            controller: 'UpdateController'
+        })
+
+        .when('/tints/:type/:id', {
+            title: 'Tint',
+            templateUrl: 'app/tints/detail.html',
+            controller: 'TintDetailController'
+        })
+
+        .otherwise({
+            redirectTo: '/dashboard'
+        });
+}]);
+
+app.run(['$rootScope', 'Identity', function($rootScope, Identity) {
+    Identity.get(function(data) {
+        $rootScope.hex = data;
+        $rootScope.$broadcast('identified', data);
+    });
+
+    $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
+        if (current.$$route) {
+            $rootScope.title = current.$$route.title;
+        }
+    });
+}]);
+
+app.controller('ApplicationController', function($scope, $location, Firmware) {
+    $scope.currentItem = null;
+
+    $scope.firmware = Firmware.get();
+
+//    $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+//        $scope.menu.forEach(function(item) {
+//            if (item.path && current.$$route && item.path == current.$$route.originalPath)
+//                $scope.currentItem = item;
+//        });
+//    });
+});
