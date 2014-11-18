@@ -1,5 +1,5 @@
 {
-  "name": "BigBoards-mmc",
+  "name": "BigBoards-mmc-api",
   "description": "This is the management console, incl. master and slaves",
   "author": "BigBoards <code@bigboards.io>",
   "version": "1.0.5",

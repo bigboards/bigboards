@@ -5,7 +5,7 @@
 set -u
 set -e
 
-PROJECT_NAME=bigboards-mmc
+PROJECT_NAME=bigboards-mmc-api
 PROJECT_VERSION=1.0.$(date +"%Y%m%d%H%M")
 
 PROJECT_HOME=${1}
