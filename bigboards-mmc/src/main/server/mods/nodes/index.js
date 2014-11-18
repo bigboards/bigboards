@@ -21,15 +21,12 @@ HexNodeManager.prototype.nodes = function() {
     return this.serfer.members()
         .then(function(members) {
             var arr = [];
-            members.forEach(function(member) {
-                arr.push(nodeDetails(member));
-            });
+            members.forEach(function(member) { arr.push(nodeDetails(member)); });
 
             return Q.all(arr);
         })
         .then(function(result) {
             return result.sort(function (a, b) {
-                // FIXME: This failes if name is null for some misterious reason. Find the reason.
                 return a.name.localeCompare(b.name);
             });
         });
@@ -43,12 +40,7 @@ function nodeDetails(member) {
     Restler
         .get('http://' + toAddress(member['Addr']).ip + ':7099/api/v1/node')
         .on('complete', function(result) {
-            if (result instanceof Error) {
-                result['tags'] = [];
-                result['status'] = 'Unknown';
-
-                defer.resolve(result);
-            }
+            if (result instanceof Error) defer.reject(result);
             else {
                 result['tags'] = member['Tags'];
                 result['status'] = member['Status'];

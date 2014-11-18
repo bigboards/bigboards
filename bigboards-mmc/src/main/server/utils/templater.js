@@ -44,12 +44,10 @@ Templater.prototype.template = function(file, nodes) {
             status: node.status
         };
 
-        if (node.container) {
-            scope.nodes[node.container.name] = {
-                ip: node.container.externalIp,
-                status: node.container.status
-            };
-        }
+        scope.nodes[node.container.name] = {
+            ip: node.container.externalIp,
+            status: node.container.status
+        };
     });
 
     return swig.renderFile(file, scope);

@@ -1,10 +1,6 @@
 dashboardModule.controller('DashboardController', function ($scope, Nodes, Firmware, Tints, socket, ApiFeedback) {
     $scope.nodes = Nodes.query();
-    $scope.tints = {
-        stack: Tints.get({type: 'stack'}),
-        data: Tints.query({type: 'data'}),
-        edu: Tints.query({type: 'edu'})
-    };
+    $scope.tints = Tints.query();
 
     $scope.model = {
         metrics: {}

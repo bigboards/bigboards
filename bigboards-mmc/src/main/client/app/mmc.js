@@ -3,7 +3,6 @@ var app = angular.module( 'mmc', [
     'bb.dashboard',
     'bb.tints',
     'bb.library',
-    'bb.learn',
     'bb.shell',
     'bb.tasks',
     'bb.update',
@@ -12,7 +11,11 @@ var app = angular.module( 'mmc', [
     'btford.socket-io'
 ]);
 
-app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider) {
+app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider, snapRemoteProvider) {
+    snapRemoteProvider.globalOptions = {
+        maxPosition: 200
+    };
+
     $routeProvider
         .when('/dashboard', {
             title: 'Dashboard',
@@ -28,11 +31,6 @@ app.config(['$routeProvider', 'snapRemoteProvider', function($routeProvider) {
             title: 'Shell',
             templateUrl: 'app/shell/shell.html',
             controller: 'ShellController'
-        })
-        .when('/learn', {
-            title: 'Learn',
-            templateUrl: 'app/learn/learn.html',
-            controller: 'LearnController'
         })
 
         .when('/tasks', {
@@ -89,12 +87,58 @@ app.run(['$rootScope', 'Identity', function($rootScope, Identity) {
 app.controller('ApplicationController', function($scope, $location, Firmware) {
     $scope.currentItem = null;
 
+    $scope.menu = [
+        {
+            label: 'Dashboard',
+            icon: 'fa-dashboard',
+            path: '/dashboard'
+        },
+        {
+            label: 'Library',
+            icon: 'fa-tint',
+            path: '/library'
+        },
+        {
+            label: 'Tasks',
+            icon: 'fa-tasks',
+            path: '/tasks'
+        },
+//        {
+//            label: 'Shell',
+//            icon: 'fa-terminal',
+//            path: '/shell'
+//        },
+        {
+            label: 'Update',
+            icon: 'fa-refresh',
+            path: '/update'
+        },
+        {
+            label: 'Documentation',
+            icon: 'fa-book',
+            url: 'http://docs.bigboards.io'
+        }
+
+    ];
+
     $scope.firmware = Firmware.get();
 
-//    $scope.$on('$routeChangeSuccess', function(event, current, previous) {
-//        $scope.menu.forEach(function(item) {
-//            if (item.path && current.$$route && item.path == current.$$route.originalPath)
-//                $scope.currentItem = item;
-//        });
-//    });
+    $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+        $scope.menu.forEach(function(item) {
+            if (item.path && current.$$route && item.path == current.$$route.originalPath)
+                $scope.currentItem = item;
+        });
+    });
+
+    $scope.invokeMenuItem = function(item) {
+        if (item.handler) {
+            item.handler($scope);
+        } else if (item.path) {
+            $location.path(item.path);
+            $scope.$emit('navigate', item);
+        } else if (item.url) {
+            console.log('goto ' + item.url);
+            window.open(item.url,'_blank');
+        }
+    };
 });

@@ -27,10 +27,7 @@ module.exports = {
     },
 
     tints: {
-        rootDirectory: "/opt/bb/tints.d",
-        repository: {
-            url: "http://192.168.2.106/bb/tints"
-        }
+        rootDirectory: "/opt/bb/tints.d"
     },
 
     firmware: {

@@ -94,9 +94,8 @@ function linkTintApi(self, server) {
     server.param('tintId', /^\w+\.\w+$/);
 
     // -- list
-    server.get('/api/v1/tints/stack', function(req, res) { self.tintsAPI.stack(req, res); });
-    server.get('/api/v1/tints/data', function(req, res) { self.tintsAPI.data(req, res); });
-    server.get('/api/v1/tints/edu', function(req, res) { self.tintsAPI.edu(req, res); });
+    server.get('/api/v1/tints', function(req, res) { self.tintsAPI.list(req, res); });
+    server.get('/api/v1/tints/:type', function(req, res) { self.tintsAPI.list(req, res); });
 
     // -- get
     server.get('/api/v1/tints/:type/:tintId', function(req, res) { self.tintsAPI.get(req, res); });

@@ -13,29 +13,30 @@ function TintManager(taskService, nodeService, tintDirectory, templater) {
     this.nodeService = nodeService;
 }
 
-TintManager.prototype.stack = function() {
+TintManager.prototype.listAll = function() {
     var self = this;
 
     return fsu
-        .readDir(this.tintDirectory + '/stack/')
+        .readDir(this.tintDirectory)
         .then(function(files) {
-            if (files.length > 1)
-                throw new Error('More than one stack tint is currently installed');
+            var promises = [];
 
-            if (files.length == 0) {
-                return {};
-            }
+            files.forEach(function(file) {
+                promises.push(self.listByType(file));
+            });
 
-            return readManifest(self.nodeService, self.templater, self.tintDirectory + '/stack/' + files[0]);
+            return Q.all(promises).then(function(outcomes) {
+                var result = [];
+
+                outcomes.forEach(function(outcome) {
+                    outcome.forEach(function(row) {
+                        result.push(row);
+                    });
+                });
+
+                return result;
+            });
         });
-};
-
-TintManager.prototype.data = function() {
-    return this.listByType('data');
-};
-
-TintManager.prototype.edu = function() {
-    return this.listByType('edu');
 };
 
 /**
