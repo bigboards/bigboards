@@ -8,8 +8,11 @@ function HexResource(hexService, serf) {
 
 /**
  * @api {get} /api/v1/hex Request Hex information
+ * @apiVersion 1.0.5
+ *
  * @apiName GetHex
  * @apiGroup Hex
+ * @apiGroupDescription all APIs to fully control your Hex
  *
  * @apiSuccess {String} id      Unique id of the hex.
  * @apiSuccess {String} name    Name of the hex.
@@ -31,6 +34,8 @@ HexResource.prototype.get = function(req, res) {
 
 /**
  * @api {get} /api/v1/hex/nodes Request the nodes information
+ * @apiVersion 1.0.5
+ *
  * @apiName GetNodes
  * @apiGroup Hex
  */
@@ -43,9 +48,11 @@ HexResource.prototype.listNodes = function(req, res) {
  *********************************************************************************************************************/
 /**
  * @api {get} /api/v1/hex/stacks Request the installed stacks
+ * @apiVersion 1.0.5
+ *
  * @apiName GetStacks
- * @apiGroup Hex
- * @apiStructure Stack
+ * @apiGroup HexStack
+ * @apiGroupDescription Control the stack tints of your Hex.
  */
 HexResource.prototype.listStacks = function(req, res) {
     return ApiUtils.handlePromise(res, this.hexService.listTints('stack'));
@@ -53,9 +60,10 @@ HexResource.prototype.listStacks = function(req, res) {
 
 /**
  * @api {get} /api/v1/hex/stacks/:owner/:tintId Request Stack tint information
+ * @apiVersion 1.0.5
+ *
  * @apiName GetStack
- * @apiGroup Hex
- * @apiStructure Stack
+ * @apiGroup HexStack
  *
  * @apiParam {String} owner     Tint owner.
  * @apiParam {String} tintId    Tint id.
@@ -72,9 +80,10 @@ HexResource.prototype.getStack = function(req, res) {
 
 /**
  * @api {post} /api/v1/hex/stacks Install a stack tint
+ * @apiVersion 1.0.5
+ *
  * @apiName InstallStack
- * @apiGroup Hex
- * @apiStructure Stack
+ * @apiGroup HexStack
  *
  * @apiParam {String} owner     Tint owner.
  * @apiParam {String} tintId    Tint id.
@@ -95,9 +104,10 @@ HexResource.prototype.installStack = function(req, res) {
 
 /**
  * @api {delete} /api/v1/hex/stacks/:owner/:tintId Remove a Stack tint
+ * @apiVersion 1.0.5
+ *
  * @apiName RemoveStack
- * @apiGroup Hex
- * @apiStructure Stack
+ * @apiGroup HexStack
  *
  * @apiParam {String} owner     Tint owner.
  * @apiParam {String} tintId    Tint id.
@@ -118,9 +128,11 @@ HexResource.prototype.removeStack = function(req, res) {
 
 /**
  * @api {get} /api/v1/hex/datasets Request the installed datasets
+ * @apiVersion 1.0.5
+ *
  * @apiName GetDatasets
- * @apiGroup Hex
- * @apiStructure Dataset
+ * @apiGroup HexDataset
+ * @apiGroupDescription Control the dataset tints of your Hex.
  */
 HexResource.prototype.listDatasets = function(req, res) {
     return ApiUtils.handlePromise(res, this.hexService.listTints('dataset'));
@@ -128,9 +140,10 @@ HexResource.prototype.listDatasets = function(req, res) {
 
 /**
  * @api {get} /api/v1/hex/datasets/:owner/:tintId Request Dataset tint information
+ * @apiVersion 1.0.5
+ *
  * @apiName GetDataset
- * @apiGroup Hex
- * @apiStructure Dataset
+ * @apiGroup HexDataset
  *
  * @apiParam {String} owner     Tint owner.
  * @apiParam {String} tintId    Tint id.
@@ -147,9 +160,10 @@ HexResource.prototype.getDataset = function(req, res) {
 
 /**
  * @api {post} /api/v1/hex/datasets Install a dataset tint
+ * @apiVersion 1.0.5
+ *
  * @apiName InstallDataset
- * @apiGroup Hex
- * @apiStructure Dataset
+ * @apiGroup HexDataset
  *
  * @apiParam {String} owner     Tint owner.
  * @apiParam {String} tintId    Tint id.
@@ -170,9 +184,10 @@ HexResource.prototype.installDataset = function(req, res) {
 
 /**
  * @api {delete} /api/v1/hex/datasets/:owner/:tintId Remove a dataset tint
+ * @apiVersion 1.0.5
+ *
  * @apiName RemoveDataset
- * @apiGroup Hex
- * @apiStructure Dataset
+ * @apiGroup HexDataset
  *
  * @apiParam {String} owner     Tint owner.
  * @apiParam {String} tintId    Tint id.
@@ -193,9 +208,10 @@ HexResource.prototype.removeDataset = function(req, res) {
 
 /**
  * @api {get} /api/v1/hex/tutors Request the installed tutor tints
+ * @apiVersion 1.0.5
+ *
  * @apiName GetTutors
- * @apiGroup Hex
- * @apiStructure Tutor
+ * @apiGroup HexTutor
  */
 HexResource.prototype.listTutors = function(req, res) {
     return ApiUtils.handlePromise(res, this.hexService.listTints('tutor'));
@@ -203,9 +219,11 @@ HexResource.prototype.listTutors = function(req, res) {
 
 /**
  * @api {get} /api/v1/hex/tutors/:owner/:tintId Request tutor tint information
+ * @apiVersion 1.0.5
+ *
  * @apiName GetTutor
- * @apiGroup Hex
- * @apiStructure Tutor
+ * @apiGroup HexTutor
+ * @apiGroupDescription Control the tutorial tints of your Hex.
  *
  * @apiParam {String} owner     Tint owner.
  * @apiParam {String} tintId    Tint id.
@@ -222,9 +240,10 @@ HexResource.prototype.getTutor = function(req, res) {
 
 /**
  * @api {post} /api/v1/hex/tutors Install a tutor tint
+ * @apiVersion 1.0.5
+ *
  * @apiName InstallTutor
- * @apiGroup Hex
- * @apiStructure Tutor
+ * @apiGroup HexTutor
  *
  * @apiParam {String} owner     Tint owner.
  * @apiParam {String} tintId    Tint id.
@@ -245,9 +264,10 @@ HexResource.prototype.installTutor = function(req, res) {
 
 /**
  * @api {delete} /api/v1/hex/tutors/:owner/:tintId Remove a tutor tint
+ * @apiVersion 1.0.5
+ *
  * @apiName RemoveTutor
- * @apiGroup Hex
- * @apiStructure Tutor
+ * @apiGroup HexTutor
  *
  * @apiParam {String} owner     Tint owner.
  * @apiParam {String} tintId    Tint id.
