@@ -204,8 +204,7 @@ var Playbook = function () {
     var command = format("ansible-playbook %s", playbook);
 
     if (this.config.variables) {
-      var args = utils.formatArgs(this.config.variables);
-      command += " -e " + args;
+      command += " --extra-vars '" + JSON.stringify(this.config.variables) + "'";
     }
 
     command = this.commonCompile(command);

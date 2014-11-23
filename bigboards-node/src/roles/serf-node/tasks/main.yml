@@ -1,0 +1,27 @@
+---
+- name: make sure serf has been downloaded
+  get_url: url=https://dl.bintray.com/mitchellh/serf/0.6.3_linux_arm.zip dest=/tmp/serf.zip
+
+- name: make sure the serf directory exists
+  file: state=directory path={{ item }}
+  with_items:
+    - /opt/serf
+    - /opt/serf/bin
+    - /opt/serf/etc
+
+- name: be sure the serf configuration file is available
+  template: src=etc/serf/serf.conf dest=/opt/serf/etc/serf.conf
+  notify: Restart Serf
+
+- name: be sure the serf files are up to date
+  copy: src={{ item }} dest=/{{ item }}
+  with_items:
+    - etc/default/serf
+    - etc/init/serf.conf
+    - etc/network/if-down.d/serf
+    - etc/network/if-up.d/serf
+    - etc/dhcp/dhclient-exit-hooks.d/serf
+  notify: Restart Serf
+
+- name: make sure the serf binary is unpacked
+  unarchive: copy=no src=/tmp/serf.zip dest=/opt/serf/bin/serf

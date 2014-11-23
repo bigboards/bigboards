@@ -26,7 +26,7 @@ serfer.connect().then(function() {
     var configuration = new Container.Configuration(serverConfig.hex.file);
 
     var services = initializeServices(serverConfig, configuration, serfer, app, io);
-    services.task.registerDefaultTasks();
+    services.task.registerDefaultTasks(configuration, services);
 
     server.listen(app.get('port'), function () {
         winston.info('BigBoards-mmc listening on port ' + app.get('port'));
@@ -96,9 +96,9 @@ function initializeServices(serverConfig, config, serf, app, io) {
 
 function handleError(error) {
     // TODO must we console-log the message? Or only winston-log it?
-    var msg = JSON.stringify(error);
-    console.log(msg);
-    winston.log('error', msg);
+//    var msg = JSON.stringify(error);
+    console.log(error.message);
+    winston.log('error', error.message);
 
     if (error.code == 'EADDRINFO')
         return;

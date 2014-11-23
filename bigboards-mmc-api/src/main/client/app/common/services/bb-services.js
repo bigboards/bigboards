@@ -10,42 +10,46 @@ app.service('Library', function($resource, Runtime) {
     });
 });
 
-app.service ('Identity', function($resource, Runtime) {
-    return $resource(Runtime.api.url + '/api/v1/identity');
+app.service ('Hex', function($resource, Runtime) {
+    return $resource(Runtime.api.url + '/api/v1/hex', {id: '@id'}, {
+        'identity': { method: 'GET', isArray: false }
+    });
+});
+
+app.service ('Nodes', function($resource, Runtime) {
+    return $resource(Runtime.api.url + '/api/v1/hex/nodes', {id: '@id'}, {
+        'list': { method: 'GET', isArray: true }
+    });
+});
+
+app.service ('Stacks', function($resource, Runtime) {
+    return $resource(Runtime.api.url + '/api/v1/hex/stacks/:owner/:tintId', {owner: '@owner', tintId: '@tintId'}, {
+        'list': { method: 'GET', isArray: true },
+        'install': { method: 'POST'},
+        'uninstall': { method: 'DELETE'}
+    });
+});
+
+app.service ('Datasets', function($resource, Runtime) {
+    return $resource(Runtime.api.url + '/api/v1/hex/datasets/:owner/:tintId', {owner: '@owner', tintId: '@tintId'}, {
+        'list': { method: 'GET', isArray: true },
+        'install': { method: 'POST'},
+        'uninstall': { method: 'DELETE'}
+    });
+});
+
+app.service ('Tutors', function($resource, Runtime) {
+    return $resource(Runtime.api.url + '/api/v1/hex/tutors/:owner/:tintId', {owner: '@owner', tintId: '@tintId'}, {
+        'list': { method: 'GET', isArray: true },
+        'install': { method: 'POST'},
+        'uninstall': { method: 'DELETE'}
+    });
 });
 
 app.service('Tasks', function($resource, Runtime) {
-    return $resource(Runtime.api.url + '/api/v1/tasks/:id', {id: '@id'}, {
+    return $resource(Runtime.api.url + '/api/v1/tasks/:code', {code: '@code'}, {
         'invoke': { method: 'POST', isArray: false}
     });
-});
-
-app.service('Nodes', function($resource, Runtime) {
-    return $resource(Runtime.api.url + '/api/v1/nodes');
-});
-
-app.service('Firmware', function($resource, Runtime) {
-    return $resource(Runtime.api.url + '/api/v1/firmware', undefined, {
-        'install': {method: 'POST', isArray: false}
-    });
-});
-
-app.service('Patches', function($resource, Runtime) {
-    return $resource(Runtime.api.url + '/api/v1/patches/:patch', {patch: '@patch'}, {
-        'install': {method: 'PUT', isArray: false}
-    });
-});
-
-app.service('Tints', function($resource, Runtime) {
-    return $resource(Runtime.api.url + '/api/v1/tints/:type/:id', {id: '@id', type: '@type'}, {
-        'install': { method: 'PUT', isArray: false},
-        'uninstall': { method: 'POST', isArray: true},
-        'update': { method: 'POST', isArray: true}
-    });
-});
-
-app.service('TintConfig', function($resource, Runtime) {
-    return $resource(Runtime.api.url + '/api/v1/tints/:tintId/config', {tintId: '@tintId'});
 });
 
 app.service('Tint', function($resource, $rootScope, Tints, Runtime) {
@@ -117,10 +121,6 @@ app.service('Tint', function($resource, $rootScope, Tints, Runtime) {
 
 
     return new service;
-});
-
-app.service('Hex', function($resource, Runtime) {
-    return $resource(Runtime.api.url + '/api/v1/hex/');
 });
 
 app.factory('ApiFeedback', function($rootScope) {

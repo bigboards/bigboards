@@ -67,7 +67,7 @@ TaskService.prototype.listAttempts = function(taskCode) {
     return defer.promise;
 };
 
-TaskService.prototype.registerDefaultTasks = function(configuration) {
+TaskService.prototype.registerDefaultTasks = function(configuration, services) {
     // -- dummy
     this.register(require('./tasks/dummy/dummy')(configuration));
 
@@ -79,7 +79,7 @@ TaskService.prototype.registerDefaultTasks = function(configuration) {
 //    this.register(require('./tasks/lxc/lxc_restart')(configuration));
 
     // -- tint tasks
-//    this.register(require('./tasks/tints/tint_install')(configuration));
+    this.register(require('./tasks/tints/tint_install')(configuration, services));
 //    this.register(require('./tasks/tints/tint_uninstall')(configuration));
 
     // -- update / patch
@@ -154,11 +154,6 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
 
     var deferred = Q.defer();
 
-    if (this.currentTask) {
-        deferred.reject(new Errors.TasksRunnerBusyError('the task runner is already busy executing tasks.'));
-        return deferred.promise;
-    }
-
     if (!taskCode) {
         deferred.reject(new Error('Invalid task code'));
     } else {
@@ -167,38 +162,16 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
             deferred.reject(new Error('Invalid task code'));
         }
         else {
-            if (task.running) {
-                deferred.reject(new Errors.TaskAlreadyStartedError('the task with code ' + taskCode + ' is already being invoked'));
-                return deferred.promise;
-            }
-            else {
-                var taskId = uuid.v4();
+            var taskId = uuid.v4();
 
-                this.currentTask = this.tasks[taskCode];
-
-                // -- set an empty list for the parameters
-                if (! parameters) parameters = {};
-
-                var executionScope = {};
-                var parameterError = null;
-                task.parameters.forEach(function (parameter) {
-                    if (parameter.required && !parameters[parameter.key]) {
-                        parameterError = new Errors.TaskParameterError('Executing ' + taskCode + ' requires parameter ' + parameter.key + ' but it has not been provided');
-                        return;
-                    }
-
-                    executionScope[parameter.key] = parameters[parameter.key];
-                });
-
-                if (parameterError) {
-                    deferred.reject(parameterError);
-                    return deferred.promise;
-                }
+            try {
+                var executionScope = buildTaskScope(task, parameters);
+                var taskLogDir = this.settings.dir.tasks + '/' + taskCode + '/' + taskId;
 
                 // -- create the output streams
                 mkdirp.sync(this.settings.dir.tasks + '/' + taskCode + '/' + taskId);
-                var errorStream = fs.createWriteStream(this.settings.dir.tasks + '/' + taskCode + '/' + taskId + '/error.log');
-                var outputStream = fs.createWriteStream(this.settings.dir.tasks + '/' + taskCode + '/' + taskId + '/output.log');
+                var errorStream = fs.createWriteStream(taskLogDir + '/error.log');
+                var outputStream = fs.createWriteStream(taskLogDir + '/output.log');
 
                 // -- invoke the task
                 winston.log('info', 'invoking task "%s": %s', taskCode, task.description);
@@ -246,11 +219,30 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
 
                     eventEmitter.emit('task:failed', { attempt: taskId, error: err });
                 }
+
+            } catch (error) {
+                deferred.reject(error);
             }
         }
     }
 
     return deferred.promise;
 };
+
+function buildTaskScope(task, parameters) {
+    // -- set an empty list for the parameters
+    if (! parameters) parameters = {};
+
+    var executionScope = {};
+    task.parameters.forEach(function (parameter) {
+        if (parameter.required && !parameters[parameter.key]) {
+            throw new Errors.TaskParameterError('Executing ' + task.code + ' requires parameter ' + parameter.key + ' but it has not been provided');
+        }
+
+        executionScope[parameter.key] = parameters[parameter.key];
+    });
+
+    return executionScope;
+}
 
 module.exports = TaskService;

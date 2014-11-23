@@ -3,8 +3,8 @@
 /* Controllers */
 
 angular.module('app')
-    .controller('AppCtrl', ['$scope', '$localStorage', '$window', 'toaster', 'socket', 'Identity', 'Tints', 'Nodes', 'Tasks',
-        function(              $scope,   $localStorage,   $window ,  toaster,   socket,   Identity,   Tints,   Nodes,   Tasks) {
+    .controller('AppCtrl', ['$scope', '$localStorage', '$window', 'toaster', 'socket', 'Hex', 'Nodes', 'Tasks', 'Stacks', 'Datasets', 'Tutors',
+        function(            $scope,   $localStorage,   $window ,  toaster,   socket,   Hex,   Nodes,   Tasks,   Stacks,   Datasets,   Tutors) {
             // add 'ie' classes to html
             var isIE = !!navigator.userAgent.match(/MSIE/i);
             isIE && angular.element($window.document.body).addClass('ie');
@@ -39,13 +39,13 @@ angular.module('app')
             };
 
             $scope.hex = {
-                identity: Identity.get(),
+                identity: Hex.identity(),
                 metrics: {},
-                nodes: Nodes.query(),
+                nodes: Nodes.list(),
                 tints: {
-                    stack: Tints.get({type: 'stack'}),
-                    data: Tints.query({type: 'data'}),
-                    edu: Tints.query({type: 'edu'})
+                    stack: Stacks.list(),
+                    data: Datasets.list(),
+                    edu: Tutors.list()
                 },
                 tasks: Tasks.get()
             };

@@ -16,7 +16,11 @@ module.exports.runPlaybook = function(playbook, scope, workingDir) {
         .playbook(playbook)
         .variables(scope);
 
-    if (verbose) pb.verbose('vvvv');
+    if (verbose) {
+        pb.verbose('vvvv');
+        deferred.notify('starting the playbook using the following command: ' + pb.compile());
+        console.log('starting the playbook using the following command: ' + pb.compile());
+    }
 
     pb.exec({cwd: cwd})
         .then(function(result) {
@@ -43,8 +47,11 @@ module.exports.runShellCommand = function(args, verbose, sudo, cwd) {
     if (sudo)
         pb.asSudo();
 
-    if (verbose)
+    if (verbose) {
         pb.verbose('vvvv');
+        deferred.notify('starting the playbook using the following command: ' + pb.compile());
+        console.log('starting the playbook using the following command: ' + pb.compile());
+    }
 
     pb.exec({cwd: cwd})
         .then(function(result) {
@@ -69,8 +76,11 @@ module.exports.removeFile = function(path, verbose, cwd) {
         .asSudo()
         .args("state=absent path=" + path);
 
-    if (verbose)
+    if (verbose) {
         pb.verbose('vvvv');
+        deferred.notify('starting the playbook using the following command: ' + pb.compile());
+        console.log('starting the playbook using the following command: ' + pb.compile());
+    }
 
     pb.exec({cwd: cwd})
         .then(function(result) {

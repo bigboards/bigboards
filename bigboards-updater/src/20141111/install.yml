@@ -12,8 +12,14 @@
         - etc/dhcp/dhclient-exit-hooks.d/serf
       notify: Restart Serf
 
-    - name: be sure docker is installed
+    - name: be sure docker is installed ( + dependencies )
       apt: name=docker.io state=latest
+      with_items:
+        - docker.io
+        - python-pip
+
+    - name: be sure the docker python bindings are installed
+      pip: name=docker-py state=latest
 
     - name: make sure the bigboards log directory is available
       file: state=directory path=/var/log/bigboards owner=bb mode=666

@@ -11,6 +11,20 @@ function HexService(settings, configuration, templater, services, serf) {
     this.templater = templater;
     this.services = services;
     this.serf = serf;
+    this.nodeCache = [];
+
+    var self = this;
+
+    this.serf.members().then(function(members) {
+        self.nodeCache = members;
+    });
+
+    var serfMemberHandler = this.serf.stream('member-join,member-leave,member-update');
+    serfMemberHandler.on('data', function(data) {
+        if (!data || !data.data || !data.data.Members) return;
+
+        self.nodeCache = data.data.Members;
+    });
 
     mkdirp.sync(this.settings.tints.rootDirectory + '/stack');
     mkdirp.sync(this.settings.tints.rootDirectory + '/dataset');
@@ -30,7 +44,22 @@ HexService.prototype.get = function() {
  * NODES
  *********************************************************************************************************************/
 HexService.prototype.listNodes = function() {
-    return this.serf.members();
+    return Q(this.nodeCache);
+};
+
+HexService.prototype.addNode = function(node) {
+    var idx = indexForNode(this.nodeCache, node);
+
+    if (idx == -1) this.nodeCache.push(node);
+    else this.updateNode(node);
+};
+
+HexService.prototype.updateNode = function(node) {
+    this.nodeCache[indexForNode(this.nodeCache, node)] = node;
+};
+
+HexService.prototype.removeNode = function(node) {
+    delete this.nodeCache[indexForNode(this.nodeCache, node)];
 };
 
 /*********************************************************************************************************************
@@ -41,27 +70,35 @@ HexService.prototype.listTints = function(type) {
 
     return fsu
         .readDir(this.settings.tints.rootDirectory + '/' + type)
-        .then(function(files) {
+        .then(function(owners) {
             var promises = [];
 
-            files.forEach(function(owner) {
-                return fsu.readDir(self.settings.tints.rootDirectory + '/' + type + '/' + owner).then(function(tints) {
-                    var promises = [];
+            for (var o in owners) {
+                promises.push(fsu.readDir(self.settings.tints.rootDirectory + '/' + type + '/' + owners[o]).then(function (tints) {
+                    var p = [];
 
-                    tints.forEach(function(tint) {
-                        promises.push(parseManifest(self.templater, self.settings.tints.rootDirectory + '/' + type + '/' + owner + '/' + tint));
-                    });
+                    for (var i in tints) {
+                        p.push(parseManifest(self, self.templater, self.settings.tints.rootDirectory + '/' + type + '/' + owners[o] + '/' + tints[i]));
+                    }
 
-                    return Q.all(promises);
-                });
+                    return Q.all(p);
+                }));
+            }
+
+            return Q.all(promises).then(function(responses) {
+                var result = [];
+
+                for (var i in responses) {
+                    result = result.concat(responses[i]);
+                }
+
+                return result;
             });
-
-            return Q.all(promises);
         });
 };
 
 HexService.prototype.getTint = function(type, owner, tint) {
-    return parseManifest(self.templater, self.settings.tints.rootDirectory + '/' + type + '/' + owner + '/' + tint)
+    return parseManifest(this, this.templater, this.settings.tints.rootDirectory + '/' + type + '/' + owner + '/' + tint)
 };
 
 HexService.prototype.removeTint = function(type, owner, tint) {
@@ -83,12 +120,23 @@ HexService.prototype.installTint = function(type, owner, tint, uri) {
     return this.services.task.invoke('tint_install', { tint: t });
 };
 
-function parseManifest(templater, tintDir) {
-    return this
+function parseManifest(hexService, templater, tintDir) {
+    return hexService
         .listNodes()
         .then(function (nodes) {
             return yaml.safeLoad(templater.template(tintDir + "/tint.yml", nodes));
         });
+}
+
+function indexForNode(nodeList, node) {
+    // -- discover the index of the node
+    for (var idx in nodeList) {
+        if (node.name == nodeList[idx].name) {
+            return idx;
+        }
+    }
+
+    return -1;
 }
 
 module.exports = HexService;

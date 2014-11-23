@@ -1,0 +1,8 @@
+{
+    "id": "{{ hex.id }}",
+    "name": "{{ hex.name }}",
+    "node": {
+      "sequence": {{ sequence }},
+      "role": "{{ node.type }}"
+	}
+}

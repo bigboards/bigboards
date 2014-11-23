@@ -1,0 +1,78 @@
+<div class="hbox hbox-auto-xs hbox-auto-sm" ng-init="
+    app.settings.asideFolded = true;
+    app.settings.asideDock = false;
+  " data-ng-controller="TintCtrl">
+  <!-- main -->
+  <div class="col">
+    <!-- main header -->
+    <div class="bg-light lter b-b wrapper-md">
+      <div class="row">
+        <div class="col-sm-6 col-xs-12">
+          <h1 class="m-n font-thin h3 text-black">{{ stack.name }}</h1>
+          <small class="text-muted">Tints</small>
+        </div>
+      </div>
+    </div>
+    <!-- / main header -->
+    <div class="wrapper-md">
+        <div class="panel wrapper .no-padder">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4>Stack Details</h4>
+                    <table class="table">
+                        <tr>
+                            <td>Owner</td>
+                            <td>{{ stack.owner }}</td>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <td>{{ stack.description }}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-offset-1 col-md-3">
+                    <div class="panel b-a m-n">
+                        <div class="hbox text-center b-b b-light text-sm">
+                            <a href="" class="col padder-v text-muted b-r b-light text-danger">
+                                <i class="fa fa-remove block m-b-xs fa-2x"></i>
+                                <span>Delete</span>
+                            </a>
+                            <a href="" class="col padder-v text-muted b-r b-light">
+                                <i class="fa fa-refresh block m-b-xs fa-2x"></i>
+                                <span>Update</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel no-border">
+                    <div class="panel-heading wrapper b-b b-light">
+                        <h4 class="font-thin m-t-none m-b-none text-muted">Views</h4>
+                    </div>
+                    <ul class="list-group list-group-lg m-b-none">
+                        <li class="list-group-item" ng-repeat="view in stack.views">
+                            <a href="" class="thumb-sm m-r m-l">
+                                <i class="fa fa-2x fa-desktop m-t-sm text-sm"></i>
+                                <!--<img src="img/a1.jpg" class="r r-2x">-->
+                            </a>
+                            <a href="{{view.url}}">{{view.label}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel no-border">
+                    <div class="panel-heading wrapper b-b b-light">
+                        <h4 class="font-thin m-t-none m-b-none text-muted">What it does</h4>
+                    </div>
+                    <pre class="panel-body">{{ playAsString }}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!-- / main -->
+</div>

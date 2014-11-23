@@ -1,5 +1,5 @@
-app.controller('DashboardCtrl', ['$scope', '$stateParams', '$location', 'Library', 'Tints',
-                     function(    $scope,   $stateParams,   $location,   Library,   Tints) {
+app.controller('DashboardCtrl', ['$scope', '$stateParams', '$location', 'Library', 'Hex',
+                     function(    $scope,   $stateParams,   $location,   Library,   Hex) {
 
      $scope.getMetric = function(node, metric) {
          if (!$scope.hex.metrics) return 'na';

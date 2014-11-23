@@ -66,12 +66,12 @@ angular.module('app')
                       }]
                   }
               })
-              .state('app.tint', {
-                  url: '/tint/:type/*tintId',
-                  templateUrl: 'app/tint/view.html',
+              .state('app.stack', {
+                  url: '/stacks/:owner/:tint',
+                  templateUrl: 'app/tint/stack/view.html',
                   resolve: {
                       deps: ['$ocLazyLoad', function( $ocLazyLoad ){
-                          return $ocLazyLoad.load(['app/tint/controllers/tint-controller.js']);
+                          return $ocLazyLoad.load(['app/tint/stack/controllers/stack-controller.js']);
                       }]
                   }
               })

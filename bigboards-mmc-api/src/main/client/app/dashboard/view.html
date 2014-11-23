@@ -57,11 +57,11 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="node in hex.nodes">
-                                <td><a href="#/app/node/{{node.name}}">{{node.name}}</a></td>
-                                <td>{{node.role}}</td>
-                                <td>{{node.status}}</td>
-                                <td>{{node.container.internalIp}}</td>
-                                <td>{{node.container.externalIp}}</td>
+                                <td><a href="#/app/node/{{node.name}}">{{node.Name}}</a></td>
+                                <td>{{node.Tags.role}}</td>
+                                <td>{{node.Status}}</td>
+                                <td>{{node.Tags['network.int.ip']}}</td>
+                                <td>{{node.Tags['network.ext.ip']}}</td>
                                 <td class="text-center">{{getMetric(node, 'temperature') | temperature}}°C</td>
                                 <td class="text-center">{{getMetric(node, 'load') | loadMetric | number : 2}}</td>
                                 <td><progressbar value="getMetric(node, 'memory') | percentMetric | number : 1" type="primary" class="progress-xs m-t-xs m-b-none dker"></progressbar></td>
@@ -86,18 +86,15 @@
               <div class="wrapper-md">
                   <div class="m-b-sm text-md">Stack Tint</div>
                   <p ng-if="!hex.tints.stack">
-                      No stack tint has been installed. You can drop by the <a href="#/app/library">library</a> to install one.
+                      No stack tints have been installed. You can drop by the <a href="#/app/library">library</a> to install one.
                   </p>
-                  <ul class="list-group no-bg no-borders pull-in" ng-if="hex.tints.stack">
-                      <li class="list-group-item">
-                          <a herf class="pull-left thumb-sm avatar m-r">
-                              <img src="img/a4.jpg" alt="..." class="img-circle">
-                              <i class="on b-white bottom"></i>
-                          </a>
-                          <a href="#/app/tint/stack/{{hex.tints.stack.id}}" class="text-muted"><i class="fa fa-eye pull-right m-t-sm text-sm"></i></a>
+                  <ul class="list-group no-borders pull-in auto">
+                      <li class="list-group-item" ng-repeat="tint in hex.tints.stack">
+                          <span class="pull-left thumb-sm m-r"><img src="img/a1.jpg" alt="..." class="img-circle"></span>
+                          <a href="#/app/stacks/{{tint.owner}}/{{tint.id}}" class="text-muted"><i class="fa fa-eye pull-right m-t-sm text-sm"></i></a>
                           <div class="clear">
-                              <div><a href>{{hex.tints.stack.name}}</a></div>
-                              <small class="text-muted">{{hex.tints.stack.owner}}</small>
+                              <div><a href="">{{tint.name}}</a></div>
+                              <small class="text-muted">by {{tint.owner}}</small>
                           </div>
                       </li>
                   </ul>

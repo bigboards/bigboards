@@ -1,0 +1,22 @@
+---
+- name: be sure the bigboards group exists
+  group: name=bigboards state=present
+
+- name: be sure the harddisk is initialized
+  shell: creates=/dev/sda1 parted /dev/sda mklabel msdos mkpart primary 0% 100%
+  when: ansible_architecture == "armhf"
+
+- name: be sure the harddrive filesystem has been created
+  shell: creates=/root/.sda1.initialized mkfs.ext4 /dev/sda1 && touch /root/.sda1.initialized
+  when: ansible_architecture == "armhf"
+
+- name: be sure the data directory exists
+  file: state=directory path=/data owner=bb group=bigboards
+
+- name: be sure the correct FSTAB file is installed
+  copy: src=etc/fstab dest=/etc/fstab
+  when: ansible_architecture == "armhf"
+
+- name: be sure the data directory is mounted
+  shell: creates=/data/lost+found mount /data
+  when: ansible_architecture == "armhf"
