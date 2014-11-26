@@ -1,69 +1,47 @@
 var util         = require("util"),
     EventEmitter = require('events').EventEmitter,
-    Restler      = require('restler'),
     Q            = require('q');
 
-function HexNodeManager(serfer) {
-    this.serfer = serfer;
+function HexNodeManager(serf) {
+    this.serf = serf;
+    this.nodeCache = [];
+
+    var self = this;
+
+    this.serf.members().then(function(members) {
+        self.nodeCache = members;
+    });
+
+    var serfMemberHandler = this.serf.stream('member-join,member-leave,member-update');
+    serfMemberHandler.on('data', function(data) {
+        if (!data || !data.data || !data.data.Members) return;
+
+        self.nodeCache = data.data.Members;
+    });
 }
 
 // -- make sure the metric store inherits from the event emitter
 util.inherits(HexNodeManager, EventEmitter);
 
 HexNodeManager.prototype.node = function(nodeName) {
-    return this.serfer.membersFiltered(null, null, nodeName)
-        .then(function(member) {
-            return nodeDetails(member);
-        });
+    var idx = indexForNodeName(this.nodeCache, nodeName);
+
+    return (idx == -1) ? null : this.nodeCache[idx];
 };
 
 HexNodeManager.prototype.nodes = function() {
-    return this.serfer.members()
-        .then(function(members) {
-            var arr = [];
-            members.forEach(function(member) {
-                arr.push(nodeDetails(member));
-            });
-
-            return Q.all(arr);
-        })
-        .then(function(result) {
-            return result.sort(function (a, b) {
-                // FIXME: This failes if name is null for some misterious reason. Find the reason.
-                return a.name.localeCompare(b.name);
-            });
-        });
+    return this.nodeCache;
 };
 
 module.exports = HexNodeManager;
 
-function nodeDetails(member) {
-    var defer = Q.defer();
-
-    Restler
-        .get('http://' + toAddress(member['Addr']).ip + ':7099/api/v1/node')
-        .on('complete', function(result) {
-            if (result instanceof Error) {
-                result['tags'] = [];
-                result['status'] = 'Unknown';
-
-                defer.resolve(result);
-            }
-            else {
-                result['tags'] = member['Tags'];
-                result['status'] = member['Status'];
-
-                defer.resolve(result);
-            }
-        });
-
-    return defer.promise;
-}
-
-function toAddress(addressBuffer) {
-    var l = addressBuffer.length;
-
-    return {
-        ip: addressBuffer[l-4] + '.' + addressBuffer[l-3] + '.' + addressBuffer[l-2] + '.' + addressBuffer[l - 1]
+function indexForNodeName(nodeList, nodeName) {
+    // -- discover the index of the node
+    for (var idx in nodeList) {
+        if (nodeName == nodeList[idx].name) {
+            return idx;
+        }
     }
+
+    return -1;
 }

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# exit if not ipv4
+[ "$ADDRFAM" != "inet" ] && exit 0
+
+# update the tag for the network interface on the serf agent
+/opt/serf/bin/serf tags \
+    -delete network.$IFACE.ip \
+    -delete network.$IFACE.mac \
+    -delete network.$IFACE.broadcast \
+    -delete network.$IFACE.netmask

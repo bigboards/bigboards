@@ -1,0 +1,29 @@
+---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: be sure the serf files are up to date
+      copy: src=files/{{ item }} dest=/{{ item }}
+      with_items:
+        - etc/default/serf
+        - etc/init/serf.conf
+        - etc/network/if-down.d/serf
+        - etc/network/if-up.d/serf
+        - etc/dhcp/dhclient-exit-hooks.d/serf
+      notify: Restart Serf
+
+    - name: be sure docker is installed ( + dependencies )
+      apt: name=docker.io state=latest
+      with_items:
+        - docker.io
+        - python-pip
+
+    - name: be sure the docker python bindings are installed
+      pip: name=docker-py state=latest
+
+    - name: make sure the bigboards log directory is available
+      file: state=directory path=/var/log/bigboards owner=bb mode=666
+
+  handlers:
+    - name: Restart Serf
+      service: name=serf state=restarted
