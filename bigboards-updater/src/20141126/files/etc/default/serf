@@ -1,5 +1,5 @@
 ## SERF Agent Config File
 SERF_HOME=/opt/serf
 
-EXT_IFACE="br0"
-INT_IFACE="br1"
+EXT_IFACE="eth0:0"
+INT_IFACE="eth0"

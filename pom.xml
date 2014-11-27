@@ -15,6 +15,7 @@
         <module>bigboards-node</module>
         <module>bigboards-updater</module>
         <module>bigboards-library</module>
+        <module>bigboards-docker</module>
     </modules>
 
     <properties>
