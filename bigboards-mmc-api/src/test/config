@@ -1,0 +1,19 @@
+environment: "development",
+port: 7000,
+
+hex.directory: "/opt/bb"
+hex.file: "/etc/ansible/facts.d/hex.fact"
+
+metrics.cache.size: 30
+metrics.cache.interval: 5000
+
+activities.cache.size: 30
+
+library.url: "http://library.bigboards.io"
+
+firmware.patches.directory: "/opt/bb/runtimes/bigboards-updater"
+firmware.versions.file: "/opt/bb/.versions"
+
+tints.directory: "/opt/bb/tints.d"
+
+tasks.directory: "/var/log/bigboards/tasks"

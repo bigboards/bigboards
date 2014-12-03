@@ -2,27 +2,22 @@ var Q = require('q'),
     winston = require('winston'),
     fs = require('fs');
 
-var TaskUtils = require('../../../utils/task-utils');
+var TaskUtils = require('../../../../utils/task-utils');
 
 module.exports = function(configuration) {
     return {
-        code: 'tint_install',
+        code: 'stack_install',
         description: 'installing the tint on the hex',
         type: 'ansible',
         parameters: [
             {
-                key: 'tintId',
+                key: 'tint',
                 description: 'The unique id of the tint',
                 required: true
             },
             {
-                key: 'tintUri',
-                description: 'The Uri pointing to the tint git repository.',
-                required: true
-            },
-            {
-                key: 'tintType',
-                description: 'The type of tint we are installing. Can be stack, edu or data',
+                key: 'hostMapping',
+                description: 'The mapping indicating which host take which roles',
                 required: true
             },
             {
@@ -43,19 +38,19 @@ module.exports = function(configuration) {
         ],
         execute: function(scope) {
             // -- replace the username and password in the tint uri
-            scope.tintUri = scope.tintUri.replace(/%username%/g, scope.username);
-            scope.tintUri = scope.tintUri.replace(/%password%/g, scope.password);
+            scope.tint.uri = scope.tint.uri.replace(/%username%/g, scope.username);
+            scope.tint.uri = scope.tint.uri.replace(/%password%/g, scope.password);
 
-            if (scope.tintType == 'stack') {
-                return TaskUtils
-                    .runPlaybook('tints/tint_install', scope)
-                    .then(function() {
-                        return TaskUtils.runPlaybook('install', scope, '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId);
+            return TaskUtils
+                .runPlaybook('tints/stack_install', scope)
+                .then(function() {
+                    return TaskUtils.playbook({
+                        playbook: 'install',
+                        scope: scope,
+                        hosts: 'hosts',
+                        path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
                     });
-            } else {
-                return TaskUtils
-                    .runPlaybook('install', scope, '/opt/bb/tints.d/' + scope.tintType + '/' + scope.tintId);
-            }
+                });
         }
     };
 };

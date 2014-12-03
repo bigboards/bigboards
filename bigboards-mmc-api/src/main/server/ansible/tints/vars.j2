@@ -1,0 +1,16 @@
+tint:
+  owner: {{ owner }}
+  id: {{ id }}
+
+hosts:
+{% for role in roles %}
+{% if role.cardinality == 1 %}
+{% for mapping in hostMapping %}
+{% if mapping.role == role.name %}
+{% for host in mapping.hosts %}
+  {{ role.name }} : "{{ host }}"
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

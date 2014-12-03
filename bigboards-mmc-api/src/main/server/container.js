@@ -1,7 +1,7 @@
 var Container = {
     errors: require('./errors'),
 
-    Configuration: require('./mods/configuration'),
+    Configuration: require('./configuration'),
     Firmware: require('./mods/firmware'),
     Health: require('./mods/health'),
     Library: require('./mods/library'),

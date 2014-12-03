@@ -1,0 +1,7 @@
+{% for mapping in hostMapping %}
+[{{ mapping.role }}]
+{% for host in mapping.hosts %}
+{{ host }}      ansible_ssh_user=bb
+{% endfor %}
+
+{% endfor %}

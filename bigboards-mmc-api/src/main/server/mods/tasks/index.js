@@ -32,7 +32,7 @@ TaskManager.prototype.registerDefaultTasks = function(configuration) {
     this.register(require('./lxc/lxc_restart')(configuration));
 
     // -- tint tasks
-    this.register(require('./tints/tint_install')(configuration));
+    this.register(require('./tints/stack_install')(configuration));
     this.register(require('./tints/tint_uninstall')(configuration));
 
     // -- update / patch

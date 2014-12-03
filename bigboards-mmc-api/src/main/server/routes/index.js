@@ -92,24 +92,9 @@ function linkNodesApi(self, server) {
 }
 
 function linkTintApi(self, server) {
-    server.param('tintId', /^\w+\.\w+$/);
-
-    // -- list
-    server.get('/api/v1/tints/stack', function(req, res) { self.tintsAPI.stack(req, res); });
-    server.get('/api/v1/tints/data', function(req, res) { self.tintsAPI.data(req, res); });
-    server.get('/api/v1/tints/edu', function(req, res) { self.tintsAPI.edu(req, res); });
-
-    // -- get
-    server.get('/api/v1/tints/:type/:tintId', function(req, res) { self.tintsAPI.get(req, res); });
-
-    // -- configuration
-    server.get('/api/v1/tints/:type/:tintId/config', function(req, res) { self.tintsAPI.getConfiguration(req, res); });
-    server.post('/api/v1/tints/:type/:tintId/config', function(req, res) { self.tintsAPI.configure(req, res); });
-
-    // -- install, update, delete
-    server.put('/api/v1/tints/:type/:tintId', function(req, res) { self.tintsAPI.install(req, res); });
-    server.post('/api/v1/tints/:type/:tintId', function(req, res) { self.tintsAPI.update(req, res); });
-    server.delete('/api/v1/tints/:type/:tintId', function(req, res) { self.tintsAPI.uninstall(req, res); });
+    server.get('/api/v1/stacks', function(req, res) { self.tintsAPI.stack(req, res); });
+    server.put('/api/v1/stacks', function(req, res) { self.tintsAPI.install(req, res); });
+    server.delete('/api/v1/stacks', function(req, res) { self.tintsAPI.uninstall(req, res); });
 
     winston.log('info', 'linked the tint API');
 }
