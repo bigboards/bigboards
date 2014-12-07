@@ -1,0 +1,35 @@
+<bb-header title="'Tasks'"></bb-header>
+<bb-content>
+<div class="tasks">
+    <!--<h3>Current Task</h3>-->
+    <!--<div ng-if="hasCurrentTask()" class="current-task">-->
+        <!--<p>I am {{current.description}}</p>-->
+        <!--<div class="task-actions">-->
+            <!--<a class="btn btn-default btn-xs" href="#/tasks/{{current.code}}/output">Follow</a>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<p ng-if="!hasCurrentTask()">There is no task currently running</p>-->
+
+    <h3>Available Tasks</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="col-sm-1">type</th>
+                <th class="col-sm-1">code</th>
+                <th>description</th>
+                <th class="col-sm-1"></th>
+            </tr>
+        </thead>
+        <tr ng-repeat="task in tasks">
+            <td>{{task.type}}</td>
+            <td>{{task.code}}</td>
+            <td>{{task.description}}</td>
+            <td>
+                <a href="#/tasks/{{task.code}}" class="btn btn-xs btn-default">
+                    <i class="fa fa-question-circle"></i>
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+</bb-content>

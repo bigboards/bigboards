@@ -10,6 +10,7 @@ module.exports = {
         API.registerGet(app, '/api/v1/tasks', function(req, res) { return resource.listTasks(req, res); });
 
         API.registerPost(app, '/api/v1/tasks/:code', function(req, res) { return resource.invokeTask(req, res); });
+        API.registerGet(app, '/api/v1/tasks/:code', function(req, res) { return resource.getTask(req, res); });
 
         API.registerGet(app, '/api/v1/tasks/:code/attempts', function(req, res) { return resource.listAttempts(req, res); });
         API.registerGet(app, '/api/v1/tasks/:code/attempts/:attempt/output', function(req, res) { return resource.attemptOutput(req, res); });

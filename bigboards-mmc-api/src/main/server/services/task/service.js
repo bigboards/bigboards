@@ -24,7 +24,7 @@ TaskService.prototype.current = function() {
 };
 
 TaskService.prototype.get = function(code) {
-    return this.tasks[code];
+    return Q(this.tasks[code]);
 };
 
 TaskService.prototype.listTasks = function() {
@@ -56,8 +56,24 @@ TaskService.prototype.listAttempts = function(taskCode) {
     fs.exists(this.settings.dir.tasks + '/' + taskCode, function(exists) {
         if (exists) {
             fs.readdir(self.settings.dir.tasks + '/' + taskCode, function (err, files) {
-                if (err) defer.reject(err);
-                else defer.resolve(files);
+                if (err) return defer.reject(err);
+
+                var result = [];
+
+                for (var file in files) {
+                    var record = {
+                        id: files[file]
+                    };
+
+                    var stats = fs.statSync(self.settings.dir.tasks + '/' + taskCode + "/" + files[file]);
+
+                    record.started = stats.ctime;
+                    record.ended = stats.mtime;
+
+                    result.push(record);
+                }
+
+                return defer.resolve(result);
             });
         } else {
             defer.resolve([]);
@@ -125,7 +141,7 @@ TaskService.prototype.output = function(taskCode, taskId) {
 
     fs.readFile(this.settings.dir.tasks + '/' + taskCode + '/' + taskId + '/output.log', "utf-8", function(err, content) {
         if (err) defer.reject(err);
-        else defer.resolve(content);
+        else defer.resolve({content: content});
     });
 
     return defer.promise;
@@ -136,7 +152,7 @@ TaskService.prototype.error = function(taskCode, taskId) {
 
     fs.readFile(this.settings.dir.tasks + '/' + taskCode + '/' + taskId + '/error.log', "utf-8", function(err, content) {
         if (err) defer.reject(err);
-        else defer.resolve(content);
+        else defer.resolve({content: content});
     });
 
     return defer.promise;

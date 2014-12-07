@@ -1,0 +1,195 @@
+.tints .tint {
+    border: solid 1px #dedede;
+    background-color: white;
+    display: inline-block;
+    position: relative;
+    margin: 10px;
+    min-width: 200px;
+    min-height: 140px;
+}
+
+.tints .tint .name {
+    text-align: center;
+    font-size: x-large;
+    display: block;
+    margin-top: 13px;
+}
+
+.tints .tint .owner {
+    text-align: center;
+    font-size: small;
+    display: block;
+}
+
+.tints .tint-body {
+    display: block;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    bottom: 10px;
+    right: 10px;
+}
+
+.tints .tint-actions {
+    display: table;
+    position: absolute;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    height: 40px;
+    width: 100%;
+}
+
+.tints .tint-actions .tint-action {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    color: white;
+}
+
+.tints .tint.stack .tint-actions .tint-action:hover {
+    color: rgb(32,124,229);
+    background-color: white;
+}
+
+.tints .tint.data .tint-actions .tint-action:hover {
+    color: #880000;
+    background-color: white;
+}
+
+.tints .tint.edu .tint-actions .tint-action:hover {
+    color: #008800;
+    background-color: white;
+}
+
+.tints .tint.stack .tint-actions .tint-action { background-color: rgb(32,124,229); }
+.tints .tint.data .tint-actions .tint-action { background-color: #880000; }
+.tints .tint.edu .tint-actions .tint-action { background-color: #008800; }
+
+.tints .tint.stack .corner-top-right { border-color: transparent rgb(32,124,229) transparent transparent; }
+.tints .tint.data .corner-top-right { border-color: transparent #880000 transparent transparent; }
+.tints .tint.edu .corner-top-right { border-color: transparent #008800 transparent transparent; }
+
+.corner-top-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 30px 30px 0;
+    border-color: transparent #515151 transparent transparent;
+}
+
+.tint-action.danger { color: #880000; }
+
+
+table {
+    margin: 0;
+    border: none;
+    border-top: solid 1px #dedede;
+    border-bottom: solid 1px #dedede;
+    margin-top: 10px;
+    font-size: smaller;
+    background-color: white;
+}
+
+.table .metric-column {
+    width: 50px;
+}
+
+table .table-indicator {
+    width: 30px;
+}
+
+h2 {
+    padding-top: 24px;
+    padding-bottom: 23px;
+    padding-left: 20px;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-weight: 300;
+    font-family: 'Open Sans', sans-serif;
+}
+
+h3 {
+    margin-top: 40px;
+}
+
+
+
+
+/*.nodes {*/
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*left:0;*/
+    /*bottom: 0;*/
+    /*width: 20%;*/
+/*}*/
+
+/*.hex-node {*/
+    /*margin: 15px;*/
+    /*display: block;*/
+/*}*/
+
+/*.hex-node .hex-node-content {*/
+    /*position: relative;*/
+    /*margin-left: 26px;*/
+    /*height: 100%;*/
+    /*min-height: 65px;*/
+    /*border: solid 1px #008888;*/
+/*}*/
+
+/*.hex-node-content.collapsed { max-height: 29px; }*/
+/*.hex-node-content.collapsed .hex-node-metrics { display: none; }*/
+
+/*.hex-node-content.expanded { max-height: none; }*/
+/*.hex-node-content.expanded .hex-node-metrics { display: block; }*/
+
+/*.hex-node h3 {*/
+    /*padding: 0;*/
+    /*margin: 0;*/
+    /*font-size: large;*/
+    /*margin-top: 21px;*/
+    /*margin-left: 30px;*/
+    /*margin-bottom: 21px;*/
+/*}*/
+
+/*.hex-node .hex {*/
+    /*background-color: #008888;*/
+/*}*/
+
+/*.hex-node-metrics {*/
+    /*margin-left: 30px;*/
+/*}*/
+
+
+
+/*.hex-node-metric {*/
+    /*padding-right: 10px;*/
+/*}*/
+
+/*.hex-node-metric h3 {*/
+    /*font-size: small;*/
+    /*margin: 0;*/
+    /*padding: 0;*/
+    /*display: inline-block;*/
+/*}*/
+
+/*.hex-node-metric .value {*/
+    /*float: right;*/
+    /*display: inline-block;*/
+/*}*/
+
+/*.hex-node-actions {*/
+    /*float: right;*/
+    /*padding-top: 14px;*/
+    /*padding-right: 14px;*/
+/*}*/
+
+/*.hex-node-actions .hex {*/
+    /*background-color: #dedede;*/
+    /*color: #515151;*/
+/*}*/

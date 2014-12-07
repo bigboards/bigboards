@@ -1,0 +1,8 @@
+<bb-header>Library</bb-header>
+
+<div class="library">
+    <button class="btn btn-default" ng-click="refresh()">Refresh the library</button>
+    <div class="tints">
+        <library-tint tint="t" ng-repeat="t in library" on-install="installTint(t.type, t.id)"></library-tint>
+    </div>
+</div>
