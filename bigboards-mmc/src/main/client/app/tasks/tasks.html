@@ -1,14 +1,14 @@
-<bb-header>Tasks</bb-header>
-
+<bb-header title="'Tasks'"></bb-header>
+<bb-content>
 <div class="tasks">
-    <h3>Current Task</h3>
-    <div ng-if="hasCurrentTask()" class="current-task">
-        <p>I am {{current.description}}</p>
-        <div class="task-actions">
-            <a class="btn btn-default btn-xs" href="#/tasks/{{current.code}}/output">Follow</a>
-        </div>
-    </div>
-    <p ng-if="!hasCurrentTask()">There is no task currently running</p>
+    <!--<h3>Current Task</h3>-->
+    <!--<div ng-if="hasCurrentTask()" class="current-task">-->
+        <!--<p>I am {{current.description}}</p>-->
+        <!--<div class="task-actions">-->
+            <!--<a class="btn btn-default btn-xs" href="#/tasks/{{current.code}}/output">Follow</a>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<p ng-if="!hasCurrentTask()">There is no task currently running</p>-->
 
     <h3>Available Tasks</h3>
     <table class="table">
@@ -28,10 +28,8 @@
                 <a href="#/tasks/{{task.code}}" class="btn btn-xs btn-default">
                     <i class="fa fa-question-circle"></i>
                 </a>
-                <a href="#/tasks/{{task.code}}/invoke" class="btn btn-xs btn-default" ng-disabled="hasCurrentTask()">
-                    <i class="fa fa-play-circle-o"></i>
-                </a>
             </td>
         </tr>
     </table>
 </div>
+</bb-content>

@@ -1,8 +1,0 @@
-{
-    "id": "test-hex",
-    "name": "TestHex",
-    "node": {
-      "role": "Master",
-      "slot": 1
-	}
-}

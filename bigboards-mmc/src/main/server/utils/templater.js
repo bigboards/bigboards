@@ -40,14 +40,16 @@ Templater.prototype.template = function(file, nodes) {
     scope.nodes = {};
     nodes.forEach(function (node) {
         scope.nodes[node.name] = {
-            ip: node.network.externalIp,
+            ip: (node.network) ? node.network.externalIp : 'none',
             status: node.status
         };
 
-        scope.nodes[node.container.name] = {
-            ip: node.container.externalIp,
-            status: node.container.status
-        };
+        if (node.container) {
+            scope.nodes[node.container.name] = {
+                ip: node.container.externalIp,
+                status: node.container.status
+            };
+        }
     });
 
     return swig.renderFile(file, scope);

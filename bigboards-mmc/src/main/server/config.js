@@ -20,6 +20,10 @@ module.exports = {
         }
     },
 
+    dir: {
+        tasks: '/var/log/bigboards/tasks'
+    },
+
     hex: {
         file: '/etc/ansible/facts.d/hex.fact',
         _file: 'src/test/hex.facts',
@@ -48,7 +52,7 @@ function getExternalIp() {
     var nics = os.networkInterfaces();
     var result = null;
 
-    var interfaces = [ 'wlan0', 'eth0', 'en0' ];
+    var interfaces = [ 'wlan0', 'eth0', 'en0', 'br0' ];
     interfaces.forEach(function(itf) {
         // -- return if we already found an item
         if (result) return;

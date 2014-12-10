@@ -99,7 +99,7 @@ body {
 .bb-logo {
     display: table-cell;
     width: 50px;
-    height: 60px;
+    height: 30px;
     background-image: url('../img/bb_logo.png');
     background-size: contain;
     background-repeat: no-repeat;

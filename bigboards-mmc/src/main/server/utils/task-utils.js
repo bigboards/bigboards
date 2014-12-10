@@ -2,9 +2,38 @@ var Ansible = require('../mods/ansible/index.js'),
     path = require('path'),
     Q = require('q');
 
+module.exports.playbook = function(context) {
+    var hostsFile = (context.hosts) ? context.hosts : '/opt/bb/hosts';
+
+    var deferred = Q.defer();
+    var cwd = '/opt/bb/runtimes/bigboards-mmc-api/server/ansible';
+    if (context.path) cwd = context.path;
+
+    var verbose = (context.scope.verbose && ((context.scope.verbose == 'yes') || (context.scope.verbose == 'true')));
+
+    var pb = new Ansible.Playbook()
+        .inventory(hostsFile)
+        .playbook(context.playbook)
+        .variables(context.scope);
+
+    if (verbose) pb.verbose('vvvv');
+
+    pb.exec({cwd: cwd})
+        .then(function(result) {
+            if (result.code != 0) deferred.reject(new Error(result.code));
+            else deferred.resolve();
+        }, function(error) {
+            deferred.reject(error);
+        }, function(progress) {
+            deferred.notify(progress);
+        });
+
+    return deferred.promise;
+};
+
 module.exports.runPlaybook = function(playbook, scope, workingDir) {
     var deferred = Q.defer();
-    var cwd = '/opt/bb/runtimes/bigboards-mmc/server/ansible';
+    var cwd = '/opt/bb/runtimes/bigboards-mmc-api/server/ansible';
 //    var cwd = path.join(__dirname, '../ansible');
 
     if (workingDir) cwd = workingDir;

@@ -17,14 +17,12 @@
     <link rel="shortcut icon" href="favicon.ico">
 
     <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="bower_components/fontawesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="bower_components/angular-flip-dr/src/flip.css">
     <link rel="stylesheet" type="text/css" href="bower_components/angular-snap/angular-snap-only.css">
     <link rel="stylesheet" type="text/css" href="bower_components/snapjs/snap.css">
-    <link rel="stylesheet" type="text/css" href="bower_components/nvd3/nv.d3.css">
 
     <link rel="stylesheet" type="text/css" href="app/dashboard/dashboard.css" />
-    <link rel="stylesheet" type="text/css" href="app/dashboard/directives/node/node.css" />
     <link rel="stylesheet" type="text/css" href="app/dashboard/directives/hex-detail/hex-detail.css" />
     <link rel="stylesheet" type="text/css" href="app/dashboard/directives/indicator/indicator.css" />
 
@@ -52,21 +50,21 @@
 
 <body ng-controller="ApplicationController">
 <div id="wrap">
-    <snap-drawer>
-        <div id="menu">
-            <div class="menu-logo">
-                <span class="bb-name"></span>
-            </div>
-            <div class="menu-item" ng-repeat="item in menu" ng-click="invokeMenuItem(item)">
-                <span class="caption">{{item.label}}</span>
-            </div>
-        </div>
-        <div id="firmware-version">
-            <span class="caption">firmware {{firmware.version.name}}</span>
-        </div>
-    </snap-drawer><snap-content>
+    <!--<snap-drawer>-->
+        <!--<div id="menu">-->
+            <!--<div class="menu-logo">-->
+                <!--<span class="bb-name"></span>-->
+            <!--</div>-->
+            <!--<div class="menu-item" ng-repeat="item in menu" ng-click="invokeMenuItem(item)">-->
+                <!--<span class="caption">{{item.label}}</span>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div id="firmware-version">-->
+            <!--<span class="caption">firmware {{firmware.version.name}}</span>-->
+        <!--</div>-->
+    <!--</snap-drawer><snap-content>-->
         <div id="menu-quick">
-            <div class="quick-menu-logo" snap-toggle="left">
+            <div class="quick-menu-logo">
                 <span class="bb-logo" ></span>
             </div>
 
@@ -75,7 +73,7 @@
             </div>
         </div>
         <div id="content" ng-view></div>
-    </snap-content>
+    <!--</snap-content>-->
 </div>
 
 <!--<tasks></tasks>-->
@@ -84,9 +82,7 @@
 <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
 <script type="text/javascript" src="bower_components/socket.io-client/dist/socket.io.js"></script>
 
-<script type="text/javascript" src="bower_components/snapjs/snap.js"></script>
 <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-<script type="text/javascript" src="bower_components/angular-snap/angular-snap.js"></script>
 <script type="text/javascript" src="bower_components/angular-flip-dr/src/angular-flip.js"></script>
 <script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
 <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
@@ -103,6 +99,7 @@
 <script type="text/javascript" src="app/common/filters.js"></script>
 
 <script type="text/javascript" src="app/common/directives/bb-header/bb-header.js"></script>
+<script type="text/javascript" src="app/common/directives/bb-content/bb-content.js"></script>
 <script type="text/javascript" src="app/common/directives/init-focus/init-focus.js"></script>
 <script type="text/javascript" src="app/common/directives/menu/menu.js"></script>
 <script type="text/javascript" src="app/common/directives/tasks/tasks.js"></script>
@@ -112,11 +109,11 @@
 <script type="text/javascript" src="app/main/controllers.js"></script>
 
 <script type="text/javascript" src="app/dashboard/module.js"></script>
-<script type="text/javascript" src="app/dashboard/dashboard.js"></script>
 
-<script type="text/javascript" src="app/dashboard/directives/node/node.js"></script>
 <script type="text/javascript" src="app/dashboard/directives/hex-detail/hex-detail.js"></script>
 <script type="text/javascript" src="app/dashboard/directives/indicator/indicator.js"></script>
+
+<script type="text/javascript" src="app/stacks/module.js"></script>
 
 <script type="text/javascript" src="app/tints/module.js"></script>
 <script type="text/javascript" src="app/tints/tints.js"></script>
@@ -125,7 +122,6 @@
 <script type="text/javascript" src="app/shell/shell.js"></script>
 
 <script type="text/javascript" src="app/tasks/module.js"></script>
-<script type="text/javascript" src="app/tasks/tasks.js"></script>
 
 <script type="text/javascript" src="app/library/module.js"></script>
 <script type="text/javascript" src="app/library/library.js"></script>
@@ -133,10 +129,6 @@
 
 <script type="text/javascript" src="app/update/module.js"></script>
 <script type="text/javascript" src="app/update/update.js"></script>
-
-<!--<script src="lib/socket.io/socket.io.js"></script>-->
-<!--<script src="lib/term.js/term.js"></script>-->
-<!--<script src="lib/tty.js/tty.js"></script>-->
 
 <!-- UserVoice - JavaScript SDK (only needed once on a page) -->
 <script>(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/yjwfLqF0V88QyIB4J1sJ2A.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})()</script>

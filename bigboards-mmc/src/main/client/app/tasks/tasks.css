@@ -92,12 +92,20 @@
     padding: 20px;
 }
 
-.tasks .output {
-    overflow-y: scroll;
-    height: 100%;
-    width: 100%;
-    display: block;
-    min-height: 100%;
+.attempt .output {
+    /*position: absolute;*/
     border: none;
-    background-color: transparent;
+    background-color: #efefef;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0;
+}
+
+.attempt .output pre {
+    background: transparent;
+    height: 100%;
+    border: none;
+    overflow-y: scroll;
 }

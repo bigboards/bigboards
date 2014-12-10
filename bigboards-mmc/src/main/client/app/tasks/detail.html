@@ -1,24 +1,29 @@
-<bb-header>Tasks</bb-header>
+<bb-header title="task.code + ' attempts'"></bb-header>
 
-<div class="tasks">
-    <p>{{task.description}}</p>
-
-    <div class="task-history">
-        <h3>History</h3>
+<bb-content>
+    <div class="container-fluid">
         <table class="table">
             <thead>
-                <tr>
-                    <th>timestamp</th>
-                    <th>outcome</th>
-                    <th>output</th>
-                </tr>
-            </thead>
             <tr>
-                <td>{{task.type}}</td>
-                <td>{{task.code}}</td>
-                <td>{{task.description}}</td>
-                <td></td>
+                <th>id</th>
+                <th>timestamp</th>
+                <th class="col-sm-2"></th>
+            </tr>
+            </thead>
+            <tr ng-repeat="attempt in attempts | orderBy:'-started'">
+                <td>{{ attempt.id }}</td>
+                <td>{{ attempt.started | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                <td>
+                    <div class="btn-group">
+                        <a href="#/tasks/{{task.code}}/attempts/{{attempt.id}}/output" class="btn btn-xs btn-default">
+                            <span class="fa fa-list"></span>
+                        </a>
+                        <a href="#/tasks/{{task.code}}/attempts/{{attempt.id}}" class="btn btn-xs btn-danger">
+                            <span class="fa fa-trash-o"></span>
+                        </a>
+                    </div>
+                </td>
             </tr>
         </table>
     </div>
-</div>
+</bb-content>
