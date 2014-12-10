@@ -34,14 +34,18 @@
                             <mapper>
                                 <type>perm</type>
                                 <prefix>/opt/bb/runtimes/${project.name}</prefix>
+                                <filemode>755</filemode>
                             </mapper>
                         </data>
                         <data>
                             <type>link</type>
                             <linkName>/usr/bin/bb</linkName>
                             <linkTarget>/opt/bb/runtimes/${project.name}/bb</linkTarget>
-                            <symlink>false</symlink>
-                            <filemode>filemode</filemode>
+                            <symlink>true</symlink>
+                            <mapper>
+                                <type>perm</type>
+                                <filemode>755</filemode>
+                            </mapper>
                         </data>
                     </dataSet>
                 </configuration>

@@ -2,7 +2,7 @@
 # -- ----------------------------------------------------------------------- --
 # -- UNINSTALL
 # -- ----------------------------------------------------------------------- --
-- hosts: all
+- hosts: all:!localhost
   sudo: yes
   tasks:
     - name: make sure the running daemons are stopped
@@ -32,7 +32,7 @@
         - bigboards-updater
 
     - name: make sure the bigboards repository is set to the new version
-      lineinfile: dest=/etc/apt/sources.list regexp="^deb http\://apt\.bigboards\.io/repo" line="deb http://apt.bigboards.io/repo {{ version }}"
+      lineinfile: dest=/etc/apt/sources.list regexp="^deb http\://apt\.bigboards\.io/repo" line="deb http://apt.bigboards.io/repo {{ version }}/" backrefs=yes
 
     - name: make sure the apt repository cache is being refreshed
       shell: apt-get update
@@ -44,13 +44,10 @@
   sudo: yes
   tasks:
     - name: make sure the running daemons are present
-      apt: name={{ item }} state=present
+      apt: name={{ item }} state=present force=yes
       with_items:
-        - bigboards-mcc
+        - bigboards-mmc
         - bigboards-updater
 
     - name: make sure the versions file is removed
       file: path=/opt/bb/.versions state=absent
-
-    - name: make sure the hex is brought up to date
-      shell: /opt/bb/runtimes/bigboards-updater/update.sh
