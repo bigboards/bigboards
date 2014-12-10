@@ -8,8 +8,7 @@ var app = angular.module( 'mmc', [
     'bb.tasks',
     'bb.update',
     'nvd3ChartDirectives',
-    'btford.socket-io',
-    'ui.ace'
+    'btford.socket-io'
 ]);
 
 app.constant('settings', {
@@ -97,9 +96,13 @@ app.run(['$rootScope', function($rootScope) {
     });
 }]);
 
-app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'Firmware', function($scope, $location, Hex, Firmware) {
+app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket', 'Firmware', function($scope, $location, Hex, socket, Firmware) {
     $scope.currentItem = null;
     $scope.hex = Hex.me();
+
+    socket.on('ping', function() {
+        console.log('ping');
+    });
 
     $scope.menu = [
         {

@@ -1,5 +1,7 @@
-app.factory('socket', function (socketFactory) {
-    return socketFactory();
+app.factory('socket', function (settings, socketFactory) {
+    return socketFactory({
+        ioSocket: io.connect(settings.api + '/')
+    });
 });
 
 app.service('Hex', function(settings, $resource) {
@@ -26,7 +28,7 @@ app.service('Stacks', function(settings, $resource) {
 app.service('Tasks', function(settings, $resource) {
     return $resource(settings.api + '/api/v1/tasks/:code', {code: '@code'}, {
         'list': { method: 'GET', isArray: false},
-        'get': { method: 'GET', isArray: false}
+        'current': { method: 'GET', params: {code: 'current'}, isArray: false}
     });
 });
 
@@ -38,6 +40,38 @@ app.service('TaskAttempts', function(settings, $resource) {
         'error': { method: 'GET', params: { channel: 'error' }, isArray: false},
         'clear': { method: 'DELETE' }
     });
+});
+
+app.service('TaskManager', function(settings, socket, $resource, Tasks, TaskAttempts) {
+    var TaskManager = function TaskManager(socket) {
+        var self = this;
+
+        Tasks.current().$promise.then(function(attempt) {
+            self._currentAttempt = attempt;
+        });
+
+        socket.on('task:started', function(attempt) {
+            self._currentAttempt = attempt;
+        });
+
+        socket.on('task:finished', function(attempt) {
+            self._currentAttempt = null;
+        });
+
+        socket.on('task:failed', function(attempt) {
+            self._currentAttempt = null;
+        });
+    };
+
+    TaskManager.prototype.currentAttempt = function() { return this._currentAttempt; };
+    TaskManager.prototype.isBusy = function() { return this._currentAttempt != null };
+    TaskManager.prototype.listTasks = function() { return Tasks.list(); };
+    TaskManager.prototype.listAttempts = function(taskCode) { return TaskAttempts.list({code: taskCode}); };
+    TaskManager.prototype.attemptOutput = function(taskCode, attemptCode) { return TaskAttempts.output({code: taskCode, attempt: attemptCode}); };
+    TaskManager.prototype.attemptError = function(taskCode, attemptCode) { return TaskAttempts.error({code: taskCode, attempt: attemptCode}); };
+    TaskManager.prototype.removeAttempt = function(taskCode, attemptCode) { return TaskAttempts.clear({code: taskCode, attempt: attemptCode}); };
+
+    return new TaskManager(socket);
 });
 
 

@@ -4,7 +4,7 @@ var Q = require('q'),
 
 var TaskUtils = require('../../../../utils/task-utils');
 
-module.exports = function(configuration) {
+module.exports = function(configuration, services) {
     return {
         code: 'stack_install',
         description: 'installing the tint on the hex',
@@ -13,11 +13,6 @@ module.exports = function(configuration) {
             {
                 key: 'tint',
                 description: 'The unique id of the tint',
-                required: true
-            },
-            {
-                key: 'hostMapping',
-                description: 'The mapping indicating which host take which roles',
                 required: true
             },
             {
@@ -41,16 +36,22 @@ module.exports = function(configuration) {
             scope.tint.uri = scope.tint.uri.replace(/%username%/g, scope.username);
             scope.tint.uri = scope.tint.uri.replace(/%password%/g, scope.password);
 
-            return TaskUtils
-                .runPlaybook('tints/stack_install', scope)
-                .then(function() {
-                    return TaskUtils.playbook({
-                        playbook: 'install',
-                        scope: scope,
-                        hosts: 'hosts',
-                        path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
+            return services.hex.get().then(function(hex) {
+                scope.hex = hex;
+
+                return TaskUtils
+                    .runPlaybook('tints/stack_install', scope)
+                    .then(function() {
+                        return TaskUtils.playbook({
+                            playbook: 'install',
+                            scope: scope,
+                            hosts: '_hosts',
+                            path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
+                        });
                     });
-                });
+            });
+
+
         }
     };
 };

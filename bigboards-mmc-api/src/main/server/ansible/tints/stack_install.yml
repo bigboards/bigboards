@@ -12,13 +12,13 @@
       include_vars: /opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/tint.yml
 
     - name: generate the hosts file
-      template: src=hosts.j2 dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/hosts
+      template: src=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/hosts dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/_hosts
 
-    - name: be sure the group vars directory exists
-      file: state=directory path=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/group_vars
-
-    - name: generate the mapping file
-      template: src=mapping.yml.j2 dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/mapping.yml
-
-    - name: generate the group variables file
-      template: src=vars.j2 dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/group_vars/all
+#    - name: be sure the group vars directory exists
+#      file: state=directory path=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/group_vars
+#
+#    - name: generate the mapping file
+#      template: src=mapping.yml.j2 dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/mapping.yml
+#
+#    - name: generate the group variables file
+#      template: src=vars.j2 dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/group_vars/all

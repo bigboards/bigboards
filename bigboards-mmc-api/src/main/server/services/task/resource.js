@@ -10,11 +10,8 @@ TaskResource.prototype.listTasks = function(req, res) {
     return ApiUtils.handlePromise(res, this.taskService.listTasks());
 };
 
-TaskResource.prototype.getTask = function(req, res) {
-    var code = req.param('code');
-    if (!code) return res.send(400, 'No task code has been passed!');
-
-    return ApiUtils.handlePromise(res, this.taskService.get(code));
+TaskResource.prototype.getCurrent = function(req, res) {
+    return ApiUtils.handlePromise(res, this.taskService.current());
 };
 
 TaskResource.prototype.invokeTask = function(req, res) {

@@ -20,7 +20,7 @@ var TaskService = function(settings) {
 util.inherits(TaskService, EventEmitter);
 
 TaskService.prototype.current = function() {
-    return this.currentTask;
+    return Q(this.currentTask);
 };
 
 TaskService.prototype.get = function(code) {
@@ -189,15 +189,11 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
                 var errorStream = fs.createWriteStream(taskLogDir + '/error.log');
                 var outputStream = fs.createWriteStream(taskLogDir + '/output.log');
 
+                this.currentTask = { attempt: taskId, task: { code: task.code, description: task.description } };
+
                 // -- invoke the task
                 winston.log('info', 'invoking task "%s": %s', taskCode, task.description);
-                eventEmitter.emit('task:started', {
-                    attempt: taskId,
-                    task: {
-                        code: task.code,
-                        description: task.description
-                    }
-                });
+                eventEmitter.emit('task:started', this.currentTask);
 
                 try {
                     task.execute(executionScope).then(function (data) {
@@ -206,6 +202,8 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
                         outputStream.close();
                         errorStream.close();
 
+                        self.currentTask = null;
+
                     }, function (error) {
                         winston.log('info', 'Task invocation resulted in an error: ' + error);
                         winston.log('info', error.stack);
@@ -213,27 +211,24 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
                         outputStream.close();
                         errorStream.close();
 
-                        eventEmitter.emit('task:failed', { attempt: taskId, error: error });
+                        eventEmitter.emit('task:failed', { attempt: self.currentTask, error: error });
+                        self.currentTask = null;
                     }, function (progress) {
                         if (progress.channel == 'output') outputStream.write(progress.data);
                         else if (progress.channel == 'error') errorStream.write(progress.data);
 
-                        eventEmitter.emit('task:busy', { attempt: taskId, data: progress });
+                        eventEmitter.emit('task:busy', { attempt: self.currentTask, data: progress });
+                        self.currentTask = null;
                     });
 
-                    deferred.resolve({
-                        attempt: taskId,
-                        task: {
-                            code: task.code,
-                            description: task.description
-                        }
-                    });
+                    deferred.resolve(self.currentTask);
                 } catch (err) {
                     deferred.reject(err);
                     winston.log('info', 'Unable to invoke a task: ' + err);
                     winston.log('info', err.stack);
 
-                    eventEmitter.emit('task:failed', { attempt: taskId, error: err });
+                    eventEmitter.emit('task:failed', { attempt: self.currentTask, error: err });
+                    self.currentTask = null;
                 }
 
             } catch (error) {

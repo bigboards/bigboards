@@ -1,7 +1,7 @@
 var dashboardModule = angular.module('bb.dashboard', ['ngResource']);
 
-dashboardModule.controller('DashboardController', ['$scope', 'Nodes', 'Stacks', 'socket', 'ApiFeedback',
-                                          function ($scope,   Nodes,   Stacks,   socket,   ApiFeedback) {
+dashboardModule.controller('DashboardController', ['$scope', 'Nodes', 'Stacks', 'socket', 'ApiFeedback', '$location',
+                                          function ($scope,   Nodes,   Stacks,   socket,   ApiFeedback,   $location) {
     $scope.nodes = Nodes.list();
 
     // -- load the stack from the server
@@ -38,13 +38,15 @@ dashboardModule.controller('DashboardController', ['$scope', 'Nodes', 'Stacks', 
         );
     };
 
-    $scope.removeTint = function(tint) {
+    $scope.uninstallStack = function(stack) {
         var confirmed = confirm("Are you sure? This will remove the current tint from the hex.");
 
         if (confirmed) {
-            Tints.remove(
-                {id: tint.id, type: tint.type},
-                ApiFeedback.onSuccess("Successfully removed the current tint from the hex"),
+            Stacks.uninstall(
+                {id: stack.id, owner: stack.owner},
+                function(attempt) {
+                    $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
+                },
                 ApiFeedback.onError()
             );
         }

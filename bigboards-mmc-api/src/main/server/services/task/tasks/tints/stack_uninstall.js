@@ -3,7 +3,7 @@ var Q = require('q'),
 
 var TaskUtils = require('../../../../utils/task-utils');
 
-module.exports = function(configuration) {
+module.exports = function(configuration, services) {
     return {
         code: 'stack_uninstall',
         description: 'removing the tint from the hex',
@@ -23,14 +23,18 @@ module.exports = function(configuration) {
         execute: function(scope) {
              // -- TODO: check if the uninstall script exists
 
-            return TaskUtils.playbook({
-                playbook: 'uninstall',
-                scope: scope,
-                hosts: 'hosts',
-                path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
-            }).then(TaskUtils.removeFile(
-                '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
-            ));
+            return services.hex.get().then(function(hex) {
+                scope.hex = hex;
+
+                return TaskUtils.playbook({
+                    playbook: 'uninstall',
+                    scope: scope,
+                    hosts: '_hosts',
+                    path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
+                }).then(TaskUtils.removeFile(
+                    '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
+                ));
+            });
         }
     };
 };

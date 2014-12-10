@@ -33,6 +33,10 @@ tasksModule.controller('TaskAttemptController', function($scope, Tasks, TaskAtte
     $scope.channel = $routeParams.channel;
     $scope.content = loadContent($scope.channel);
 
+    socket.on('task:busy', function(output) {
+        $scope.content += output.data;
+    });
+
     function loadContent(channel) {
         if (channel == 'output')
             return TaskAttempts.output({

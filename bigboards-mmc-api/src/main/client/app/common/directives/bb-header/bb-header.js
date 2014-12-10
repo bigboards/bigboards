@@ -5,6 +5,24 @@ app.directive('bbHeader', function() {
         scope: {
             title: '=title'
         },
-        template: '<div class="bb-header"><h1>{{title}}</h1><div class="actions" ng-transclude></div></div>'
+        controller: function ($scope, socket, TaskManager) {
+            $scope.url = "#/tasks";
+
+            $scope.task = TaskManager.currentAttempt();
+
+            socket.on('task:started', function(task) {
+                $scope.task = task;
+                $scope.url = '#/tasks/' + $scope.task.task.code + '/attempts/' + $scope.task.attempt + '/output';
+            });
+
+            socket.on('task:finished', function(task) {
+                $scope.task = null;
+            });
+
+            socket.on('task:failed', function(task) {
+                $scope.task = null;
+            });
+        },
+        templateUrl: 'app/common/directives/bb-header/bb-header.html'
     };
 });

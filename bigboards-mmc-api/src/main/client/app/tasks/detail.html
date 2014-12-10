@@ -1,26 +1,29 @@
-<bb-header>{{task.code}} attempts</bb-header>
+<bb-header title="task.code + ' attempts'"></bb-header>
 
-<div class="container-fluid">
-    <h3>Attempts</h3>
-    <table class="table">
-        <thead>
-        <tr>
-            <th>id</th>
-            <th>timestamp</th>
-            <th class="col-sm-1"></th>
-        </tr>
-        </thead>
-        <tr ng-repeat="attempt in attempts | orderBy:'-started'">
-            <td>{{ attempt.id }}</td>
-            <td>{{ attempt.started | date:'yyyy-MM-dd HH:mm:ss' }}</td>
-            <td>
-                <a href="#/tasks/{{task.code}}/attempts/{{attempt.id}}/output" class="btn btn-xs btn-default">
-                    <span class="fa fa-list"></span>
-                </a>
-                <a href="#/tasks/{{task.code}}/attempts/{{attempt.id}}" class="btn btn-xs btn-danger">
-                    <span class="fa fa-trash-o"></span>
-                </a>
-            </td>
-        </tr>
-    </table>
-</div>
+<bb-content>
+    <div class="container-fluid">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>timestamp</th>
+                <th class="col-sm-2"></th>
+            </tr>
+            </thead>
+            <tr ng-repeat="attempt in attempts | orderBy:'-started'">
+                <td>{{ attempt.id }}</td>
+                <td>{{ attempt.started | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+                <td>
+                    <div class="btn-group">
+                        <a href="#/tasks/{{task.code}}/attempts/{{attempt.id}}/output" class="btn btn-xs btn-default">
+                            <span class="fa fa-list"></span>
+                        </a>
+                        <a href="#/tasks/{{task.code}}/attempts/{{attempt.id}}" class="btn btn-xs btn-danger">
+                            <span class="fa fa-trash-o"></span>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</bb-content>

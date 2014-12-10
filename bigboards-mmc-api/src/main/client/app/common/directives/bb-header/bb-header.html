@@ -1,0 +1,11 @@
+<div class="bb-header">
+    <h1>{{title}}</h1>
+    <div class="control">
+        <div class="actions" ng-transclude></div>
+        <div class="indicators">
+            <a class="indicator" href="{{url}}" >
+                <span class="fa fa-spinner" ng-class="{'fa-spin': task != null}"></span>
+            </a>
+        </div>
+    </div>
+</div>
