@@ -5,6 +5,7 @@
 
 ACTION=${1}
 PLAYBOOK="ansible-playbook -i /opt/bb/hosts"
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 usage() {
     echo "Usage: $0 [help|switch]" 1>&2; exit 1;
@@ -14,7 +15,7 @@ case "${ACTION}" in
     switch)
         case "${2}" in
             version)
-                ${PLAYBOOK} -e version=${2} ansible/switch_version.yml
+                ${PLAYBOOK} -e version=${2} ${DIR}/ansible/switch_version.yml
                 ;;
             *)
                 echo "Invalid switch action '${2}'"

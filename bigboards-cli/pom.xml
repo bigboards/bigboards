@@ -41,6 +41,7 @@
                             <linkName>/usr/bin/bb</linkName>
                             <linkTarget>/opt/bb/runtimes/${project.name}/bb</linkTarget>
                             <symlink>false</symlink>
+                            <filemode>filemode</filemode>
                         </data>
                     </dataSet>
                 </configuration>
