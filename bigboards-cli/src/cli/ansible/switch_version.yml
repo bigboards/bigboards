@@ -1,0 +1,56 @@
+---
+# -- ----------------------------------------------------------------------- --
+# -- UNINSTALL
+# -- ----------------------------------------------------------------------- --
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: make sure the running daemons are stopped
+      service: name={{ item }} state=stopped
+      ignore_errors: yes
+      with_items:
+        - bigboards-node
+
+    - name: make sure the running daemons are removed
+      apt: name={{ item }} state=absent
+      ignore_errors: yes
+      with_items:
+        - bigboards-node
+
+- hosts: local
+  sudo: yes
+  tasks:
+    - name: make sure the running daemons are stopped
+      service: name={{ item }} state=stopped
+      with_items:
+        - bigboards-mmc
+
+    - name: make sure the running daemons are removed
+      apt: name={{ item }} state=absent
+      with_items:
+        - bigboards-mcc
+        - bigboards-updater
+
+    - name: make sure the bigboards repository is set to the new version
+      lineinfile: dest=/etc/apt/sources.list regexp="^deb http\://apt\.bigboards\.io/repo" line="deb http://apt.bigboards.io/repo {{ version }}"
+
+    - name: make sure the apt repository cache is being refreshed
+      shell: apt-get update
+
+# -- ----------------------------------------------------------------------- --
+# -- INSTALL
+# -- ----------------------------------------------------------------------- --
+- hosts: local
+  sudo: yes
+  tasks:
+    - name: make sure the running daemons are present
+      apt: name={{ item }} state=present
+      with_items:
+        - bigboards-mcc
+        - bigboards-updater
+
+    - name: make sure the versions file is removed
+      file: path=/opt/bb/.versions state=absent
+
+    - name: make sure the hex is brought up to date
+      shell: /opt/bb/runtimes/bigboards-updater/update.sh

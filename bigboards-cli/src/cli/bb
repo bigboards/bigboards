@@ -1,0 +1,32 @@
+#!/bin/bash
+# -- ----------------------------------------------------------------------- --
+# -- bb : BigBoards management script
+# -- ----------------------------------------------------------------------- --
+
+ACTION=${1}
+PLAYBOOK="ansible-playbook -i /opt/bb/hosts"
+
+usage() {
+    echo "Usage: $0 [help|switch]" 1>&2; exit 1;
+}
+
+case "${ACTION}" in
+    switch)
+        case "${2}" in
+            version)
+                ${PLAYBOOK} -e version=${2} ansible/switch_version.yml
+                ;;
+            *)
+                echo "Invalid switch action '${2}'"
+                usage
+                ;;
+        esac
+        ;;
+    help)
+        usage
+        ;;
+    *)
+        echo "Invalid action '$ACTION'"
+        usage
+        ;;
+esac
