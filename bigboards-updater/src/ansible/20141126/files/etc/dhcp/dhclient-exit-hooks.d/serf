@@ -8,9 +8,9 @@ case $reason in
 
                 # update the tag for the network interface on the serf agent
                 /opt/serf/bin/serf tags \
-                    -set network.$interface.ip=$IP
-                    -set network.$interface.mac=$MAC
-                    -set network.$interface.netmask=$MASK
+                    -set network.$interface.ip=$IP \
+                    -set network.$interface.mac=$MAC \
+                    -set network.$interface.netmask=$MASK \
                     -set network.$interface.broadcast=$BCAST
 
                 echo "serf dhcp server linked" >> /tmp/serf-dhcp

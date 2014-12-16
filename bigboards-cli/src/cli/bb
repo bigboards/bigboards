@@ -11,6 +11,30 @@ usage() {
     echo "Usage: $0 [help|switch]" 1>&2; exit 1;
 }
 
+update() {
+    sudo apt-get update
+    sudo apt-get install bigboards-updater
+
+    AVAILABLE_PATCHES="$(ls /opt/bb/runtimes/bigboards-updater/patches)"
+    CURRENT_VERSION=
+
+    if [ -f /opt/bb/.versions ]
+    then
+        CURRENT_VERSION="$(tail -n 1 /opt/bb/.versions | cut -d '|' -f1)"
+    fi
+
+    for p in $AVAILABLE_PATCHES
+    do
+        if [ -z "${p}" ] || [ "${p}" -gt "${CURRENT_VERSION}" ]
+        then
+            echo "Invoking patch ${p}"
+            ${PLAYBOOK} /opt/bb/runtimes/bigboards-updater/patches/${p}/install.yml && echo "${p}|$(date)" >> /opt/bb/.versions
+
+            [ "$?" -ne "0" ] && echo "Something went wrong when invoking patch ${p}. Have a look at the output above to figure out what went wrong." && break;
+        fi
+    done
+}
+
 case "${ACTION}" in
     switch)
         case "${2}" in
@@ -22,6 +46,9 @@ case "${ACTION}" in
                 usage
                 ;;
         esac
+        ;;
+    update)
+        update
         ;;
     help)
         usage
