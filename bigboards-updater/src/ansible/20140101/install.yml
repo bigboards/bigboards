@@ -1,0 +1,6 @@
+---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: be sure the correct hex facts are available
+      template: src=templates/etc/ansible/facts.d/bb.fact dest=/etc/ansible/facts.d/bb.fact
