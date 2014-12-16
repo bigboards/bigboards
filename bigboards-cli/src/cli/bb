@@ -13,7 +13,7 @@ usage() {
 
 update() {
     sudo apt-get update
-    sudo apt-get install bigboards-updater
+    sudo apt-get install -y bigboards-updater
 
     AVAILABLE_PATCHES="$(ls /opt/bb/runtimes/bigboards-updater/patches)"
     CURRENT_VERSION=
@@ -25,7 +25,7 @@ update() {
 
     for p in $AVAILABLE_PATCHES
     do
-        if [ -z "${p}" ] || [ "${p}" -gt "${CURRENT_VERSION}" ]
+        if [ -z "${CURRENT_VERSION}" ] || [ "${p}" -gt "${CURRENT_VERSION}" ]
         then
             echo "Invoking patch ${p}"
             ${PLAYBOOK} /opt/bb/runtimes/bigboards-updater/patches/${p}/install.yml && echo "${p}|$(date)" >> /opt/bb/.versions

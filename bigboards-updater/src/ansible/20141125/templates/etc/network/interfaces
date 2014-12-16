@@ -4,7 +4,7 @@ iface lo inet loopback
 # internal network interface
 auto eth0
 iface eth0 inet static
-    address {{ ansible_local.hex.network | default('172.20.40') }}.{{ ansible_local.hex.node.sequence }}
+    address {{ ansible_local.bb.network.range | default('172.20.40') }}.{{ ansible_local.bb.node.sequence }}
     netmask 255.255.255.0
 
 # external network interface

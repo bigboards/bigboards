@@ -1,4 +1,4 @@
-[general]
+[hex]
 id={{ ansible_local.hex.general.id | default(ansible_local.hex.id) }}
 name={{ ansible_local.hex.general.name | default(ansible_local.hex.name) }}
 
