@@ -3,7 +3,7 @@
   sudo: yes
   tasks:
     - name: make sure the last version of the bigboards software is installed
-      apt: name={{ item }} state=latest
+      apt: name={{ item }} state=latest force=yes
       with_items:
         - bigboards-cli
         - bigboards-mmc
