@@ -88,6 +88,7 @@ function initializeSocketIO(server, services) {
     io.sockets.on('connection', function(socket) {
         Services.Hex.io(socket, services);
         Services.Task.io(socket, services);
+        Services.Library.io(socket, services);
 
         setInterval(function() {
             socket.emit('ping');
@@ -108,6 +109,9 @@ function initializeServices(serverConfig, config, serf, app) {
 
     services.task = new Services.Task.Service(serverConfig);
     Services.Task.link(app, services);
+
+    services.library = new Services.Library.Service(serverConfig);
+    Services.Library.link(app, services);
 
     return services;
 }

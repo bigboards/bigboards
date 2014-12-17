@@ -1,8 +1,35 @@
-<bb-header>Library</bb-header>
-
-<div class="library">
-    <button class="btn btn-default" ng-click="refresh()">Refresh the library</button>
-    <div class="tints">
-        <library-tint tint="t" ng-repeat="t in library" on-install="installTint(t.type, t.id)"></library-tint>
+<bb-header title="'Stacks'">
+    <div class="action" ng-click="refresh()" >
+        <span class="fa fa-refresh"></span>
+        <span>refresh</span>
     </div>
-</div>
+    <div class="action" ng-click="addStack()" >
+        <span class="fa fa-bitbucket"></span>
+        <span>add stack</span>
+    </div>
+</bb-header>
+
+<bb-content>
+    <div class="container-fluid library">
+        <div class="owner" ng-repeat="(owner, stacks) in library.stacks">
+            <div class="item" ng-repeat="(tintId, stack) in stacks">
+                <div class="logo">
+                    <img ng-src="{{ stack.logo }}" alt="{{ stack.tint_id }}">
+                </div>
+                <div class="caption">
+                    <h3>{{ stack.name }}</h3>
+                    <span class="subtitle">{{ stack.owner.display_name }}</span>
+                    <p>{{ stack.description }}</p>
+                </div>
+                <div class="actions">
+                    <div class="action" ng-click="installStack(owner, tintId)" role="button">
+                        <span class="fa fa-2x fa-cloud-download"></span>
+                    </div>
+                    <div class="action danger" ng-click="removeStack(owner, tintId)" role="button">
+                        <span class="fa fa-2x fa-trash-o"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</bb-content>

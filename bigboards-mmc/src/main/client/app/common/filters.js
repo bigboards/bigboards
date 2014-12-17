@@ -50,10 +50,11 @@ app.filter('truncate', function () {
         if (end === undefined)
             end = "...";
 
-        if (text.length <= length || text.length - end.length <= length) {
+        if (!text) {
+            return "";
+        } else  if (text.length <= length || text.length - end.length <= length) {
             return text;
-        }
-        else {
+        } else {
             return String(text).substring(0, length-end.length) + end;
         }
 

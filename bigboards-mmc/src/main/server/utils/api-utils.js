@@ -43,7 +43,7 @@ module.exports.registerGet = function(app, path, fn) {
 };
 
 module.exports.registerPut = function(app, path, fn) {
-    app.get(path, function(req, res) { return fn(req, res); });
+    app.put(path, function(req, res) { return fn(req, res); });
     winston.info('   [PUT] ' + path);
 };
 

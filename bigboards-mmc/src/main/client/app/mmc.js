@@ -8,11 +8,12 @@ var app = angular.module( 'mmc', [
     'bb.tasks',
     'bb.update',
     'nvd3ChartDirectives',
-    'btford.socket-io'
+    'btford.socket-io',
+    'ui.bootstrap'
 ]);
 
 app.constant('settings', {
-    api: 'http://alice-n1:7000'
+    api: 'http://localhost:7000'
 });
 
 app.config(['$routeProvider', function($routeProvider) {
@@ -44,11 +45,11 @@ app.config(['$routeProvider', function($routeProvider) {
             controller: 'TaskAttemptController'
         })
 
-        //.when('/library', {
-        //    title: 'Library',
-        //    templateUrl: 'app/library/library.html',
-        //    controller: 'LibraryController'
-        //})
+        .when('/library', {
+            title: 'Library',
+            templateUrl: 'app/library/library.html',
+            controller: 'LibraryController'
+        })
 
 
         //.when('/shell', {
@@ -123,11 +124,11 @@ app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket',
 //            icon: 'fa-terminal',
 //            path: '/shell'
 //        },
-        {
-            label: 'Update',
-            icon: 'fa-refresh',
-            path: '/update'
-        },
+//        {
+//            label: 'Update',
+//            icon: 'fa-refresh',
+//            path: '/update'
+//        },
         {
             label: 'Documentation',
             icon: 'fa-book',

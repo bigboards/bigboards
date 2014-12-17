@@ -40,7 +40,8 @@ module.exports = {
     },
 
     library: {
-        url: "http://library.bigboards.io"
+        url: "http://library.bigboards.io",
+        cacheFile: "/opt/bb/tints.d/library_cache.json"
     },
 
     isDevelopment: function () {

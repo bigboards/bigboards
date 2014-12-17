@@ -10,6 +10,7 @@ metrics.cache.interval: 5000
 activities.cache.size: 30
 
 library.url: "http://library.bigboards.io"
+library.directory: ""
 
 firmware.patches.directory: "/opt/bb/runtimes/bigboards-updater"
 firmware.versions.file: "/opt/bb/.versions"

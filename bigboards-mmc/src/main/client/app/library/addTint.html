@@ -1,0 +1,21 @@
+<div class="modal-header">
+    <h3 class="modal-title">Add a Stack</h3>
+</div>
+<div class="modal-body">
+    <p>
+        Stacks can be added to the library through the use of <span class="fa fa-bitbucket"></span> BitBucket repositories.
+        All information needed for the tint will be retrieved from the repository.
+    </p>
+    <p>
+        Please complete the URL to get the stack from the bitbucket repository
+    </p>
+    <form>
+        <span>https://bitbucket.org/</span><input type="text" ng-model="model.owner"><span>/</span><input type="text" ng-model="model.tintId">
+    </form>
+
+    <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">OK</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>

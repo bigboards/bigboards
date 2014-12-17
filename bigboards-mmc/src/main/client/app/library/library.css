@@ -3,49 +3,97 @@
  *********************************************************************************************************************/
 .library {
     width: 100%;
+    padding-top: 20px;
 }
 
-.library .card {
+.library .owner {
     display: inline-block;
-    width: 200px;
-    height: 190px;
-    margin: 10px;
 }
 
-.library .card .card-front {
-    width: 100%;
-    text-align: center;
-    border: solid 1px #ddd;
-    background-color: white;
+.library .item {
+    position: relative;
+    display: inline-block;
+    width: 400px;
+    height: 100px;
+    margin-right: 20px;
+    margin-bottom: 20px;
 }
 
-.library .card .card-back {
-    width: 100%;
-    padding: 10px;
-    text-align: center;
-    border: solid 1px #ddd;
-    background-color: white;
-}
-
-.library .card .card-front .card-logo {
-    max-height: 100px;
-    max-width: 100px;
-    margin-top: 30px;
-    filter: brightness(0);
-    -webkit-filter: brightness(0);
-    -moz-filter: brightness(0);
-    -ms-filter: brightness(0);
-    -o-filter: brightness(0);
-}
-
-.card .card-type {
+.library .item .logo {
     position: absolute;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    right: 0;
+    left: 0;
+    width: 100px;
     top: 0;
-    border-width: 0 32px 32px 0;
+    bottom: 0;
+
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    background-color: white;
+    padding: 10px;
+    border: solid 1px #dedede;
+}
+
+.library .item .logo img {
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 80px;
+    max-width: 80px;
+}
+
+.library .item .caption {
+    position: absolute;
+    left: 100px;
+    right: 50px;
+    top: 0;
+    bottom: 0;
+    border-top: solid 1px #dedede;
+    border-bottom: solid 1px #dedede;
+    padding: 10px;
+    background-color: white;
+}
+
+.library .item .caption h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: medium;
+    font-family: "Open Sans Light", sans-serif;
+    font-weight: 300;
+}
+
+.library .item .caption p {
+    margin-top: 7px;
+    margin-bottom: 0;
+    font-size: small;
+    font-family: "Open Sans Light", sans-serif;
+    font-weight: 300;
+}
+
+.library .item .actions {
+    position: absolute;
+    right: 0;
+    width: 50px;
+    top: 0;
+    bottom: 0;
+
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    background-color: white;
+    padding: 5px;
+    border: solid 1px #dedede;
+    text-align: center;
+}
+
+.library .item .actions .action {
+    color: #515151;
+    margin-top: 10px;
+}
+
+.library .item .actions .action:hover {
+    color: #008888;
+}
+
+.library .item .actions .action.danger:hover {
+    color: #880000;
 }
 
 .card.stack .card-type { border-color: transparent rgb(32,124,229) transparent transparent; }
@@ -59,31 +107,3 @@
 .card.edu .card-type { border-color: transparent #008800 transparent transparent; }
 .card.edu .card-back { border-bottom: solid 4px #008800; }
 .card.edu .card-actions .card-action:hover { color: #008800; }
-
-.card .card-front h3 {
-    font-size: large;
-    font-weight: 300;
-    width: 100%;
-    margin: 0;
-    position: absolute;
-    bottom: 0;
-    height: 50px;
-    padding-top: 18px;
-    color: #515151;
-}
-
-.card .card-back .card-description {
-    font-size: small;
-}
-
-.card .card-back .card-actions {
-    position: absolute;
-    bottom: 30px;
-    left: 0;
-    right: 0;
-    text-align: center;
-}
-
-.card .card-actions .card-action:hover {
-    cursor: pointer;
-}
