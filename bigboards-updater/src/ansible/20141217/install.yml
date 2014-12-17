@@ -1,5 +1,5 @@
 ---
-- hosts: host
+- hosts: host-coordinators
   sudo: yes
   tasks:
     - name: make sure the last version of the bigboards software is installed
