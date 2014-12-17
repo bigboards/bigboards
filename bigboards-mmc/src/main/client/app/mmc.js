@@ -49,6 +49,8 @@ app.config(['$routeProvider', function($routeProvider) {
         //    templateUrl: 'app/library/library.html',
         //    controller: 'LibraryController'
         //})
+
+
         //.when('/shell', {
         //    title: 'Shell',
         //    templateUrl: 'app/shell/shell.html',
@@ -99,10 +101,6 @@ app.run(['$rootScope', function($rootScope) {
 app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket', 'Firmware', function($scope, $location, Hex, socket, Firmware) {
     $scope.currentItem = null;
     $scope.hex = Hex.me();
-
-    socket.on('ping', function() {
-        console.log('ping');
-    });
 
     $scope.menu = [
         {

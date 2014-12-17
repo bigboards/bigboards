@@ -64,7 +64,9 @@ app.service('TaskManager', function(settings, socket, $resource, Tasks, TaskAtte
     };
 
     TaskManager.prototype.currentAttempt = function() { return this._currentAttempt; };
-    TaskManager.prototype.isBusy = function() { return this._currentAttempt != null };
+    TaskManager.prototype.isBusy = function() {
+        return ((this._currentAttempt != null) && (this._currentAttempt.$resolved) && (this._currentAttempt['code']));
+    };
     TaskManager.prototype.listTasks = function() { return Tasks.list(); };
     TaskManager.prototype.listAttempts = function(taskCode) { return TaskAttempts.list({code: taskCode}); };
     TaskManager.prototype.attemptOutput = function(taskCode, attemptCode) { return TaskAttempts.output({code: taskCode, attempt: attemptCode}); };

@@ -1,32 +1,43 @@
 <bb-header title="'Hi, I am ' + hex.name"></bb-header>
 
 <bb-content>
-<table class="table">
-    <thead>
-        <tr>
-            <th></th>
-            <th>role</th>
-            <th>name</th>
-            <th>internal ip</th>
-            <th>external ip</th>
-            <th>node status</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tr ng-repeat="node in nodes">
-        <td>{{$index + 1}}</td>
-        <td>{{ node['Tags']['role'] }}</td>
-        <td>{{ node['Name'] }}</td>
-        <td>{{ node['Tags']['network.eth0.ip']}}</td>
-        <td>{{ node['Tags']['network.eth0:0.ip']}}</td>
-        <td>{{ node['Status'] }}</td>
-        <td>
-            <div class="action">
-                <span class="fa fa-terminal"></span>
+    <div class="container-fluid dashboard">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Hex Nodes
+                    </div>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>role</th>
+                            <th>name</th>
+                            <th>internal ip</th>
+                            <th>external ip</th>
+                            <th>node status</th>
+                            <!--<th></th>-->
+                        </tr>
+                        </thead>
+                        <tr ng-repeat="node in nodes | orderBy:'Name'">
+                            <td>{{$index + 1}}</td>
+                            <td>{{ node['Tags']['role'] }}</td>
+                            <td>{{ node['Name'] }}</td>
+                            <td>{{ node['Tags']['network.eth0.ip']}}</td>
+                            <td>{{ node['Tags']['network.eth0:0.ip']}}</td>
+                            <td>{{ node['Status'] }}</td>
+                            <!--<td>-->
+                                <!--<div class="action">-->
+                                    <!--<span class="fa fa-terminal"></span>-->
+                                <!--</div>-->
+                            <!--</td>-->
+                        </tr>
+                    </table>
+                </div>
             </div>
-        </td>
-    </tr>
-</table>
+        </div>
+
 
 <div class="tints">
     <h3 ng-if="!stack">Currently there is no stack tint installed. You may go to the <a href="#/library">library</a> to install one</h3>
@@ -52,4 +63,5 @@
         </div>
     </div>
 </div>
+    </div>
 </bb-content>

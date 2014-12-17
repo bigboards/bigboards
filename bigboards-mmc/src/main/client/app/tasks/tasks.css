@@ -2,38 +2,17 @@
  * Tasks
  *********************************************************************************************************************/
 .tasks {
-    color: #515151;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 80px;
+    padding-top: 20px;
 }
 
-.tasks .current-task {
-    position: relative;
-    background-color: white;
-    border-top: solid 1px #dedede;
-    border-bottom: solid 1px #dedede;
-
-    min-height: 40px;
-    width: 100%;
+.tasks table tbody tr:hover {
+    background-color: #008888;
+    color: white;
+    cursor: pointer;
 }
 
-.tasks .current-task p {
-    position: absolute;
-    left: 20px;
-    bottom: 0;
-    top: 0;
-    padding-top: 9px;
-}
-
-.tasks .current-task .task-actions {
-    position: absolute;
-    right: 20px;
-    bottom: 0;
-    top: 0;
-    padding-top: 8px;
+.tasks.attempts {
+    padding-top: 20px;
 }
 
 .tasks h3:first-child {

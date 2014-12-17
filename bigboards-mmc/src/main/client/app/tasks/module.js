@@ -1,9 +1,13 @@
 var tasksModule = angular.module('bb.tasks', ['ngResource', 'drFlip']);
 
-tasksModule.controller('TaskListController', function($scope, Tasks, socket) {
+tasksModule.controller('TaskListController', function($scope, $location, Tasks, socket) {
     $scope.tasks = Tasks.list();
 
     //$scope.current = Tasks.get({id: 'current'});
+
+    $scope.goToTaskDetail = function(task) {
+        $location.path('/tasks/' + task.code);
+    };
 
     $scope.hasCurrentTask = function() {
         return ($scope.current && $scope.current.description);
@@ -22,9 +26,20 @@ tasksModule.controller('TaskListController', function($scope, Tasks, socket) {
     });
 });
 
-tasksModule.controller('TaskDetailController', function($scope, Tasks, TaskAttempts, socket, $routeParams) {
-    $scope.task = Tasks.get({code: $routeParams.code});
+tasksModule.controller('TaskDetailController', function($scope, $location, Tasks, TaskAttempts, socket, $routeParams) {
+    $scope.task = { code: $routeParams.code };
     $scope.attempts = TaskAttempts.list({code: $routeParams.code});
+
+    $scope.goToOutput = function(attempt) {
+        $location.path('/tasks/' + $scope.task.code + '/attempts/' + attempt.id + '/output');
+    };
+
+    $scope.deleteOutput = function(attempt) {
+        TaskAttempts.clear({
+            code: $scope.task.code,
+            attempt: attempt.id
+        })
+    }
 });
 
 tasksModule.controller('TaskAttemptController', function($scope, Tasks, TaskAttempts, socket, $routeParams) {

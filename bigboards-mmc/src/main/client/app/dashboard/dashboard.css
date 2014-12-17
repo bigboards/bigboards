@@ -1,3 +1,8 @@
+.dashboard {
+    padding-top: 20px;
+}
+
+
 .tints .tint {
     border: solid 1px #dedede;
     background-color: white;
@@ -86,23 +91,23 @@
 .tint-action.danger { color: #880000; }
 
 
-table {
-    margin: 0;
-    border: none;
-    border-top: solid 1px #dedede;
-    border-bottom: solid 1px #dedede;
-    margin-top: 10px;
-    font-size: smaller;
-    background-color: white;
-}
+/*table {*/
+    /*margin: 0;*/
+    /*border: none;*/
+    /*border-top: solid 1px #dedede;*/
+    /*border-bottom: solid 1px #dedede;*/
+    /*margin-top: 10px;*/
+    /*font-size: smaller;*/
+    /*background-color: white;*/
+/*}*/
 
-.table .metric-column {
-    width: 50px;
-}
+/*.table .metric-column {*/
+    /*width: 50px;*/
+/*}*/
 
-table .table-indicator {
-    width: 30px;
-}
+/*table .table-indicator {*/
+    /*width: 30px;*/
+/*}*/
 
 h2 {
     padding-top: 24px;
