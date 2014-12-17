@@ -13,7 +13,7 @@ var app = angular.module( 'mmc', [
 ]);
 
 app.constant('settings', {
-    api: 'http://localhost:7000'
+    api: ''
 });
 
 app.config(['$routeProvider', function($routeProvider) {

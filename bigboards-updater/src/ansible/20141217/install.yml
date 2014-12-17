@@ -1,0 +1,9 @@
+---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: make sure the last version of the bigboards software is installed
+      apt: name={{ item }} state=latest
+      with_items:
+        - bigboards-cli
+        - bigboards-mmc
