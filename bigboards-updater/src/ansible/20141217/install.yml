@@ -7,3 +7,6 @@
       with_items:
         - bigboards-cli
         - bigboards-mmc
+
+    - name: make sure the bigboards-mmc has been restarted
+      service: name=bigboards-mmc state=restarted
