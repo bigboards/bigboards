@@ -23,9 +23,15 @@ libraryModule.controller('LibraryController', ['$scope', 'Library', 'Stacks', 'A
         });
     };
 
-    $scope.installStack =  function(owner, id) {
+    $scope.installStack =  function(stack) {
         Stacks.install(
-            { id: id, owner: owner },
+            { },
+            { "tint": {
+                "owner": stack.owner.username,
+                "type": "stack",
+                "id": stack['tint_id'],
+                "uri": 'https://bitbucket.org/' + stack.owner.username + '/' + stack['tint_id'] + '.git'
+            } },
             function(attempt) {
                 $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
             },
