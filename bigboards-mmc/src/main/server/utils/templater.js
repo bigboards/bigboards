@@ -6,53 +6,46 @@ function Templater(configuration) {
 }
 
 Templater.prototype.templateString = function(string, nodes) {
-    var scope = {};
+    return this.configuration.get().then(function(data) {
+        var scope = {};
 
-    scope.hex = {
-        id: this.configuration.id,
-        name: this.configuration.name
-    };
-
-    scope.nodes = {};
-    nodes.forEach(function (node) {
-        scope.nodes[node.name] = {
-            ip: node.network.externalIp,
-            status: node.status
+        scope.hex = {
+            id: data.hex.id,
+            name: data.hex.name
         };
 
-        scope.nodes[node.container.name] = {
-            ip: node.container.externalIp,
-            status: node.container.status
-        };
+        scope.nodes = {};
+        nodes.forEach(function (node) {
+            scope.nodes[node.Name] = {
+                ip: (node.Tags) ? node.Tags['network.eth0:0.ip'] : 'none',
+                status: node.Status
+            };
+        });
+
+        return swig.render(string, { locals: scope });
     });
-
-    return swig.render(string, { locals: scope });
 };
 
 Templater.prototype.template = function(file, nodes) {
-    var scope = {};
+    return this.configuration.get().then(function(data) {
+        var scope = {};
 
-    scope.hex = {
-        id: this.configuration.id,
-        name: this.configuration.name
-    };
-
-    scope.nodes = {};
-    nodes.forEach(function (node) {
-        scope.nodes[node.name] = {
-            ip: (node.network) ? node.network.externalIp : 'none',
-            status: node.status
+        scope.hex = {
+            id: data.hex.id,
+            name: data.hex.name
         };
 
-        if (node.container) {
-            scope.nodes[node.container.name] = {
-                ip: node.container.externalIp,
-                status: node.container.status
+        scope.nodes = {};
+        nodes.forEach(function (node) {
+            scope.nodes[node.Name] = {
+                ip: (node.Tags) ? node.Tags['network.eth0:0.ip'] : 'none',
+                status: node.Status
             };
-        }
+        });
+
+        return swig.renderFile(file, scope);
     });
 
-    return swig.renderFile(file, scope);
 };
 
 module.exports = Templater;

@@ -1,5 +1,6 @@
 var fs = require("fs"),
     Q = require('q'),
+    ini = require('ini'),
     winston = require('winston');
 
 function HexConfigurationManager(hexConfigFile) {
@@ -26,7 +27,7 @@ HexConfigurationManager.prototype.load = function() {
 
     readFile(this.hexConfigFile, {encoding: 'utf8'}).then(function(data) {
         try {
-            var config = JSON.parse(data);
+            var config = ini.parse(data);
 
             winston.log('info', 'read the configuration file');
             deferrer.resolve(config);
@@ -52,7 +53,7 @@ HexConfigurationManager.prototype.save = function(hex) {
         throw new Error('Invalid configuration object!');
 
     try {
-        var content = JSON.stringify(hex);
+        var content = ini.stringify(hex, { whitespace: true });
 
         writeFile(this.hexConfigFile, content)
             .then(function(data) {

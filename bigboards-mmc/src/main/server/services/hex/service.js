@@ -34,8 +34,8 @@ function HexService(settings, configuration, templater, services, serf) {
 HexService.prototype.get = function() {
     return this.configuration.get().then(function(data) {
         return {
-            id: data.id,
-            name: data.name
+            id: data.hex.id,
+            name: data.hex.name
         }
     });
 };
@@ -115,7 +115,9 @@ function parseManifest(hexService, templater, tintRoot, type, owner, tintId) {
     return hexService
         .listNodes()
         .then(function (nodes) {
-            var data = yaml.safeLoad(templater.template(tintDir + "/tint.yml", nodes));
+            return templater.template(tintDir + "/tint.yml", nodes);
+        }).then(function (content) {
+            var data = yaml.safeLoad(content);
 
             data['owner'] = owner;
             data['type'] = type;

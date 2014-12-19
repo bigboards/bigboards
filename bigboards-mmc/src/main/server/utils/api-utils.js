@@ -21,18 +21,20 @@ module.exports.handlePromise = function(res, promise) {
             return res.json(results);
         })
         .fail(function(error) {
+            var msg = JSON.stringify(error, ['stack', 'message', 'inner'], 4);
+
             if (error.name == 'AlreadyExistsError') {
-                res.status(400).send(error.message);
+                res.status(400).send(msg);
             } else if (error.name == 'IllegalParameterError') {
-                res.status(400).send(error.message);
+                res.status(400).send(msg);
             } else if (error.name == 'BadPayloadError') {
-                res.status(400).send(error.message);
+                res.status(400).send(msg);
             } else if (error.name == 'MissingParameterError') {
-                res.status(400).send(error.message);
+                res.status(400).send(msg);
             } else if (error.name == 'NotFoundError') {
-                res.status(404).send(error.message);
+                res.status(404).send(msg);
             } else {
-                res.status(500).send(error.message);
+                res.status(500).send(msg);
             }
         });
 };
