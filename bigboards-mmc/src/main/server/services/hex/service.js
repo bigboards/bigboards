@@ -105,8 +105,8 @@ HexService.prototype.removeTint = function(tint) {
     return this.services.task.invoke(tint.type + '_uninstall', { tint: tint});
 };
 
-HexService.prototype.installTint = function(tint, mapping) {
-    return this.services.task.invoke(tint.type + '_install', { tint: tint, hostMapping: mapping });
+HexService.prototype.installTint = function(tint) {
+    return this.services.task.invoke(tint.type + '_install', { tint: tint });
 };
 
 function parseManifest(hexService, templater, tintDir) {
