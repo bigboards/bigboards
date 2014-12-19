@@ -7,9 +7,11 @@ app.directive('bbHeader', function() {
         },
         controller: function ($scope, socket, TaskManager) {
             $scope.url = "#/tasks";
-
             $scope.task = TaskManager.currentAttempt();
-            $scope.busy = TaskManager.isBusy();
+
+            $scope.busy = function() {
+                return TaskManager.busy
+            };
 
             socket.on('task:started', function(task) {
                 if (! task) return;

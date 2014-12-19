@@ -218,7 +218,6 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
                         else if (progress.channel == 'error') errorStream.write(progress.data);
 
                         eventEmitter.emit('task:busy', { attempt: self.currentTask, data: progress });
-                        self.currentTask = null;
                     });
 
                     deferred.resolve(self.currentTask);

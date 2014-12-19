@@ -45,28 +45,29 @@ app.service('TaskAttempts', function(settings, $resource) {
 app.service('TaskManager', function(settings, socket, $resource, Tasks, TaskAttempts) {
     var TaskManager = function TaskManager(socket) {
         var self = this;
+        this.busy = false;
 
-        Tasks.current().$promise.then(function(attempt) {
-            self._currentAttempt = attempt;
+        this._currentAttempt = Tasks.current().$promise.then(function(attempt) {
+            self.busy = ((attempt !== undefined) && (attempt.$resolved) && (attempt['attempt'] !== undefined));
         });
 
         socket.on('task:started', function(attempt) {
             self._currentAttempt = attempt;
+            self.busy = true;
         });
 
         socket.on('task:finished', function(attempt) {
             self._currentAttempt = null;
+            self.busy = false;
         });
 
         socket.on('task:failed', function(attempt) {
             self._currentAttempt = null;
+            self.busy = false;
         });
     };
 
     TaskManager.prototype.currentAttempt = function() { return this._currentAttempt; };
-    TaskManager.prototype.isBusy = function() {
-        return ((this._currentAttempt != null) && (this._currentAttempt.$resolved) && (this._currentAttempt['code']));
-    };
     TaskManager.prototype.listTasks = function() { return Tasks.list(); };
     TaskManager.prototype.listAttempts = function(taskCode) { return TaskAttempts.list({code: taskCode}); };
     TaskManager.prototype.attemptOutput = function(taskCode, attemptCode) { return TaskAttempts.output({code: taskCode, attempt: attemptCode}); };
