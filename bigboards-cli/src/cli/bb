@@ -13,7 +13,7 @@ usage() {
 
 update() {
     sudo apt-get update
-    sudo apt-get install -y bigboards-updater
+    sudo apt-get install -y --force-yes bigboards-updater bigboards-cli bigboards-mmc
 
     AVAILABLE_PATCHES="$(ls /opt/bb/runtimes/bigboards-updater/patches)"
     CURRENT_VERSION=
