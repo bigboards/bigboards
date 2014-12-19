@@ -6,7 +6,7 @@ module.exports.playbook = function(context) {
     var hostsFile = (context.hosts) ? context.hosts : '/opt/bb/hosts';
 
     var deferred = Q.defer();
-    var cwd = '/opt/bb/runtimes/bigboards-mmc-api/server/ansible';
+    var cwd = '/opt/bb/runtimes/bigboards-mmc/server/ansible';
     if (context.path) cwd = context.path;
 
     var verbose = (context.scope.verbose && ((context.scope.verbose == 'yes') || (context.scope.verbose == 'true')));
@@ -33,7 +33,7 @@ module.exports.playbook = function(context) {
 
 module.exports.runPlaybook = function(playbook, scope, workingDir) {
     var deferred = Q.defer();
-    var cwd = '/opt/bb/runtimes/bigboards-mmc-api/server/ansible';
+    var cwd = '/opt/bb/runtimes/bigboards-mmc/server/ansible';
 //    var cwd = path.join(__dirname, '../ansible');
 
     if (workingDir) cwd = workingDir;
