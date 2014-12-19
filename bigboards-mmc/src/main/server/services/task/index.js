@@ -6,12 +6,7 @@ module.exports = {
     Service: require('./service'),
     io: function(socket, services) {
         services.task.on('task:started', function(data) {
-            socket.emit('task:started', {
-                code: data.code,
-                description: data.description,
-                type: data.type,
-                running: data.running
-            });
+            socket.emit('task:started', data);
         });
 
         services.task.on('task:finished', function(data) {

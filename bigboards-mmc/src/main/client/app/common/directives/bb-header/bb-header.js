@@ -12,6 +12,8 @@ app.directive('bbHeader', function() {
             $scope.busy = TaskManager.isBusy();
 
             socket.on('task:started', function(task) {
+                if (! task) return;
+
                 $scope.task = task;
                 $scope.url = '#/tasks/' + $scope.task.task.code + '/attempts/' + $scope.task.attempt + '/output';
             });

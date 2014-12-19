@@ -78,7 +78,7 @@ HexService.prototype.listTints = function(type) {
                     var p = [];
 
                     for (var i in tints) {
-                        p.push(parseManifest(self, self.templater, self.settings.tints.rootDirectory + '/' + type + '/' + owners[o] + '/' + tints[i]));
+                        p.push(parseManifest(self, self.templater, self.settings.tints.rootDirectory, type, owners[o], tints[i]));
                     }
 
                     return Q.all(p);
@@ -98,7 +98,7 @@ HexService.prototype.listTints = function(type) {
 };
 
 HexService.prototype.getTint = function(type, owner, tint) {
-    return parseManifest(this, this.templater, this.settings.tints.rootDirectory + '/' + type + '/' + owner + '/' + tint)
+    return parseManifest(this, this.templater, this.settings.tints.rootDirectory, type, owner, tint);
 };
 
 HexService.prototype.removeTint = function(tint) {
@@ -109,11 +109,19 @@ HexService.prototype.installTint = function(tint) {
     return this.services.task.invoke(tint.type + '_install', { tint: tint });
 };
 
-function parseManifest(hexService, templater, tintDir) {
+function parseManifest(hexService, templater, tintRoot, type, owner, tintId) {
+    var tintDir = tintRoot + '/' + type + '/' + owner + '/' + tintId;
+
     return hexService
         .listNodes()
         .then(function (nodes) {
-            return yaml.safeLoad(templater.template(tintDir + "/tint.yml", nodes));
+            var data = yaml.safeLoad(templater.template(tintDir + "/tint.yml", nodes));
+
+            data['owner'] = owner;
+            data['type'] = type;
+            data['id'] = tintId;
+
+            return data;
         }).then(function (tint) {
             return fsu.readFile(tintDir + "/mapping.yml").then(function(content) {
                 tint.mappings = yaml.safeLoad(content);

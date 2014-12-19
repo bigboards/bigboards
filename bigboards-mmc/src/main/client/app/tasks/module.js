@@ -46,23 +46,31 @@ tasksModule.controller('TaskAttemptController', function($scope, Tasks, TaskAtte
     $scope.task = $routeParams.code;
     $scope.attempt = $routeParams.attempt;
     $scope.channel = $routeParams.channel;
-    $scope.content = loadContent($scope.channel);
+    $scope.content = '';
 
-    socket.on('task:busy', function(output) {
-        $scope.content += output.data;
-    });
+    loadContent($scope.channel);
 
     function loadContent(channel) {
+        var promise = null;
+
         if (channel == 'output')
-            return TaskAttempts.output({
+            promise = TaskAttempts.output({
                 code: $routeParams.code,
                 attempt: $routeParams.attempt
-            });
+            }).$promise;
         else
-            return TaskAttempts.error({
+            promise = TaskAttempts.error({
                 code: $routeParams.code,
                 attempt: $routeParams.attempt
+            }).$promise;
+
+        return promise.then(function(content) {
+            $scope.content += content.content;
+
+            socket.on('task:busy', function(output) {
+                $scope.content += output.data;
             });
+        });
     }
 });
 
