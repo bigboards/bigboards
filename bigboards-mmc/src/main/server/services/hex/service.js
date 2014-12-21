@@ -23,7 +23,19 @@ function HexService(settings, configuration, templater, services, serf) {
     serfMemberHandler.on('data', function(data) {
         if (!data || !data.data || !data.data.Members) return;
 
-        self.nodeCache = data.data.Members;
+        if (data.Event == 'member-join') {
+            data.data.Members.forEach(function(member) {
+                self.addNode(member);
+            });
+        } else if (data.Event == 'member-leave') {
+            data.data.Members.forEach(function(member) {
+                self.removeNode(member);
+            });
+        } else if (data.Event == 'member-update') {
+            data.data.Members.forEach(function(member) {
+                self.updateNode(member);
+            });
+        }
     });
 
     mkdirp.sync(this.settings.tints.rootDirectory + '/stack');
@@ -36,7 +48,7 @@ HexService.prototype.get = function() {
         return {
             id: data.hex.id,
             name: data.hex.name
-        }
+        };
     });
 };
 
