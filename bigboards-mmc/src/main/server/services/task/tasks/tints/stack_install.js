@@ -2,7 +2,8 @@ var Q = require('q'),
     winston = require('winston'),
     fs = require('fs');
 
-var TaskUtils = require('../../../../utils/task-utils');
+var TaskUtils = require('../../../../utils/task-utils'),
+    FsUtils = require('../../../../utils/fs-utils');
 
 module.exports = function(configuration, services) {
     return {
@@ -39,8 +40,19 @@ module.exports = function(configuration, services) {
             return services.hex.get().then(function(hex) {
                 scope.hex = hex;
 
-                return TaskUtils
-                    .runPlaybook('tints/stack_install', scope)
+                var tintPath = '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id;
+                var fullTint = {};
+
+                return FsUtils.mkdir(tintPath)
+                    .then(function() {
+                        return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.id).then(function(ft) {
+                            fullTint = ft;
+
+                            fullTint['state'] = 'installing';
+                            return FsUtils.jsonFile(tintPath + '/meta.json', fullTint);
+                        });
+                    })
+                    .then(TaskUtils.runPlaybook('tints/stack_install', scope))
                     .then(function() {
                         return TaskUtils.playbook({
                             playbook: 'install',
@@ -48,6 +60,9 @@ module.exports = function(configuration, services) {
                             hosts: '_hosts',
                             path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
                         });
+                    }).then(function() {
+                        fullTint['state'] = 'installed';
+                        return FsUtils.jsonFile(tintPath + '/meta.json', fullTint)
                     });
             });
 

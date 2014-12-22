@@ -95,6 +95,7 @@ LibraryService.prototype.listTintsForOwner = function(type, owner) {
 LibraryService.prototype.getTint = function(type, owner, tintId) {
     if (! this.libraryCache.hasOwnProperty(type)) return Q.fail();
     if (! this.libraryCache[type].hasOwnProperty(owner)) return Q.fail();
+    if (! this.libraryCache[type][owner].hasOwnProperty(tintId)) return Q.fail();
 
     return Q(this.libraryCache[type][owner][tintId]);
 };
@@ -113,7 +114,7 @@ LibraryService.prototype.createTint = function(type, owner, tintId) {
         if (! self.libraryCache[type].hasOwnProperty(owner))
             self.libraryCache[type][owner] = { };
 
-        var descriptionSplits = repository.description.split('\n', 2);
+        var descriptionSplits = repository.description.split('\r\n', 2);
 
         self.libraryCache[type][owner][tintId] = {
             owner: {username: repository.owner.username, displayName: repository.owner.display_name},

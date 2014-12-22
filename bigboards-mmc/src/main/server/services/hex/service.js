@@ -3,7 +3,8 @@ var Q = require('q'),
     Errors = require('../../errors'),
     yaml = require("js-yaml"),
     mkdirp = require('mkdirp'),
-    fsu = require('../../utils/fs-utils');
+    fsu = require('../../utils/fs-utils'),
+    fs = require('fs');
 
 function HexService(settings, configuration, templater, services, serf) {
     this.settings = settings;
@@ -86,22 +87,20 @@ HexService.prototype.listTints = function(type) {
             var promises = [];
 
             for (var o in owners) {
-                promises.push(fsu.readDir(self.settings.tints.rootDirectory + '/' + type + '/' + owners[o]).then(function (tints) {
-                    var p = [];
+                var files = fs.readdirSync(self.settings.tints.rootDirectory + '/' + type + '/' + owners[o]);
 
-                    for (var i in tints) {
-                        p.push(parseManifest(self, self.templater, self.settings.tints.rootDirectory, type, owners[o], tints[i]));
-                    }
-
-                    return Q.all(p);
-                }));
+                for (var i in files) {
+                    promises.push(parseManifest(self, self.templater, self.settings.tints.rootDirectory, type, owners[o], files[i]));
+                }
             }
 
-            return Q.all(promises).then(function(responses) {
+            return Q.allSettled(promises).then(function(responses) {
                 var result = [];
 
                 for (var i in responses) {
-                    result = result.concat(responses[i]);
+                    if (responses[i] != null) {
+                        result.push(responses[i].value);
+                    }
                 }
 
                 return result;
@@ -123,25 +122,46 @@ HexService.prototype.installTint = function(tint) {
 
 function parseManifest(hexService, templater, tintRoot, type, owner, tintId) {
     var tintDir = tintRoot + '/' + type + '/' + owner + '/' + tintId;
+    var self = this;
 
-    return hexService
-        .listNodes()
-        .then(function (nodes) {
-            return templater.template(tintDir + "/tint.yml", nodes);
-        }).then(function (content) {
-            var data = yaml.safeLoad(content);
+    return fsu.exists(tintDir + "/meta.json")
+        .then(function(exists) {
+            if (! exists) {
+                return Q(null);
+            }
 
-            data['owner'] = owner;
-            data['type'] = type;
-            data['id'] = tintId;
+            return hexService
+                .listNodes()
+                .then(function (nodes) {
+                    return templater.template(tintDir + "/tint.yml", nodes);
+                }).then(function (content) {
+                    return yaml.safeLoad(content);
+                }).then(function(data) {
+                    return fsu
+                        .readFile(tintDir + "/meta.json")
+                        .then(function(content) {
+                            var tintMeta = JSON.parse(content);
 
-            return data;
-        }).then(function (tint) {
-            return fsu.readFile(tintDir + "/mapping.yml").then(function(content) {
-                tint.mappings = yaml.safeLoad(content);
+                            for (var idx in tintMeta) {
+                                if (tintMeta.hasOwnProperty(idx)) {
+                                    data[idx] = tintMeta[idx];
+                                }
+                            }
 
-                return tint;
-            });
+                            return data;
+                        });
+
+                }).then(function (tint) {
+                    return fsu
+                        .readFile(tintDir + "/mapping.yml")
+                        .then(function(content) {
+                            tint.mappings = yaml.safeLoad(content);
+
+                            return tint;
+                        });
+                }).fail(function(error) {
+                    console.log('ERROR: ' + error.message);
+                });
         });
 }
 

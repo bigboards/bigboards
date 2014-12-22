@@ -2,9 +2,6 @@
 - hosts: local
   sudo: yes
   tasks:
-    - name: be sure the tint directory exists
-      file: state=directory path=/opt/bb/tints.d/stack
-
     - name: be sure the tint sources are available
       git: repo={{ tint.uri }} dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}
 
