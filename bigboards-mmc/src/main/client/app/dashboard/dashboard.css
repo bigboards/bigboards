@@ -54,6 +54,28 @@
     color: white;
 }
 
+.tints .tint .overlay .busy {
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 45px;
+    width: 42px;
+}
+
+.tints .tint.installing .overlay, .tints .tint.invalid .overlay {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    opacity: 0.9;
+}
+
+.tints .tint.installed .overlay {
+    display: none;
+}
+
 .tints .tint.stack .tint-actions .tint-action:hover {
     color: rgb(32,124,229);
     background-color: white;

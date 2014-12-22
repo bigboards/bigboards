@@ -42,7 +42,7 @@
 <div class="tints">
     <h3 ng-if="!stack">Currently there is no stack tint installed. You may go to the <a href="#/library">library</a> to install one</h3>
 
-    <div ng-if="stack" class="tint stack">
+    <div ng-if="stack" class="tint stack" ng-class="stack.state">
         <!--<div class="corner-top-right"></div>-->
 
         <div class="tint-body">
@@ -59,6 +59,11 @@
             </a>
             <div class="tint-action danger" ng-click="uninstallStack(stack)">
                 <span class="fa fa-trash-o"></span>
+            </div>
+        </div>
+        <div class="overlay">
+            <div class="busy">
+                <span class="fa fa-3x fa-spin fa-spinner"></span>
             </div>
         </div>
     </div>

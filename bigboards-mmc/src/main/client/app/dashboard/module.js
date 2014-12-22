@@ -1,15 +1,8 @@
 var dashboardModule = angular.module('bb.dashboard', ['ngResource']);
 
-dashboardModule.controller('DashboardController', ['$scope', 'Nodes', 'Stacks', 'socket', 'ApiFeedback', '$location',
-                                          function ($scope,   Nodes,   Stacks,   socket,   ApiFeedback,   $location) {
+dashboardModule.controller('DashboardController', ['$scope', 'Nodes', 'Stacks', 'Tasks', 'socket', 'ApiFeedback', '$location',
+                                          function ($scope,   Nodes,   Stacks,   Tasks,   socket,   ApiFeedback,   $location) {
     $scope.nodes = Nodes.list();
-
-    // -- load the stack from the server
-    Stacks.list(function(stacks) {
-        if (!stacks || stacks.length == 0) return;
-
-        $scope.stack = stacks[0];
-    });
 
     $scope.model = {
         metrics: {}
@@ -18,6 +11,29 @@ dashboardModule.controller('DashboardController', ['$scope', 'Nodes', 'Stacks', 
     socket.on('metrics', function(data) {
         $scope.model.metrics = data;
     });
+
+    socket.on('task:started', function(task) {
+        //if (! task) return;
+        //
+        //$scope.task = task;
+        //$scope.url = '#/tasks/' + $scope.task.task.code + '/attempts/' + $scope.task.attempt + '/output';
+    });
+
+    socket.on('task:finished', function(task) {
+        $scope.loadStacks();
+    });
+
+    socket.on('task:failed', function(task) {
+        $scope.loadStacks();
+    });
+
+    $scope.loadStacks = function() {
+        Stacks.list(function(stacks) {
+            if (!stacks || stacks.length == 0) return;
+
+            $scope.stack = stacks[0];
+        });
+    };
 
     $scope.getMetric = function(node, metric) {
         if (! $scope.model.metrics) return 'na';
@@ -51,4 +67,8 @@ dashboardModule.controller('DashboardController', ['$scope', 'Nodes', 'Stacks', 
             );
         }
     };
+
+
+    // -- load the stack from the server
+    $scope.loadStacks();
 }]);

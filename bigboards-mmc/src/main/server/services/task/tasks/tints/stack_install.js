@@ -63,6 +63,9 @@ module.exports = function(configuration, services) {
                     }).then(function() {
                         fullTint['state'] = 'installed';
                         return FsUtils.jsonFile(tintPath + '/meta.json', fullTint)
+                    }).fail(function() {
+                        fullTint['state'] = 'invalid';
+                        return FsUtils.jsonFile(tintPath + '/meta.json', fullTint)
                     });
             });
 
