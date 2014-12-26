@@ -31,9 +31,9 @@ module.exports = function(configuration, services) {
                     scope: scope,
                     hosts: '_hosts',
                     path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
-                }).then(TaskUtils.removeFile(
-                    '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
-                ));
+                }).then(function() {
+                    return TaskUtils.removeFile('/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id);
+                });
             });
         }
     };

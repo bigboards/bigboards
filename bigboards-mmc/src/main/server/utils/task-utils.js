@@ -93,13 +93,15 @@ module.exports.removeFile = function(path, verbose, cwd) {
 
     var pb = new Ansible.AdHoc()
         .inventory('/opt/bb/hosts')
-        .hosts('host-coordinators')
+        .hosts('localhost')
         .module('file')
         .asSudo()
         .args("state=absent path=" + path);
 
     if (verbose)
         pb.verbose('vvvv');
+
+    console.log('removing file ' + path + ' from localhost');
 
     pb.exec({cwd: cwd})
         .then(function(result) {

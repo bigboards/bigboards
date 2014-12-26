@@ -1,7 +1,0 @@
-{% for mapping in hostMapping %}
-- role: {{ mapping.role }}
-  hosts:
-{% for host in mapping.hosts %}
-    - {{ host }}
-{% endfor %}
-{% endfor %}

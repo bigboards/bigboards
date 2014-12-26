@@ -1,0 +1,18 @@
+---
+- hosts: local
+  sudo: yes
+  tasks:
+    - name: be sure the tint directory exists
+      file: state=directory path=/opt/bb/tints.d/stack
+
+    - name: be sure the tint sources are available
+      git: repo={{ tint.uri }} dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}
+
+    - name: be sure the meta file is available
+      template: src=meta.json.j2 dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/meta.json
+
+    - name: be sure the tint variables have been read
+      include_vars: /opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/tint.yml
+
+    - name: generate the hosts file
+      template: src=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/hosts dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/_hosts

@@ -41,31 +41,44 @@ module.exports = function(configuration, services) {
                 scope.hex = hex;
 
                 var tintPath = '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id;
-                var fullTint = {};
 
-                return FsUtils.mkdir(tintPath)
-                    .then(function() {
-                        return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.id).then(function(ft) {
-                            fullTint = ft;
+                return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.id)
+                    .then(function(ft) {
+                        console.log("Update the tint state to 'installing'");
+                        scope.tintMeta = ft;
+                        scope.tintMeta['state'] = 'installing';
+                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
 
-                            fullTint['state'] = 'installing';
-                            return FsUtils.jsonFile(tintPath + '/meta.json', fullTint);
-                        });
+                        return scope;
                     })
-                    .then(TaskUtils.runPlaybook('tints/stack_install', scope))
+                    .then(function(scope) {
+                        console.log("Running the stack pre-install script");
+                        return TaskUtils.runPlaybook('tints/stack_pre_install', scope);
+                    })
                     .then(function() {
                         return TaskUtils.playbook({
                             playbook: 'install',
                             scope: scope,
                             hosts: '_hosts',
-                            path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
+                            path: tintPath
                         });
-                    }).then(function() {
-                        fullTint['state'] = 'installed';
-                        return FsUtils.jsonFile(tintPath + '/meta.json', fullTint)
-                    }).fail(function() {
-                        fullTint['state'] = 'invalid';
-                        return FsUtils.jsonFile(tintPath + '/meta.json', fullTint)
+                    })
+                    .then(function() {
+                        console.log("Running the stack post-install script using 'installed' as the outcome");
+
+                        scope.tintMeta['state'] = 'installed';
+                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
+
+                        return TaskUtils.runPlaybook('tints/stack_post_install', scope);
+
+                    })
+                    .fail(function() {
+                        console.log("Running the stack post-install script using 'invalid' as the outcome");
+
+                        scope.tintMeta['state'] = 'invalid';
+                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
+
+                        return TaskUtils.runPlaybook('tints/stack_post_install', scope);
                     });
             });
 

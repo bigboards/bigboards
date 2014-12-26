@@ -59,7 +59,7 @@ dashboardModule.controller('DashboardController', ['$scope', 'Nodes', 'Stacks', 
 
         if (confirmed) {
             Stacks.uninstall(
-                {id: stack.id, owner: stack.owner},
+                {id: stack.tint_id, owner: stack.owner.username},
                 function(attempt) {
                     $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
                 },
