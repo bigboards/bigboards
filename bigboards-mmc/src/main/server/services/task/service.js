@@ -3,7 +3,7 @@ var util = require("util"),
     winston = require('winston'),
     fs = require('fs'),
     uuid = require('node-uuid'),
-    Tail = require('always-tail'),
+    fsu = require('../../utils/fs-utils'),
     mkdirp = require('mkdirp'),
     Q = require('q');
 
@@ -31,22 +31,29 @@ TaskService.prototype.listTasks = function() {
     return Q(this.tasks);
 };
 
+TaskService.prototype.removeAttempt = function(taskCode, attemptId) {
+    return fsu.rmdir(this.settings.dir.tasks + '/' + taskCode + '/' + attemptId);
+};
+
 TaskService.prototype.removeAttempts = function(taskCode) {
-    var defer = Q.defer();
     var self = this;
+    return fsu
+        .exists(this.settings.dir.tasks + '/' + taskCode)
+        .then(function(exists) {
+            if (exists) {
+                return fsu.readDir(self.settings.dir.tasks + '/' + taskCode);
+            } else {
+                return Q([]);
+            }
+        }).then(function(attempts) {
+            var promises = [];
 
-    fs.exists(this.settings.dir.tasks + '/' + taskCode, function(exists) {
-        if (exists) {
-            fs.readdir(self.settings.dir.tasks + '/' + taskCode, function (err) {
-                if (err) defer.reject(err);
-                else defer.resolve();
-            });
-        } else {
-            defer.resolve();
-        }
-    });
+            for (var i in attempts) {
+                promises.push(fsu.rmdir(self.settings.dir.tasks + '/' + taskCode + '/' + attempts[i]));
+            }
 
-    return defer.promise;
+            return Q.all(promises);
+        });
 };
 
 TaskService.prototype.listAttempts = function(taskCode) {

@@ -38,7 +38,9 @@ tasksModule.controller('TaskDetailController', function($scope, $location, Tasks
         TaskAttempts.clear({
             code: $scope.task.code,
             attempt: attempt.id
-        })
+        }, function() {
+            $scope.attempts = TaskAttempts.list({code: $routeParams.code});
+        });
     }
 });
 

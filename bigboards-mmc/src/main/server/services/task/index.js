@@ -32,6 +32,7 @@ module.exports = {
         API.registerGet(app, '/api/v1/tasks/:code/attempts', function(req, res) { return resource.listAttempts(req, res); });
         API.registerGet(app, '/api/v1/tasks/:code/attempts/:attempt/output', function(req, res) { return resource.attemptOutput(req, res); });
         API.registerGet(app, '/api/v1/tasks/:code/attempts/:attempt/error', function(req, res) { return resource.attemptError(req, res); });
+        API.registerDelete(app, '/api/v1/tasks/:code/attempts/:attempt', function(req, res) { return resource.removeAttempt(req, res); });
         API.registerDelete(app, '/api/v1/tasks/:code/attempts', function(req, res) { return resource.removeAttempts(req, res); });
     }
 };
