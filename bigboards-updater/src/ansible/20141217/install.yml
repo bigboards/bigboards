@@ -8,5 +8,11 @@
         - bigboards-cli
         - bigboards-mmc
 
+    - name: make sure the right permissions are set on the bigboards directories
+      file: path={{item}} owner=bb mode=777 state=directory
+      with_items:
+        - /var/log/bigboards
+        - /var/log/bigboards/tasks
+
     - name: make sure the bigboards-mmc has been restarted
       service: name=bigboards-mmc state=restarted

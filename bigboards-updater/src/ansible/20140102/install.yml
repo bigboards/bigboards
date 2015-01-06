@@ -8,3 +8,10 @@
       with_items:
         - 'bb-template'
         - '{{ ansible_local.bb.hex.name }}-v{{ ansible_local.bb.node.sequence }}'
+
+    - name: be sure existing tints are uninstalled
+      file: path={{ item }} state=absent
+      with_items:
+        - /opt/bb/tints.d/stack/
+        - /opt/bb/tints.d/dataset/
+        - /opt/bb/tints.d/tutor/
