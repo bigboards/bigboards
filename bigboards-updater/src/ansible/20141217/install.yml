@@ -2,6 +2,9 @@
 - hosts: host-coordinators
   sudo: yes
   tasks:
+    - name: make sure the correct hosts file is available
+      template: src=templates/hosts dest=/opt/bb/hosts
+
     - name: make sure the last version of the bigboards software is installed
       apt: name={{ item }} state=latest force=yes
       with_items:
