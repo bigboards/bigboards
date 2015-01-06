@@ -1,0 +1,9 @@
+---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: be sure the lxc bb-template container is removed
+      shell: lxc-destroy -f -n bb-template removes=/var/lib/lxc/bb-template
+      with_items:
+        - 'bb-template'
+        - '{{ ansible_local.bb.hex.name }}-v{{ ansible_local.bb.node.sequence }}'
