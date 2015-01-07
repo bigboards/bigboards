@@ -1,4 +1,4 @@
-Package: bigboards-mmc
+Package: bigboards-mmc-api
 Version: VERSION
 Section: base
 Priority: optional

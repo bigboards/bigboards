@@ -6,12 +6,12 @@ adduser --system bb
 # -- create the bigboards tints directory
 sudo -u bb mkdir -p /opt/bb/tints.d
 
-pushd /opt/bb/runtimes/bigboards-mmc
+pushd /opt/bb/runtimes/bigboards-mmc-api
 # -- install the nodejs api dependencies
 npm install
 
 # -- change the rights to the bigboards directory
-chown bb -R /opt/bb/runtimes/bigboards-mmc
+chown bb -R /opt/bb/runtimes/bigboards-mmc-api
 
 # -- make sure bower installs all dependencies
 sudo -u bb bower install --config.interactive=false
