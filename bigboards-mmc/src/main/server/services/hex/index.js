@@ -9,6 +9,7 @@ module.exports = {
         var resource = new this.Resource(services.hex);
 
         API.registerGet(app, '/api/v1/hex', function(req, res) { return resource.get(req, res); });
+        API.registerDelete(app, '/api/v1/hex', function(req, res) { return resource.powerdown(req, res); });
 
         // -- Nodes
         API.registerGet(app, '/api/v1/hex/nodes', function(req, res) { return resource.listNodes(req, res); });

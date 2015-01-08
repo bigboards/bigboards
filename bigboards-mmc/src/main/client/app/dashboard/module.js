@@ -1,7 +1,7 @@
 var dashboardModule = angular.module('bb.dashboard', ['ngResource']);
 
-dashboardModule.controller('DashboardController', ['$scope', 'Nodes', 'Stacks', 'Tasks', 'socket', 'ApiFeedback', '$location',
-                                          function ($scope,   Nodes,   Stacks,   Tasks,   socket,   ApiFeedback,   $location) {
+dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'Stacks', 'Tasks', 'socket', 'ApiFeedback', '$location',
+                                          function ($scope,   Hex,   Nodes,   Stacks,   Tasks,   socket,   ApiFeedback,   $location) {
     $scope.nodes = Nodes.list();
 
     $scope.model = {
@@ -68,6 +68,13 @@ dashboardModule.controller('DashboardController', ['$scope', 'Nodes', 'Stacks', 
         }
     };
 
+    $scope.powerOff = function() {
+        Hex.halt(function(attempt) {
+                $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
+            },
+            ApiFeedback.onError()
+        );
+    };
 
     // -- load the stack from the server
     $scope.loadStacks();

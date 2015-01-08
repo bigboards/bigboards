@@ -4,7 +4,8 @@ var Q = require('q'),
     yaml = require("js-yaml"),
     mkdirp = require('mkdirp'),
     fsu = require('../../utils/fs-utils'),
-    fs = require('fs');
+    fs = require('fs'),
+    log = require('winston');
 
 function HexService(settings, configuration, templater, services, serf) {
     this.settings = settings;
@@ -53,6 +54,10 @@ HexService.prototype.get = function() {
     });
 };
 
+HexService.prototype.powerdown = function() {
+    return this.services.task.invoke('halt', { });
+};
+
 /*********************************************************************************************************************
  * NODES
  *********************************************************************************************************************/
@@ -63,16 +68,23 @@ HexService.prototype.listNodes = function() {
 HexService.prototype.addNode = function(node) {
     var idx = indexForNode(this.nodeCache, node);
 
-    if (idx == -1) this.nodeCache.push(node);
-    else this.updateNode(node);
+    if (idx == -1) {
+        this.nodeCache.push(node);
+        log.info('Added node ' + node.Name);
+    } else {
+        this.updateNode(node);
+        log.info('Updated node ' + node.Name);
+    }
 };
 
 HexService.prototype.updateNode = function(node) {
     this.nodeCache[indexForNode(this.nodeCache, node)] = node;
+    log.info('Updated node ' + node.Name);
 };
 
 HexService.prototype.removeNode = function(node) {
     delete this.nodeCache[indexForNode(this.nodeCache, node)];
+    log.info('Removed node ' + node.Name);
 };
 
 /*********************************************************************************************************************

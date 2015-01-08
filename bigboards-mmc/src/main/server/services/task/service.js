@@ -94,6 +94,8 @@ TaskService.prototype.registerDefaultTasks = function(configuration, services) {
     // -- dummy
     this.register(require('./tasks/dummy/dummy')(configuration));
 
+    this.register(require('./tasks/system/halt')(configuration));
+
     // -- network
 //    this.register(require('./tasks/network/network_internal')(configuration));
 

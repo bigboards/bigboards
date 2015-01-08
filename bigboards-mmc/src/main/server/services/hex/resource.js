@@ -28,6 +28,18 @@ HexResource.prototype.get = function(req, res) {
     return ApiUtils.handlePromise(res, this.hexService.get());
 };
 
+/**
+ * @api {delete} /api/v1/hex Prepare the hex for power down.
+ * @apiVersion 1.0.5
+ *
+ * @apiName PowerDownHex
+ * @apiGroup Hex
+ * @apiGroupDescription all APIs to fully control your Hex
+ */
+HexResource.prototype.powerdown = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.powerdown());
+};
+
 /*********************************************************************************************************************
  * NODES
  *********************************************************************************************************************/

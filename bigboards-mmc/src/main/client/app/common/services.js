@@ -6,7 +6,8 @@ app.factory('socket', function (settings, socketFactory) {
 
 app.service('Hex', function(settings, $resource) {
     return $resource(settings.api + '/api/v1/hex', { }, {
-        'me': { method: 'GET', isArray: false}
+        'me': { method: 'GET', isArray: false},
+        'halt': { method: 'DELETE', isArray: false}
     });
 });
 
