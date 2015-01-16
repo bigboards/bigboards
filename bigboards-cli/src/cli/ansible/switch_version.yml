@@ -17,7 +17,7 @@
       with_items:
         - bigboards-node
 
-- hosts: local
+- hosts: localhost
   sudo: yes
   tasks:
     - name: make sure the running daemons are stopped
@@ -40,7 +40,7 @@
 # -- ----------------------------------------------------------------------- --
 # -- INSTALL
 # -- ----------------------------------------------------------------------- --
-- hosts: local
+- hosts: localhost
   sudo: yes
   tasks:
     - name: make sure the running daemons are present
