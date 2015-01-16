@@ -18,6 +18,11 @@
         state: "running"
         enabled: "yes"
 
+    - name: make sure libffi is installed
+      apt:
+        name: "libffi-dev"
+        state: "latest"
+
     - name: make sure butterfly is installed
       pip:
         name: "butterfly"
