@@ -2,7 +2,7 @@
 - hosts: host
   sudo: yes
   tasks:
-    - name: make sure the avahi-daemon init file is correct
+    - name: make sure the avahi-daemon init file is up to date
       template:
         src: "templates/etc/init/avahi-daemon.conf"
         dest: "/etc/init/avahi-daemon.conf"
@@ -15,5 +15,21 @@
     - name: make sure avahi is started and will start on boot
       service:
         name: "avahi-daemon"
+        state: "running"
+        enabled: "yes"
+
+    - name: make sure butterfly is installed
+      pip:
+        name: "butterfly"
+        state: "present"
+
+    - name: make sure the butterfly init file is up to date
+      template:
+        src: "templates/etc/init/butterfly.conf"
+        dest: "/etc/init/butterfly.conf"
+
+    - name: make sure butterfly is started and will start on boot
+      service:
+        name: "butterfly"
         state: "running"
         enabled: "yes"
