@@ -2,6 +2,14 @@
 - hosts: host
   sudo: yes
   tasks:
+    - name: make sure the software is installed
+      apt:
+        name: "{{ item }}"
+        state: "latest"
+      with_items:
+        - libffi-dev
+        - supervisor
+
     - name: make sure the avahi-daemon init file is up to date
       template:
         src: "templates/etc/init/avahi-daemon.conf"
@@ -18,23 +26,17 @@
         state: "running"
         enabled: "yes"
 
-    - name: make sure libffi is installed
-      apt:
-        name: "libffi-dev"
-        state: "latest"
-
     - name: make sure butterfly is installed
       pip:
         name: "butterfly"
         state: "present"
 
-    - name: make sure the butterfly init file is up to date
+    - name: make sure the butterfly supervisord file is up to date
       template:
-        src: "templates/etc/init/butterfly.conf"
-        dest: "/etc/init/butterfly.conf"
+        src: "templates/etc/supervisor/conf.d/butterfly.conf"
+        dest: "/etc/supervisor/conf.d/butterfly.conf"
 
-    - name: make sure butterfly is started and will start on boot
-      service:
+    - name: make sure butterfly is started
+      supervisorctl:
         name: "butterfly"
-        state: "running"
-        enabled: "yes"
+        state: "restarted"
