@@ -47,6 +47,9 @@ case "${ACTION}" in
                 ;;
         esac
         ;;
+    run)
+        ansible host -i /opt/bb/hosts --sudo -m shell -a "$2"
+        ;;
     update)
         update
         ;;
