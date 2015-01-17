@@ -10,6 +10,9 @@
         - libffi-dev
         - supervisor
 
+    - name: make sure supervisord is running as bb
+      lineinfile: dest=/etc/supervisor/supervisord.conf regexp="^user=" insertafter="^[supervisord]$" line="user=bb"
+
     - name: make sure supervisor is started and will start at boot
       service:
         name: "supervisor"
