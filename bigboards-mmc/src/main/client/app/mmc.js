@@ -4,7 +4,6 @@ var app = angular.module( 'mmc', [
     'bb.tints',
     'bb.tints.stack',
     'bb.library',
-    'bb.shell',
     'bb.tasks',
     'bb.update',
     'nvd3ChartDirectives',
