@@ -10,6 +10,12 @@
         - libffi-dev
         - supervisor
 
+    - name: make sure supervisor is started and will start at boot
+      service:
+        name: "supervisor"
+        state: "started"
+        enabled: "yes"
+
     - name: make sure the avahi-daemon init file is up to date
       template:
         src: "templates/etc/init/avahi-daemon.conf"
