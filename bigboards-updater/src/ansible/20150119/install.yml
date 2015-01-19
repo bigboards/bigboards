@@ -9,7 +9,7 @@
       with_items:
         - dnsmasq
 
-- host: host-workers
+- hosts: host-workers
   sudo: yes
   tasks:
     - name: make sure a correct hosts file is being used
