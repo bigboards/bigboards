@@ -1,5 +1,5 @@
 ---
-- host: host-coordinators
+- hosts: host-coordinators
   sudo: yes
   tasks:
     - name: make sure the ansible ppa is installed
