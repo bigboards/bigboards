@@ -1,0 +1,23 @@
+---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: make sure the software is installed
+      apt:
+        name: "{{ item }}"
+        state: "latest"
+      with_items:
+        - dnsmasq
+
+- host: host-workers
+  sudo: yes
+  tasks:
+    - name: make sure a correct hosts file is being used
+      template:
+          src: "templates/etc/hosts"
+          dest: "/etc/hosts"
+
+    - name: make sure the correct resolv.conf file is being used
+      template:
+        src: "templates/etc/resolv.conf"
+        dest: "/etc/resolv.conf"
