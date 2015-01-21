@@ -116,7 +116,7 @@ app.controller('ApplicationController', function($scope, $location, Firmware) {
         {
             label: 'Documentation',
             icon: 'fa-book',
-            url: 'http://docs.bigboards.io/en/0.1.0/'
+            url: 'http://docs.bigboards.io/en/1.0.0/'
         }
 
     ];
