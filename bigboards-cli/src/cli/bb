@@ -41,6 +41,15 @@ case "${ACTION}" in
             version)
                 ${PLAYBOOK} --extra-vars "version=${3}" ${DIR}/ansible/switch_version.yml
                 ;;
+            network)
+                # validate the given network prefix
+                if [[ ! $3 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+                    echo "Invalid network prefix! please specify a network prefix as xxx.xxx.xxx"
+                    exit 3
+                fi
+
+                ${PLAYBOOK} --extra-vars "ip_prefix=${3}" ${DIR}/ansible/switch_version.yml
+                ;;
             *)
                 echo "Invalid switch action '${2}'"
                 usage

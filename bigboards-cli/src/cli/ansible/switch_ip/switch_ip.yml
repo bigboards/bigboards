@@ -1,0 +1,37 @@
+---
+- hosts: localhost
+  sudo: yes
+  tasks:
+    - name: make sure the running daemons are stopped
+      service: name={{ item }} state=stopped
+      with_items:
+        - bigboards-mmc
+
+- hosts: all:!localhost
+  sudo: yes
+  tasks:
+    - name: make sure the docker instances and our own daemons are stopped
+      service: name={{ item }} state=stopped
+      ignore_errors: yes
+      with_items:
+        - docker.io
+        - serf
+
+    - name: update the network configuration on all nodes
+      template:
+        src: '{{ item }}'
+        dest: '/{{ item }}'
+        owner: 'root'
+        group: 'root'
+      with_items:
+        - 'etc/network/interfaces'
+        - 'etc/hosts'
+
+    - name: be sure the modifications are saved to disk
+      shell: sync && sync
+
+- hosts: localhost
+  sudo: yes
+  tasks:
+    - debug:
+        msg: 'Please powercycle your hex to activate the changes'
