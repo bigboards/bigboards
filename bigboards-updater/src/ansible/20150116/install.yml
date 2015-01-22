@@ -32,6 +32,19 @@
         state: "running"
         enabled: "yes"
 
+    # Ubuntu 14.04 or some install/upgrade seems to break
+    # pip in combination with the requests module
+    #
+    # http://stackoverflow.com/questions/27318535/pip-install-traceback-error-while-installing-packages-in-python
+    # https://bugs.launchpad.net/ubuntu/+source/python-pip/+bug/1306991
+    #
+    # suggested fix = easy_install -U pip
+    #
+    # Not sure if this is the best approach as we loose control over the exact version that's being installed.
+    # Or would if be better to keep our Hexes at the latest Ubuntu version (apt-get upgrade)?
+    - name: make sure pip is upgraded
+      shell: easy_install -U pip
+
     - name: make sure butterfly is installed
       pip:
         name: "butterfly"
