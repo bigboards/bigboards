@@ -48,7 +48,7 @@ case "${ACTION}" in
                     exit 3
                 fi
 
-                ${PLAYBOOK} --extra-vars "ip_prefix=${3}" ${DIR}/ansible/switch_version.yml
+                ${PLAYBOOK} --extra-vars "ip_prefix=${3}" ${DIR}/ansible/switch_ip/switch_ip.yml
                 ;;
             *)
                 echo "Invalid switch action '${2}'"
