@@ -9,8 +9,8 @@
   sudo: yes
   tasks:
     - file:
-      state: "absent"
-      path: "/data/{{ tint.owner }}/{{ tint.id }}"
+        state: "absent"
+        path: "/data/{{ tint.owner }}/{{ tint.id }}"
 
 - hosts: localhost
   sudo: yes
