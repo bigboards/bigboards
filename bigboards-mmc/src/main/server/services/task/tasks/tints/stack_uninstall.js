@@ -27,7 +27,7 @@ module.exports = function(configuration, services) {
                 scope.hex = hex;
 
                 return TaskUtils.playbook({
-                    playbook: 'uninstall',
+                    playbook: '_uninstall',
                     scope: scope,
                     hosts: '_hosts',
                     path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
