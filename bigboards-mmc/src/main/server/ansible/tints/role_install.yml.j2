@@ -12,6 +12,7 @@
 
 - name: make sure the container exists
   docker:
+    docker_api_version: "1.15"
     name: "{{ item.key }}"
     net: "host"
     ports: "{{ item.value.ports|join(',') }}"
