@@ -1,4 +1,10 @@
-- name: make sure the docker container is removed
+- name: make sure the docker container is stopped
+  docker:
+    name: "{{ item.key }}"
+    image: "{{ item.value.image }}"
+    state: "killed"
+
+- name: make sure the docker container is stopped
   docker:
     name: "{{ item.key }}"
     image: "{{ item.value.image }}"
