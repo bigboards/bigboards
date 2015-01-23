@@ -30,7 +30,7 @@ module.exports = function(configuration, services) {
                     playbook: '_uninstall',
                     scope: scope,
                     hosts: '_hosts',
-                    path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
+                    path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id + '/work'
                 }).then(function() {
                     return TaskUtils.removeFile('/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id);
                 });
