@@ -65,7 +65,7 @@ module.exports.runShellCommand = function(args, verbose, sudo, cwd) {
 
     var pb = new Ansible.AdHoc()
         .inventory('/opt/bb/hosts')
-        .hosts('host-coordinators')
+        .hosts('localhost')
         .module('shell')
         .args(args);
 

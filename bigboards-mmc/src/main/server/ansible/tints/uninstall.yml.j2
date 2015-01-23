@@ -1,0 +1,20 @@
+{% for (roleKey, roleValue) in stack.roles.iteritems() %}
+- hosts: {{ roleValue.runs_on }}
+  sudo: yes
+  roles:
+    - { role: {{ roleKey }}, mode: 'uninstall' }
+{% endfor %}
+
+- hosts: all,!localhost
+  sudo: yes
+  tasks:
+    - file:
+      state: "absent"
+      path: "/data/{{ tint.owner }}/{{ tint.id }}"
+
+- hosts: localhost
+  sudo: yes
+  tasks:
+    - file:
+        state: "absent"
+        path: "/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}"

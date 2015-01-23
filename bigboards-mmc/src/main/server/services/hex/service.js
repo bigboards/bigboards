@@ -163,14 +163,6 @@ function parseManifest(hexService, templater, tintRoot, type, owner, tintId) {
                             return data;
                         });
 
-                }).then(function (tint) {
-                    return fsu
-                        .readFile(tintDir + "/mapping.yml")
-                        .then(function(content) {
-                            tint.mappings = yaml.safeLoad(content);
-
-                            return tint;
-                        });
                 }).fail(function(error) {
                     console.log('ERROR: ' + error.message);
                 });

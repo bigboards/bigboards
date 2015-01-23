@@ -1,0 +1,8 @@
+- name: make sure the docker container is removed
+  docker:
+    name: "{{ item.key }}"
+    image: "{{ item.value.image }}"
+    state: "absent"
+
+- name: make sure the service script is removed
+  file: state=absent path=/etc/init/{{ item.key }}.conf

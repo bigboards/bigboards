@@ -41,6 +41,7 @@ module.exports = function(configuration, services) {
                 scope.hex = hex;
 
                 var tintPath = '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id;
+                scope.tint.path = tintPath;
 
                 return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.id)
                     .then(function(ft) {
@@ -57,10 +58,10 @@ module.exports = function(configuration, services) {
                     })
                     .then(function() {
                         return TaskUtils.playbook({
-                            playbook: 'install',
+                            playbook: '_install',
                             scope: scope,
                             hosts: '_hosts',
-                            path: tintPath
+                            path: tintPath + '/work'
                         });
                     })
                     .then(function() {

@@ -1,5 +1,6 @@
 var Q = require('q'),
     fs = require('fs'),
+    yaml = require("js-yaml"),
     mkdirp = require('mkdirp');
 
 module.exports.readFile = function(file) {
@@ -16,6 +17,14 @@ module.exports.readFile = function(file) {
     });
 
     return deferred.promise;
+};
+
+module.exports.readYamlFile = function(file) {
+    return this
+        .readFile(file)
+        .then(function(content) {
+            return yaml.safeLoad(content);
+        });
 };
 
 module.exports.readDir = function(dir) {

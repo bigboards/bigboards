@@ -1,0 +1,21 @@
+- hosts: all
+  sudo: yes
+  tasks:
+{% raw %}
+    - name: make sure the directories are available
+      file: state=directory path={{ item }}
+      with_items:
+{% endraw %}
+        - /data
+        - /data/{{ tint.owner }}
+        - /data/{{ tint.owner }}/{{ tint.id }}
+        - /data/{{ tint.owner }}/{{ tint.id }}/config
+        - /data/{{ tint.owner }}/{{ tint.id }}/data
+        - /data/{{ tint.owner }}/{{ tint.id }}/files
+
+{% for (roleKey, roleValue) in stack.roles.iteritems() %}
+- hosts: {{ roleValue.runs_on }}
+  sudo: yes
+  roles:
+    - { role: {{ roleKey }}, mode: 'install' }
+{% endfor %}
