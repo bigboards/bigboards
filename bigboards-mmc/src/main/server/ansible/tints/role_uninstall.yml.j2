@@ -5,7 +5,7 @@
     docker_api_version: "1.15"
     state: "killed"
 
-- name: make sure the docker container is stopped
+- name: make sure the docker container is removed
   docker:
     name: "{{ item.key }}"
     image: "{{ item.value.image }}"

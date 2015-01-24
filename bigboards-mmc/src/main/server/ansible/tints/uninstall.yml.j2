@@ -1,8 +1,10 @@
-{% for (roleKey, roleValue) in stack.roles.iteritems() %}
-- hosts: {{ roleValue.runs_on }}
+{% for (groupKey, groupValue) in stack.groups.iteritems() %}
+- hosts: {{ groupValue.runs_on }}
   sudo: yes
   roles:
-    - { role: {{ roleKey }}, mode: 'uninstall' }
+  {% for role in groupValue.containers %}
+    - { role: {{ role }}, mode: 'uninstall' }
+  {% endfor %}
 {% endfor %}
 
 - hosts: all,!localhost

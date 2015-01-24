@@ -17,7 +17,7 @@
     net: "host"
     ports: "{{ item.value.ports|join(',') }}"
     publish_all_ports: "yes"
-    volumes: "{{ '{{' }} config_path {{ '}}' }}:{{ item.value.config }},{{ '{{' }} tmp_path {{ '}}' }}:/tmp,{{ '{{' }} data_path {{ '}}' }}:/data"
+    volumes: "{{ '{{' }} config_path {{ '}}/' + item.key }}:{{ item.value.config }},{{ '{{' }} tmp_path {{ '}}/' + item.key }}:/tmp,{{ '{{' }} data_path {{ '}}/' + item.key }}:/data"
     memory_limit: 1073741824
     image: "{{ item.value.image }}"
     command: "{{ item.value.command }}"

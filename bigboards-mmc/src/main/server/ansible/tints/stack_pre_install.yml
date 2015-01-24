@@ -14,6 +14,12 @@
     - name: remove the work directory so we can start with a clean slate
       command: rm -rf {{ tint.path }}/work removes={{ tint.path }}/work
 
+###############################################################################
+##
+## Structure
+##
+###############################################################################
+
     - name: be sure the directory structure for the tint playbook has been created
       file:
         state: "directory"
@@ -23,50 +29,11 @@
         - "{{ tint.path }}/work/roles"
         - "{{ tint.path }}/work/group_vars"
 
-    - file:
-        state: "directory"
-        path: "{{ tint.path }}/work/roles/{{ item.key }}"
-      with_dict: stack.roles
-
-    - file:
-        state: "directory"
-        path: "{{ tint.path }}/work/roles/{{ item.key }}/tasks"
-      with_dict: stack.roles
-
-    - file:
-        state: "directory"
-        path: "{{ tint.path }}/work/roles/{{ item.key }}/files"
-      with_dict: stack.roles
-
-    - name: create the role install task file
-      template:
-        src: "docker-init.conf.j2"
-        dest: "{{ tint.path }}/work/roles/{{ item.key }}/files/{{ item.key }}.conf"
-      with_dict: stack.roles
-
-    - name: create the role main task file
-      template:
-        src: "role_main.yml.j2"
-        dest: "{{ tint.path }}/work/roles/{{ item.key }}/tasks/main.yml"
-      with_dict: stack.roles
-
-    - name: create the role install task file
-      template:
-        src: "role_install.yml.j2"
-        dest: "{{ tint.path }}/work/roles/{{ item.key }}/tasks/install.yml"
-      with_dict: stack.roles
-
-    - name: create the role uninstall task file
-      template:
-        src: "role_uninstall.yml.j2"
-        dest: "{{ tint.path }}/work/roles/{{ item.key }}/tasks/uninstall.yml"
-      with_dict: stack.roles
-
-    - name: copy the configuration templates from the tint to the work directory
-      copy:
-        src: "{{ tint.path }}/config/{{ item.key }}/"
-        dest: "{{ tint.path }}/work/roles/{{ item.key }}/templates"
-      with_dict: stack.roles
+###############################################################################
+##
+## Inventory
+##
+###############################################################################
 
     - name: create the group_vars file
       template:
@@ -78,6 +45,12 @@
         src: "hosts.j2"
         dest: "{{ tint.path }}/work/_hosts"
 
+###############################################################################
+##
+## Playbooks
+##
+###############################################################################
+
     - name: create the install playbook
       template:
         src: "install.yml.j2"
@@ -87,3 +60,55 @@
       template:
         src: "uninstall.yml.j2"
         dest: "{{ tint.path }}/work/_uninstall.yml"
+
+
+###############################################################################
+##
+## Roles
+##
+###############################################################################
+
+    - file:
+        state: "directory"
+        path: "{{ tint.path }}/work/roles/{{ item.key }}"
+      with_dict: stack.containers
+
+    - file:
+        state: "directory"
+        path: "{{ tint.path }}/work/roles/{{ item.key }}/tasks"
+      with_dict: stack.containers
+
+    - file:
+        state: "directory"
+        path: "{{ tint.path }}/work/roles/{{ item.key }}/files"
+      with_dict: stack.containers
+
+    - name: create the role install task file
+      template:
+        src: "docker-init.conf.j2"
+        dest: "{{ tint.path }}/work/roles/{{ item.key }}/files/{{ item.key }}.conf"
+      with_dict: stack.containers
+
+    - name: create the role main task file
+      template:
+        src: "role_main.yml.j2"
+        dest: "{{ tint.path }}/work/roles/{{ item.key }}/tasks/main.yml"
+      with_dict: stack.containers
+
+    - name: create the role install task file
+      template:
+        src: "role_install.yml.j2"
+        dest: "{{ tint.path }}/work/roles/{{ item.key }}/tasks/install.yml"
+      with_dict: stack.containers
+
+    - name: create the role uninstall task file
+      template:
+        src: "role_uninstall.yml.j2"
+        dest: "{{ tint.path }}/work/roles/{{ item.key }}/tasks/uninstall.yml"
+      with_dict: stack.containers
+
+    - name: copy the configuration templates from the tint to the work directory
+      copy:
+        src: "{{ tint.path }}/config/{{ item.key }}/"
+        dest: "{{ tint.path }}/work/roles/{{ item.key }}/templates"
+      with_dict: stack.containers
