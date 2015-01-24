@@ -1,11 +1,9 @@
 {% if item.value.pre_install is defined %}{{ item.value.pre_install }}{% endif %}
 
-{% raw %}
 - name: make sure the configuration files are available
-  template: src={{ item }} dest={{ config_path }}/
+  template: src="{{ '{{' }} item {{ '}}' }}" dest="{{ '{{' }} config_path {{ '}}/' + item.key }}"
   with_fileglob:
     - ../templates/*
-{% endraw %}
 
 - name: make sure the docker image is the latest one
   shell: docker pull {{ item.value.image }}
