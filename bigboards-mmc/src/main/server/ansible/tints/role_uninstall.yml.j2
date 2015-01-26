@@ -3,6 +3,13 @@
     name: "{{ item.key }}"
     image: "{{ item.value.image }}"
     docker_api_version: "1.15"
+    state: "stopped"
+
+- name: make sure the docker container is stopped
+  docker:
+    name: "{{ item.key }}"
+    image: "{{ item.value.image }}"
+    docker_api_version: "1.15"
     state: "killed"
 
 - name: make sure the docker container is removed
