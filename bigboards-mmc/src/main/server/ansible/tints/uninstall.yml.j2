@@ -5,6 +5,7 @@
   {% for role in groupValue.containers %}
     - { role: {{ role }}, mode: 'uninstall' }
   {% endfor %}
+
 {% endfor %}
 
 - hosts: all,!localhost
