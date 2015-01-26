@@ -1,3 +1,8 @@
+- hosts: localhost
+  sudo: yes
+  tasks:
+    - template: src=meta.json.j2 dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/meta.json
+
 {% for (groupKey, groupValue) in stack.groups.iteritems() %}
 - hosts: {{ groupValue.runs_on }}
   sudo: yes

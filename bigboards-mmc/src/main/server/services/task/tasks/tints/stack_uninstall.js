@@ -23,17 +23,30 @@ module.exports = function(configuration, services) {
         execute: function(scope) {
              // -- TODO: check if the uninstall script exists
 
-            return services.hex.get().then(function(hex) {
-                scope.hex = hex;
+            return services.hex
+                .get()
+                .then(function(hex) {
+                    scope.hex = hex;
 
-                return TaskUtils.playbook({
-                    playbook: '_uninstall',
-                    scope: scope,
-                    hosts: '_hosts',
-                    path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id + '/work'
-                }).then(function() {
-                    return TaskUtils.removeFile('/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id);
-                });
+                    return services.library
+                        .getTint(scope.tint.type, scope.tint.owner, scope.tint.id)
+                        .then(function(ft) {
+                            console.log("Update the tint state to 'partial'");
+                            scope.tintMeta = ft;
+                            scope.tintMeta['state'] = 'partial';
+                            scope.tintMetaString = JSON.stringify(scope.tintMeta);
+
+                            return scope;
+                        })
+                        .then(TaskUtils.playbook({
+                            playbook: '_uninstall',
+                            scope: scope,
+                            hosts: '_hosts',
+                            path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id + '/work'
+                        }))
+                        .then(TaskUtils.removeFile(
+                            '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id
+                        ));
             });
         }
     };

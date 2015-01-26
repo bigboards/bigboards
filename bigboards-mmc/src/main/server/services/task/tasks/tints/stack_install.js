@@ -47,7 +47,7 @@ module.exports = function(configuration, services) {
                     .then(function(ft) {
                         console.log("Update the tint state to 'installing'");
                         scope.tintMeta = ft;
-                        scope.tintMeta['state'] = 'installing';
+                        scope.tintMeta['state'] = 'partial';
                         scope.tintMetaString = JSON.stringify(scope.tintMeta);
 
                         return scope;
@@ -74,9 +74,9 @@ module.exports = function(configuration, services) {
 
                     })
                     .fail(function() {
-                        console.log("Running the stack post-install script using 'invalid' as the outcome");
+                        console.log("Running the stack post-install script using 'partial' as the outcome");
 
-                        scope.tintMeta['state'] = 'invalid';
+                        scope.tintMeta['state'] = 'partial';
                         scope.tintMetaString = JSON.stringify(scope.tintMeta);
 
                         return TaskUtils.runPlaybook('tints/stack_post_install', scope);
