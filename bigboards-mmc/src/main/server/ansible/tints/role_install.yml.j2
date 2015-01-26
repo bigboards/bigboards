@@ -1,7 +1,14 @@
-{% if item.value.pre_install is defined %}{{ item.value.pre_install }}{% endif %}
+{% if item.value.pre_install is defined %}{{ lookup('file', tint.path + '/' + item.value.pre_install) }}{% endif %}
+
+- name: make sure the role template directory exists
+  file:
+    state: "directory"
+    path: "{{'{{'}} config_path {{'}}'}}/{{ item.key }}"
 
 - name: make sure the configuration files are available
-  template: src="{{ '{{' }} item {{ '}}' }}" dest="{{ '{{' }} config_path {{ '}}/' + item.key }}"
+  template:
+    src: "{{ '{{' }} item {{ '}}' }}"
+    dest: "{{'{{'}} config_path {{'}}'}}/{{ item.key }}/"
   with_fileglob:
     - ../templates/*
 
@@ -27,4 +34,4 @@
 - name: make sure the service is started at boot
   service: name={{ item.key }} enabled=yes state=started
 
-{% if item.value.post_install is defined %}{{ item.value.post_install }}{% endif %}
+{% if item.value.post_install is defined %}{{ lookup('file', tint.path + '/' + item.value.post_install) }}{% endif %}

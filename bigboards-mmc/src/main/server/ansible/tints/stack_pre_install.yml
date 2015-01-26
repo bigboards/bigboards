@@ -107,8 +107,28 @@
         dest: "{{ tint.path }}/work/roles/{{ item.key }}/tasks/uninstall.yml"
       with_dict: stack.containers
 
-    - name: copy the configuration templates from the tint to the work directory
+    - stat:
+        path: "{{ tint.path }}/config/all/"
+      register: st
+
+    - name: copy the general configuration templates from the tint to the work directory
       copy:
-        src: "{{ tint.path }}/config/{{ item.key }}/"
+        src: "{{ tint.path }}/config/all/"
         dest: "{{ tint.path }}/work/roles/{{ item.key }}/templates"
       with_dict: stack.containers
+      when: st.stat.exists
+
+    - stat:
+        path: "{{ tint.path }}/config/{{ item.key }}/"
+      register: role_config
+      with_dict: stack.containers
+
+    - debug:
+        var: role_config
+
+    - name: copy the configuration templates from the tint to the work directory
+      copy:
+        src: "{{ tint.path }}/config/{{ item.item.key }}/"
+        dest: "{{ tint.path }}/work/roles/{{ item.item.key }}/templates/"
+      when: item.stat.exists
+      with_items: role_config.results
