@@ -39,15 +39,15 @@ module.exports = function(configuration, services) {
                     return scope;
                 })
                 .then(function() {
-                    TaskUtils.playbook({
+                    return TaskUtils.playbook({
                             playbook: '_uninstall',
                             scope: scope,
                             hosts: '_hosts',
                             path: '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id + '/work'
-                        })
+                        });
                 })
                 .then(function() {
-                    TaskUtils.removeFile('/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id);
+                    return TaskUtils.removeFile('/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id);
                 });
 
         }
