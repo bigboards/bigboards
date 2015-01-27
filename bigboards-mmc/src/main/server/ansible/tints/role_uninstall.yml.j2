@@ -1,23 +1,9 @@
-- name: make sure the docker container is stopped
-  docker:
-    name: "{{ item.key }}"
-    image: "{{ item.value.image }}"
-    docker_api_version: "1.15"
-    state: "stopped"
+- command: docker inspect {{ item.key }} 2>&1
+  ignore_errors: yes
+  register: container
 
-- name: make sure the docker container is stopped
-  docker:
-    name: "{{ item.key }}"
-    image: "{{ item.value.image }}"
-    docker_api_version: "1.15"
-    state: "killed"
-
-- name: make sure the docker container is removed
-  docker:
-    name: "{{ item.key }}"
-    image: "{{ item.value.image }}"
-    docker_api_version: "1.15"
-    state: "absent"
+- command: docker rm -f {{ item.key }}
+  when: container.stdout.find('"Id":') != -1
 
 - name: make sure the service script is removed
   file: state=absent path=/etc/init/{{ item.key }}.conf
