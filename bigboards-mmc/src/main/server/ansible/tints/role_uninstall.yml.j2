@@ -2,8 +2,12 @@
   ignore_errors: yes
   register: container
 
+- shell: docker inspect {{ item.key }} |grep "Running" |cut -d ':' -f2
+  ignore_errors: yes
+  register: running
+
 - shell: docker stop {{ item.key }}
-  when: container.stdout.find("\"Running\"\: true") != -1
+  when: running.stdout.find("true") != -1
 
 - shell: docker rm -f {{ item.key }}
   when: container.stdout.find('"Id":') != -1
