@@ -3,7 +3,7 @@
   register: container
 
 - shell: docker stop {{ item.key }}
-  when: container.stdout.find('"Id":') != -1 and container.stdout.find("\"Running\": true") != -1
+  when: container.stdout.find("\"Running\": true") != -1
 
 - shell: docker rm -f {{ item.key }}
   when: container.stdout.find('"Id":') != -1
