@@ -1,8 +1,8 @@
-- command: docker inspect {{ item.key }} 2>&1
+- shell: docker inspect {{ item.key }} 2>&1
   ignore_errors: yes
   register: container
 
-- command: docker rm -f {{ item.key }}
+- shell: docker rm -f {{ item.key }}
   when: container.stdout.find('"Id":') != -1
 
 - name: make sure the service script is removed
