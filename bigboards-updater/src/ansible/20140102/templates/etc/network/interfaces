@@ -6,6 +6,11 @@ auto eth0
 iface eth0 inet static
     address {{ ansible_local.bb.network.range | default('172.20.40') }}.{{ ansible_local.bb.node.sequence }}
     netmask 255.255.255.0
+{% if ansible_hostname == (ansible_local.bb.hex.name + '-n1') %}
+    dns-nameservers {{ hostvars[ansible_local.bb.hex.name + '-n1']['ansible_eth0']['ipv4']['address'] }}
+{% else %}
+    dns-nameservers 127.0.0.1
+{% endif %}
 
 # external network interface
 auto eth0:0
