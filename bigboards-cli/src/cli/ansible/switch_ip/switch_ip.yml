@@ -26,6 +26,7 @@
       with_items:
         - 'etc/network/interfaces'
         - 'etc/hosts'
+        - 'etc/resolv.conf'
 
     - name: be sure the modifications are saved to disk
       shell: sync && sync
