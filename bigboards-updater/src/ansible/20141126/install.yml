@@ -16,6 +16,12 @@
       template: src=templates/etc/serf/serf.conf dest=/etc/serf/serf.conf
       notify: Restart Serf
 
+    - name: be sure the network configuration is accurate
+      template: src=template/etc/{{ item }} dest=/etc/{{ item }}
+      with_items:
+        - dhcp/dhclient.conf
+        - resolv.conf
+
     - name: make sure the bigboards log directory is available
       file: state=directory path=/var/log/bigboards owner=bb mode=666
 
