@@ -8,21 +8,14 @@
     - name: be sure the tint sources are available
       git: repo={{ tint.uri }} dest={{ tint.path }}
 
-    - name: remove the work directory so we can start with a clean slate
-      command: rm -rf {{ tint.path }}/work removes={{ tint.path }}/work
-
-    - name: replace variables within tint.yml to ansible format
-      shell: sed "s/{{\(.*\)}}/{{ \"{{\" }} \1 {{ \"}}\" }}/g" <"{{ tint.path }}/tint.yml" >"{{ tint.path }}/work/_tint.yml"
-
-    - name: be sure the tint metadata file is read
-      include_vars: "{{ tint.path }}/work/_tint.yml"
-
-
 ###############################################################################
 ##
 ## Structure
 ##
 ###############################################################################
+
+    - name: remove the work directory so we can start with a clean slate
+      command: rm -rf {{ tint.path }}/work removes={{ tint.path }}/work
 
     - name: be sure the directory structure for the tint playbook has been created
       file:
@@ -38,6 +31,12 @@
 ## Inventory
 ##
 ###############################################################################
+
+    - name: replace variables within tint.yml to ansible format
+      shell: sed "s/{{\(.*\)}}/{{ \"{{\" }} \1 {{ \"}}\" }}/g" <"{{ tint.path }}/tint.yml" >"{{ tint.path }}/work/_tint.yml"
+
+    - name: be sure the tint metadata file is read
+      include_vars: "{{ tint.path }}/work/_tint.yml"
 
     - name: create the group_vars file
       template:
