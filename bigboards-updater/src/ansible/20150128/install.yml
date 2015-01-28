@@ -1,0 +1,21 @@
+---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: make sure the avahi configuration file is up to date
+      template:
+        src: "templates/etc/avahi/avahi-daemon.conf"
+        dest: "/etc/avahi/avahi-daemon.conf"
+      notify: restart avahi
+
+    - name: make sure avahi is started and will start on boot
+      service:
+        name: "avahi-daemon"
+        state: "running"
+        enabled: "yes"
+
+  handlers:
+    - name: restart avahi
+      service:
+        name: "avahi-daemon"
+        state: "restarted"
