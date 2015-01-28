@@ -17,7 +17,7 @@
       notify: Restart Serf
 
     - name: be sure the network configuration is accurate
-      template: src=template/etc/{{ item }} dest=/etc/{{ item }}
+      template: src=templates/etc/{{ item }} dest=/etc/{{ item }}
       with_items:
         - dhcp/dhclient.conf
         - resolv.conf
