@@ -68,6 +68,22 @@ dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'St
         }
     };
 
+  $scope.reinstallStack =  function(stack) {
+      Stacks.install(
+          { },
+          { "tint": {
+              "owner": stack.owner.username,
+              "type": "stack",
+              "id": stack['tint_id'],
+              "uri": 'https://bitbucket.org/' + stack.owner.username + '/' + stack['tint_id'] + '.git'
+          } },
+          function(attempt) {
+              $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
+          },
+          ApiFeedback.onError()
+      );
+  };
+
     $scope.powerOff = function() {
         Hex.halt(function(attempt) {
                 $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
