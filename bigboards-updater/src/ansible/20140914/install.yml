@@ -1,9 +1,0 @@
----
-- hosts: host
-  sudo: yes
-  tasks:
-    - name: be sure the correct init.d file is installed
-      copy: src=files/etc/init.d/networking dest=/etc/init.d/networking
-
-    - name: be sure the correct init file is installed
-      copy: src=files/etc/init/networking.conf dest=/etc/init/networking.conf
