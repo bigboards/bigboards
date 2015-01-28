@@ -13,6 +13,11 @@
     min-height: 140px;
 }
 
+.tints .tint.partial {
+    border-color: #880000;
+    color: #880000;
+}
+
 .tints .tint .name {
     text-align: center;
     font-size: x-large;
@@ -89,6 +94,21 @@
 .tints .tint.edu .tint-actions .tint-action:hover {
     color: #008800;
     background-color: white;
+}
+
+.tints .tint.stack.partial .tint-actions .tint-action {
+    background-color: #880000;
+    color: white;
+}
+
+.tints .tint.data.partial .tint-actions .tint-action {
+    background-color: #880000;
+    color: white;
+}
+
+.tints .tint.edu.partial .tint-actions .tint-action {
+    background-color: #880000;
+    color: white;
 }
 
 .tints .tint.stack .tint-actions .tint-action { background-color: rgb(32,124,229); }
