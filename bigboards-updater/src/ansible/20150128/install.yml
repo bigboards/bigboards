@@ -5,16 +5,6 @@
 - hosts: host-coordinators
   sudo: yes
   tasks:
-    - name: make sure the ansible ppa is installed
-      apt_repository:
-        repo: "ppa:ansible/ansible"
-
-    - name: make sure ansible is up to date
-      apt:
-        name: "ansible"
-        update_cache: "yes"
-        state: "latest"
-
     - name: be sure host key checking is disabled
       lineinfile:
         dest: '/etc/ansible/ansible.cfg'
