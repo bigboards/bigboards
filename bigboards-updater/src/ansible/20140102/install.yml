@@ -78,5 +78,4 @@
     - name: make sure ansible is up to date
       apt:
         name: "ansible"
-        update_cache: "yes"
         state: "latest"
