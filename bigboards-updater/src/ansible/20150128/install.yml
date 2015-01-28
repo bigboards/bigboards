@@ -48,14 +48,6 @@
         name: 'dnsmasq'
         state: 'restarted'
 
-- hosts: host-workers
-  sudo: yes
-  tasks:
-    - name: make sure the correct resolv.conf file is being used
-      template:
-        src: "templates/etc/resolv.conf"
-        dest: "/etc/resolv.conf"
-
 ## ####################################################################################################################
 ## AVAHI
 ## ####################################################################################################################
