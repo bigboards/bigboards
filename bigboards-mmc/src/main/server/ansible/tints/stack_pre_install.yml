@@ -8,11 +8,16 @@
     - name: be sure the tint sources are available
       git: repo={{ tint.uri }} dest={{ tint.path }}
 
-    - name: be sure the tint metadata file is read
-      include_vars: "{{ tint.path }}/tint.yml"
-
     - name: remove the work directory so we can start with a clean slate
       command: rm -rf {{ tint.path }}/work removes={{ tint.path }}/work
+
+    - name: replace variables within tint.yml to ansible format
+      shell: sed "s/{{\(.*\)}}/{{ \"{{\" }} \1 {{ \"}}\" }}/g" <"tint.yml" >"_tint.yml"
+      shell: sed "s/{{\(.*\)}}/{{ "{{" }} \1 {{ "{{" }}/g" <"{{ tint.path }}/tint.yml" >"{{ tint.path }}/work/_tint.yml"
+
+    - name: be sure the tint metadata file is read
+      include_vars: "{{ tint.path }}/work/_tint.yml"
+
 
 ###############################################################################
 ##
