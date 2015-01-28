@@ -1,14 +1,24 @@
 var libraryModule = angular.module('bb.library', ['ngResource', 'drFlip']);
 
-libraryModule.controller('LibraryController', ['$scope', 'Library', 'Stacks', 'ApiFeedback', '$location', '$modal',
-                                       function($scope,   Library,   Stacks,   ApiFeedback,   $location,   $modal) {
+libraryModule.controller('LibraryController', ['$scope', 'Library', 'Stacks', 'ApiFeedback', '$location', '$modal', function($scope,   Library,   Stacks,   ApiFeedback,   $location,   $modal) {
     $scope.library = {
         stacks: Library.find({type: 'stack'})
     };
 
+    Stacks.list(function(stacks) {
+        if (!stacks || stacks.length == 0) return;
+
+        $scope.installedStack = stacks[0];
+    });
+
     $scope.refresh = function() {
         Library.refresh();
         $scope.library.stacks = Library.find({type: 'stack'});
+    };
+
+    $scope.isStackInstalled = function(stack) {
+        if (!$scope.installedStack) return false;
+        else return ($scope.installedStack.tint_id == stack.tint_id);
     };
 
     $scope.addStack = function() {
@@ -37,6 +47,20 @@ libraryModule.controller('LibraryController', ['$scope', 'Library', 'Stacks', 'A
             },
             ApiFeedback.onError()
         );
+    };
+
+    $scope.uninstallStack = function(stack) {
+        var confirmed = confirm("Are you sure? This will remove the current tint from the hex.");
+
+        if (confirmed) {
+            Stacks.uninstall(
+                {id: stack.tint_id, owner: stack.owner.username},
+                function(attempt) {
+                    $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
+                },
+                ApiFeedback.onError()
+            );
+        }
     };
 
     $scope.removeStack =  function(owner, id) {

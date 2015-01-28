@@ -11,25 +11,58 @@
 
 <bb-content>
     <div class="container-fluid library">
-        <div class="owner" ng-repeat="(owner, stacks) in library.stacks">
-            <div class="item" ng-repeat="(tintId, stack) in stacks">
+        <div class="row ml-15 mr-15 mb-15" ng-if="installedStack" >
+            <h3 class="mb-15">Installed Tint</h3>
+            <div class="item">
                 <div class="logo">
-                    <img ng-src="{{ stack.logo }}" alt="{{ stack.tint_id }}">
+                    <img ng-src="{{ installedStack.logo }}" alt="{{ installedStack.tint_id }}">
                 </div>
                 <div class="caption">
-                    <h3>{{ stack.name }}</h3>
-                    <span class="subtitle">{{ stack.owner.display_name }}</span>
-                    <p>{{ stack.description }}</p>
+                    <h3>{{ installedStack.name }}</h3>
+                    <span class="subtitle">{{ installedStack.owner.display_name }}</span>
+                    <p>{{ installedStack.description }}</p>
                 </div>
-                <div class="actions">
-                    <div class="action" ng-click="installStack(stack)" role="button">
-                        <span class="fa fa-2x fa-cloud-download"></span>
+                <div class="actions" >
+                    <div class="action" ng-click="installStack(installedStack)" role="button">
+                        <span class="fa fa-2x fa-retweet"></span>
                     </div>
-                    <div class="action danger" ng-click="removeStack(owner, tintId)" role="button">
-                        <span class="fa fa-2x fa-trash-o"></span>
+                    <div class="action" ng-click="uninstallStack(installedStack)" role="button">
+                        <span class="fa fa-2x fa-times-circle"></span>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="row ml-15 mr-15 mb-15">
+            <h3 class="mb-15">Available Tints</h3>
+            <div class="owner" ng-repeat="(owner, stacks) in library.stacks">
+                <div ng-if="!isStackInstalled(stack)" class="item" ng-repeat="(tintId, stack) in stacks">
+                    <div class="logo">
+                        <img ng-src="{{ stack.logo }}" alt="{{ stack.tint_id }}">
+                    </div>
+                    <div class="caption">
+                        <h3>{{ stack.name }}</h3>
+                        <span class="subtitle">{{ stack.owner.display_name }}</span>
+                        <p>{{ stack.description }}</p>
+                    </div>
+                    <div class="actions" >
+                        <div class="action" ng-if="isStackInstalled(stack)" ng-click="reinstallStack(stack)" role="button">
+                            <span class="fa fa-2x fa-retweet"></span>
+                        </div>
+                        <div class="action" ng-if="isStackInstalled(stack)" ng-click="uninstallStack(stack)" role="button">
+                            <span class="fa fa-2x fa-times-circle"></span>
+                        </div>
+
+                        <div class="action" ng-if="!isStackInstalled(stack)" ng-click="installStack(stack)" role="button">
+                            <span class="fa fa-2x fa-download"></span>
+                        </div>
+                        <div class="action danger" ng-if="!isStackInstalled(stack)" ng-click="removeStack(owner, tintId)" role="button">
+                            <span class="fa fa-2x fa-trash-o"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </bb-content>

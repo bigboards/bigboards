@@ -111,3 +111,34 @@ body {
 .snap-drawer {
     width: 200px;
 }
+
+.ml-0  { margin-left: 0 }
+.ml-15 { margin-left: 15px; }
+.ml-30 { margin-left: 30px; }
+.mr-0  { margin-right: 0 }
+.mr-15 { margin-right: 15px; }
+.mr-30 { margin-right: 30px; }
+.mt-0  { margin-top: 0 }
+.mt-15 { margin-top: 15px; }
+.mt-30 { margin-top: 30px; }
+.mb-0  { margin-bottom: 0 }
+.mb-15 { margin-bottom: 15px; }
+.mb-30 { margin-bottom: 30px; }
+
+.pl-0  { padding-left: 0 }
+.pl-15 { padding-left: 15px; }
+.pl-30 { padding-left: 30px; }
+.pr-0  { padding-right: 0 }
+.pr-15 { padding-right: 15px; }
+.pr-30 { padding-right: 30px; }
+.pt-0  { padding-top: 0 }
+.pt-15 { padding-top: 15px; }
+.pt-30 { padding-top: 30px; }
+.pb-0  { padding-bottom: 0 }
+.pb-15 { padding-bottom: 15px; }
+.pb-30 { padding-bottom: 30px; }
+
+h1 { margin: 0; padding: 0; }
+h2 { margin: 0; padding: 0; }
+h3 { margin: 0; padding: 0; }
+h4 { margin: 0; padding: 0; }
