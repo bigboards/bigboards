@@ -25,6 +25,8 @@ RUN \
 # Install Sigar
 ADD libsigar-arm-linux.so /elasticsearch/lib/sigar/libsigar-arm-linux.so
 
+RUN /elasticsearch/bin/plugin -i lmenezes/elasticsearch-kopf/master
+
 # Define default command.
 CMD ["/elasticsearch/bin/elasticsearch"]
 
