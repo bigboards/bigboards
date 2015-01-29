@@ -17,6 +17,10 @@ function HexService(settings, configuration, templater, services, serf) {
 
     var self = this;
 
+    self.serf.members().then(function(members) {
+        self.nodeCache = members;
+    });
+
     var serfMemberHandler = this.serf.stream('member-join,member-leave,member-update');
     serfMemberHandler.on('data', function(data) {
         if (!data || !data.data || !data.data.Members) return;
