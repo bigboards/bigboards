@@ -28,12 +28,6 @@
         - 'etc/hosts'
         - 'etc/resolv.conf'
 
-    - name: be sure the modifications are saved to disk
-      shell: sync && sync
-
-- hosts: localhost
-  sudo: yes
-  tasks:
     - name: be sure the internal ip address has been saved to the facts
       ini_file:
         dest: '/etc/ansible/facts.d/bb.fact'
@@ -41,5 +35,11 @@
         option: 'range'
         value: '{{ ip_prefix }}'
 
+    - name: be sure the modifications are saved to disk
+      shell: sync && sync
+
+- hosts: localhost
+  sudo: yes
+  tasks:
     - debug:
         msg: 'Please powercycle your hex to activate the changes'
