@@ -1,0 +1,16 @@
+---
+- hosts: local
+  tasks:
+
+    - name: make sure tint file is on site
+      copy: src="tint.yml" dest="/tmp/tint.yml"
+
+    - name: replace variables within tint.yml to ansible format
+      shell: sed "s/{{\(.*\)}}/\\{\\{ \1 \\}\\}/g" <"/tmp/tint.yml" >"/tmp/_tint.yml"
+
+    - name: be sure the workfile with tint metadata file is sourced
+      include_vars: "/tmp/_tint.yml"
+
+    - name: echo tint metadata to test sourcing
+      debug:
+        var: stack.views[0].url
