@@ -16,9 +16,17 @@ chmod -R 777 /var/log/bigboards
 # -- change the rights to the bigboards directory
 chown bb -R /opt/bb/runtimes/bigboards-mmc
 
-pushd /opt/bb/runtimes/bigboards-mmc/client
+pushd /opt/bb/runtimes/bigboards-mmc
+    # -- remove the old modules
+    rm -rf npm_modules
+
     # -- install the nodejs api dependencies
     npm install
+popd
+
+pushd /opt/bb/runtimes/bigboards-mmc/client
+    # -- remove the old modules
+    rm -rf bower_components
 
     # -- make sure bower installs all dependencies
     sudo -u bb bower install --config.interactive=false
