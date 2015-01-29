@@ -1,8 +1,8 @@
 127.0.0.1   localhost
 
-{{ip_prefix}}.1     {{ ansible_local.bb.hex.name }}-n1
-{{ip_prefix}}.2     {{ ansible_local.bb.hex.name }}-n2
-{{ip_prefix}}.3     {{ ansible_local.bb.hex.name }}-n3
-{{ip_prefix}}.4     {{ ansible_local.bb.hex.name }}-n4
-{{ip_prefix}}.5     {{ ansible_local.bb.hex.name }}-n5
-{{ip_prefix}}.6     {{ ansible_local.bb.hex.name }}-n6
+{{ip_prefix}}.1     {{ ansible_local.bb.hex.name }}-n1 {{ ansible_local.bb.hex.name }}-n1.hex
+{{ip_prefix}}.2     {{ ansible_local.bb.hex.name }}-n2 {{ ansible_local.bb.hex.name }}-n2.hex
+{{ip_prefix}}.3     {{ ansible_local.bb.hex.name }}-n3 {{ ansible_local.bb.hex.name }}-n3.hex
+{{ip_prefix}}.4     {{ ansible_local.bb.hex.name }}-n4 {{ ansible_local.bb.hex.name }}-n4.hex
+{{ip_prefix}}.5     {{ ansible_local.bb.hex.name }}-n5 {{ ansible_local.bb.hex.name }}-n5.hex
+{{ip_prefix}}.6     {{ ansible_local.bb.hex.name }}-n6 {{ ansible_local.bb.hex.name }}-n6.hex
