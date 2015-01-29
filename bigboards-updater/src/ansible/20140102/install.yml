@@ -92,6 +92,11 @@
 - hosts: host-coordinators
   sudo: yes
   tasks:
+    - name: make sure the correct hosts file is available
+      template:
+        src: 'templates/opt/bb/hosts'
+        dest: '/opt/bb/hosts'
+
     - name: make sure the ansible ppa is installed
       apt_repository:
         repo: "ppa:ansible/ansible"
