@@ -17,27 +17,27 @@ function HexService(settings, configuration, templater, services, serf) {
 
     var self = this;
 
-    this.serf.members().then(function(members) {
-        self.nodeCache = members;
-    });
-
     var serfMemberHandler = this.serf.stream('member-join,member-leave,member-update');
     serfMemberHandler.on('data', function(data) {
         if (!data || !data.data || !data.data.Members) return;
 
-        if (data.Event == 'member-join') {
-            data.data.Members.forEach(function(member) {
-                self.addNode(member);
-            });
-        } else if (data.Event == 'member-leave') {
-            data.data.Members.forEach(function(member) {
-                self.removeNode(member);
-            });
-        } else if (data.Event == 'member-update') {
-            data.data.Members.forEach(function(member) {
-                self.updateNode(member);
-            });
-        }
+        //if (data.Event == 'member-join') {
+        //    data.data.Members.forEach(function(member) {
+        //        self.addNode(member);
+        //    });
+        //} else if (data.Event == 'member-leave') {
+        //    data.data.Members.forEach(function(member) {
+        //        self.removeNode(member);
+        //    });
+        //} else if (data.Event == 'member-update') {
+        //    data.data.Members.forEach(function(member) {
+        //        self.updateNode(member);
+        //    });
+        //}
+
+        self.serf.members().then(function(members) {
+            self.nodeCache = members;
+        });
     });
 
     mkdirp.sync(this.settings.tints.rootDirectory + '/stack');
