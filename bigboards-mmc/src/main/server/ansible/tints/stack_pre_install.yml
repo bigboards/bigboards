@@ -33,7 +33,7 @@
 ###############################################################################
 
     - name: replace variables within tint.yml to ansible format
-      shell: sed {% raw %}"s/{{\(.*\)}}/{{ \1 }}/g"{% raw %} <"{{ tint.path }}/tint.yml" >"{{ tint.path }}/work/_tint.yml"
+      shell: sed "s/{{\(.*\)}}/\\{\\{ \1 \\}\\}/g" <"{{ tint.path }}/tint.yml" >"{{ tint.path }}/work/_tint.yml"
 
     - name: be sure the tint metadata file is read
       include_vars: "{{ tint.path }}/work/_tint.yml"
