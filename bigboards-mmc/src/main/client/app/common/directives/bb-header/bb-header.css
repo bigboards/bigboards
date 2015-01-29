@@ -14,18 +14,17 @@
 
 .bb-header h1 {
     position: absolute;
+    text-transform: uppercase;
     top: 0;
     left: 0;
     bottom: 0;
     display: block;
-
-    font-size: x-large;
+    font-size: 25px;
+    font-weight: 100;
     vertical-align: baseline;
-
     padding: 0;
     padding-left: 20px;
     padding-top: 10px;
-
     margin: 0;
     color: #515151;
 }

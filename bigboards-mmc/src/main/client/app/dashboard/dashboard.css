@@ -1,16 +1,82 @@
+.node {
+    height: 80px;
+}
+
+.node table {
+    border-spacing: 10px;
+    border-collapse: separate;
+}
+
+.node table td {
+    padding-left: 15px;
+}
+
+.node .name {
+    text-transform: uppercase;
+    border-bottom: 1px solid black;
+}
+
+.node .role {
+    text-transform: uppercase;
+}
+
+.node .index {
+    font-size: 34px;
+    padding: 10px 20px;
+    background-color: transparent;
+    color: #008888;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    border: 2px solid #008888;
+}
+
+.node .internal-ip {
+    color: #005F5F;
+    font-weight: bold;
+    padding: 0px 3px;
+}
+
+.node a.action {
+    font-size: 12px;
+    padding: 5px 10px;
+    background-color: #000000;
+    color: #FFFFFF;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+
+.node a.action:hover {
+    color: #FFFFFF;
+    background-color: #008888;
+
+}
+
+.node .status-highlight {
+    color: #005F5F;
+    font-weight: bold;
+    padding: 0px 3px;
+    text-transform: uppercase;
+}
+
+
 .dashboard {
     padding-top: 20px;
 }
 
 
 .tints .tint {
-    border: solid 1px #dedede;
+    border: solid 1px #008888;
     background-color: white;
     display: inline-block;
     position: relative;
     margin: 10px;
     min-width: 200px;
     min-height: 140px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
 }
 
 .tints .tint.partial {
@@ -81,9 +147,17 @@
     display: none;
 }
 
-.tints .tint.stack .tint-actions .tint-action:hover {
-    color: rgb(32,124,229);
-    background-color: white;
+.tints .tint.stack .tint-actions .tint-action a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+    line-height: 40px;
+    color: #FFFFFF;
+}
+
+.tints .tint.stack .tint-actions .tont-action a:hover {
+    background-color: transparent;
 }
 
 .tints .tint.data .tint-actions .tint-action:hover {
@@ -111,7 +185,7 @@
     color: white;
 }
 
-.tints .tint.stack .tint-actions .tint-action { background-color: rgb(32,124,229); }
+.tints .tint.stack .tint-actions .tint-action { background-color: #008888; }
 .tints .tint.data .tint-actions .tint-action { background-color: #880000; }
 .tints .tint.edu .tint-actions .tint-action { background-color: #008800; }
 
@@ -163,6 +237,12 @@ h2 {
 
 h3 {
     margin-top: 40px;
+}
+
+.dashboard .subtitle {
+    margin-left: 25px;
+    margin-bottom: 20px;
+    color: #A6A6A6;
 }
 
 
