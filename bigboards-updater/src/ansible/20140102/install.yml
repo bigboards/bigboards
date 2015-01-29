@@ -44,6 +44,28 @@
         state: 'restarted'
 
 ## ####################################################################################################################
+## NTP
+## ####################################################################################################################
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: make sure the ntp daemon is installed
+      apt:
+        name: 'ntp'
+        state: 'latest'
+
+    - name: make sure the ntpd.conf file is up to date
+      template:
+        src: 'templates/etc/ntpd.conf'
+        dest: '/etc/ntpd.conf'
+
+  handlers:
+    - name: Restart NTPD
+      service:
+        name: 'ntp'
+        state: 'restarted'
+
+## ####################################################################################################################
 ## HDD
 ## ####################################################################################################################
 - hosts: host
@@ -70,6 +92,11 @@
 - hosts: host-coordinators
   sudo: yes
   tasks:
+    - name: make sure the correct hosts file is available
+      template:
+        src: 'templates/opt/bb/hosts'
+        dest: '/opt/bb/hosts'
+
     - name: make sure the ansible ppa is installed
       apt_repository:
         repo: "ppa:ansible/ansible"
