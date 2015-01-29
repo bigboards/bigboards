@@ -19,7 +19,7 @@
         </div>
         <div class="row">
             <div class="col-md-6">
-                <div class="panel panel-default" ng-if="stack.actions">
+                <div class="panel panel-default" ng-if="stack.stack.actions">
                     <div class="panel-heading">
                         <h3 class="panel-title">Actions</h3>
                     </div>
@@ -31,7 +31,7 @@
                             <th class="col-sm-1"></th>
                         </tr>
                         </thead>
-                        <tr ng-repeat="action in stack.actions">
+                        <tr ng-repeat="action in stack.stack.actions">
                             <td>{{action.label}}</td>
                             <td>{{action.description}}</td>
                             <td>
@@ -41,17 +41,17 @@
                             </td>
                         </tr>
                     </table>
-                    <div ng-if="!stack.actions" class="panel-body">
+                    <div ng-if="!stack.stack.actions" class="panel-body">
                         <p>There are no actions configured for this stack</p>
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="panel panel-default" ng-if="stack.views">
+                <div class="panel panel-default" ng-if="stack.stack.views">
                     <div class="panel-heading">
                         <h3 class="panel-title">Views</h3>
                     </div>
-                    <table ng-if="stack.views" class="table">
+                    <table ng-if="stack.stack.views" class="table">
                         <thead>
                         <tr>
                             <th class="col-sm-1">label</th>
@@ -59,7 +59,7 @@
                             <th class="col-sm-1"></th>
                         </tr>
                         </thead>
-                        <tr ng-repeat="view in stack.views">
+                        <tr ng-repeat="view in stack.stack.views">
                             <td>{{view.label}}</td>
                             <td>{{view.description}}</td>
                             <td>
@@ -69,7 +69,7 @@
                             </td>
                         </tr>
                     </table>
-                    <div ng-if="!stack.views" class="panel-body">
+                    <div ng-if="!stack.stack.views" class="panel-body">
                         <p>There are no views configured for this stack</p>
                     </div>
                 </div>
