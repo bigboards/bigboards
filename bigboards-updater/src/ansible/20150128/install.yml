@@ -38,7 +38,7 @@
 
     - name: make sure a correct hosts file is being used
       template:
-          src: "templates/etc/hosts"
+          src: "templates/etc/hosts-master"
           dest: "/etc/hosts"
       notify: Restart DNSMasq
 
@@ -47,6 +47,14 @@
       service:
         name: 'dnsmasq'
         state: 'restarted'
+
+- hosts: host-workers
+  sudo: yes
+  tasks:
+    - name: make sure a correct hosts file is being used
+      template:
+          src: "templates/etc/hosts-worker"
+          dest: "/etc/hosts"
 
 ## ####################################################################################################################
 ## AVAHI
