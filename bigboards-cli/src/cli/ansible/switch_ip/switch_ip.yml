@@ -28,6 +28,13 @@
         - 'etc/hosts'
         - 'etc/resolv.conf'
 
+    - name: be sure the internal ip address has been saved to the facts
+      ini_file:
+        dest: '/etc/ansible/facts.d/bb.fact'
+        section: 'network'
+        option: 'range'
+        value: '{{ ip_prefix }}'
+
     - name: be sure the modifications are saved to disk
       shell: sync && sync
 
