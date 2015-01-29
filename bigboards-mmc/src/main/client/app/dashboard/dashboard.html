@@ -8,8 +8,31 @@
 <bb-content>
     <div class="container-fluid dashboard">
         <div class="row">
-            <div class="col-sm-12">
-                <div class="panel panel-default">
+            <div class="col-sm-12 col-md-12 col-lg-8">
+                <h3 class="subtitle">NODES</h3>
+                <div class="node" ng-repeat="node in nodes | orderBy:'Name'">
+                    <table class="node-table">
+                        <tr>
+                            <td rowspan="2"><span class="index">{{'0' + ($index + 1)}}</span></td>
+                            <td><span class="name">{{ node['Name'] }}</span></td>
+                            <td><span class="internal-ip-label">INTERNAL IP</span></td>
+                            <td><span class="internal-ip-label">EXTERNAL IP</span></td>
+                            <td><span class="status">STATUS | <span class="status-highlight">{{ node['Status'] }}</span></span></td>
+                            <td rowspan="2" valign="top">
+                                <a class="action" tooltip-trigger="mouseenter" tooltip-placement="right" tooltip="Open Terminal" href="http://{{ node['Tags']['network.eth0:0.ip']}}:57575/" target="_blank">
+                                    <span class="fa fa-terminal"></span>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="role">{{ node['Tags']['role'] }}</span></td>
+                            <td><span class="internal-ip">> {{ node['Tags']['network.eth0.ip']}}</span></td>
+                            <td><span class="internal-ip">> {{ node['Tags']['network.eth0:0.ip']}}</span></td>
+                        </tr>
+                    </table>
+
+                </div>
+<!--                <div class="panel panel-default">
                     <div class="panel-heading">
                         Hex Nodes
                     </div>
@@ -22,7 +45,7 @@
                             <th>internal ip</th>
                             <th>external ip</th>
                             <th>node status</th>
-                            <!--<th></th>-->
+                            &lt;!&ndash;<th></th>&ndash;&gt;
                         </tr>
                         </thead>
                         <tr ng-repeat="node in nodes | orderBy:'Name'">
@@ -39,34 +62,38 @@
                             </td>
                         </tr>
                     </table>
+                </div>-->
+            </div>
+            <div class="tints col-sm-12 col-md-12 col-lg-4">
+                <h3 class="subtitle">STACKS</h3>
+                <h3 ng-if="!stack">Currently there is no stack tint installed. You may go to the <a href="#/library">library</a> to install one</h3>
+
+                <div ng-if="stack" class="tint stack" ng-class="stack.state">
+                    <!--<div class="corner-top-right"></div>-->
+
+                    <div class="tint-body">
+                        <span class="name">{{ stack.name }}</span>
+                        <span class="owner">{{ stack.owner.displayName }}</span>
+                    </div>
+
+                    <div class="tint-actions">
+                        <div ng-if="stack.state != 'installed'" class="tint-action">
+                            <a href="" tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="Reinstall Stack" ng-click="reinstallStack(stack)" title="Reinstall">
+                                <span class="fa fa-retweet"></span>
+                            </a>
+                        </div>
+                        <a ng-if="stack.state == 'installed'" class="tint-action" href="#/stacks/{{ stack.owner.username }}/{{ stack.tint_id }}">
+                            <i class="fa fa-desktop"></i>
+                        </a>
+                        <div class="tint-action danger" ng-click="uninstallStack(stack)">
+                            <a href="" tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="Uninstall Stack" ng-click="uninstallStack(stack)" title="Uninstall">
+                                <span class="fa fa-trash-o"></span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-
-<div class="tints">
-    <h3 ng-if="!stack">Currently there is no stack tint installed. You may go to the <a href="#/library">library</a> to install one</h3>
-
-    <div ng-if="stack" class="tint stack" ng-class="stack.state">
-        <!--<div class="corner-top-right"></div>-->
-
-        <div class="tint-body">
-            <span class="name">{{ stack.name }}</span>
-            <span class="owner">{{ stack.owner.displayName }}</span>
-        </div>
-
-        <div class="tint-actions">
-            <div ng-if="stack.state != 'installed'" class="tint-action" ng-click="reinstallStack(stack)">
-                <span class="fa fa-retweet"></span>
-            </div>
-            <a ng-if="stack.state == 'installed'" class="tint-action" href="#/stacks/{{ stack.owner.username }}/{{ stack.tint_id }}">
-                <i class="fa fa-desktop"></i>
-            </a>
-            <div class="tint-action danger" ng-click="uninstallStack(stack)">
-                <span class="fa fa-trash-o"></span>
-            </div>
-        </div>
-    </div>
-</div>
     </div>
 </bb-content>

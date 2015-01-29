@@ -92,7 +92,7 @@ body {
     right:0;
     top:0;
     bottom:0;
-    background-color: #efefef;
+    background: #FFFFFF url("../img/light_grey.png") repeat;
     overflow: hidden;
 }
 
