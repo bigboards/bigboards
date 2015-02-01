@@ -135,9 +135,6 @@
       register: role_config
       with_dict: stack.containers
 
-    - debug:
-        var: role_config
-
     - name: copy the configuration templates from the tint to the work directory
       copy:
         src: "{{ tint.path }}/config/{{ item.item.key }}/"
