@@ -22,5 +22,8 @@ RUN cp /etc/sudoers /etc/sudoers.orig && \
     sed -i -e '/Defaults\s\+env_reset/a Defaults\texempt_group=bigboards' /etc/sudoers && \
     echo '%bigboards ALL=NOPASSWD:ALL' >> /etc/sudoers
 
+# install curl
+RUN apt-get update && apt-get install -y curl
+
 # Define default command.
 CMD ["bash"]

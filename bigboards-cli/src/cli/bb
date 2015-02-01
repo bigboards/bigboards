@@ -38,12 +38,23 @@ update() {
 }
 
 case "${ACTION}" in
-    switch)
+    version)
         case "${2}" in
-            version)
+            switch)
                 ${PLAYBOOK} --extra-vars "version=${3}" ${DIR}/ansible/switch_version.yml
                 ;;
-            network)
+            update)
+                update
+                ;;
+            *)
+                echo "Invalid version action '${2}'"
+                usage
+                ;;
+        esac
+        ;;
+    network)
+        case "${2}" in
+            switch)
                 # validate the given network prefix
                 if [[ ! $3 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
                     echo "Invalid network prefix! please specify a network prefix as xxx.xxx.xxx"
@@ -53,16 +64,13 @@ case "${ACTION}" in
                 ${PLAYBOOK} --extra-vars "ip_prefix=${3}" ${DIR}/ansible/switch_ip/switch_ip.yml
                 ;;
             *)
-                echo "Invalid switch action '${2}'"
+                echo "Invalid network action '${2}'"
                 usage
                 ;;
         esac
         ;;
     run)
         ansible host -i /opt/bb/hosts --sudo -m shell -a "$2"
-        ;;
-    update)
-        update
         ;;
     mmc)
         sudo service bigboards-mmc $2
