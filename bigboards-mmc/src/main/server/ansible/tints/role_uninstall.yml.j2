@@ -6,7 +6,7 @@
   ignore_errors: yes
   register: running
 
-- shell: docker stop {{ item.key }}
+- shell: docker stop --time=10 {{ item.key }}
   ignore_errors: yes
   when: running.stdout.find("true") != -1
 
