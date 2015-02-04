@@ -10,6 +10,7 @@ ADD sx_1.0-1_armhf.deb /tmp/sx_1.0-1_armhf.deb
 RUN dpkg -i /tmp/sx_1.0-1_armhf.deb
 
 ADD bbsx.sh /usr/sbin/bbsx.sh
+RUN chmod 777 /usr/sbin/bbsx.sh
 
 #       http
 #     +------+
