@@ -4,7 +4,7 @@
   tasks:
     - name: be sure the docker upstart script is updated
       copy:
-        src: '/etc/init/docker.io.conf'
+        src: 'etc/init/docker.io.conf'
         dest: '/etc/init/docker.io.conf'
         owner: 'root'
         group: 'root'
