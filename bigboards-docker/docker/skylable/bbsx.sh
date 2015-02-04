@@ -11,13 +11,14 @@ if [ ! -s "$CONFIG_FILE" ]; then
         echo "Unable to find the auto configuration file (${SETUP_INPUT})"
         exit 3;
     else
-        $SETUP --config-file $SETUP_INPUT
-
-        # -- Get the cluster uuid and admin key
+        $SETUP --config-file $SETUP_INPUT --wait
 
         # -- Copy the sxsetup.conf file and add the admin key and cluster uuid
         cp /etc/sxserver/sxsetup.conf /etc/sxserver/sxsetup.conf.nodes
+        chmod 755 /etc/sxserver/sxsetup.conf.nodes
 
+        # -- Remove the setup input file so we won't reconfigure again
+        rm -rf $SETUP_INPUT
     fi
 fi
 

@@ -1,0 +1,30 @@
+- hosts: all:!localhost
+  sudo: yes
+  tasks:
+  - shell: docker ps |cut -d ' ' -f1 |grep -v CONTAINER
+    register: docker_running
+
+  - shell: docker stop --time=10 {{ item }}
+    with_items: docker_running.stdout.lines
+
+  - shell: docker ps -a |cut -d ' ' -f1 |grep -v CONTAINER
+    register: docker_available
+
+  - shell: docker rm -f {{ item }}
+    with_items: docker_running.stdout.lines
+
+  - file:
+      path: "/data/{{ item }}"
+      state: "absent"
+    with_lines: find /data/ -type f -printf "%P\n"
+
+- hosts: localhost
+  sudo: yes
+  tasks:
+    - file:
+        path: "/opt/bb/tints.d/{{item}}"
+        state: "absent"
+      with_items:
+        - "stack"
+        - "dataset"
+        - "tutor"

@@ -92,6 +92,17 @@ case "${ACTION}" in
                 ;;
         esac
         ;;
+    system)
+        case "${2}" in
+            purge)
+                ${PLAYBOOK} ${DIR}/ansible/system/purge.yml
+                ;;
+            *)
+                echo "Invalid switch action '${2}'"
+                usage
+                ;;
+        esac
+        ;;
     help)
         usage
         ;;

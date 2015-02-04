@@ -8,7 +8,7 @@
 
 {% endfor %}
 
-- hosts: all,!localhost
+- hosts: all:!localhost
   sudo: yes
   tasks:
     - file: state="absent" path="/data/{{ tint.owner }}/{{ tint.id }}"
