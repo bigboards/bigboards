@@ -2,15 +2,19 @@
   sudo: yes
   tasks:
   - shell: docker ps |cut -d ' ' -f1 |grep -v CONTAINER
+    ignore_errors: yes
     register: docker_running
 
   - shell: docker stop --time=10 {{ item }}
+    ignore_errors: yes
     with_items: docker_running.stdout.lines
 
   - shell: docker ps -a |cut -d ' ' -f1 |grep -v CONTAINER
+    ignore_errors: yes
     register: docker_available
 
   - shell: docker rm -f {{ item }}
+    ignore_errors: yes
     with_items: docker_running.stdout.lines
 
   - file:
