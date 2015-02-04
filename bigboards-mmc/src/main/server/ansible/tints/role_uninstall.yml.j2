@@ -7,6 +7,7 @@
   register: running
 
 - shell: docker stop {{ item.key }}
+  ignore_errors: yes
   when: running.stdout.find("true") != -1
 
 - shell: docker rm -f {{ item.key }}

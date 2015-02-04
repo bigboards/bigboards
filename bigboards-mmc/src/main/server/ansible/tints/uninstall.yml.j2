@@ -1,8 +1,8 @@
-{% for (groupKey, groupValue) in stack.groups.iteritems() %}
-- hosts: {{ groupValue.runs_on }}
+{% for group in stack.groups %}
+- hosts: {{ group.runs_on }}
   sudo: yes
   roles:
-  {% for role in groupValue.containers %}
+  {% for role in group.containers %}
     - { role: {{ role }}, mode: 'uninstall' }
   {% endfor %}
 
