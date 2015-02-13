@@ -1,0 +1,38 @@
+---
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: load the modules we needed
+      lineinfile:
+        dest: '/etc/modules'
+        line: '{{ item }}'
+        regex: '^{{ item }}$'
+        state: 'present'
+      with_items:
+        - usbnet
+        - g_ether
+    - name: update the network interfaces
+      copy:
+        src: 'files/etc/network/interfaces'
+        dest: '/etc/network/interfaces'
+        owner: 'root'
+        group: 'root'
+        mode: 644
+    - name: update the dnsmasq configuration
+      copy:
+        src: 'files/etc/dnsmasq.conf'
+        dest: '/etc/dnsmasq.conf'
+        owner: 'root'
+        group: 'root'
+        mode: 644
+
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: make sure we use the correct ntp settings
+      copy:
+        src: 'files/{{ item }}'
+        dest: '/{{ item }}'
+      with_items:
+        - 'etc/default/ntp'
+        - 'etc/ntpd.conf'
