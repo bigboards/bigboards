@@ -2,6 +2,17 @@
 - hosts: host
   sudo: yes
   tasks:
+    - name: update the dnsmasq configuration
+      copy:
+        src: 'files/etc/dnsmasq.conf'
+        dest: '/etc/dnsmasq.conf'
+        owner: 'root'
+        group: 'root'
+        mode: 644
+
+- hosts: all
+  sudo: yes
+  tasks:
     - name: load the modules we needed
       lineinfile:
         dest: '/etc/modules'
@@ -18,17 +29,6 @@
         owner: 'root'
         group: 'root'
         mode: 644
-    - name: update the dnsmasq configuration
-      copy:
-        src: 'files/etc/dnsmasq.conf'
-        dest: '/etc/dnsmasq.conf'
-        owner: 'root'
-        group: 'root'
-        mode: 644
-
-- hosts: all
-  sudo: yes
-  tasks:
     - name: make sure we use the correct ntp settings
       copy:
         src: 'files/{{ item }}'
