@@ -13,8 +13,8 @@
 .library .item {
     position: relative;
     display: inline-block;
-    width: 400px;
-    height: 100px;
+    width: 420px;
+    height: 120px;
     margin-right: 20px;
     margin-bottom: 20px;
 }
@@ -22,32 +22,35 @@
 .library .item .logo {
     position: absolute;
     left: 0;
-    width: 100px;
+    width: 120px;
     top: 0;
     bottom: 0;
-
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
     background-color: white;
     padding: 10px;
+    text-align: center;
     border: solid 1px #dedede;
 }
 
 .library .item .logo img {
     margin-left: auto;
     margin-right: auto;
-    max-height: 80px;
-    max-width: 80px;
+    max-height: 100px;
+    max-width: 100px;
 }
 
 .library .item .caption {
     position: absolute;
-    left: 100px;
-    right: 50px;
+    left: 120px;
+    right: 0;
     top: 0;
     bottom: 0;
     border-top: solid 1px #dedede;
     border-bottom: solid 1px #dedede;
+    border-right: solid 1px #dedede;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
     padding: 10px;
     background-color: white;
 }
@@ -71,29 +74,48 @@
 .library .item .actions {
     position: absolute;
     right: 0;
-    width: 50px;
-    top: 0;
+    height: 50px;
+    width: 120px;
     bottom: 0;
 
+    display: none;
+
+    border-bottom: solid 1px #dedede;
+    border-right: solid 1px #dedede;
     border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
     background-color: white;
     padding: 5px;
-    border: solid 1px #dedede;
     text-align: center;
 }
 
+.library .item:hover .actions {
+    display: block;
+    width: 120px;
+}
+
 .library .item .actions .action {
+    display: inline-block;
     color: #515151;
-    margin-top: 10px;
+    width: 36px;
+    height: 36px;
+    margin-left: 5px;
+    padding-top: 4px;
+    border-radius: 20px;
+    border: solid 1px #515151;
+    font-size: large;
+    background-color: white;
 }
 
 .library .item .actions .action:hover {
     color: #008888;
+    /*color: white;*/
+    border-color: #008888;
 }
 
 .library .item .actions .action.danger:hover {
     color: #880000;
+    border-color: #880000;
+    /*color: white;*/
 }
 
 .card.stack .card-type { border-color: transparent rgb(32,124,229) transparent transparent; }

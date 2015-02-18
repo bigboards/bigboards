@@ -12,7 +12,8 @@ var app = angular.module( 'mmc', [
 ]);
 
 app.constant('settings', {
-    api: ''
+    //api: ''
+    api: 'http://10.40.2.247:7000'
 });
 
 app.config(['$routeProvider', function($routeProvider) {
