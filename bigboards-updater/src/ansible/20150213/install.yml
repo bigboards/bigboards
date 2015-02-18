@@ -10,14 +10,14 @@
         group: 'root'
         mode: 644
 
-- hosts: all
+- hosts: all:!localhost
   sudo: yes
   tasks:
     - name: load the modules we needed
       lineinfile:
         dest: '/etc/modules'
         line: '{{ item }}'
-        regex: '^{{ item }}$'
+        regexp: '^{{ item }}$'
         state: 'present'
       with_items:
         - usbnet
