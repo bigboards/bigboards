@@ -33,6 +33,14 @@
     border: solid 1px #dedede;
 }
 
+.library .item:hover .logo {
+    display: none;
+}
+
+.library .item:hover .actions {
+    display: none;
+}
+
 .library .item .logo img {
     margin-left: auto;
     margin-right: auto;
@@ -73,24 +81,24 @@
 
 .library .item .actions {
     position: absolute;
-    right: 0;
-    height: 50px;
+    left: 0;
     width: 120px;
+    top: 0;
     bottom: 0;
+    border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    background-color: white;
+    padding: 10px;
+    padding-top: 40px;
+    text-align: center;
+    border: solid 1px #dedede;
 
     display: none;
-
-    border-bottom: solid 1px #dedede;
-    border-right: solid 1px #dedede;
-    border-bottom-right-radius: 5px;
-    background-color: white;
-    padding: 5px;
-    text-align: center;
 }
 
 .library .item:hover .actions {
     display: block;
-    width: 120px;
+    /*width: 120px;*/
 }
 
 .library .item .actions .action {
