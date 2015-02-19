@@ -173,7 +173,7 @@ var AdHoc = function() {
     if (this.config.args || this.config.freeform) {
       var args = utils.formatArgs(this.config.args, this.config.freeform);
       arguments.push('-a');
-      arguments.push(jsesc.wrap(args, {
+      arguments.push(jsesc(args, {
         'quotes': 'single',
         'wrap': true
       }));
@@ -218,7 +218,7 @@ var Playbook = function () {
 
     if (this.config.variables) {
       arguments.push('--extra-vars');
-      arguments.push(jsesc.wrap(JSON.stringify(this.config.variables), {
+      arguments.push(jsesc(JSON.stringify(this.config.variables), {
         'quotes': 'single',
         'wrap': true
       }));
