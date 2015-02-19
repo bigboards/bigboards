@@ -1,6 +1,7 @@
 var Q = require('q'),
     winston = require('winston'),
     fs = require('fs');
+    jsesc = require('jsesc');
 
 var TaskUtils = require('../../../../utils/task-utils'),
     FsUtils = require('../../../../utils/fs-utils');
@@ -48,7 +49,10 @@ module.exports = function(configuration, services) {
                         console.log("Update the tint state to 'installing'");
                         scope.tintMeta = ft;
                         scope.tintMeta['state'] = 'partial';
-                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
+                        scope.tintMetaString = jsesc(JSON.stringify(scope.tintMeta), {
+                            'quotes': 'single',
+                            'wrap': true
+                        });
 
                         return scope;
                     })
@@ -68,16 +72,21 @@ module.exports = function(configuration, services) {
                         console.log("Running the stack post-install script using 'installed' as the outcome");
 
                         scope.tintMeta['state'] = 'installed';
-                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
+                        scope.tintMetaString = jsesc(JSON.stringify(scope.tintMeta), {
+                            'quotes': 'single',
+                            'wrap': true
+                        });
 
                         return TaskUtils.runPlaybook('tints/stack_post_install', scope);
-
                     })
                     .fail(function() {
                         console.log("Running the stack post-install script using 'partial' as the outcome");
 
                         scope.tintMeta['state'] = 'partial';
-                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
+                        scope.tintMetaString = jsesc(JSON.stringify(scope.tintMeta), {
+                            'quotes': 'single',
+                            'wrap': true
+                        });
 
                         return TaskUtils.runPlaybook('tints/stack_post_install', scope);
                     });
