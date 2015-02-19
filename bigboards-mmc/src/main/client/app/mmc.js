@@ -12,8 +12,8 @@ var app = angular.module( 'mmc', [
 ]);
 
 app.constant('settings', {
-    //api: ''
-    api: 'http://10.40.2.247:7000'
+    api: ''
+    //api: 'http://10.40.2.247:7000'
 });
 
 app.config(['$routeProvider', function($routeProvider) {
@@ -51,40 +51,6 @@ app.config(['$routeProvider', function($routeProvider) {
             controller: 'LibraryController'
         })
 
-
-        //.when('/shell', {
-        //    title: 'Shell',
-        //    templateUrl: 'app/shell/shell.html',
-        //    controller: 'ShellController'
-        //})
-        //
-        //.when('/tasks/:id/output', {
-        //    title: 'Tasks',
-        //    templateUrl: 'app/tasks/output.html',
-        //    controller: 'TaskOutputController'
-        //})
-        //.when('/tasks/:id', {
-        //    title: 'Tasks',
-        //    templateUrl: 'app/tasks/detail.html',
-        //    controller: 'TaskDetailController'
-        //})
-        //.when('/tasks/:id/invoke', {
-        //    title: 'Tasks',
-        //    templateUrl: 'app/tasks/invoke.html',
-        //    controller: 'TaskInvocationController'
-        //})
-        //
-        //.when('/update', {
-        //    title: 'Update',
-        //    templateUrl: 'app/update/update.html',
-        //    controller: 'UpdateController'
-        //})
-        //
-        //.when('/tints/:type/:id', {
-        //    title: 'Tint',
-        //    templateUrl: 'app/tints/detail.html',
-        //    controller: 'TintDetailController'
-        //})
 
         .otherwise({
             redirectTo: '/dashboard'
