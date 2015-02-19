@@ -34,13 +34,15 @@ AbstractAnsibleCommand.prototype = {
     var child = spawn(command.command, command.args, opt);
 
     // -- notify when stdout data comes in
+    child.stdout.setEncoding('utf8');
     child.stdout.on('data', function(data) {
-      deferred.notify({channel: 'output', data: data});
+      deferred.notify({channel: 'output', data: data.toString()});
     });
 
     // -- notify when stderr data comes in
+    child.stderr.setEncoding('utf8');
     child.stderr.on('data', function(data) {
-      deferred.notify({channel: 'error', data: data});
+      deferred.notify({channel: 'error', data: data.toString()});
     });
 
     // -- resolve the deferred when the close event is emitted on the child process.
