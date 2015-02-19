@@ -33,6 +33,8 @@ AbstractAnsibleCommand.prototype = {
 
     var child = spawn(command.command, command.args, opt);
 
+    console.log("Executing " + command.command + command.args.join(' '));
+
     // -- notify when stdout data comes in
     child.stdout.setEncoding('utf8');
     child.stdout.on('data', function(data) {
@@ -163,6 +165,7 @@ var AdHoc = function() {
   this.compile = function() {
     var arguments = [];
     arguments.push(this.config.hosts);
+    arguments = this.commonCompile(arguments);
     arguments.push('-m');
     arguments.push(this.config.module);
 
@@ -172,7 +175,7 @@ var AdHoc = function() {
       arguments.push(args);
     }
 
-    return {command: 'ansible', args: this.commonCompile(arguments)};
+    return {command: 'ansible', args: arguments};
   }
 
 }
@@ -207,14 +210,16 @@ var Playbook = function () {
   this.compile = function() {
     var playbook = this.config.playbook + ".yml";
     var arguments = [];
-    arguments.push(playbook);
+    arguments = this.commonCompile(arguments);
 
     if (this.config.variables) {
       arguments.push('--extra-vars');
       arguments.push("'" + JSON.stringify(this.config.variables) + "'");
     }
 
-    return {command: 'ansible-playbook', args: this.commonCompile(arguments)};
+    arguments.push(playbook);
+
+    return {command: 'ansible-playbook', args: arguments};
   }
 
 }
