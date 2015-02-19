@@ -81,37 +81,37 @@ AbstractAnsibleCommand.prototype = {
     return this;
   },
 
-  addParam: function(command, param, flag) {
+  addParam: function(args, param, flag) {
     if (this.config[param]) {
-      command.args.push('-' + flag);
-      command.args.push(this.config[param]);
+      args.push('-' + flag);
+      args.push(this.config[param]);
     }
-    return command;
+    return args;
   },
 
-  addVerbose: function(command) {
+  addVerbose: function(args) {
     if (this.config.verbose) {
-      command.args.push('-' + this.config.verbose);
+      args.push('-' + this.config.verbose);
     }
-    return command;
+    return args;
   },
 
-  addSudo: function(command) {
+  addSudo: function(args) {
     if (this.config.sudo) {
-      command.args.push('-s');
+      args.push('-s');
     }
-    return command;
+    return args;
   },
 
-  commonCompile: function(command) {
-    command = this.addParam(command, "forks", "f");
-    command = this.addParam(command, "user", "u");
-    command = this.addParam(command, "inventory", "i");
-    command = this.addParam(command, "su", "U");
-    command = this.addVerbose(command);
-    command = this.addSudo(command);
+  commonCompile: function(args) {
+    args = this.addParam(args, "forks", "f");
+    args = this.addParam(args, "user", "u");
+    args = this.addParam(args, "inventory", "i");
+    args = this.addParam(args, "su", "U");
+    args = this.addVerbose(args);
+    args = this.addSudo(args);
 
-    return command;
+    return args;
   }
 
 }
