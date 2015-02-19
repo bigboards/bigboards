@@ -50,7 +50,7 @@ module.exports = function(configuration, services) {
                         scope.tintMeta = ft;
                         scope.tintMeta['state'] = 'partial';
                         scope.tintMetaString = jsesc(JSON.stringify(scope.tintMeta), {
-                            'quotes': 'single',
+                            'quotes': 'double',
                             'wrap': true
                         });
 
@@ -73,7 +73,7 @@ module.exports = function(configuration, services) {
 
                         scope.tintMeta['state'] = 'installed';
                         scope.tintMetaString = jsesc(JSON.stringify(scope.tintMeta), {
-                            'quotes': 'single',
+                            'quotes': 'double',
                             'wrap': true
                         });
 
@@ -84,7 +84,7 @@ module.exports = function(configuration, services) {
 
                         scope.tintMeta['state'] = 'partial';
                         scope.tintMetaString = jsesc(JSON.stringify(scope.tintMeta), {
-                            'quotes': 'single',
+                            'quotes': 'double',
                             'wrap': true
                         });
 
