@@ -5,9 +5,7 @@ var inherits = require('util').inherits;
 var utils = require('./utils');
 var Q = require('q');
 
-var spawn = require('child_process').spawn;
-
-var AbstractAnsibleCommand = function() {};
+var AbstractAnsibleCommand = function() {}
 
 AbstractAnsibleCommand.prototype = {
 
@@ -23,32 +21,30 @@ AbstractAnsibleCommand.prototype = {
       return deferred.promise;
     }
 
-    var opt = {};
-
+    var currentWorkingDir = null;
     if (options && options.cwd) {
-      opt.cwd = options.cwd;
+      currentWorkingDir = shelljs.pwd();
+      shelljs.cd(options.cwd);
     }
 
-    var command = this.compile();
-
-    var child = spawn(command.command, command.args, opt);
-
-    console.log("Executing " + command.command + command.args.join(' '));
+    var child = shelljs.exec(this.compile(), { async: true });
 
     // -- notify when stdout data comes in
-    child.stdout.setEncoding('utf8');
     child.stdout.on('data', function(data) {
-      deferred.notify({channel: 'output', data: data.toString()});
+      deferred.notify({channel: 'output', data: data});
     });
 
     // -- notify when stderr data comes in
-    child.stderr.setEncoding('utf8');
     child.stderr.on('data', function(data) {
-      deferred.notify({channel: 'error', data: data.toString()});
+      deferred.notify({channel: 'error', data: data});
     });
 
     // -- resolve the deferred when the close event is emitted on the child process.
     child.on('close', function(code) {
+      if (currentWorkingDir) {
+        shelljs.cd(currentWorkingDir);
+      }
+
       deferred.resolve({code: code});
     });
 
@@ -85,37 +81,36 @@ AbstractAnsibleCommand.prototype = {
     return this;
   },
 
-  addParam: function(args, param, flag) {
+  addParam: function(command, param, flag) {
     if (this.config[param]) {
-      args.push('-' + flag);
-      args.push(this.config[param]);
+      command = command + " -" + flag + " " + this.config[param];
     }
-    return args;
+    return command;
   },
 
-  addVerbose: function(args) {
+  addVerbose: function(command) {
     if (this.config.verbose) {
-      args.push('-' + this.config.verbose);
+      command = command + " -" + this.config.verbose
     }
-    return args;
+    return command;
   },
 
-  addSudo: function(args) {
+  addSudo: function(command) {
     if (this.config.sudo) {
-      args.push('-s');
+      command = command + " -s";
     }
-    return args;
+    return command;
   },
 
-  commonCompile: function(args) {
-    args = this.addParam(args, "forks", "f");
-    args = this.addParam(args, "user", "u");
-    args = this.addParam(args, "inventory", "i");
-    args = this.addParam(args, "su", "U");
-    args = this.addVerbose(args);
-    args = this.addSudo(args);
+  commonCompile: function(command) {
+    command = this.addParam(command, "forks", "f");
+    command = this.addParam(command, "user", "u");
+    command = this.addParam(command, "inventory", "i");
+    command = this.addParam(command, "su", "U");
+    command = this.addVerbose(command);
+    command = this.addSudo(command);
 
-    return args;
+    return command;
   }
 
 }
@@ -163,19 +158,16 @@ var AdHoc = function() {
   }
 
   this.compile = function() {
-    var arguments = [];
-    arguments.push(this.config.hosts);
-    arguments = this.commonCompile(arguments);
-    arguments.push('-m');
-    arguments.push(this.config.module);
+    var command = format("ansible %s -m %s", this.config.hosts, this.config.module);
 
     if (this.config.args || this.config.freeform) {
       var args = utils.formatArgs(this.config.args, this.config.freeform);
-      arguments.push('-a');
-      arguments.push(args);
+      command = command + " -a " + args;
     }
 
-    return {command: 'ansible', args: arguments};
+    command = this.commonCompile(command);
+
+    return command;
   }
 
 }
@@ -209,17 +201,15 @@ var Playbook = function () {
 
   this.compile = function() {
     var playbook = this.config.playbook + ".yml";
-    var arguments = [];
-    arguments = this.commonCompile(arguments);
+    var command = format("ansible-playbook %s", playbook);
 
     if (this.config.variables) {
-      arguments.push('--extra-vars');
-      arguments.push("'" + JSON.stringify(this.config.variables) + "'");
+      command += " --extra-vars '" + JSON.stringify(this.config.variables) + "'";
     }
 
-    arguments.push(playbook);
+    command = this.commonCompile(command);
 
-    return {command: 'ansible-playbook', args: arguments};
+    return command
   }
 
 }
