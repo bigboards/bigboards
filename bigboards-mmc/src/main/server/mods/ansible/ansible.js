@@ -4,6 +4,7 @@ var format = require('util').format;
 var inherits = require('util').inherits;
 var utils = require('./utils');
 var Q = require('q');
+var jsesc = require('jsesc');
 
 var spawn = require('child_process').spawn;
 
@@ -33,7 +34,7 @@ AbstractAnsibleCommand.prototype = {
 
     var child = spawn(command.command, command.args, opt);
 
-    console.log("Executing " + command.command + command.args.join(' '));
+    console.log("Executing " + command.command + " " + command.args.join(' '));
 
     // -- notify when stdout data comes in
     child.stdout.setEncoding('utf8');
@@ -172,7 +173,10 @@ var AdHoc = function() {
     if (this.config.args || this.config.freeform) {
       var args = utils.formatArgs(this.config.args, this.config.freeform);
       arguments.push('-a');
-      arguments.push(args);
+      arguments.push(jsesc.wrap(args, {
+        'quotes': 'single',
+        'wrap': true
+      }));
     }
 
     return {command: 'ansible', args: arguments};
@@ -214,7 +218,10 @@ var Playbook = function () {
 
     if (this.config.variables) {
       arguments.push('--extra-vars');
-      arguments.push("'" + JSON.stringify(this.config.variables) + "'");
+      arguments.push(jsesc.wrap(JSON.stringify(this.config.variables), {
+        'quotes': 'single',
+        'wrap': true
+      }));
     }
 
     arguments.push(playbook);
