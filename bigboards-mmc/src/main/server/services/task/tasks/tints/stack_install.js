@@ -49,10 +49,7 @@ module.exports = function(configuration, services) {
                         console.log("Update the tint state to 'installing'");
                         scope.tintMeta = ft;
                         scope.tintMeta['state'] = 'partial';
-                        scope.tintMetaString = jsesc(JSON.stringify(scope.tintMeta), {
-                            'quotes': 'double',
-                            'wrap': true
-                        });
+                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
 
                         return scope;
                     })
@@ -72,10 +69,7 @@ module.exports = function(configuration, services) {
                         console.log("Running the stack post-install script using 'installed' as the outcome");
 
                         scope.tintMeta['state'] = 'installed';
-                        scope.tintMetaString = jsesc(JSON.stringify(scope.tintMeta), {
-                            'quotes': 'double',
-                            'wrap': true
-                        });
+                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
 
                         return TaskUtils.runPlaybook('tints/stack_post_install', scope);
                     })
@@ -83,10 +77,7 @@ module.exports = function(configuration, services) {
                         console.log("Running the stack post-install script using 'partial' as the outcome");
 
                         scope.tintMeta['state'] = 'partial';
-                        scope.tintMetaString = jsesc(JSON.stringify(scope.tintMeta), {
-                            'quotes': 'double',
-                            'wrap': true
-                        });
+                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
 
                         return TaskUtils.runPlaybook('tints/stack_post_install', scope);
                     });
