@@ -1,5 +1,9 @@
 var _ = require('underscore');
 
+module.exports.escapeExtraVar = function(arg) {
+  return arg.replace(/\\/g, '\\');
+};
+
 module.exports.formatArgs = function(args, freeform) {
   var formattedArgs = [];
 

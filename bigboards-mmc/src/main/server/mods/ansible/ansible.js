@@ -33,7 +33,6 @@ AbstractAnsibleCommand.prototype = {
     var command = this.compile();
 
     var child = spawn(command.command, command.args, opt);
-
     console.log("Executing " + command.command + " " + command.args.join(' '));
 
     // -- notify when stdout data comes in
@@ -218,7 +217,7 @@ var Playbook = function () {
 
     if (this.config.variables) {
       arguments.push('--extra-vars');
-      arguments.push("'" + JSON.stringify(this.config.variables) + "'");
+      arguments.push("'" + utils.escapeExtraVar(JSON.stringify(this.config.variables)) + "'");
     }
 
     arguments.push(playbook);
