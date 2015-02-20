@@ -218,10 +218,7 @@ var Playbook = function () {
 
     if (this.config.variables) {
       arguments.push('--extra-vars');
-      arguments.push(jsesc(JSON.stringify(this.config.variables), {
-        'quotes': 'single',
-        'wrap': true
-      }));
+      arguments.push("'" + JSON.stringify(this.config.variables) + "'");
     }
 
     arguments.push(playbook);
