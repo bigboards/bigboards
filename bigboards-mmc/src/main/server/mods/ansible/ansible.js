@@ -216,8 +216,8 @@ var Playbook = function () {
     arguments = this.commonCompile(arguments);
 
     if (this.config.variables) {
-      arguments.push('--extra-vars');
-      arguments.push("'" + utils.escapeExtraVar(JSON.stringify(this.config.variables)) + "'");
+      arguments.push('-e');
+      arguments.push(JSON.stringify(this.config.variables));
     }
 
     arguments.push(playbook);
