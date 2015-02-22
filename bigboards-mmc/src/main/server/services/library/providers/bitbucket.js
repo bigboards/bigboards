@@ -1,4 +1,4 @@
-var rest = require('./restler');
+var rest = require('restler');
 
 module.exports.getDescriptor = function(url) {
     var defer = Q.defer();

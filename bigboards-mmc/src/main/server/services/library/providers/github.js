@@ -1,4 +1,4 @@
-var rest = require('./restler'),
+var rest = require('restler'),
     URL = require('url');
 
 module.exports.getDescriptor = function(url) {
