@@ -103,7 +103,7 @@ HexResource.prototype.getStack = function(req, res) {
  */
 HexResource.prototype.installStack = function(req, res) {
     var tint = req.body.tint;
-    if (! ApiUtils.isTintWithUri(tint)) return res.send(400, 'No valid tint has been passed!');
+    if (! ApiUtils.isTint(tint)) return res.send(400, 'No valid tint has been passed!');
 
     return ApiUtils.handlePromise(res, this.hexService.installTint(tint));
 };

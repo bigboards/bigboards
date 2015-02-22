@@ -1,7 +1,7 @@
 var Q = require('q'),
     winston = require('winston'),
-    fs = require('fs');
-    jsesc = require('jsesc');
+    fs = require('fs'),
+    Providers = require('../../../library/providers');
 
 var TaskUtils = require('../../../../utils/task-utils'),
     FsUtils = require('../../../../utils/fs-utils');
@@ -14,18 +14,8 @@ module.exports = function(configuration, services) {
         parameters: [
             {
                 key: 'tint',
-                description: 'The unique id of the tint',
+                description: 'the tint descriptor',
                 required: true
-            },
-            {
-                key: 'username',
-                description: 'The username which has access to the tint',
-                required: false
-            },
-            {
-                key: 'password',
-                description: 'The password of the user having access to the tint',
-                required: false
             },
             {
                 key: 'verbose',
@@ -34,17 +24,13 @@ module.exports = function(configuration, services) {
             }
         ],
         execute: function(scope) {
-            // -- replace the username and password in the tint uri
-            scope.tint.uri = scope.tint.uri.replace(/%username%/g, scope.username);
-            scope.tint.uri = scope.tint.uri.replace(/%password%/g, scope.password);
-
             return services.hex.get().then(function(hex) {
                 scope.hex = hex;
 
-                var tintPath = '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id;
+                var tintPath = '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner.username + '/' + scope.tint.id;
                 scope.tint.path = tintPath;
 
-                return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.id)
+                return services.library.getTint(scope.tint.type, scope.tint.owner.username, scope.tint.id)
                     .then(function(ft) {
                         console.log("Update the tint state to 'installing'");
                         scope.tintMeta = ft;

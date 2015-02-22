@@ -5,12 +5,10 @@ var Q = require('q'),
     request = require('request'),
     fs = require('fs'),
     fsu = require('../../utils/fs-utils'),
-    BitBucket = require('bitbucket-rest');
+    Providers = require('./providers');
 
 function LibraryService(settings) {
     this.settings = settings;
-
-    this.bitbucket = BitBucket.connectClient({ username: 'bbio', password: 'vdH0kQbwa1f6'});
 
     this.libraryCache = this.populateCache();
 }
@@ -92,38 +90,33 @@ LibraryService.prototype.listTintsForOwner = function(type, owner) {
     return Q(this.libraryCache[type][owner]);
 };
 
-LibraryService.prototype.getTint = function(type, owner, tintId) {
+LibraryService.prototype.getTint = function(type, owner, slug) {
     if (! this.libraryCache.hasOwnProperty(type)) return Q.fail();
     if (! this.libraryCache[type].hasOwnProperty(owner)) return Q.fail();
-    if (! this.libraryCache[type][owner].hasOwnProperty(tintId)) return Q.fail();
+    if (! this.libraryCache[type][owner].hasOwnProperty(slug)) return Q.fail();
 
-    return Q(this.libraryCache[type][owner][tintId]);
+    return Q(this.libraryCache[type][owner][slug]);
 };
 
-LibraryService.prototype.createTint = function(type, owner, tintId) {
+LibraryService.prototype.addTint = function(url) {
     var defer = Q.defer();
     var self = this;
 
-    this.bitbucket.getRepoDetails({repo_slug: tintId, owner: owner}, function (res) {
-        if (res.status != 200) return defer.reject(res.data.error.message);
-        var repository = res.data;
+    var provider = Providers.lookup(url);
 
-        if (! self.libraryCache.hasOwnProperty(type))
-            self.libraryCache[type] = { };
+    provider.getDescriptor(url).then(function (descriptor) {
+        if (! self.libraryCache.hasOwnProperty(descriptor.type)) self.libraryCache[descriptor.type] = { };
+        if (! self.libraryCache[descriptor.type].hasOwnProperty(descriptor.owner.username)) self.libraryCache[descriptor.type][descriptor.owner.username] = { };
 
-        if (! self.libraryCache[type].hasOwnProperty(owner))
-            self.libraryCache[type][owner] = { };
-
-        var descriptionSplits = repository.description.split('\r\n', 2);
-
-        self.libraryCache[type][owner][tintId] = {
-            owner: {username: repository.owner.username, displayName: repository.owner.display_name},
-            tint_id: repository.name,
-            is_private: repository.is_private,
-            logo: repository.links.avatar.href,
-            name: (descriptionSplits.length > 0) ? descriptionSplits[0] : null,
-            description: (descriptionSplits.length > 1) ? descriptionSplits[1] : null,
-            type: 'stack'
+        self.libraryCache[descriptor.type][descriptor.owner.username][descriptor.id] = {
+            owner: descriptor.owner,
+            id: descriptor.id,
+            is_private: false,
+            name: descriptor.name,
+            description: descriptor.description,
+            type: descriptor.type,
+            logo: descriptor.logo,
+            uri: url
         };
 
         // -- store the cache to disk
@@ -133,8 +126,8 @@ LibraryService.prototype.createTint = function(type, owner, tintId) {
     return defer.promise;
 };
 
-LibraryService.prototype.removeTint = function(type, owner, tintId) {
-    delete this.libraryCache[type][owner][tintId];
+LibraryService.prototype.removeTint = function(type, owner, slug) {
+    delete this.libraryCache[type][owner][slug];
 
     // -- store the cache to disk
     return this.persistCache();
