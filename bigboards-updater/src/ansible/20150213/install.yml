@@ -23,8 +23,8 @@
         - usbnet
         - g_ether
     - name: update the network interfaces
-      copy:
-        src: 'files/etc/network/interfaces'
+      template:
+        src: 'templates/etc/network/interfaces'
         dest: '/etc/network/interfaces'
         owner: 'root'
         group: 'root'
