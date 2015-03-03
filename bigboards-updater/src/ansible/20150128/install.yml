@@ -50,8 +50,6 @@
         dest: '/{{ item }}'
       with_items:
         - 'etc/network/interfaces'
-        - 'etc/init.d/networking'
-        - 'etc/init/networking.conf'
         - 'etc/dhcp/dhclient.conf'
       notify: Restart Network
 

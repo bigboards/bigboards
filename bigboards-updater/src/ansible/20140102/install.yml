@@ -26,6 +26,29 @@
         state: 'absent'
 
 ## ####################################################################################################################
+## NETWORK
+## ####################################################################################################################
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: be sure the interfaces are configured correctly
+      template:
+        src: 'templates/{{ item }}'
+        dest: '/{{ item }}'
+      with_items:
+        - 'etc/network/interfaces'
+        - 'etc/init.d/networking'
+        - 'etc/init/networking.conf'
+        - 'etc/dhcp/dhclient.conf'
+      notify: Restart Network
+
+  handlers:
+    - name: Restart Network
+      service:
+        name: 'networking'
+        state: 'restarted'
+
+## ####################################################################################################################
 ## ANSIBLE
 ## ####################################################################################################################
 - hosts: host-coordinators
