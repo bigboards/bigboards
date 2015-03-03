@@ -20,71 +20,10 @@
         - /opt/bb/tints.d/dataset/
         - /opt/bb/tints.d/tutor/
 
-## ####################################################################################################################
-## NETWORK
-## ####################################################################################################################
-- hosts: host
-  sudo: yes
-  tasks:
-    - name: be sure the interfaces are configured correctly
-      template:
-        src: 'templates/{{ item }}'
-        dest: '/{{ item }}'
-      with_items:
-        - 'etc/network/interfaces'
-        - 'etc/init.d/networking'
-        - 'etc/init/networking.conf'
-        - 'etc/dhcp/dhclient.conf'
-      notify: Restart Network
-
-  handlers:
-    - name: Restart Network
-      service:
-        name: 'networking'
-        state: 'restarted'
-
-## ####################################################################################################################
-## NTP
-## ####################################################################################################################
-- hosts: host
-  sudo: yes
-  tasks:
-    - name: make sure the ntp daemon is installed
-      apt:
-        name: 'ntp'
-        state: 'latest'
-
-    - name: make sure the ntpd.conf file is up to date
-      template:
-        src: 'templates/etc/ntpd.conf'
-        dest: '/etc/ntpd.conf'
-
-  handlers:
-    - name: Restart NTPD
-      service:
-        name: 'ntp'
-        state: 'restarted'
-
-## ####################################################################################################################
-## HDD
-## ####################################################################################################################
-- hosts: host
-  sudo: yes
-  tasks:
-    - name: be sure the harddisk is initialized
-      shell: creates=/dev/sda1 parted /dev/sda mklabel msdos mkpart primary 0% 100%
-
-    - name: be sure the harddrive filesystem has been created
-      shell: creates=/root/.sda1.initialized mkfs.ext4 /dev/sda1 && touch /root/.sda1.initialized
-
-    - name: be sure the data mountpoint exists
-      file: state=directory path=/data owner=bb group=bigboards
-
-    - name: be sure the correct FSTAB file is installed
-      template: src=templates/etc/fstab dest=/etc/fstab
-
-    - name: be sure the data directory is mounted
-      shell: creates=/data/lost+found mount /data
+    - name: be sure the ansible hex facts are writable by the mmc
+      file:
+        path: '/etc/ansible/facts.d/hex.fact'
+        state: 'absent'
 
 ## ####################################################################################################################
 ## ANSIBLE
