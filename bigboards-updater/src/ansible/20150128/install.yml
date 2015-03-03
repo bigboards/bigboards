@@ -134,7 +134,7 @@
     - name: make sure butterfly is started
       supervisorctl:
         name: "butterfly"
-        state: "started"
+        state: "restarted"
 
   handlers:
     - name: Restart Butterfly
