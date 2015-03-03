@@ -99,6 +99,7 @@
       with_items:
         - libffi-dev
         - supervisor
+        - python-dev
 
     - name: make sure supervisor is started and will start at boot
       service:
