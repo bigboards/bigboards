@@ -146,6 +146,7 @@
 
     - name: make sure the old supervisor log directory has the right attributes
       file:
+        path: "/var/log/supervisor"
         state: "directory"
         owner: "bb"
         group: "bigboards"
