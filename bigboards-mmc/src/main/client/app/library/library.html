@@ -3,9 +3,8 @@
         <span class="fa fa-refresh"></span>
         <span>refresh</span>
     </div>
-    <div class="action" ng-click="addStack()" >
-        <span class="fa fa-bitbucket"></span>
-        <span>add stack</span>
+    <div class="action" ng-click="addItem()" >
+        <span class="fa fa-2x fa-plus"></span>
     </div>
 </bb-header>
 
@@ -34,35 +33,24 @@
         </div>
 
         <div class="row ml-15 mr-15 mb-15">
-            <h3 class="mb-15">Available Tints</h3>
-            <div class="owner" ng-repeat="(owner, stacks) in library.stacks">
-                <div ng-if="!isStackInstalled(stack)" class="item" ng-repeat="(tintId, stack) in stacks">
-                    <div class="logo">
-                        <img ng-src="{{ stack.logo }}" alt="{{ stack.tint_id }}">
-                    </div>
-                    <div class="caption">
-                        <h3>{{ stack.name }}</h3>
-                        <span class="subtitle">{{ stack.owner.display_name }}</span>
-                        <p>{{ stack.description }}</p>
-                    </div>
-                    <div class="actions" >
-                        <div class="action" ng-if="isStackInstalled(stack)" ng-click="reinstallStack(stack)" role="button">
-                            <span class="fa fa-retweet"></span>
-                        </div>
-                        <div class="action" ng-if="isStackInstalled(stack)" ng-click="uninstallStack(stack)" role="button">
-                            <span class="fa fa-times-circle"></span>
-                        </div>
-
-                        <div class="action" ng-if="!isStackInstalled(stack)" ng-click="installStack(stack)" role="button">
-                            <span class="fa fa-download"></span>
-                        </div>
-                        <div class="action danger" ng-if="!isStackInstalled(stack)" ng-click="removeStack(owner, tintId)" role="button">
-                            <span class="fa fa-trash-o"></span>
-                        </div>
-                    </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <h3>Stacks</h3>
+                </div>
+                <div class="row">
+                    <tint-card type="stack" format="tiny" tint="tint" ng-repeat="(tintId, tint) in library.stacks"></tint-card>
                 </div>
             </div>
         </div>
-
+        <div class="row ml-15 mr-15 mb-15">
+            <div class="col-md-12">
+                <div class="row">
+                    <h3>Tutors</h3>
+                </div>
+                <div class="row">
+                    <tint-card type="tutor" format="tiny" tint="tint" ng-repeat="(tintId, tint) in library.tutors"></tint-card>
+                </div>
+            </div>
+        </div>
     </div>
 </bb-content>

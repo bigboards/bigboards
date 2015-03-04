@@ -7,13 +7,14 @@ var express = require('express'),
     http = require('http'),
     os = require('os'),
     path = require('path'),
-    serverConfig = require('./config'),
     Container = require('./container'),
     Services = require('./services'),
     winston = require('winston'),
     Serfer = require('serfer/src/'),
     Q = require('q'),
     Templater = require('./utils/templater');
+
+serverConfig = require('./config').lookupEnvironment();
 
 var serfer = new Serfer();
 serfer.connect().then(function() {
@@ -23,7 +24,7 @@ serfer.connect().then(function() {
     // -- get the runtime environment
     serverConfig.environment = app.get('env');
 
-    var configuration = new Container.Configuration(serverConfig.hex.file);
+    var configuration = new Container.Configuration(serverConfig.dir.facts + 'bb.fact');
 
     var services = initializeServices(serverConfig, configuration, serfer, app);
     services.task.registerDefaultTasks(configuration, services);
@@ -72,7 +73,7 @@ function initializeExpress() {
     app.use(app.router);
 
     // development only
-    if (serverConfig.isDevelopment()) {
+    if (serverConfig.is_dev) {
         app.use(express.logger('dev'));
         app.use(express.errorHandler());
     }

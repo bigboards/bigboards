@@ -32,7 +32,7 @@
         - bigboards-updater
 
     - name: make sure the bigboards repository is set to the new version
-      lineinfile: dest=/etc/apt/sources.list regexp="^deb http\://apt\.bigboards\.io" line="deb http://apt.bigboards.io/repo {{ version }} main" backrefs=yes
+      lineinfile: dest=/etc/apt/sources.list regexp="^deb http\://apt\.bigboards\.io" line="deb http://apt.bigboards.io {{ version }} main" backrefs=yes
 
     - name: make sure the apt repository cache is being refreshed
       shell: apt-get update

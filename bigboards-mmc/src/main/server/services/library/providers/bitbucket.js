@@ -1,4 +1,7 @@
-var rest = require('restler');
+var rest = require('restler'),
+    URL = require('url'),
+    Q = require('q'),
+    yaml = require('js-yaml');
 
 module.exports.getDescriptor = function(url) {
     var defer = Q.defer();
@@ -11,7 +14,11 @@ module.exports.getDescriptor = function(url) {
                 if (result instanceof Error) {
                     defer.reject(result);
                 } else {
-                    defer.resolve(result);
+                    try {
+                        defer.resolve(yaml.safeLoad(result));
+                    } catch (error) {
+                        defer.reject(error);
+                    }
                 }
             })
             .on('error', function(error) {
@@ -30,7 +37,7 @@ function getOwnerAndSlug(urlString) {
     var parts = url.pathname.split('/');
 
     return {
-        owner: parts[0],
-        slug: parts[1]
+        owner: parts[1],
+        slug: parts[2]
     };
 }

@@ -61,7 +61,7 @@ module.exports.registerDelete = function(app, path, fn) {
 
 module.exports.isTint = function(obj) {
     if (! obj) return false;
-    if (! obj.id) return false;
+    if (! obj.slug) return false;
     if (! obj.owner) return false;
     if (! obj.type) return false;
 

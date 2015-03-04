@@ -44,14 +44,16 @@ function HexService(settings, configuration, templater, services, serf) {
         });
     });
 
-    mkdirp.sync(this.settings.tints.rootDirectory + '/stack');
-    mkdirp.sync(this.settings.tints.rootDirectory + '/dataset');
-    mkdirp.sync(this.settings.tints.rootDirectory + '/tutor');
+    mkdirp.sync(this.settings.dir.tints + '/stack');
+    mkdirp.sync(this.settings.dir.tints + '/dataset');
+    mkdirp.sync(this.settings.dir.tints + '/tutor');
 }
 
 HexService.prototype.get = function() {
     return this.configuration.get().then(function(data) {
-        return {
+        if (!data) {
+            return { id: 'unknown', name: 'unknown' }
+        } else return {
             id: data.hex.id,
             name: data.hex.name
         };
@@ -98,15 +100,15 @@ HexService.prototype.listTints = function(type) {
     var self = this;
 
     return fsu
-        .readDir(this.settings.tints.rootDirectory + '/' + type)
+        .readDir(this.settings.dir.tints + '/' + type)
         .then(function(owners) {
             var promises = [];
 
             for (var o in owners) {
-                var files = fs.readdirSync(self.settings.tints.rootDirectory + '/' + type + '/' + owners[o]);
+                var files = fs.readdirSync(self.settings.dir.tints + '/' + type + '/' + owners[o]);
 
                 for (var i in files) {
-                    promises.push(parseManifest(self, self.templater, self.settings.tints.rootDirectory, type, owners[o], files[i]));
+                    promises.push(parseManifest(self, self.templater, self.settings.dir.tints, type, owners[o], files[i]));
                 }
             }
 
@@ -125,7 +127,7 @@ HexService.prototype.listTints = function(type) {
 };
 
 HexService.prototype.getTint = function(type, owner, tint) {
-    return parseManifest(this, this.templater, this.settings.tints.rootDirectory, type, owner, tint);
+    return parseManifest(this, this.templater, this.settings.dir.tints, type, owner, tint);
 };
 
 HexService.prototype.removeTint = function(tint) {

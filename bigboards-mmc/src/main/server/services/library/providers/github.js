@@ -1,5 +1,7 @@
 var rest = require('restler'),
-    URL = require('url');
+    URL = require('url'),
+    Q = require('q'),
+    yaml = require('js-yaml');
 
 module.exports.getDescriptor = function(url) {
     var defer = Q.defer();
@@ -12,7 +14,11 @@ module.exports.getDescriptor = function(url) {
                 if (result instanceof Error) {
                     defer.reject(result);
                 } else {
-                    defer.resolve(result);
+                    try {
+                        defer.resolve(yaml.safeLoad(result));
+                    } catch (error) {
+                        defer.reject(error);
+                    }
                 }
             })
             .on('error', function(error) {

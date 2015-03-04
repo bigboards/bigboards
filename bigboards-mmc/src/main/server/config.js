@@ -1,50 +1,46 @@
 var os = require('os');
 
 module.exports = {
-    environment: "development",
-
-    port: process.env.PORT || 7000,
-    host: os.hostname(),
-    address: getExternalIp(),
-
-    metrics: {
-        cache: {
-            size: 30,
-            interval: 5000
+    lookupEnvironment: function() {
+        if (os.platform() === 'linux') {
+            return this.environments.production;
+        } else {
+            return this.environments.development;
         }
     },
-
-    activities: {
-        cache: {
-            size: 30
+    environments: {
+        development: {
+            is_dev: true,
+            is_prod: false,
+            port: process.env.PORT || 7000,
+            host: os.hostname(),
+            dir: {
+                root: '/opt/bb',
+                tints: 'src/test/tints.d',
+                tasks: '/var/log/bigboards/tasks',
+                patches: '/opt/bb/runtimes/bigboards-updater/patches',
+                facts: 'src/test/'
+            },
+            url: {
+                library: 'http://library.bigboards.io'
+            }
+        },
+        production: {
+            is_dev: false,
+            is_prod: true,
+            port: process.env.PORT || 7000,
+            host: os.hostname(),
+            dir: {
+                root: '/opt/bb',
+                tints: '/opt/bb/tints.d',
+                tasks: '/var/log/bigboards/tasks',
+                patches: '/opt/bb/runtimes/bigboards-updater/patches',
+                facts: '/etc/ansible/facts.d/'
+            },
+            url: {
+                library: 'http://library.bigboards.io'
+            }
         }
-    },
-
-    dir: {
-        tasks: '/var/log/bigboards/tasks'
-    },
-
-    hex: {
-        file: '/etc/ansible/facts.d/bb.fact',
-        rootDirectory: '/opt/bb'
-    },
-
-    tints: {
-        rootDirectory: "/opt/bb/tints.d"
-    },
-
-    firmware: {
-        patchesDirectory: "/opt/bb/runtimes/bigboards-updater",
-        versionsFile: "/opt/bb/.versions"
-    },
-
-    library: {
-        url: "http://library.bigboards.io",
-        cacheFile: "/opt/bb/tints.d/library_cache.json"
-    },
-
-    isDevelopment: function () {
-        return 'development' == this.environment;
     }
 };
 

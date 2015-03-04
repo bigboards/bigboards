@@ -1,5 +1,6 @@
 var spawn = require('child_process').spawn,
-    Q = require('q');
+    Q = require('q'),
+    yaml = require('js-yaml');
 
 // -- git archive --remote=git://git.foo.com/project.git HEAD:path/to/directory filename | tar -x
 
@@ -27,7 +28,13 @@ module.exports.getDescriptor = function(url) {
 
     unpackArchive.on('close', function(code) {
         if (code != 0) return defer.reject("process ended with code " + code);
-        else defer.resolve(buffer);
+        else {
+            try {
+                defer.resolve(yaml.safeLoad(result));
+            } catch (error) {
+                defer.reject(error);
+            }
+        }
     });
 
     return defer.promise;

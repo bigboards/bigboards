@@ -26,6 +26,15 @@ app.service('Stacks', function(settings, $resource) {
     });
 });
 
+app.service('Tutors', function(settings, $resource) {
+    return $resource(settings.api + '/api/v1/hex/tutors/:owner/:id', {id: '@id', owner: '@owner'}, {
+        'list': { method: 'GET', isArray: true},
+        'get': { method: 'GET', isArray: false},
+        'install': { method: 'POST' },
+        'uninstall': { method: 'DELETE' }
+    });
+});
+
 app.service('Tasks', function(settings, $resource) {
     return $resource(settings.api + '/api/v1/tasks/:code', {code: '@code'}, {
         'list': { method: 'GET', isArray: false},
@@ -78,8 +87,6 @@ app.service('TaskManager', function(settings, socket, $resource, Tasks, TaskAtte
     return new TaskManager(socket);
 });
 
-
-
 app.service ('Identity', function($resource) {
     return $resource('/api/v1/identity');
 });
@@ -97,7 +104,7 @@ app.service('Patches', function($resource) {
 });
 
 app.service('Tints', function($resource) {
-    return $resource('/api/v1/tints/:type/:id', {id: '@id', type: '@type'}, {
+    return $resource('/api/v1/hex/tints/:type/:owner/:slug', {slug: '@slug', owner: '@owner', type: '@type'}, {
         'install': { method: 'PUT', isArray: false},
         'uninstall': { method: 'POST', isArray: true},
         'update': { method: 'POST', isArray: true}
@@ -178,6 +185,47 @@ app.service('Tint', function($resource, $rootScope, Tints) {
 
     return new service;
 });
+
+app.factory('Rest', ['$http', 'settings', function($http, settings) {
+    var rest = function(baseUrl) {
+        this.url = baseUrl | '/';
+    };
+
+    rest.prototype.query = function(param, value) {
+        if (this.url.indexOf('?') == -1) this.url += '?';
+        else this.url += '&';
+
+        this.url += (param + '=' + value);
+
+        return this;
+    };
+
+    rest.prototype.entity = function(entity, id) {
+        this.url += entity;
+
+        if (id) this.url += ('/' + id);
+
+        return this;
+    };
+
+    rest.prototype.get = function() {
+        return $http.get(this.url);
+    };
+
+    rest.prototype.post = function(data) {
+        return $http.post(this.url, data);
+    };
+
+    rest.prototype.put = function(data) {
+        return $http.put(this.url, data);
+    };
+
+    rest.prototype.del = function() {
+        return $http.delete(this.url, data);
+    };
+
+    return new rest(settings.api);
+}]);
 
 app.factory('ApiFeedback', function($rootScope) {
     var ApiFeedback = function ApiFeedback() {};

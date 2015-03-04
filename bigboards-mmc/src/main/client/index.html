@@ -30,6 +30,7 @@
     <link rel="stylesheet" type="text/css" href="app/common/directives/tasks/tasks.css" />
 
     <link rel="stylesheet" type="text/css" href="app/library/library.css" />
+    <link rel="stylesheet" type="text/css" href="app/library/directives/tint-card/style.css" />
 
     <link rel="stylesheet" type="text/css" href="app/tasks/tasks.css" />
     <link rel="stylesheet" type="text/css" href="app/tints/tints.css" />
@@ -68,7 +69,10 @@
             </div>
 
             <div class="quick-menu-item" ng-repeat="item in menu" ng-click="invokeMenuItem(item)" ng-class="{'active': item.label == currentItem.label}">
-                <span class="fa fa-2x" ng-class="item.icon"></span>
+                <div class="quick-menu-logo">
+                    <span class="fa fa-2x" ng-class="item.icon"></span>
+                </div>
+                <h3>{{item.label}}</h3>
             </div>
         </div>
         <div id="content" ng-view></div>
@@ -119,10 +123,13 @@
 <script type="text/javascript" src="app/tints/module.js"></script>
 <script type="text/javascript" src="app/tints/tints.js"></script>
 
+<script type="text/javascript" src="app/library/directives/tint-card/directive.js"></script>
+
 <script type="text/javascript" src="app/tasks/module.js"></script>
 
+<script type="text/javascript" src="app/tutors/module.js"></script>
+
 <script type="text/javascript" src="app/library/module.js"></script>
-<script type="text/javascript" src="app/library/directives/library-tint/library-tint.js"></script>
 
 <script type="text/javascript" src="app/update/module.js"></script>
 <script type="text/javascript" src="app/update/update.js"></script>

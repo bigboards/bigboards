@@ -1,4 +1,5 @@
 var fs = require("fs"),
+    fsu = require("../utils/fs-utils"),
     Q = require('q'),
     ini = require('ini'),
     winston = require('winston');
@@ -10,13 +11,20 @@ function HexConfigurationManager(hexConfigFile) {
 
 HexConfigurationManager.prototype.get = function() {
     var self = this;
+
     if (!this.config) {
-        return this.load().then(function(config) {
-            self.config = config;
-            return self.config;
-        })
+        return fsu.exists(this.hexConfigFile).then(function(exists) {
+            if (exists) {
+                return self.load().then(function(config) {
+                    self.config = config;
+                    return self.config;
+                });
+            } else {
+                return Q(null);
+            }
+        });
     } else {
-        return Q(self.config);
+        return Q(this.config);
     }
 };
 

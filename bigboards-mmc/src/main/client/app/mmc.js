@@ -6,6 +6,7 @@ var app = angular.module( 'mmc', [
     'bb.library',
     'bb.tasks',
     'bb.update',
+    'bb.tints.tutor',
     'nvd3ChartDirectives',
     'btford.socket-io',
     'ui.bootstrap'
@@ -13,7 +14,7 @@ var app = angular.module( 'mmc', [
 
 app.constant('settings', {
     api: ''
-    //api: 'http://10.40.2.247:7000'
+    //api: 'http://wintermute-n1.local:7000'
 });
 
 app.config(['$routeProvider', function($routeProvider) {
@@ -27,6 +28,17 @@ app.config(['$routeProvider', function($routeProvider) {
             title: 'Tint',
             templateUrl: 'app/stacks/detail.html',
             controller: 'StackDetailController'
+        })
+
+        .when('/tutors', {
+            title: 'Tutors',
+            templateUrl: 'app/tutors/list.html',
+            controller: 'TutorListController'
+        })
+        .when('/tutors/:owner/:id', {
+            title: 'Tutors',
+            templateUrl: 'app/tutors/list.html',
+            controller: 'TutorDetailController'
         })
 
         .when('/tasks', {
@@ -49,6 +61,17 @@ app.config(['$routeProvider', function($routeProvider) {
             title: 'Library',
             templateUrl: 'app/library/library.html',
             controller: 'LibraryController'
+        })
+
+        .when('/library/:type/:owner/:slug', {
+            title: 'Library',
+            templateUrl: 'app/library/view.html',
+            controller: 'LibraryItemViewController',
+            resolve : {
+                tint: ['$route', 'Library', function($route, Library) {
+                    return Library.find({type: $route.current.params.type, owner: $route.current.params.owner, tintId: $route.current.params.slug});
+                }]
+            }
         })
 
 
@@ -85,6 +108,11 @@ app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket',
             icon: 'fa-tasks',
             path: '/tasks'
         },
+        {
+            label: 'Tutor',
+            icon: 'fa-graduation-cap',
+            path: '/tutors'
+        },
 //        {
 //            label: 'Shell',
 //            icon: 'fa-terminal',
@@ -96,7 +124,7 @@ app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket',
 //            path: '/update'
 //        },
         {
-            label: 'Documentation',
+            label: 'Docs',
             icon: 'fa-book',
             url: 'http://docs.bigboards.io'
         }

@@ -2,18 +2,20 @@ var libraryModule = angular.module('bb.library', ['ngResource', 'drFlip']);
 
 libraryModule.controller('LibraryController', ['$scope', 'Library', 'Stacks', 'ApiFeedback', '$location', '$modal', function($scope,   Library,   Stacks,   ApiFeedback,   $location,   $modal) {
     $scope.library = {
-        stacks: Library.find({type: 'stack'})
+        stacks: Library.find({type: 'stack'}),
+        tutors: Library.find({type: 'tutor'})
     };
 
-    Stacks.list(function(stacks) {
-        if (!stacks || stacks.length == 0) return;
-
-        $scope.installedStack = stacks[0];
-    });
+    //Stacks.list(function(stacks) {
+    //    if (!stacks || stacks.length == 0) return;
+    //
+    //    $scope.installedStack = stacks[0];
+    //});
 
     $scope.refresh = function() {
         Library.refresh();
         $scope.library.stacks = Library.find({type: 'stack'});
+        $scope.library.tutors = Library.find({type: 'tutor'});
     };
 
     $scope.isStackInstalled = function(stack) {
@@ -21,7 +23,7 @@ libraryModule.controller('LibraryController', ['$scope', 'Library', 'Stacks', 'A
         else return ($scope.installedStack.tint_id == stack.tint_id);
     };
 
-    $scope.addStack = function() {
+    $scope.addItem = function() {
         var modalInstance = $modal.open({
             templateUrl: 'app/library/addTint.html',
             controller: 'AddLibraryItemController',
@@ -30,56 +32,15 @@ libraryModule.controller('LibraryController', ['$scope', 'Library', 'Stacks', 'A
 
         modalInstance.result.then(function (item) {
             $scope.library.stacks = Library.find({type: 'stack'});
+            $scope.library.tutors = Library.find({type: 'tutor'});
         });
-    };
-
-    $scope.installStack =  function(stack) {
-        Stacks.install(
-            { },
-            { "tint": {
-                "owner": stack.owner.username,
-                "type": "stack",
-                "id": stack['tint_id'],
-                "uri": 'https://bitbucket.org/' + stack.owner.username + '/' + stack['tint_id'] + '.git'
-            } },
-            function(attempt) {
-                $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
-            },
-            ApiFeedback.onError()
-        );
-    };
-
-    $scope.uninstallStack = function(stack) {
-        var confirmed = confirm("Are you sure? This will remove the current tint from the hex.");
-
-        if (confirmed) {
-            Stacks.uninstall(
-                {id: stack.tint_id, owner: stack.owner.username},
-                function(attempt) {
-                    $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
-                },
-                ApiFeedback.onError()
-            );
-        }
-    };
-
-    $scope.removeStack =  function(owner, id) {
-        Library.remove(
-            { type: 'stack', tintId: id, owner: owner },
-            function(attempt) {
-                $scope.library.stacks = Library.find({type: 'stack'});
-            },
-            ApiFeedback.onError()
-        );
     };
 }]);
 
 
 libraryModule.controller('AddLibraryItemController', ['$scope', '$modalInstance', 'Library', 'ApiFeedback', function($scope, $modalInstance, Library, ApiFeedback) {
     $scope.model = {
-        type: 'stack',
-        owner: null,
-        tintId: null
+        url: null
     };
 
     $scope.alerts = [];
@@ -98,6 +59,65 @@ libraryModule.controller('AddLibraryItemController', ['$scope', '$modalInstance'
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
+    };
+}]);
+
+libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 'tint', 'Library', 'ApiFeedback', 'Tints', function($scope, $location, tint, Library, ApiFeedback, Tints) {
+    $scope.tint = tint;
+
+    $scope.tintDetails = 'app/library/partials/empty.html';
+
+    $scope.tint.$promise.then(function() {
+        $scope.tintDetails = 'app/library/partials/' + tint.type + '.html';
+    });
+
+    $scope.install = function() {
+        Tints.install(
+            {
+                type: $scope.tint.type,
+                owner: $scope.tint.owner.username,
+                slug: $scope.tint.slug
+            },
+            {
+                tint: {
+                    type: $scope.tint.type,
+                    owner: $scope.tint.owner.username,
+                    slug: $scope.tint.slug
+                }
+            },
+            function(attempt) {
+                $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
+            },
+            ApiFeedback.onError()
+        );
+    };
+
+    $scope.uninstallStack = function() {
+        var confirmed = confirm("Are you sure? This will remove the tint from the hex.");
+
+        if (confirmed) {
+            Tints.uninstall(
+                {
+                    type: $scope.tint.type,
+                    owner: $scope.tint.owner.username,
+                    id: $scope.tint.slug
+                },
+                function(attempt) {
+                    $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
+                },
+                ApiFeedback.onError()
+            );
+        }
+    };
+
+    $scope.removeStack =  function() {
+        Library.remove(
+            { type: $scope.tint.type, tintId: $scope.tint.slug, owner: $scope.tint.owner.username },
+            function() {
+                $location.path('/library');
+            },
+            ApiFeedback.onError()
+        );
     };
 }]);
 
