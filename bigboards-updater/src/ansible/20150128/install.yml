@@ -144,6 +144,13 @@
         - supervisor
         - python-dev
 
+    - name: make sure the old supervisor log directory has the right attributes
+      file:
+        state: "directory"
+        owner: "bb"
+        group: "bigboards"
+        recurse: "yes"
+
     - name: make sure supervisor is started and will start at boot
       service:
         name: "supervisor"
