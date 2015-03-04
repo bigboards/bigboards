@@ -158,7 +158,7 @@
         state: "started"
         enabled: "yes"
 
-    - name: make sure supervisor can run as a different user
+    - name: make sure supervisor runs as the root user
       template:
         src: "templates/etc/init.d/supervisor"
         dest: "/etc/init.d/supervisor"

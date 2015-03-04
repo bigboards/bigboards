@@ -27,8 +27,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=/usr/bin/supervisord
 NAME=supervisord
 DESC=supervisor
-UID=1000
-GID=1000
 
 test -x $DAEMON || exit 0
 
@@ -95,7 +93,7 @@ case "$1" in
   start)
 	echo -n "Starting $DESC: "
 	start-stop-daemon --start --quiet --pidfile $PIDFILE \
-		--chuid $UID:$GID --startas $DAEMON -- $DAEMON_OPTS
+		--startas $DAEMON -- $DAEMON_OPTS
 	test -f $PIDFILE || sleep 1
         if running ; then
             echo "$NAME."
