@@ -154,6 +154,7 @@
       template:
         src: "templates/etc/init.d/supervisor"
         dest: "/etc/init.d/supervisor"
+      notify: Restart Supervisor
 
     # Ubuntu 14.04 or some install/upgrade seems to break
     # pip in combination with the requests module
@@ -179,15 +180,14 @@
         dest: "/etc/supervisor/conf.d/butterfly.conf"
       notify: Restart Butterfly
 
-    - name: make sure butterfly is started
-      supervisorctl:
-        name: "butterfly"
-        state: "started"
-
   handlers:
     - name: Restart Butterfly
       supervisorctl:
         name: "butterfly"
+        state: "restarted"
+    - name: Restart Supervisor
+      supervisorctl:
+        name: "supervisor"
         state: "restarted"
 
 ## ####################################################################################################################
