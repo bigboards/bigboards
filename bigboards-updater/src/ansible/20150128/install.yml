@@ -152,7 +152,7 @@
 
     - name: make sure supervisor can run as a different user
       template:
-        src: "etc/init.d/supervisor"
+        src: "templates/etc/init.d/supervisor"
         dest: "/etc/init.d/supervisor"
 
     # Ubuntu 14.04 or some install/upgrade seems to break
