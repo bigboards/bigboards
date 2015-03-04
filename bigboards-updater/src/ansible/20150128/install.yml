@@ -39,27 +39,6 @@
       shell: creates=/data/lost+found mount /data
 
 ## ####################################################################################################################
-## NETWORK
-## ####################################################################################################################
-- hosts: host
-  sudo: yes
-  tasks:
-    - name: be sure the interfaces are configured correctly
-      template:
-        src: 'templates/{{ item }}'
-        dest: '/{{ item }}'
-      with_items:
-        - 'etc/network/interfaces'
-        - 'etc/dhcp/dhclient.conf'
-      notify: Restart Network
-
-  handlers:
-    - name: Restart Network
-      service:
-        name: 'networking'
-        state: 'restarted'
-
-## ####################################################################################################################
 ## NTP
 ## ####################################################################################################################
 - hosts: host

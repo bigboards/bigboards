@@ -40,6 +40,7 @@
         - 'etc/init.d/networking'
         - 'etc/init/networking.conf'
         - 'etc/dhcp/dhclient.conf'
+        - 'etc/resolv.conf'
       notify: Restart Network
 
   handlers:
