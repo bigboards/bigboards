@@ -13,8 +13,8 @@ var app = angular.module( 'mmc', [
 ]);
 
 app.constant('settings', {
-    //api: ''
-    api: 'http://infinite-n1:7000'
+    api: ''
+    //api: 'http://infinite-n1:7000'
 });
 
 app.config(['$routeProvider', function($routeProvider) {
@@ -108,21 +108,11 @@ app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket',
             icon: 'fa-tasks',
             path: '/tasks'
         },
-        {
-            label: 'Tutor',
-            icon: 'fa-graduation-cap',
-            path: '/tutors'
-        },
-//        {
-//            label: 'Shell',
-//            icon: 'fa-terminal',
-//            path: '/shell'
-//        },
-//        {
-//            label: 'Update',
-//            icon: 'fa-refresh',
-//            path: '/update'
-//        },
+        //{
+        //    label: 'Tutor',
+        //    icon: 'fa-graduation-cap',
+        //    path: '/tutors'
+        //},
         {
             label: 'Docs',
             icon: 'fa-book',
