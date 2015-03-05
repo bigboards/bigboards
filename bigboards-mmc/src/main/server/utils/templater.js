@@ -29,8 +29,6 @@ Templater.prototype.createScope = function(nodes) {
 Templater.prototype.templateWithScope = function(obj, scope) {
     var toClass = {}.toString;
 
-    console.log('Parsing ' + toClass(obj));
-
     if (toClass.call(obj) == '[object Array]') {
         return this.templateArrayWithScope(obj, scope);
     } else if (toClass.call(obj) == '[object Object]') {
