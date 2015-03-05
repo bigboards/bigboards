@@ -20,10 +20,10 @@
     <div class="row item-toolbar">
         <div class="col-md-8 col-md-offset-2 item-toolbar-content">
             <div>
-                <div class="item-action" ng-if="isStackInstalled(tint)" ng-click="reinstallStack(stack)" role="button">Re-install</div>
-                <div class="item-action" ng-if="isStackInstalled(tint)" ng-click="uninstallStack(stack)" role="button">Uninstall</div>
-                <div class="item-action" ng-if="!isStackInstalled(tint)" ng-click="installStack(stack)" role="button">Install</div>
-                <div class="item-action danger" ng-if="!isStackInstalled(tint)" ng-click="removeStack(owner, tintId)" role="button">Remove From Library</div>
+                <div class="item-action" ng-if="isInstalled != null && isInstalled" ng-click="install()" role="button">Re-install</div>
+                <div class="item-action" ng-if="isInstalled != null && isInstalled" ng-click="uninstall()" role="button">Uninstall</div>
+                <div class="item-action" ng-if="isInstalled != null && !isInstalled" ng-click="install()" role="button">Install</div>
+                <div class="item-action danger" ng-if="isInstalled != null && !isInstalled" ng-click="remove()" role="button">Remove From Library</div>
             </div>
         </div>
     </div>

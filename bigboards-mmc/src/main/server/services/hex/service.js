@@ -96,34 +96,38 @@ HexService.prototype.removeNode = function(node) {
 /*********************************************************************************************************************
  * TINTS
  *********************************************************************************************************************/
-HexService.prototype.listTints = function(type) {
+HexService.prototype.listTints = function() {
     var self = this;
 
-    return fsu
-        .readDir(this.settings.dir.tints + '/' + type)
-        .then(function(owners) {
-            var promises = [];
+    var promises = [];
 
-            for (var o in owners) {
-                var files = fs.readdirSync(self.settings.dir.tints + '/' + type + '/' + owners[o]);
+    var types = fs.readdirSync(self.settings.dir.tints);
+    for (var i in types) {
+        var typeStat = fs.statSync(self.settings.dir.tints + '/' + types[i]);
+        if (typeStat.isDirectory()) {
+            var owners = fs.readdirSync(self.settings.dir.tints + '/' + types[i]);
 
-                for (var i in files) {
-                    promises.push(parseManifest(self, self.templater, self.settings.dir.tints, type, owners[o], files[i]));
+            for (var j in owners) {
+                var files = fs.readdirSync(self.settings.dir.tints + '/' + types[i] + '/' + owners[j]);
+
+                for (var k in files) {
+                    promises.push(parseManifest(self, self.templater, self.settings.dir.tints, types[i], owners[j], files[k]));
                 }
             }
+        }
+    }
 
-            return Q.allSettled(promises).then(function(responses) {
-                var result = [];
+    return Q.allSettled(promises).then(function (responses) {
+        var result = [];
 
-                for (var i in responses) {
-                    if (responses[i] != null) {
-                        result.push(responses[i].value);
-                    }
-                }
+        for (var i in responses) {
+            if (responses[i] != null) {
+                result.push(responses[i].value);
+            }
+        }
 
-                return result;
-            });
-        });
+        return result;
+    });
 };
 
 HexService.prototype.getTint = function(type, owner, tint) {
@@ -151,26 +155,11 @@ function parseManifest(hexService, templater, tintRoot, type, owner, tintId) {
             return hexService
                 .listNodes()
                 .then(function (nodes) {
-                    return templater.template(tintDir + "/tint.yml", nodes);
+                    return templater.template(tintDir + "/meta.json", nodes);
                 }).then(function (content) {
-                    return yaml.safeLoad(content);
-                }).then(function(data) {
-                    return fsu
-                        .readFile(tintDir + "/meta.json")
-                        .then(function(content) {
-                            var tintMeta = JSON.parse(content);
-
-                            for (var idx in tintMeta) {
-                                if (tintMeta.hasOwnProperty(idx)) {
-                                    data[idx] = tintMeta[idx];
-                                }
-                            }
-
-                            return data;
-                        });
-
+                    return JSON.parse(content);
                 }).fail(function(error) {
-                    console.log('ERROR: ' + error.message);
+                    console.log('unable to parse the tint meta file: ' + error.message);
                 });
         });
 }

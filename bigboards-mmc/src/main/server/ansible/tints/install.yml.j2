@@ -8,10 +8,10 @@
 {% endraw %}
         - /data
         - /data/{{ tint.owner }}
-        - /data/{{ tint.owner }}/{{ tint.id }}
-        - /data/{{ tint.owner }}/{{ tint.id }}/config
-        - /data/{{ tint.owner }}/{{ tint.id }}/data
-        - /data/{{ tint.owner }}/{{ tint.id }}/files
+        - /data/{{ tint.owner }}/{{ tint.slug }}
+        - /data/{{ tint.owner }}/{{ tint.slug }}/config
+        - /data/{{ tint.owner }}/{{ tint.slug }}/data
+        - /data/{{ tint.owner }}/{{ tint.slug }}/files
 
 {% for group in stack.groups %}
 - hosts: {{ group.runs_on }}

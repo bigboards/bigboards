@@ -65,32 +65,10 @@
                 </div>-->
             </div>
             <div class="tints col-sm-12 col-md-12 col-lg-4">
-                <h3 class="subtitle">STACKS</h3>
-                <h3 ng-if="!stack">Currently there is no stack tint installed. You may go to the <a href="#/library">library</a> to install one</h3>
+                <h3 ng-if="!installedTints || installedTints.length == 0">Currently there is no stack tint installed. You may go to the <a href="#/library">library</a> to install one</h3>
 
-                <div ng-if="stack" class="tint stack" ng-class="stack.state">
-                    <!--<div class="corner-top-right"></div>-->
-
-                    <div class="tint-body">
-                        <span class="name">{{ stack.name }}</span>
-                        <span class="owner">{{ stack.owner.displayName }}</span>
-                    </div>
-
-                    <div class="tint-actions">
-                        <div ng-if="stack.state != 'installed'" class="tint-action">
-                            <a href="" tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="Reinstall Stack" ng-click="reinstallStack(stack)" title="Reinstall">
-                                <span class="fa fa-retweet"></span>
-                            </a>
-                        </div>
-                        <a ng-if="stack.state == 'installed'" class="tint-action" href="#/stacks/{{ stack.owner.username }}/{{ stack.tint_id }}">
-                            <i class="fa fa-desktop"></i>
-                        </a>
-                        <div class="tint-action danger" ng-click="uninstallStack(stack)">
-                            <a href="" tooltip-trigger="mouseenter" tooltip-placement="bottom" tooltip="Uninstall Stack" ng-click="uninstallStack(stack)" title="Uninstall">
-                                <span class="fa fa-trash-o"></span>
-                            </a>
-                        </div>
-                    </div>
+                <div>
+                    <tint-card type="{{tint.type}}" format="tiny" tint="tint" ng-repeat="tint in installedTints" ></tint-card>
                 </div>
             </div>
         </div>

@@ -64,25 +64,36 @@ libraryModule.controller('AddLibraryItemController', ['$scope', '$modalInstance'
 
 libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 'tint', 'Library', 'ApiFeedback', 'Tints', function($scope, $location, tint, Library, ApiFeedback, Tints) {
     $scope.tint = tint;
-
+    $scope.isInstalled = null;
     $scope.tintDetails = 'app/library/partials/empty.html';
 
     $scope.tint.$promise.then(function() {
         $scope.tintDetails = 'app/library/partials/' + tint.type + '.html';
+
+        Tints.list().$promise.then(function(installed) {
+            for (var idx in installed) {
+                if (installed[idx]['slug'] != $scope.tint.slug) continue;
+                if (installed[idx]['owner']['username'] != $scope.tint.owner.username) continue;
+
+                $scope.isInstalled = true;
+                return;
+            }
+
+            $scope.isInstalled = false;
+        });
     });
 
     $scope.install = function() {
         Tints.install(
             {
-                type: $scope.tint.type,
-                owner: $scope.tint.owner.username,
-                slug: $scope.tint.slug
+                type: $scope.tint.type
             },
             {
                 tint: {
                     type: $scope.tint.type,
                     owner: $scope.tint.owner.username,
-                    slug: $scope.tint.slug
+                    slug: $scope.tint.slug,
+                    uri: $scope.tint.uri
                 }
             },
             function(attempt) {
@@ -92,7 +103,7 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
         );
     };
 
-    $scope.uninstallStack = function() {
+    $scope.uninstall = function() {
         var confirmed = confirm("Are you sure? This will remove the tint from the hex.");
 
         if (confirmed) {
@@ -100,7 +111,7 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
                 {
                     type: $scope.tint.type,
                     owner: $scope.tint.owner.username,
-                    id: $scope.tint.slug
+                    slug: $scope.tint.slug
                 },
                 function(attempt) {
                     $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
@@ -110,7 +121,7 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
         }
     };
 
-    $scope.removeStack =  function() {
+    $scope.remove =  function() {
         Library.remove(
             { type: $scope.tint.type, tintId: $scope.tint.slug, owner: $scope.tint.owner.username },
             function() {
@@ -122,9 +133,9 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
 }]);
 
 
-libraryModule.service('Library', function($resource) {
+libraryModule.service('Library', function(settings, $resource) {
     return $resource(
-        '/api/v1/library/:type/:owner/:tintId',
+        settings.api + '/api/v1/library/:type/:owner/:tintId',
         {type: '@type', owner: '@owner', tintId: '@tintId'},
         {
             'find': { method: 'GET', isArray: false},

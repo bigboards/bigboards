@@ -8,8 +8,10 @@ var Q = require('q'),
     strUtils = require('../../utils/string-utils'),
     Providers = require('./providers');
 
-function LibraryService(settings) {
+function LibraryService(settings, services, templater) {
     this.settings = settings;
+    this.services = services;
+    this.templater = templater;
 
     this.populateCache();
 }
@@ -58,14 +60,27 @@ LibraryService.prototype.populateCache = function() {
 };
 
 LibraryService.prototype.listTintsForType = function(type) {
-    if (this.libraryCache) return Q(this.libraryCache[type]);
-    else return Q({});
+    var self = this;
+
+    if (! this.libraryCache) return Q({});
+
+    return this.services.hex.listNodes().then(function(nodes) {
+        return self.templater.createScope(nodes).then(function(scope) {
+            return self.templater.templateWithScope(self.libraryCache[type], scope);
+        });
+    });
 };
 
 LibraryService.prototype.getTint = function(type, owner, slug) {
+    var self = this;
+
     if (! this.libraryCache.hasOwnProperty(type)) return Q.fail();
 
-    return Q(this.libraryCache[type][strUtils.toTintGUID(owner, slug)]);
+    return this.services.hex.listNodes().then(function(nodes) {
+        return self.templater.createScope(nodes).then(function(scope) {
+            return self.templater.templateWithScope(self.libraryCache[type][strUtils.toTintGUID(owner, slug)], scope);
+        });
+    });
 };
 
 LibraryService.prototype.addTint = function(url) {
@@ -77,6 +92,8 @@ LibraryService.prototype.addTint = function(url) {
         .then(function (descriptor) {
             if (!self.libraryCache) self.libraryCache = {};
             if (!self.libraryCache.hasOwnProperty(descriptor.type)) self.libraryCache[descriptor.type] = {};
+
+            descriptor.uri = url;
 
             return self.libraryCache[descriptor.type][strUtils.toTintGUID(descriptor.owner.username, descriptor.slug)] = descriptor;
         })

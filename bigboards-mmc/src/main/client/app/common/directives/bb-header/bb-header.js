@@ -5,28 +5,18 @@ app.directive('bbHeader', function() {
         scope: {
             title: '=title'
         },
-        controller: function ($scope, socket, TaskManager) {
-            $scope.url = "#/tasks";
+        controller: function ($scope, $location, socket, TaskManager) {
             $scope.task = TaskManager.currentAttempt();
 
             $scope.busy = function() {
                 return TaskManager.busy
             };
 
-            socket.on('task:started', function(task) {
-                if (! task) return;
-
-                $scope.task = task;
-                $scope.url = '#/tasks/' + $scope.task.task.code + '/attempts/' + $scope.task.attempt + '/output';
-            });
-
-            socket.on('task:finished', function(task) {
-                $scope.task = null;
-            });
-
-            socket.on('task:failed', function(task) {
-                $scope.task = null;
-            });
+            $scope.goto = function() {
+                var attempt = TaskManager.currentAttempt();
+                if (! attempt || ! attempt.task) $location.path('/tasks');
+                else $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
+            };
         },
         templateUrl: 'app/common/directives/bb-header/bb-header.html'
     };

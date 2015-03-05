@@ -1,7 +1,7 @@
 var dashboardModule = angular.module('bb.dashboard', ['ngResource']);
 
-dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'Stacks', 'Tasks', 'socket', 'ApiFeedback', '$location',
-                                          function ($scope,   Hex,   Nodes,   Stacks,   Tasks,   socket,   ApiFeedback,   $location) {
+dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'Tints', 'Tasks', 'socket', 'ApiFeedback', '$location',
+                                          function ($scope,   Hex,   Nodes,   Tints,   Tasks,   socket,   ApiFeedback,   $location) {
     $scope.nodes = Nodes.list();
 
     $scope.model = {
@@ -28,10 +28,10 @@ dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'St
     });
 
     $scope.loadStacks = function() {
-        Stacks.list(function(stacks) {
-            if (!stacks || stacks.length == 0) return;
+        Tints.list(function(installedTints) {
+            if (!installedTints || installedTints.length == 0) return;
 
-            $scope.stack = stacks[0];
+            $scope.installedTints = installedTints;
         });
     };
 

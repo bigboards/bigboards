@@ -69,12 +69,11 @@ module.exports.fileName = function(path) {
 
 module.exports.jsonFile = function(path, obj) {
     var defer = Q.defer();
-    var writeFile = Q.denodeify(fs.writeFile);
 
     try {
-        var content = JSON.stringify(obj);
-
-        defer.resolve(writeFile(path, content));
+        fs.writeFile(path, JSON.stringify(obj), function (err) {
+            return (err) ? defer.reject(err) : defer.resolve(path);
+        });
     } catch (error) {
         defer.reject(error);
     }

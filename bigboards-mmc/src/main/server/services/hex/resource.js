@@ -70,7 +70,7 @@ HexResource.prototype.listNodes = function(req, res) {
  */
 HexResource.prototype.listTints = function(req, res) {
     var type = req.param('type');
-    if (!type) return res.send(400, 'No type has been passed!');
+    //if (!type) return res.send(400, 'No type has been passed!');
 
     return ApiUtils.handlePromise(res, this.hexService.listTints(type));
 };
@@ -112,7 +112,7 @@ HexResource.prototype.getTint = function(req, res) {
  */
 HexResource.prototype.installTint = function(req, res) {
     var tint = req.body.tint;
-    if (! ApiUtils.isTint(tint)) return res.send(400, 'No valid tint has been passed!');
+    if (! ApiUtils.isTintWithUri(tint)) return res.send(400, 'No valid tint has been passed!');
 
     return ApiUtils.handlePromise(res, this.hexService.installTint(tint));
 };
@@ -128,7 +128,7 @@ HexResource.prototype.installTint = function(req, res) {
  * @apiParam {String} owner     Tint owner.
  * @apiParam {String} tintId    Tint id.
  */
-HexResource.prototype.removeStack = function(req, res) {
+HexResource.prototype.removeTint = function(req, res) {
     var type = req.param('type');
     if (!type) return res.send(400, 'No type has been passed!');
 

@@ -27,15 +27,17 @@ module.exports = function(configuration, services) {
             return services.hex.get().then(function(hex) {
                 scope.hex = hex;
 
-                var tintPath = '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner.username + '/' + scope.tint.id;
+                var tintPath = '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug;
                 scope.tint.path = tintPath;
 
-                return services.library.getTint(scope.tint.type, scope.tint.owner.username, scope.tint.id)
+                winston.info('Installing tint ' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
+
+                return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.slug)
                     .then(function(ft) {
                         console.log("Update the tint state to 'installing'");
                         scope.tintMeta = ft;
                         scope.tintMeta['state'] = 'partial';
-                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
+                        scope.tintMetaString = JSON.stringify(extractEssentials(scope.tintMeta));
 
                         return scope;
                     })
@@ -55,17 +57,16 @@ module.exports = function(configuration, services) {
                         console.log("Running the stack post-install script using 'installed' as the outcome");
 
                         scope.tintMeta['state'] = 'installed';
-                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
 
-                        return TaskUtils.runPlaybook('tints/stack_post_install', scope);
+                        return FsUtils.jsonFile(tintPath + '/meta.json', scope.tintMeta);
                     })
-                    .fail(function() {
-                        console.log("Running the stack post-install script using 'partial' as the outcome");
+                    .fail(function(error) {
+                        console.log("Running the stack post-install script using 'partial' as the outcome because of :\n");
+                        console.log(error.message);
 
                         scope.tintMeta['state'] = 'partial';
-                        scope.tintMetaString = JSON.stringify(scope.tintMeta);
 
-                        return TaskUtils.runPlaybook('tints/stack_post_install', scope);
+                        return FsUtils.jsonFile(tintPath + '/meta.json', scope.tintMeta);
                     });
             });
 
@@ -73,3 +74,13 @@ module.exports = function(configuration, services) {
         }
     };
 };
+
+function extractEssentials(tintMeta) {
+    return {
+        type: tintMeta.type,
+        owner: tintMeta.owner,
+        slug: tintMeta.slug,
+        uri: tintMeta.uri,
+        state: tintMeta.state
+    }
+}

@@ -128,8 +128,8 @@
 
 .caption-block-content {
     background-color: white;
-    border-left: solid 1px #008888;
-    border-right: solid 1px #008888;
+    border-left: solid 1px #333;
+    border-right: solid 1px #333;
     padding: 30px;
     height: 225px;
 }
@@ -160,9 +160,9 @@
 }
 
 .item-toolbar-content {
-    border: solid 1px #008888;
+    border: solid 1px #333;
     border-top: none;
-    background-color: #008888;
+    background-color: #333;
     color: white;
     height: 40px;
 }
@@ -185,7 +185,7 @@
 }
 
 .item-toolbar .item-action:hover {
-    background-color: #333;
+    background-color: #008888;
 }
 
 .item-details-content {
@@ -208,7 +208,7 @@
 .section-header {
     display: inline-block;
     width: 25%;
-    background-color: #008888;
+    background-color: #333;
     color: white;
     min-height: 100%;
     text-align: right;

@@ -13,8 +13,8 @@ var app = angular.module( 'mmc', [
 ]);
 
 app.constant('settings', {
-    api: ''
-    //api: 'http://wintermute-n1.local:7000'
+    //api: ''
+    api: 'http://infinite-n1:7000'
 });
 
 app.config(['$routeProvider', function($routeProvider) {
@@ -135,7 +135,7 @@ app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket',
 
     $scope.$on('$routeChangeSuccess', function(event, current, previous) {
         $scope.menu.forEach(function(item) {
-            if (item.path && current.$$route && item.path == current.$$route.originalPath)
+            if (item.path && current.$$route && current.$$route.originalPath.indexOf(item.path) == 0)
                 $scope.currentItem = item;
         });
     });

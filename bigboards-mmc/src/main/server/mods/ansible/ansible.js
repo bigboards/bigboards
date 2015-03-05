@@ -172,10 +172,7 @@ var AdHoc = function() {
     if (this.config.args || this.config.freeform) {
       var args = utils.formatArgs(this.config.args, this.config.freeform);
       arguments.push('-a');
-      arguments.push(jsesc(args, {
-        'quotes': 'single',
-        'wrap': true
-      }));
+      arguments.push(args);
     }
 
     return {command: 'ansible', args: arguments};

@@ -141,3 +141,11 @@
         dest: "{{ tint.path }}/work/roles/{{ item.item.key }}/templates/"
       when: item.stat.exists
       with_items: role_config.results
+
+    - name: be sure the directory structure for the tint playbook has been created
+      file:
+        state: "directory"
+        recurse: "yes"
+        path: "{{ tint.path }}"
+        owner: "bb"
+        group: "bigboards"

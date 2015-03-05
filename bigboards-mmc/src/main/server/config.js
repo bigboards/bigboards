@@ -3,8 +3,10 @@ var os = require('os');
 module.exports = {
     lookupEnvironment: function() {
         if (os.platform() === 'linux') {
+            console.log('Loading Production Settings');
             return this.environments.production;
         } else {
+            console.log('Loading Development Settings');
             return this.environments.development;
         }
     },

@@ -3,9 +3,9 @@
     <div class="control">
         <div class="actions" ng-transclude></div>
         <div class="indicators">
-            <a class="indicator" href="{{url}}" >
+            <div class="indicator" ng-click="goto()" >
                 <span class="fa fa-spinner" ng-class="{'fa-spin': busy()}"></span>
-            </a>
+            </div>
         </div>
     </div>
 </div>

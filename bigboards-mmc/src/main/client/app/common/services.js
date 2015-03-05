@@ -56,8 +56,10 @@ app.service('TaskManager', function(settings, socket, $resource, Tasks, TaskAtte
     var TaskManager = function TaskManager(socket) {
         var self = this;
         this.busy = false;
+        this._currentAttempt = null;
 
-        this._currentAttempt = Tasks.current().$promise.then(function(attempt) {
+        Tasks.current().$promise.then(function(attempt) {
+            self._currentAttempt = attempt;
             self.busy = ((attempt !== undefined) && (attempt.$resolved) && (attempt['attempt'] !== undefined));
         });
 
@@ -103,11 +105,12 @@ app.service('Patches', function($resource) {
     });
 });
 
-app.service('Tints', function($resource) {
-    return $resource('/api/v1/hex/tints/:type/:owner/:slug', {slug: '@slug', owner: '@owner', type: '@type'}, {
-        'install': { method: 'PUT', isArray: false},
-        'uninstall': { method: 'POST', isArray: true},
-        'update': { method: 'POST', isArray: true}
+app.service('Tints', function(settings, $resource) {
+    return $resource(settings.api + '/api/v1/hex/tints/:type/:owner/:slug', {slug: '@slug', owner: '@owner', type: '@type'}, {
+        'list': { method: 'GET', isArray: true},
+        'get': { method: 'GET', isArray: false},
+        'install': { method: 'POST' },
+        'uninstall': { method: 'DELETE' }
     });
 });
 

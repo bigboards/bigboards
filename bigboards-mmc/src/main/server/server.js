@@ -111,7 +111,7 @@ function initializeServices(serverConfig, config, serf, app) {
     services.task = new Services.Task.Service(serverConfig);
     Services.Task.link(app, services);
 
-    services.library = new Services.Library.Service(serverConfig);
+    services.library = new Services.Library.Service(serverConfig, services, templater);
     Services.Library.link(app, services);
 
     return services;
