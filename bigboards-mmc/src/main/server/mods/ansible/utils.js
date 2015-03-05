@@ -22,7 +22,7 @@ module.exports.formatArgs = function(args, freeform) {
   }
 
   if (formattedArgs.length > 0) {
-    return "\"" + formattedArgs.join(" ") + "\"";
+    return formattedArgs.join(" ");
   }
 
   return null;

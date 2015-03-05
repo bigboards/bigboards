@@ -17,6 +17,12 @@
       with_items:
         - bigboards-node
 
+    - name: make sure the bigboards repository is set to the new version
+      lineinfile: dest=/etc/apt/sources.list regexp="^deb http\://apt\.bigboards\.io" line="deb http://apt.bigboards.io {{ version }} main" backrefs=yes
+
+    - name: make sure the apt repository cache is being refreshed
+      shell: apt-get update
+
 - hosts: localhost
   sudo: yes
   tasks:
@@ -30,12 +36,6 @@
       with_items:
         - bigboards-mcc
         - bigboards-updater
-
-    - name: make sure the bigboards repository is set to the new version
-      lineinfile: dest=/etc/apt/sources.list regexp="^deb http\://apt\.bigboards\.io" line="deb http://apt.bigboards.io {{ version }} main" backrefs=yes
-
-    - name: make sure the apt repository cache is being refreshed
-      shell: apt-get update
 
 # -- ----------------------------------------------------------------------- --
 # -- INSTALL

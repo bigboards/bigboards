@@ -96,7 +96,7 @@ module.exports.removeFile = function(path, verbose, cwd) {
         .hosts('localhost')
         .module('file')
         .asSudo()
-        .args("state=absent path=" + path);
+        .args({state: 'absent', path: path});
 
     if (verbose)
         pb.verbose('vvvv');

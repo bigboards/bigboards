@@ -130,7 +130,7 @@ var AdHoc = function() {
   }
 
   this.args = function (args, freeform) {
-    if (!_.isObject(args)) {
+    if (!_.isObject(args) && !_.isArray(args)) {
       freeform = args;
       args = null;
     }
@@ -170,9 +170,8 @@ var AdHoc = function() {
     arguments.push(this.config.module);
 
     if (this.config.args || this.config.freeform) {
-      var args = utils.formatArgs(this.config.args, this.config.freeform);
       arguments.push('-a');
-      arguments.push(args);
+      arguments.push(utils.formatArgs(this.config.args, this.config.freeform));
     }
 
     return {command: 'ansible', args: arguments};
