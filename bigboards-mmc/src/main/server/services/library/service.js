@@ -59,6 +59,10 @@ LibraryService.prototype.populateCache = function() {
     return defer.promise;
 };
 
+LibraryService.prototype.refresh = function() {
+    this.populateCache();
+};
+
 LibraryService.prototype.listTintsForType = function(type) {
     var self = this;
 
