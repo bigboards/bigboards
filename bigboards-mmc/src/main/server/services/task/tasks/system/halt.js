@@ -15,8 +15,8 @@ module.exports = function(configuration, services) {
                 required: false
             }
         ],
-        execute: function(scope) {
-            return TaskUtils.runPlaybook('system/halt', scope);
+        execute: function(env, scope) {
+            return TaskUtils.playbook(env, 'system/halt', scope);
         }
     };
 };

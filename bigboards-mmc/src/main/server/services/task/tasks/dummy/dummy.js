@@ -13,8 +13,8 @@ module.exports = function(configuration) {
                 required: false
             }
         ],
-        execute: function (scope) {
-            return TaskUtils.runPlaybook('dummy/dummy', scope);
+        execute: function (env, scope) {
+            return TaskUtils.playbook(env, 'dummy/dummy', scope);
         }
     }
 };

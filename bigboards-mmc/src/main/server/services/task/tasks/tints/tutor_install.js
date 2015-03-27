@@ -8,8 +8,8 @@ var TaskUtils = require('../../../../utils/task-utils'),
 
 module.exports = function(configuration, services) {
     return {
-        code: 'stack_install',
-        description: 'installing the tint on the hex',
+        code: 'tutor_install',
+        description: 'installing the tutor tint on the hex',
         type: 'ansible',
         parameters: [
             {
@@ -37,32 +37,22 @@ module.exports = function(configuration, services) {
                         console.log("Update the tint state to 'installing'");
                         scope.tintMeta = ft;
                         scope.tintMeta['state'] = 'partial';
-                        scope.tintMetaString = JSON.stringify(extractEssentials(scope.tintMeta));
 
                         return scope;
                     })
                     .then(function(scope) {
-                        console.log("Running the stack pre-install script");
-                        return TaskUtils.playbook(env, 'tints/stack_pre_install', scope);
+                        console.log("Running the tutor install script");
+                        return TaskUtils.playbook(env, 'tints/tutor_install', scope);
                     })
                     .then(function() {
-                        var tintEnv = {
-                            workdir: tintPath + '/work',
-                            hostsFile: '_hosts',
-                            verbose: env.verbose
-                        };
-
-                        return TaskUtils.playbook(tintEnv, '_install', scope);
-                    })
-                    .then(function() {
-                        console.log("Running the stack post-install script using 'installed' as the outcome");
+                        console.log("Changing the tint state to 'installed'");
 
                         scope.tintMeta['state'] = 'installed';
 
                         return FsUtils.jsonFile(tintPath + '/meta.json', scope.tintMeta);
                     })
                     .fail(function(error) {
-                        console.log("Running the stack post-install script using 'partial' as the outcome because of :\n");
+                        console.log("Running the tint post-install script using 'partial' as the outcome because of :\n");
                         console.log(error.message);
 
                         scope.tintMeta['state'] = 'partial';
@@ -75,13 +65,3 @@ module.exports = function(configuration, services) {
         }
     };
 };
-
-function extractEssentials(tintMeta) {
-    return {
-        type: tintMeta.type,
-        owner: tintMeta.owner,
-        slug: tintMeta.slug,
-        uri: tintMeta.uri,
-        state: tintMeta.state
-    }
-}

@@ -1,89 +1,41 @@
 var Ansible = require('../mods/ansible/index.js'),
     path = require('path'),
+    fsu = require('./fs-utils'),
     Q = require('q');
 
-module.exports.playbook = function(context) {
-    var hostsFile = (context.hosts) ? context.hosts : '/opt/bb/hosts';
+module.exports.playbook = function(env, playbook, parameters) {
+    var hostsFile = env.hostFile;
+    var workdir = env.workdir;
+    var verbose = env.verbose || false;
 
     var deferred = Q.defer();
-    var cwd = '/opt/bb/runtimes/bigboards-mmc/server/ansible';
-    if (context.path) cwd = context.path;
-
-    var verbose = (context.scope.verbose && ((context.scope.verbose == 'yes') || (context.scope.verbose == 'true')));
 
     var pb = new Ansible.Playbook()
         .inventory(hostsFile)
-        .playbook(context.playbook)
-        .variables(context.scope);
-
-    if (verbose) pb.verbose('vvvv');
-
-    pb.exec({cwd: cwd})
-        .then(function(result) {
-            if (result.code != 0) deferred.reject(new Error(result.code));
-            else deferred.resolve();
-        }, function(error) {
-            deferred.reject(error);
-        }, function(progress) {
-            deferred.notify(progress);
-        });
-
-    return deferred.promise;
-};
-
-module.exports.runPlaybook = function(playbook, scope, workingDir) {
-    var deferred = Q.defer();
-    var cwd = '/opt/bb/runtimes/bigboards-mmc/server/ansible';
-//    var cwd = path.join(__dirname, '../ansible');
-
-    if (workingDir) cwd = workingDir;
-
-    var verbose = (scope.verbose && ((scope.verbose == 'yes') || (scope.verbose == 'true')));
-
-    var pb = new Ansible.Playbook()
-        .inventory('/opt/bb/hosts')
         .playbook(playbook)
-        .variables(scope);
+        .variables(parameters);
 
     if (verbose) pb.verbose('vvvv');
 
-    pb.exec({cwd: cwd})
-        .then(function(result) {
-            if (result.code != 0) deferred.reject(new Error(result.code));
-            else deferred.resolve();
-        }, function(error) {
-            deferred.reject(error);
-        }, function(progress) {
-            deferred.notify(progress);
-        });
-
-    return deferred.promise;
-};
-
-module.exports.runShellCommand = function(args, verbose, sudo, cwd) {
-    var deferred = Q.defer();
-
-    var pb = new Ansible.AdHoc()
-        .inventory('/opt/bb/hosts')
-        .hosts('localhost')
-        .module('shell')
-        .args(args);
-
-    if (sudo)
-        pb.asSudo();
-
-    if (verbose)
-        pb.verbose('vvvv');
-
-    pb.exec({cwd: cwd})
-        .then(function(result) {
-            if (result.code != 0) deferred.reject(new Error(result.code));
-            else deferred.resolve();
-        }, function(error) {
-            deferred.reject(error);
-        }, function(progress) {
-            deferred.notify(progress);
-        });
+    fsu.exists(workdir).then(function(exists) {
+        if (exists) {
+            try {
+                pb.exec({cwd: process.cwd() + '/' + workdir})
+                    .then(function (result) {
+                        if (result.code != 0) deferred.reject(new Error(result.code));
+                        else deferred.resolve();
+                    }, function (error) {
+                        deferred.reject(error);
+                    }, function (progress) {
+                        deferred.notify(progress);
+                    });
+            } catch (error) {
+                deferred.reject(error);
+            }
+        } else {
+            deferred.reject(new Error(workdir + ' does not exist! Please define it relative to ' + process.cwd()));
+        }
+    });
 
     return deferred.promise;
 };

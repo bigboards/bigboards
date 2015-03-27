@@ -128,6 +128,6 @@ function handleError(error) {
 
     switch (error.errorCode) {
         default:
-            throw error;
+            winston.log('error', error.stack);
     }
 }

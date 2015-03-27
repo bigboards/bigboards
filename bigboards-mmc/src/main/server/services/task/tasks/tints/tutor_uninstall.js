@@ -5,8 +5,8 @@ var TaskUtils = require('../../../../utils/task-utils');
 
 module.exports = function(configuration, services) {
     return {
-        code: 'stack_uninstall',
-        description: 'removing the tint from the hex',
+        code: 'tutor_uninstall',
+        description: 'removing the tutor tint from the hex',
         type: 'ansible',
         parameters: [
             {
@@ -21,8 +21,6 @@ module.exports = function(configuration, services) {
             }
         ],
         execute: function(scope) {
-             // -- TODO: check if the uninstall script exists
-
             return services.hex.get()
                 .then(function(hex) {
                     scope.hex = hex;
@@ -34,18 +32,8 @@ module.exports = function(configuration, services) {
                     console.log("Update the tint state to 'partial'");
                     scope.tintMeta = ft;
                     scope.tintMeta['state'] = 'partial';
-                    scope.tintMetaString = JSON.stringify(scope.tintMeta);
 
                     return scope;
-                })
-                .then(function() {
-                    var tintEnv = {
-                        workdir: env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id + '/work',
-                        hostsFile: '_hosts',
-                        verbose: env.verbose
-                    };
-
-                    return TaskUtils.playbook(tintEnv, '_uninstall', scope);
                 })
                 .then(function() {
                     return TaskUtils.removeFile(env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id);
