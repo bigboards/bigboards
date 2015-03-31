@@ -2,10 +2,11 @@
 # -- ----------------------------------------------------------------------- --
 # -- bb : BigBoards management script
 # -- ----------------------------------------------------------------------- --
-
-ACTION=${1}
-PLAYBOOK="ansible-playbook -i /opt/bb/hosts"
-DIR=$(dirname "$(readlink -f ${BASH_SOURCE[0]})" )
+if [[ $EUID -eq 0 ]];
+then
+   echo "The BB command may not be run as root"
+   exit 1
+fi
 
 usage() {
     echo "Usage: $0 [version|network|run|mmc|containers|system|help]" 1>&2; exit 1;
