@@ -90,10 +90,7 @@ function initializeSocketIO(server, services) {
         Services.Hex.io(socket, services);
         Services.Task.io(socket, services);
         Services.Library.io(socket, services);
-
-        setInterval(function() {
-            socket.emit('ping');
-        }, 5000);
+        Services.Tutorials.io(socket, services);
     });
 
     return io;
@@ -113,6 +110,9 @@ function initializeServices(serverConfig, config, serf, app) {
 
     services.library = new Services.Library.Service(serverConfig, services, templater);
     Services.Library.link(app, services);
+
+    services.tutorials = new Services.Tutorials.Service(serverConfig, config, services, templater);
+    Services.Tutorials.link(app, services);
 
     return services;
 }

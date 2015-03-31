@@ -134,6 +134,17 @@ HexService.prototype.getTint = function(type, owner, tint) {
     return parseManifest(this, this.templater, this.settings.dir.tints, type, owner, tint);
 };
 
+HexService.prototype.getTintResource = function(type, owner, tint, resource) {
+    var resourcePath = this.settings.dir.tints + '/' + type + '/' + owner + '/' + tint + '/' + resource;
+    return fsu.exists(resourcePath).then(function(exists) {
+        if (exists) {
+            return fsu.readFile(resourcePath);
+        } else {
+            return Q.fail('No such file or directory: ' + resourcePath);
+        }
+    })
+};
+
 HexService.prototype.removeTint = function(tint) {
     return this.services.task.invoke(tint.type + '_uninstall', { tint: tint});
 };
@@ -146,22 +157,15 @@ function parseManifest(hexService, templater, tintRoot, type, owner, tintId) {
     var tintDir = tintRoot + '/' + type + '/' + owner + '/' + tintId;
     var self = this;
 
-    return fsu.exists(tintDir + "/meta.json")
-        .then(function(exists) {
-            if (! exists) {
-                return Q(null);
-            }
-
-            return hexService
-                .listNodes()
-                .then(function (nodes) {
-                    return templater.template(tintDir + "/meta.json", nodes);
-                }).then(function (content) {
-                    return JSON.parse(content);
-                }).fail(function(error) {
-                    console.log('unable to parse the tint meta file: ' + error.message);
-                });
+    return fsu.readYamlFile(tintDir + '/tint.yml').then(function(content) {
+        return hexService.listNodes().then(function(nodes) {
+            return templater.createScope(nodes).then(function(scope) {
+                return templater.templateWithScope(content, scope);
+            });
+        }).fail(function(error) {
+            console.log('unable to parse the tint meta file: ' + error.message);
         });
+    });
 }
 
 function indexForNode(nodeList, node) {

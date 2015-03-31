@@ -114,6 +114,18 @@ app.service('Tints', function(settings, $resource) {
     });
 });
 
+app.service('TintResources', function(settings, $http) {
+    var service = function() { };
+
+    service.prototype.read = function(tint, resource) {
+        var url = settings.api + '/api/v1/hex/tints/' + tint.type + '/' + tint.owner + '/' + tint.slug + '/' + resource;
+
+        return $http.get(url);
+    };
+
+    return new service;
+});
+
 app.service('TintConfig', function($resource) {
     return $resource('/api/v1/tints/:tintId/config', {tintId: '@tintId'});
 });

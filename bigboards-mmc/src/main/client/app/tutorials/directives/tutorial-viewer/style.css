@@ -1,0 +1,44 @@
+.tutorial-viewer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+    background-color: white;
+    border-left: solid 1px #008888;
+}
+
+.tutorial-viewer-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 50px;
+    right: 0;
+}
+
+.tutorial-viewer-content .toc h1,
+.tutorial-viewer-content .toc h2,
+.tutorial-viewer-content .toc h3,
+.tutorial-viewer-content .toc h4{
+    cursor: pointer;
+}
+
+.tutorial-viewer-content .toc h1 {
+    font-size: 18px;
+    font-weight: 100;
+    margin-top: 20px;
+}
+
+.tutorial-viewer-content .toc h2 {
+    font-size: 18px;
+    font-weight: 100;
+    margin-top: 5px;
+}
+
+.tutorial-viewer-toolbar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 50px;
+    right: 0;
+}

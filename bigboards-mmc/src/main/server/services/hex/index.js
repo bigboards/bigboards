@@ -19,6 +19,7 @@ module.exports = {
         API.registerGet(app, '/api/v1/hex/tints/:type', function(req, res) { return resource.listTints(req, res); });
         API.registerPost(app, '/api/v1/hex/tints/:type', function(req, res) { return resource.installTint(req, res); });
         API.registerGet(app, '/api/v1/hex/tints/:type/:owner/:tintId', function(req, res) { return resource.getTint(req, res); });
+        API.registerGet(app, /^\/api\/v1\/hex\/tints\/(.+)\/(.+)\/(.+)\/(.+)/, function(req, res) { return resource.getTintResource(req, res); });
         API.registerDelete(app, '/api/v1/hex/tints/:type/:owner/:tintId', function(req, res) { return resource.removeTint(req, res); });
     }
 };
