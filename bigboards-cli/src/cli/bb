@@ -8,7 +8,7 @@ PLAYBOOK="ansible-playbook -i /opt/bb/hosts"
 DIR=$(dirname "$(readlink -f ${BASH_SOURCE[0]})" )
 
 usage() {
-    echo "Usage: $0 [help|switch]" 1>&2; exit 1;
+    echo "Usage: $0 [version|network|run|mmc|containers|system|help]" 1>&2; exit 1;
 }
 
 update() {
@@ -41,6 +41,8 @@ case "${ACTION}" in
     version)
         case "${2}" in
             switch)
+                [ -z "${3}" ] && echo "No target version provided! Please specify this as 3rd parameter ..." && usage
+
                 ${PLAYBOOK} --extra-vars "version=${3}" ${DIR}/ansible/switch_version.yml
                 ;;
             update)
