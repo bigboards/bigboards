@@ -1,0 +1,44 @@
+---
+- hosts: all:!localhost
+  sudo: yes
+  tasks:
+    - name: make sure docker is stopped
+      service:
+        name: 'docker.io'
+        state: 'stopped'
+
+    - name: make sure we use docker version 1.5.0
+      copy:
+        src: 'files/{{ item }}'
+        dest: '/usr/bin/{{ item }}'
+        mode: 777
+      with_items:
+        - 'docker-1.5.0'
+        - 'dockerinit-1.5.0'
+
+    - name: make sure docker can reach its depending libraries
+      file:
+        src: '/lib/arm-linux-gnueabihf/libdevmapper.so.1.02.1'
+        dest: '/lib/arm-linux-gnueabihf/libdevmapper.so.1.02'
+        state: 'link'
+
+    - name: make sure the docker file is removed before attempting to link it
+      file:
+        path: '/usr/bin/docker'
+        state: 'absent'
+
+    - name: make sure the links for the docker binary are correct
+      file:
+        src: '/usr/bin/{{item.src}}'
+        dest: '/usr/bin/{{item.dest}}'
+        mode: 777
+        state: 'link'
+      with_items:
+        - { src: 'docker-1.5.0', dest: 'docker' }
+        - { src: 'docker-1.5.0', dest: 'docker.io' }
+        - { src: 'dockerinit-1.5.0', dest: 'dockerinit' }
+
+    - name: make sure docker is started
+      service:
+        name: 'docker.io'
+        state: 'started'
