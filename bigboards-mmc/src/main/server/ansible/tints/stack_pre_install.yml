@@ -128,7 +128,7 @@
         src: "{{ tint.path }}/config/all/"
         dest: "{{ tint.path }}/work/roles/{{ item.key }}/templates"
       with_dict: stack.containers
-      when: st.stat.exists
+      when: st.stat.exists == True
 
     - stat:
         path: "{{ tint.path }}/config/{{ item.key }}/"
