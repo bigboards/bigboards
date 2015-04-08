@@ -20,7 +20,7 @@ module.exports.playbook = function(env, playbook, parameters) {
     fsu.exists(workdir).then(function(exists) {
         if (exists) {
             try {
-                pb.exec({cwd: process.cwd() + '/' + workdir})
+                pb.exec({cwd: workdir})
                     .then(function (result) {
                         if (result.code != 0) deferred.reject(new Error(result.code));
                         else deferred.resolve();

@@ -32,9 +32,8 @@ AbstractAnsibleCommand.prototype = {
 
     var command = this.compile();
 
-    var child = spawn('pwd', [], opt);
-    //var child = spawn(command.command, command.args, opt);
-    //console.log("Executing " + command.command + " " + command.args.join(' '));
+    var child = spawn(command.command, command.args, opt);
+    console.log("Executing " + command.command + " " + command.args.join(' '));
 
     // -- notify when stdout data comes in
     child.stdout.setEncoding('utf8');

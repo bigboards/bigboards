@@ -4,7 +4,8 @@ var Q = require('q'),
     Providers = require('../../../library/providers');
 
 var TaskUtils = require('../../../../utils/task-utils'),
-    FsUtils = require('../../../../utils/fs-utils');
+    FsUtils = require('../../../../utils/fs-utils'),
+    TintUtils = require('../../../../utils/tint-utils');
 
 module.exports = function(configuration, services) {
     return {
@@ -45,6 +46,11 @@ module.exports = function(configuration, services) {
                         return TaskUtils.playbook(env, 'tints/tutor_install', scope);
                     })
                     .then(function() {
+                        console.log("Generating the tutorial content");
+
+                        return generateTutorialContentList(tintPath, scope.tintMeta.tutor.toc);
+                    })
+                    .then(function() {
                         console.log("Changing the tint state to 'installed'");
 
                         scope.tintMeta['state'] = 'installed';
@@ -60,8 +66,42 @@ module.exports = function(configuration, services) {
                         return FsUtils.jsonFile(tintPath + '/meta.json', scope.tintMeta);
                     });
             });
-
-
         }
     };
 };
+
+function generateTutorialContentList(tintPath, toc) {
+    var promises = [];
+    var result = [];
+
+    childrenToList(result, toc, [], tintPath);
+
+    for (var i = 0; i < result.length; i++) {
+        if (i > 0) result[i].previous = result[i - 1];
+        if (i < result.length - 1) result[i].next = result[i + 1];
+
+        // -- write the description to a file
+        promises.push(FsUtils.jsonFile(TintUtils.toTutorialElementPath(tintPath + '/work', result[i].path), result[i]));
+    }
+
+    return Q.allSettled(promises);
+}
+
+function childrenToList(list, children, path, tintPath) {
+    for (var i = 0; i < children.length; i++) {
+        var p = path.slice();
+        p.push(i + 1);
+
+        if (children[i].file) {
+            list.push({
+                path: p,
+                title: children[i].title,
+                content: FsUtils.readFileAtOnce(tintPath + '/' + children[i].file)
+            });
+        }
+
+        if (children[i].children && children[i].children.length > 0) {
+            childrenToList(list, children[i].children, p, tintPath);
+        }
+    }
+}

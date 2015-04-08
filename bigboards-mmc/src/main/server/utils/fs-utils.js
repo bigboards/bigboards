@@ -3,6 +3,13 @@ var Q = require('q'),
     yaml = require("js-yaml"),
     mkdirp = require('mkdirp');
 
+module.exports.absolute = function(path) {
+    var p = path;
+    if (p.indexOf('/') != 0) p = '/' + p;
+
+    return process.cwd() + p;
+};
+
 module.exports.readFile = function(file) {
     var deferred = Q.defer();
 
@@ -17,6 +24,10 @@ module.exports.readFile = function(file) {
     });
 
     return deferred.promise;
+};
+
+module.exports.readFileAtOnce = function(file) {
+    return fs.readFileSync(file, {encoding: 'utf8'});
 };
 
 module.exports.readYamlFile = function(file) {

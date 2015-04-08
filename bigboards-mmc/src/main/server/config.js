@@ -1,4 +1,5 @@
-var os = require('os');
+var os = require('os'),
+    fsu = require('./utils/fs-utils');
 
 module.exports = {
     lookupEnvironment: function() {
@@ -17,15 +18,15 @@ module.exports = {
             port: process.env.PORT || 7000,
             host: os.hostname(),
             file: {
-                hosts: 'local/root/hosts'
+                hosts: fsu.absolute('local/root/hosts')
             },
             dir: {
-                root: 'local/root',
-                tints: 'local/tints.d',
-                tasks: 'src/main/server/ansible',
-                tasklogs: 'local/log/tasks',
-                patches: '/opt/bb/runtimes/bigboards-updater/patches',
-                facts: 'local/facts.d/'
+                root: fsu.absolute('local/root'),
+                tints: fsu.absolute('local/tints.d'),
+                tasks: fsu.absolute('src/main/server/ansible'),
+                tasklogs: fsu.absolute('local/log/tasks'),
+                patches: fsu.absolute('/opt/bb/runtimes/bigboards-updater/patches'),
+                facts: fsu.absolute('local/facts.d/')
             },
             url: {
                 library: 'http://library.bigboards.io'
