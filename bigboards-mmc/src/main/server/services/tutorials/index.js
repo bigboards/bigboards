@@ -9,7 +9,8 @@ module.exports = {
         var resource = new this.Resource(services.tutorials);
 
         API.registerGet(app, '/api/v1/tutorials', function(req, res) { return resource.list(req, res); });
-        API.registerGet(app, '/api/v1/tutorials/:owner/:tintId', function(req, res) { return resource.get(req, res); });
-        API.registerGet(app, /^\/api\/v1\/tutorials\/([\w\-_]+)\/([\w\-_]+)\/(.+)/, function(req, res) { return resource.getChapter(req, res); });
+        API.registerGet(app, '/api/v1/tutorials/:owner/:slug', function(req, res) { return resource.get(req, res); });
+        API.registerGet(app, '/api/v1/tutorials/:owner/:slug/toc', function(req, res) { return resource.getToc(req, res); });
+        API.registerGet(app, /^\/api\/v1\/tutorials\/([\w\-_]+)\/([\w\-_]+)\/page\/(.+)/, function(req, res) { return resource.getPage(req, res); });
     }
 };

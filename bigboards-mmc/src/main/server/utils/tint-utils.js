@@ -17,3 +17,7 @@ module.exports.parseManifest = function(hexService, templater, tintRoot, type, o
 module.exports.toTutorialElementPath = function(generationPath, path) {
     return generationPath + '/' + path.join('_') + '.bbt'
 };
+
+module.exports.toTutorialTocPath = function(generationPath) {
+    return generationPath + '/toc.bbt'
+};

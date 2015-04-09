@@ -20,13 +20,13 @@ module.exports = function(configuration, services) {
                 required: false
             }
         ],
-        execute: function(scope) {
+        execute: function(env, scope) {
             return services.hex.get()
                 .then(function(hex) {
                     scope.hex = hex;
                 })
                 .then(function() {
-                    return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.id);
+                    return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.slug);
                 })
                 .then(function(ft) {
                     console.log("Update the tint state to 'partial'");
@@ -36,7 +36,7 @@ module.exports = function(configuration, services) {
                     return scope;
                 })
                 .then(function() {
-                    return TaskUtils.removeFile(env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id);
+                    return TaskUtils.removeFile(env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
                 });
 
         }

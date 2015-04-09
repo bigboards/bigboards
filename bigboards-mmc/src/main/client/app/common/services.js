@@ -114,11 +114,17 @@ app.service('Tints', function(settings, $resource) {
     });
 });
 
-app.service('TintResources', function(settings, $http) {
+app.service('Tutorials', function(settings, $http) {
     var service = function() { };
 
-    service.prototype.read = function(tint, resource) {
-        var url = settings.api + '/api/v1/hex/tints/' + tint.type + '/' + tint.owner + '/' + tint.slug + '/' + resource;
+    service.prototype.toc = function(owner, slug) {
+        var url = settings.api + '/api/v1/tutorials/' + owner + '/' + slug + '/toc';
+
+        return $http.get(url);
+    };
+
+    service.prototype.page = function(owner, slug, path) {
+        var url = settings.api + '/api/v1/tutorials/' + owner + '/' + slug + '/page/' + path;
 
         return $http.get(url);
     };

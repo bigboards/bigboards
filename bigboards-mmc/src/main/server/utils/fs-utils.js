@@ -38,6 +38,14 @@ module.exports.readYamlFile = function(file) {
         });
 };
 
+module.exports.readJsonFile = function(file) {
+    return this
+        .readFile(file)
+        .then(function(content) {
+            return JSON.parse(content);
+        });
+};
+
 module.exports.readDir = function(dir) {
     var deferred = Q.defer();
 

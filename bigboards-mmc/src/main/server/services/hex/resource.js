@@ -163,13 +163,13 @@ HexResource.prototype.removeTint = function(req, res) {
     var owner = req.param('owner');
     if (!owner) return res.send(400, 'No owner has been passed!');
 
-    var tintId = req.param('tintId');
-    if (!tintId) return res.send(400, 'No tintId has been passed!');
+    var slug = req.param('slug');
+    if (!slug) return res.send(400, 'No slug has been passed!');
 
     return ApiUtils.handlePromise(res, this.hexService.removeTint({
-        type: 'stack',
+        type: type,
         owner: owner,
-        id: tintId
+        slug: slug
     }));
 };
 

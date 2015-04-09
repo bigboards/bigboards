@@ -48,7 +48,9 @@ module.exports = function(configuration, services) {
                     .then(function() {
                         console.log("Generating the tutorial content");
 
-                        return generateTutorialContentList(tintPath, scope.tintMeta.tutor.toc);
+                        return FsUtils.mkdir(tintPath + '/work').then(function() {
+                            return generateTutorialContentList(tintPath, scope.tintMeta.tutor.toc);
+                        });
                     })
                     .then(function() {
                         console.log("Changing the tint state to 'installed'");
@@ -75,16 +77,28 @@ function generateTutorialContentList(tintPath, toc) {
     var result = [];
 
     childrenToList(result, toc, [], tintPath);
+    var toc = childrenToToc(toc, []);
 
     for (var i = 0; i < result.length; i++) {
-        if (i > 0) result[i].previous = result[i - 1];
-        if (i < result.length - 1) result[i].next = result[i + 1];
+        if (i > 0) result[i].previous = {
+            path: result[i - 1].path,
+            title: result[i - 1].title
+        };
+
+        if (i < result.length - 1) result[i].next = {
+            path: result[i + 1].path,
+            title: result[i + 1].title
+        };
 
         // -- write the description to a file
         promises.push(FsUtils.jsonFile(TintUtils.toTutorialElementPath(tintPath + '/work', result[i].path), result[i]));
     }
 
-    return Q.allSettled(promises);
+    promises.push(FsUtils.jsonFile(TintUtils.toTutorialTocPath(tintPath + '/work'), toc));
+
+    return Q.allSettled(promises).then(function() {
+        winston.info('Tutorial Content Generated');
+    });
 }
 
 function childrenToList(list, children, path, tintPath) {
@@ -104,4 +118,27 @@ function childrenToList(list, children, path, tintPath) {
             childrenToList(list, children[i].children, p, tintPath);
         }
     }
+}
+
+function childrenToToc(children, path) {
+    var tocItems = [];
+
+    for (var i = 0; i < children.length; i++) {
+        var p = path.slice();
+        p.push(i + 1);
+
+        var item = {
+            path: p,
+            title: children[i].title,
+            type: (children[i].file) ? 'content' : 'header'
+        };
+
+        if (children[i].children && children[i].children.length > 0) {
+            item.children = childrenToToc(children[i].children, p);
+        }
+
+        tocItems.push(item);
+    }
+
+    return tocItems;
 }

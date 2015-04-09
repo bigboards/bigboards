@@ -51,41 +51,21 @@ TutorialService.prototype.listInstalled = function() {
     });
 };
 
-TutorialService.prototype.get = function(owner, tint) {
-    return tu.parseManifest(this.services.hex, this.templater, this.settings.dir.tints, 'tutor', owner, tint);
+TutorialService.prototype.get = function(owner, slug) {
+    return tu.parseManifest(this.services.hex, this.templater, this.settings.dir.tints, 'tutor', owner, slug);
 };
 
-TutorialService.prototype.getChapter = function(owner, slug, path) {
+TutorialService.prototype.getToc = function(owner, slug) {
+    var resourcePath = tu.toTutorialTocPath(this.settings.dir.tints + '/tutor/' + owner + '/' + slug + '/work');
+    return fsu.readJsonFile(resourcePath);
+};
+
+TutorialService.prototype.getPage = function(owner, slug, path) {
     var self = this;
 
-    return this.get(owner, slug).then(function(tint) {
-        var element = tint.tutor.toc;
-        for (var idx in path) {
-            element = element[path[idx]];
-            if (! element.children) break;
+    var resourcePath = tu.toTutorialElementPath(self.settings.dir.tints + '/tutor/' + owner + '/' + slug + '/work', path);
 
-            element = element.children;
-        }
-
-        var stack = tu.toChapterStack(tint.tutor.toc, path);
-
-        var resourcePath = self.settings.dir.tints + '/tutor/' + owner + '/' + slug + '/' + element.file;
-
-        return fsu.exists(resourcePath).then(function(exists) {
-            if (exists) {
-                return fsu.readFile(resourcePath).then(function(content) {
-                    return {
-                        path: path,
-                        content: content,
-                        next: tu.nextChapter(stack, path),
-                        previous: tu.previousChapter(stack, path)
-                    }
-                });
-            } else {
-                return Q.fail('No such file or directory: ' + resourcePath);
-            }
-        });
-    });
+    return fsu.readJsonFile(resourcePath);
 };
 
 TutorialService.prototype.remove = function(tint) {

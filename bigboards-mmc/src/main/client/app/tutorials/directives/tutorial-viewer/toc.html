@@ -1,7 +1,7 @@
 <h1>Table Of Contents</h1>
 
 <div class="container toc mt-15">
-    <div class="row" ng-repeat="h1 in tutorial.tutor.toc">
+    <div class="row" ng-repeat="h1 in toc">
         <h1 ng-click="selectTocItem(h1)">{{h1.title}}</h1>
         <div class="container" ng-if="h1.children">
             <div class="row" ng-repeat="h2 in h1.children">

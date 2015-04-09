@@ -10,7 +10,8 @@ var app = angular.module( 'mmc', [
     'nvd3ChartDirectives',
     'btford.socket-io',
     'btford.markdown',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'ngStorage'
 ]);
 
 app.constant('settings', {
@@ -18,7 +19,9 @@ app.constant('settings', {
     //api: 'http://infinite-n1:7000'
 });
 
-app.config(['$routeProvider', function($routeProvider) {
+app.config(['$routeProvider', '$sceProvider',  function($routeProvider, $sceProvider) {
+    $sceProvider.enabled(false);
+
     $routeProvider
         .when('/dashboard', {
             title: 'Dashboard',

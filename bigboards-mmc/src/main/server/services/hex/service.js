@@ -146,7 +146,7 @@ HexService.prototype.getTintResource = function(type, owner, tint, resource) {
 };
 
 HexService.prototype.removeTint = function(tint) {
-    return this.services.task.invoke(tint.type + '_uninstall', { tint: tint});
+    return this.services.task.invoke(tint.type + '_uninstall', { tint: tint });
 };
 
 HexService.prototype.installTint = function(tint) {
