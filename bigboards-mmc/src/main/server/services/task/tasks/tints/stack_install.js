@@ -48,7 +48,7 @@ module.exports = function(configuration, services) {
                     .then(function() {
                         var tintEnv = {
                             workdir: tintPath + '/work',
-                            hostsFile: '_hosts',
+                            hostFile: '_hosts',
                             verbose: env.verbose
                         };
 
