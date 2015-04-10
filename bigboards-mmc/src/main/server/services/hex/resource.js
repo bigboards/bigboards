@@ -100,6 +100,34 @@ HexResource.prototype.getTint = function(req, res) {
 };
 
 /**
+ * @api {get} /api/v1/hex/stacks/:owner/:tintId/:resource Request a specific resource from the tint.
+ * @apiVersion 1.0.5
+ *
+ * @apiName GetTintResource
+ * @apiGroup HexStack
+ *
+ * @apiParam {String} type      Tint type.
+ * @apiParam {String} owner     Tint owner.
+ * @apiParam {String} tintId    Tint id.
+ * @apiParam {String} resource  The resource to retrieve
+ */
+HexResource.prototype.getTintResource = function(req, res) {
+    var type = req.params[0];
+    if (!type) return res.send(400, 'No type has been passed!');
+
+    var owner = req.params[1];
+    if (!owner) return res.send(400, 'No owner has been passed!');
+
+    var tintId = req.params[2];
+    if (!tintId) return res.send(400, 'No tintId has been passed!');
+
+    var resource = req.params[3];
+    if (!tintId) return res.send(400, 'No resource has been passed!');
+
+    return ApiUtils.handlePromise(res, this.hexService.getTintResource(type, owner, tintId, resource));
+};
+
+/**
  * @api {post} /api/v1/hex/stacks Install a stack tint
  * @apiVersion 1.0.5
  *
@@ -135,13 +163,13 @@ HexResource.prototype.removeTint = function(req, res) {
     var owner = req.param('owner');
     if (!owner) return res.send(400, 'No owner has been passed!');
 
-    var tintId = req.param('tintId');
-    if (!tintId) return res.send(400, 'No tintId has been passed!');
+    var slug = req.param('slug');
+    if (!slug) return res.send(400, 'No slug has been passed!');
 
     return ApiUtils.handlePromise(res, this.hexService.removeTint({
-        type: 'stack',
+        type: type,
         owner: owner,
-        id: tintId
+        slug: slug
     }));
 };
 

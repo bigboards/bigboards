@@ -9,7 +9,9 @@ var app = angular.module( 'mmc', [
     'bb.tints.tutor',
     'nvd3ChartDirectives',
     'btford.socket-io',
-    'ui.bootstrap'
+    'btford.markdown',
+    'ui.bootstrap',
+    'ngStorage'
 ]);
 
 app.constant('settings', {
@@ -17,7 +19,9 @@ app.constant('settings', {
     //api: 'http://infinite-n1:7000'
 });
 
-app.config(['$routeProvider', function($routeProvider) {
+app.config(['$routeProvider', '$sceProvider',  function($routeProvider, $sceProvider) {
+    $sceProvider.enabled(false);
+
     $routeProvider
         .when('/dashboard', {
             title: 'Dashboard',
@@ -30,15 +34,20 @@ app.config(['$routeProvider', function($routeProvider) {
             controller: 'StackDetailController'
         })
 
-        .when('/tutors', {
-            title: 'Tutors',
-            templateUrl: 'app/tutors/list.html',
+        .when('/tutorials', {
+            title: 'Tutorials',
+            templateUrl: 'app/tutorials/list.html',
             controller: 'TutorListController'
         })
-        .when('/tutors/:owner/:id', {
-            title: 'Tutors',
-            templateUrl: 'app/tutors/list.html',
-            controller: 'TutorDetailController'
+        .when('/tutorials/:owner/:slug', {
+            title: 'Tutorials',
+            templateUrl: 'app/tutorials/detail.html',
+            controller: 'TutorDetailController',
+            resolve : {
+                tint: ['$route', 'Tints', function($route, Tints) {
+                    return Tints.get({type: 'tutor', owner: $route.current.params.owner, slug: $route.current.params.slug});
+                }]
+            }
         })
 
         .when('/tasks', {

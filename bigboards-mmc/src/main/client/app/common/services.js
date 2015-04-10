@@ -114,6 +114,24 @@ app.service('Tints', function(settings, $resource) {
     });
 });
 
+app.service('Tutorials', function(settings, $http) {
+    var service = function() { };
+
+    service.prototype.toc = function(owner, slug) {
+        var url = settings.api + '/api/v1/tutorials/' + owner + '/' + slug + '/toc';
+
+        return $http.get(url);
+    };
+
+    service.prototype.page = function(owner, slug, path) {
+        var url = settings.api + '/api/v1/tutorials/' + owner + '/' + slug + '/page/' + path;
+
+        return $http.get(url);
+    };
+
+    return new service;
+});
+
 app.service('TintConfig', function($resource) {
     return $resource('/api/v1/tints/:tintId/config', {tintId: '@tintId'});
 });

@@ -5,7 +5,6 @@ tutorModule.controller('TutorListController', function($scope, Tutors, $routePar
     $scope.tutors = Tutors.list();
 });
 
-tutorModule.controller('TutorDetailController', function($scope, Tutors, $routeParams) {
-    // -- load the stack from the server
-    //$scope.stack = Stacks.get({owner: $routeParams['owner'], id: $routeParams['id']});
+tutorModule.controller('TutorDetailController', function($scope, tint, $routeParams) {
+    $scope.tint = tint;
 });

@@ -23,11 +23,11 @@ module.exports = function(configuration, services) {
                 required: false
             }
         ],
-        execute: function(scope) {
+        execute: function(env, scope) {
             return services.hex.get().then(function(hex) {
                 scope.hex = hex;
 
-                var tintPath = '/opt/bb/tints.d/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug;
+                var tintPath = env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug;
                 scope.tint.path = tintPath;
 
                 winston.info('Installing tint ' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
@@ -43,15 +43,16 @@ module.exports = function(configuration, services) {
                     })
                     .then(function(scope) {
                         console.log("Running the stack pre-install script");
-                        return TaskUtils.runPlaybook('tints/stack_pre_install', scope);
+                        return TaskUtils.playbook(env, 'tints/stack_pre_install', scope);
                     })
                     .then(function() {
-                        return TaskUtils.playbook({
-                            playbook: '_install',
-                            scope: scope,
-                            hosts: '_hosts',
-                            path: tintPath + '/work'
-                        });
+                        var tintEnv = {
+                            workdir: tintPath + '/work',
+                            hostsFile: '_hosts',
+                            verbose: env.verbose
+                        };
+
+                        return TaskUtils.playbook(tintEnv, '_install', scope);
                     })
                     .then(function() {
                         console.log("Running the stack post-install script using 'installed' as the outcome");

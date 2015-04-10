@@ -106,6 +106,8 @@ TaskService.prototype.registerDefaultTasks = function(configuration, services) {
     // -- tint tasks
     this.register(require('./tasks/tints/stack_install')(configuration, services));
     this.register(require('./tasks/tints/stack_uninstall')(configuration, services));
+    this.register(require('./tasks/tints/tutor_install')(configuration, services));
+    this.register(require('./tasks/tints/tutor_uninstall')(configuration, services));
 
     // -- update / patch
 //    this.register(require('./tasks/patch/update')(configuration));
@@ -167,6 +169,15 @@ TaskService.prototype.error = function(taskCode, taskId) {
     return defer.promise;
 };
 
+TaskService.prototype.createTaskEnvironment = function() {
+    return {
+        hostFile: this.settings.file.hosts,
+        workdir: this.settings.dir.tasks,
+        verbose: false,
+        settings: this.settings
+    }
+};
+
 /**
  * Invoke the task with the given code.
  *
@@ -179,69 +190,67 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
 
     var deferred = Q.defer();
 
-    if (!taskCode) {
+    if (!taskCode || !this.tasks[taskCode]) {
         deferred.reject(new Error('Invalid task code'));
     } else {
         var task = this.tasks[taskCode];
-        if (!task) {
-            deferred.reject(new Error('Invalid task code'));
-        }
-        else {
-            var taskId = uuid.v4();
+
+        var taskId = uuid.v4();
+
+        try {
+            var executionScope = buildTaskScope(task, parameters);
+            var taskLogDir = this.settings.dir.tasks + '/' + taskCode + '/' + taskId;
+
+            // -- create the output streams
+            mkdirp.sync(this.settings.dir.tasks + '/' + taskCode + '/' + taskId);
+            var errorStream = fs.createWriteStream(taskLogDir + '/error.log');
+            var outputStream = fs.createWriteStream(taskLogDir + '/output.log');
+
+            this.currentTask = { attempt: taskId, task: { code: task.code, description: task.description } };
+
+            // -- invoke the task
+            winston.log('info', 'invoking task "%s": %s', taskCode, task.description);
+            eventEmitter.emit('task:started', this.currentTask);
 
             try {
-                var executionScope = buildTaskScope(task, parameters);
-                var taskLogDir = this.settings.dir.tasks + '/' + taskCode + '/' + taskId;
+                var env = this.createTaskEnvironment();
 
-                // -- create the output streams
-                mkdirp.sync(this.settings.dir.tasks + '/' + taskCode + '/' + taskId);
-                var errorStream = fs.createWriteStream(taskLogDir + '/error.log');
-                var outputStream = fs.createWriteStream(taskLogDir + '/output.log');
+                task.execute(env, executionScope).then(function (data) {
+                    eventEmitter.emit('task:finished', { attempt: taskId, data: data });
 
-                this.currentTask = { attempt: taskId, task: { code: task.code, description: task.description } };
+                    outputStream.close();
+                    errorStream.close();
 
-                // -- invoke the task
-                winston.log('info', 'invoking task "%s": %s', taskCode, task.description);
-                eventEmitter.emit('task:started', this.currentTask);
-
-                try {
-                    task.execute(executionScope).then(function (data) {
-                        eventEmitter.emit('task:finished', { attempt: taskId, data: data });
-
-                        outputStream.close();
-                        errorStream.close();
-
-                        self.currentTask = null;
-
-                    }, function (error) {
-                        winston.log('info', 'Task invocation resulted in an error: ' + error);
-                        winston.log('info', error.stack);
-
-                        outputStream.close();
-                        errorStream.close();
-
-                        eventEmitter.emit('task:failed', { attempt: self.currentTask, error: error });
-                        self.currentTask = null;
-                    }, function (progress) {
-                        if (progress.channel == 'output') outputStream.write(progress.data);
-                        else if (progress.channel == 'error') errorStream.write(progress.data);
-
-                        eventEmitter.emit('task:busy', { attempt: self.currentTask, data: progress });
-                    });
-
-                    deferred.resolve(self.currentTask);
-                } catch (err) {
-                    deferred.reject(err);
-                    winston.log('info', 'Unable to invoke a task: ' + err);
-                    winston.log('info', err.stack);
-
-                    eventEmitter.emit('task:failed', { attempt: self.currentTask, error: err });
                     self.currentTask = null;
-                }
 
-            } catch (error) {
-                deferred.reject(error);
+                }, function (error) {
+                    winston.log('info', 'Task invocation resulted in an error: ' + error);
+                    winston.log('info', error.stack);
+
+                    outputStream.close();
+                    errorStream.close();
+
+                    eventEmitter.emit('task:failed', { attempt: self.currentTask, error: error });
+                    self.currentTask = null;
+                }, function (progress) {
+                    if (progress.channel == 'output') outputStream.write(progress.data);
+                    else if (progress.channel == 'error') errorStream.write(progress.data);
+
+                    eventEmitter.emit('task:busy', { attempt: self.currentTask, data: progress });
+                });
+
+                deferred.resolve(self.currentTask);
+            } catch (err) {
+                deferred.reject(err);
+                winston.log('info', 'Unable to invoke a task: ' + err);
+                winston.log('info', err.stack);
+
+                eventEmitter.emit('task:failed', { attempt: self.currentTask, error: err });
+                self.currentTask = null;
             }
+
+        } catch (error) {
+            deferred.reject(error);
         }
     }
 
