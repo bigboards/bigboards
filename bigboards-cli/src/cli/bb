@@ -13,7 +13,16 @@ then
 fi
 
 usage() {
-    echo "Usage: $0 [version|network|run|mmc|containers|system|help]" 1>&2; exit 1;
+    echo "Usage: $0 [version|network|run|mmc|container|system|help]" 1>&2; exit 1;
+}
+
+validateTintBuilder() {
+    [ ! -e "~/.tint-builder" ] && echo "Not .tint-builder file found in the home directory of ${USER} " && exit 8;
+    source "~/.tint-builder"
+
+    [ -z "${BB_USERNAME}" ] && echo "BB_USERNAME not set" && exit 7;
+    [ -z "${BB_EMAIL}" ] && echo "BB_EMAIL not set" && exit 7;
+    [ -z "${BB_PASSWORD}" ] && echo "BB_PASSWORD not set" && exit 7;
 }
 
 update() {
@@ -82,7 +91,7 @@ case "${ACTION}" in
     mmc)
         sudo service bigboards-mmc $2
         ;;
-    containers)
+    container)
         case "${2}" in
             list)
                 sudo docker ps
@@ -92,6 +101,23 @@ case "${ACTION}" in
                 ;;
             tail)
                 sudo docker logs --tail=100 -f $3
+                ;;
+            build)
+                validateTintBuilder
+
+                ARCH=$(uname -m)
+                NAME='${3}'
+                VERSION='${4}'
+                IMAGE_NAME="${BB_USERNAME}/${NAME}-${ARCH}:${VERSION}"
+
+                echo "Building ${IMAGE_NAME}"
+                sudo -E docker build -t ${IMAGE_NAME} ${5}
+
+                echo "Logging into the docker hub"
+                docker login -e $BB_EMAIL} -u ${BB_USERNAME} -p ${BB_PASSWORD}
+
+                echo "Pushing ${IMAGE_NAME}"
+                sudo -E docker push ${IMAGE_NAME}
                 ;;
             *)
                 echo "Invalid switch action '${2}'"
