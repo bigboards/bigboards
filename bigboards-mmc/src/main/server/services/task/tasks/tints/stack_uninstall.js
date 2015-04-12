@@ -28,7 +28,7 @@ module.exports = function(configuration, services) {
                     scope.hex = hex;
                 })
                 .then(function() {
-                    return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.id);
+                    return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.slug);
                 })
                 .then(function(ft) {
                     console.log("Update the tint state to 'partial'");
@@ -40,7 +40,7 @@ module.exports = function(configuration, services) {
                 })
                 .then(function() {
                     var tintEnv = {
-                        workdir: env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id + '/work',
+                        workdir: env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug + '/work',
                         hostsFile: '_hosts',
                         verbose: env.verbose
                     };
@@ -48,7 +48,7 @@ module.exports = function(configuration, services) {
                     return TaskUtils.playbook(tintEnv, '_uninstall', scope);
                 })
                 .then(function() {
-                    return TaskUtils.removeFile(env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.id);
+                    return TaskUtils.removeFile(env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
                 });
 
         }
