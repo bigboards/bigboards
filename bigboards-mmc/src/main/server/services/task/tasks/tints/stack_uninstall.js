@@ -41,7 +41,7 @@ module.exports = function(configuration, services) {
                 .then(function() {
                     var tintEnv = {
                         workdir: env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug + '/work',
-                        hostsFile: '_hosts',
+                        hostFile: '_hosts',
                         verbose: env.verbose
                     };
 
