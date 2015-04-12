@@ -20,7 +20,7 @@ module.exports = function(configuration, services) {
                 required: false
             }
         ],
-        execute: function(scope) {
+        execute: function(env, scope) {
              // -- TODO: check if the uninstall script exists
 
             return services.hex.get()
