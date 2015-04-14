@@ -64,26 +64,26 @@ case "${ACTION}" in
                 ;;
             help|*)
                 cat <<-EOF
-                Manage the software version on the hex.
+Manage the software version on the hex.
 
-                USAGE: $0 version [switch|update|help] [arguments]
+USAGE: $0 version [switch|update|help] [arguments]
 
-                OPTIONS
+OPTIONS
 
-                    update  Update the software version on the hex. An update is a smaller update of some of the
-                            functionality of the hex.
-
-
-                    switch  Switch to a new release of the software. A release is different from an update
-                            and is considered to be a major upgrade.
-
-                            arguments:
-                                container-name     The name of the container to connect to
+    update  Update the software version on the hex. An update is a smaller update of some of the
+            functionality of the hex.
 
 
-                    help    Show this help message
+    switch  Switch to a new release of the software. A release is different from an update
+            and is considered to be a major upgrade.
 
-                EOF
+            arguments:
+                container-name     The name of the container to connect to
+
+
+    help    Show this help message
+
+EOF
                 ;;
         esac
         ;;
@@ -100,23 +100,23 @@ case "${ACTION}" in
                 ;;
             help|*)
                 cat <<-EOF
-                Manage the network.
+Manage the network.
 
-                USAGE: $0 network [switch|help] [arguments]
+USAGE: $0 network [switch|help] [arguments]
 
-                OPTIONS
+OPTIONS
 
-                    switch  Switch the internal network. This is an important step when using multiple
-                            hexes in the same network.
+    switch  Switch the internal network. This is an important step when using multiple
+            hexes in the same network.
 
-                            arguments:
-                                ip-prefix     The network prefix to use. This is the first 3 numbers of your
-                                              ip address. Valid examples are 172.21.3 or 192.168.1
+            arguments:
+                ip-prefix     The network prefix to use. This is the first 3 numbers of your
+                              ip address. Valid examples are 172.21.3 or 192.168.1
 
 
-                    help    Show this help message
+    help    Show this help message
 
-                EOF
+EOF
                 ;;
         esac
         ;;
@@ -166,41 +166,41 @@ case "${ACTION}" in
                 ;;
             help|*)
                 cat <<-EOF
-                Manage the docker containers.
+Manage the docker containers.
 
-                USAGE: $0 container [list|attach|tail|build|help] [arguments]
+USAGE: $0 container [list|attach|tail|build|help] [arguments]
 
-                OPTIONS
+OPTIONS
 
-                    list    List the available containers
-
-
-                    attach  Attach the terminal to the container with the given name
-
-                            arguments:
-                                container-name     The name of the container to connect to
+    list    List the available containers
 
 
-                    tail    Follow the output of the container with the given name
+    attach  Attach the terminal to the container with the given name
 
-                            arguments:
-                                container-name     The name of the container to connect to
-
-
-                    build   Build the docker containers for the tint with the given git url. We will look for a
-                            folder named 'docker' inside the repository. We will consider each subfolder of the
-                            docker folder a repository.
-
-                            arguments:
-                                git-url           The url pointing to the git repository. The git url can be one
-                                                  from github, bitbucket or any other valid url which can be passed
-                                                  to the git clone command.
-                                folder-name       The name of the folder hosting the tint files.
+            arguments:
+                container-name     The name of the container to connect to
 
 
-                    help    Show this help message
+    tail    Follow the output of the container with the given name
 
-                EOF
+            arguments:
+                container-name     The name of the container to connect to
+
+
+    build   Build the docker containers for the tint with the given git url. We will look for a
+            folder named 'docker' inside the repository. We will consider each subfolder of the
+            docker folder a repository.
+
+            arguments:
+                git-url           The url pointing to the git repository. The git url can be one
+                                  from github, bitbucket or any other valid url which can be passed
+                                  to the git clone command.
+                folder-name       The name of the folder hosting the tint files.
+
+
+    help    Show this help message
+
+EOF
                 ;;
             *)
         esac
@@ -221,41 +221,41 @@ case "${ACTION}" in
                 ;;
             help|*)
                 cat <<-EOF
-                Manage the system.
+Manage the system.
 
-                USAGE: $0 system [purge|version|help]
+USAGE: $0 system [purge|version|help]
 
-                OPTIONS
+OPTIONS
 
-                    purge       Clear the system from all containers and state. You will end up with a
-                                pristine system to start from.
-
-
-                    version     Show the hardware revision
+    purge       Clear the system from all containers and state. You will end up with a
+                pristine system to start from.
 
 
-                    help        Show this help message
+    version     Show the hardware revision
 
-                EOF
+
+    help        Show this help message
+
+EOF
                 ;;
         esac
         ;;
     help|*)
         cat <<-EOF
-        Interact with the hex.
+Interact with the hex.
 
-        USAGE: $0 [version|network|run|mmc|container|system|help]
+USAGE: $0 [version|network|run|mmc|container|system|help]
 
-        OPTIONS
+OPTIONS
 
-            version     Manage the software version on the hex.
-            network     Manage the network.
-            run         Run a command on all nodes of the hex.
-            mmc         Pass a command to the mmc daemon.
-            container   Manage the docker containers.
-            system      Manage the system.
-            help        Show this help message
+    version     Manage the software version on the hex.
+    network     Manage the network.
+    run         Run a command on all nodes of the hex.
+    mmc         Pass a command to the mmc daemon.
+    container   Manage the docker containers.
+    system      Manage the system.
+    help        Show this help message
 
-        EOF
+EOF
         ;;
 esac
