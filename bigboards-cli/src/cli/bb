@@ -62,9 +62,28 @@ case "${ACTION}" in
             update)
                 update
                 ;;
-            *)
-                echo "Invalid version action '${2}'"
-                usage
+            help|*)
+                cat <<-EOF
+                Manage the software version on the hex.
+
+                USAGE: $0 version [switch|update|help] [arguments]
+
+                OPTIONS
+
+                    update  Update the software version on the hex. An update is a smaller update of some of the
+                            functionality of the hex.
+
+
+                    switch  Switch to a new release of the software. A release is different from an update
+                            and is considered to be a major upgrade.
+
+                            arguments:
+                                container-name     The name of the container to connect to
+
+
+                    help    Show this help message
+
+                EOF
                 ;;
         esac
         ;;
@@ -79,9 +98,25 @@ case "${ACTION}" in
 
                 ${PLAYBOOK} --extra-vars "ip_prefix=${3}" ${DIR}/ansible/switch_ip/switch_ip.yml
                 ;;
-            *)
-                echo "Invalid network action '${2}'"
-                usage
+            help|*)
+                cat <<-EOF
+                Manage the network.
+
+                USAGE: $0 network [switch|help] [arguments]
+
+                OPTIONS
+
+                    switch  Switch the internal network. This is an important step when using multiple
+                            hexes in the same network.
+
+                            arguments:
+                                ip-prefix     The network prefix to use. This is the first 3 numbers of your
+                                              ip address. Valid examples are 172.21.3 or 192.168.1
+
+
+                    help    Show this help message
+
+                EOF
                 ;;
         esac
         ;;
@@ -106,23 +141,68 @@ case "${ACTION}" in
                 validateTintBuilder
 
                 ARCH=$(uname -m)
-                NAME='${3}'
-                VERSION='${4}'
-                IMAGE_NAME="${BB_USERNAME}/${NAME}-${ARCH}:${VERSION}"
-
-                echo "Building ${IMAGE_NAME}"
-                sudo -E docker build -t ${IMAGE_NAME} ${5}
+                GIT_URL=$3
+                SLUG=$4
 
                 echo "Logging into the docker hub"
-                docker login -e $BB_EMAIL} -u ${BB_USERNAME} -p ${BB_PASSWORD}
+                docker login -e ${BB_EMAIL} -u ${BB_USERNAME} -p ${BB_PASSWORD}
 
-                echo "Pushing ${IMAGE_NAME}"
-                sudo -E docker push ${IMAGE_NAME}
+                pushd ~/build
+                git clone ${GIT_URL} ${SLUG}
+
+                for D in `find ${SLUG}/docker -mindepth 1 -type d`
+                do
+                    CONTAINER_NAME="$(basename $D)"
+                    IMAGE_NAME="${BB_USERNAME}/${CONTAINER_NAME}-${ARCH}:latest"
+
+                    echo "Building ${IMAGE_NAME}"
+                    sudo -E docker build -t ${IMAGE_NAME} ${D}
+
+                    echo "Pushing ${IMAGE_NAME}"
+                    sudo -E docker push ${IMAGE_NAME}
+                done
+
+                popd
+                ;;
+            help|*)
+                cat <<-EOF
+                Manage the docker containers.
+
+                USAGE: $0 container [list|attach|tail|build|help] [arguments]
+
+                OPTIONS
+
+                    list    List the available containers
+
+
+                    attach  Attach the terminal to the container with the given name
+
+                            arguments:
+                                container-name     The name of the container to connect to
+
+
+                    tail    Follow the output of the container with the given name
+
+                            arguments:
+                                container-name     The name of the container to connect to
+
+
+                    build   Build the docker containers for the tint with the given git url. We will look for a
+                            folder named 'docker' inside the repository. We will consider each subfolder of the
+                            docker folder a repository.
+
+                            arguments:
+                                git-url           The url pointing to the git repository. The git url can be one
+                                                  from github, bitbucket or any other valid url which can be passed
+                                                  to the git clone command.
+                                folder-name       The name of the folder hosting the tint files.
+
+
+                    help    Show this help message
+
+                EOF
                 ;;
             *)
-                echo "Invalid switch action '${2}'"
-                usage
-                ;;
         esac
         ;;
     system)
@@ -139,17 +219,43 @@ case "${ACTION}" in
                     echo "unknown"
                 fi
                 ;;
-            *)
-                echo "Invalid switch action '${2}'"
-                usage
+            help|*)
+                cat <<-EOF
+                Manage the system.
+
+                USAGE: $0 system [purge|version|help]
+
+                OPTIONS
+
+                    purge       Clear the system from all containers and state. You will end up with a
+                                pristine system to start from.
+
+
+                    version     Show the hardware revision
+
+
+                    help        Show this help message
+
+                EOF
                 ;;
         esac
         ;;
-    help)
-        usage
-        ;;
-    *)
-        echo "Invalid action '$ACTION'"
-        usage
+    help|*)
+        cat <<-EOF
+        Interact with the hex.
+
+        USAGE: $0 [version|network|run|mmc|container|system|help]
+
+        OPTIONS
+
+            version     Manage the software version on the hex.
+            network     Manage the network.
+            run         Run a command on all nodes of the hex.
+            mmc         Pass a command to the mmc daemon.
+            container   Manage the docker containers.
+            system      Manage the system.
+            help        Show this help message
+
+        EOF
         ;;
 esac
