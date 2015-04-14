@@ -5,6 +5,9 @@
     state: "directory"
     path: "{{'{{'}} config_path {{'}}'}}/{{ item.key }}"
 
+- name: make sure the role template directory is empty
+  shell: "rm -rf {{'{{'}} config_path {{'}}'}}/{{ item.key }}/*"
+
 - name: make sure the configuration files are available
   template:
     src: "{{ '{{' }} item {{ '}}' }}"
