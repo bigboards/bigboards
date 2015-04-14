@@ -130,6 +130,15 @@ case "${ACTION}" in
             purge)
                 ${PLAYBOOK} ${DIR}/ansible/system/purge.yml
                 ;;
+            version)
+                if [ "$(dmesg |grep 'chip 4329' |wc -l)" -eq "1" ]; then
+                    echo "B1"
+                elif [ "$(dmesg |grep 'chip 4330' |wc -l)" -eq "1"  ]; then
+                    echo "C1"
+                else
+                    echo "unknown"
+                fi
+                ;;
             *)
                 echo "Invalid switch action '${2}'"
                 usage
