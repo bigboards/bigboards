@@ -41,7 +41,7 @@
       lineinfile:
         dest: "{{ tint.path }}/work/_tint.yml"
         create: "yes"
-        regexp: '\{\{(.*)\}\}' #REMARK: must be single quotes here to allow escape characters
+        regexp: '\{\{(.*nodes.*)\}\}' #REMARK: must be single quotes here to allow escape characters
         state: "absent"
 
     - name: source the tint metadata file
