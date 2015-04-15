@@ -148,7 +148,14 @@ EOF
                 sudo docker login -e ${BB_EMAIL} -u ${BB_USERNAME} -p ${BB_PASSWORD}
 
                 pushd ~/build
-                git clone ${GIT_URL} ${SLUG}
+                if [ -e "${SLUG}" ];
+                then
+                    pushd ${SLUG}
+                    git pull
+                    popd
+                else
+                    git clone ${GIT_URL} ${SLUG}
+                fi
 
                 for D in `find ${SLUG}/docker -mindepth 1 -type d`
                 do
