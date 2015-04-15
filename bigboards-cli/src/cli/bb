@@ -17,8 +17,8 @@ usage() {
 }
 
 validateTintBuilder() {
-    [ ! -e "~/.tint-builder" ] && echo "Not .tint-builder file found in the home directory of ${USER} " && exit 8;
-    source "~/.tint-builder"
+    [ ! -e "${HOME}/.tint-builder" ] && echo "No .tint-builder file found in the home directory of ${USER} " && exit 8;
+    source "${HOME}/.tint-builder"
 
     [ -z "${BB_USERNAME}" ] && echo "BB_USERNAME not set" && exit 7;
     [ -z "${BB_EMAIL}" ] && echo "BB_EMAIL not set" && exit 7;
@@ -145,7 +145,7 @@ EOF
                 SLUG=$4
 
                 echo "Logging into the docker hub"
-                docker login -e ${BB_EMAIL} -u ${BB_USERNAME} -p ${BB_PASSWORD}
+                sudo docker login -e ${BB_EMAIL} -u ${BB_USERNAME} -p ${BB_PASSWORD}
 
                 pushd ~/build
                 git clone ${GIT_URL} ${SLUG}
