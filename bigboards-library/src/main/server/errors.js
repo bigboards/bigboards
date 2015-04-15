@@ -53,3 +53,11 @@ function MissingConfigurationError(message) {
 }
 MissingConfigurationError.prototype = Object.create(Error.prototype);
 module.exports.MissingConfigurationError = MissingConfigurationError;
+
+function AuthenticationError(message) {
+    this.name = "AuthenticationError";
+    this.message = message;
+    this.stack = Error().stack;
+}
+MissingConfigurationError.prototype = Object.create(Error.prototype);
+module.exports.AuthenticationError = AuthenticationError;

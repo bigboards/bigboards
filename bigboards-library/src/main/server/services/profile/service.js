@@ -15,6 +15,18 @@ ProfileService.prototype.get = function(id) {
     return this.storage.profile.get(id);
 };
 
+ProfileService.prototype.getOrAdd = function(id, data) {
+    if (! id)
+        throw new Errors.MissingParameterError('No profile id has been provided');
+
+    var self = this;
+    return this.storage.profile.get(id).then(function(profile) {
+        if (profile) return profile;
+
+        return self.add(data);
+    });
+};
+
 ProfileService.prototype.add = function(data) {
     return this.storage.profile.add(data);
 };
