@@ -16,8 +16,10 @@ iface eth0 inet static
 auto eth0:0
 iface eth0:0 inet dhcp
 
+{% if ansible_local.bb.hex.arch == 'arm' %}
 # usb network interface
 auto usb0
 iface usb0 inet static
     address 192.168.17.1
     netmask 255.255.255.0
+{% endif %}

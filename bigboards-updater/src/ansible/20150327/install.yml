@@ -13,8 +13,7 @@
         dest: '/usr/bin/{{ item }}'
         mode: 777
       with_items:
-        - 'docker-1.5.0'
-        - 'dockerinit-1.5.0'
+        - 'docker-1.5.0-{{ ansible_local.bb.hex.arch }}'
 
     - name: make sure docker can reach its depending libraries
       file:
@@ -36,7 +35,6 @@
       with_items:
         - { src: 'docker-1.5.0', dest: 'docker' }
         - { src: 'docker-1.5.0', dest: 'docker.io' }
-        - { src: 'dockerinit-1.5.0', dest: 'dockerinit' }
 
     - name: make sure docker is started
       service:

@@ -1,0 +1,15 @@
+---
+- hosts: all:!localhost
+  sudo: yes
+  tasks:
+    - name: make sure the docker data directory exists
+      file:
+        state: 'directory'
+        path: '/data/docker'
+        owner: 'bb'
+        mode: '777'
+
+    - name: make sure docker is using the correct backend storage
+      copy:
+        src: 'files/docker.io'
+        dest: '/etc/default/docker.io'

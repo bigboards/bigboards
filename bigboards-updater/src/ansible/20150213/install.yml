@@ -19,9 +19,11 @@
         line: '{{ item }}'
         regexp: '^{{ item }}$'
         state: 'present'
+      when: ansible_local.bb.hex.arch == "arm"
       with_items:
         - usbnet
         - g_ether
+
     - name: update the network interfaces
       template:
         src: 'templates/etc/network/interfaces'
@@ -29,6 +31,7 @@
         owner: 'root'
         group: 'root'
         mode: 644
+
     - name: make sure we use the correct ntp settings
       copy:
         src: 'files/{{ item }}'
