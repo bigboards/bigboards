@@ -4,19 +4,21 @@ var ApiUtils = require('../../utils/api-utils'),
 function ProfileResource(service) {
     this.service = service;
 }
-/*********************************************************************************************************************
- * STACKS
- *********************************************************************************************************************/
 
 ProfileResource.prototype.search = function(req, res) {
+    var q = null;
+    if (req.params['q']) {
+        q = req.params['q'] + '*';
+    }
+
     return ApiUtils.handlePromise(res, this.service.search(
-        req.param('q') + '*',
+        q,
         ApiUtils.parsePaging(req)
     ));
 };
 
 ProfileResource.prototype.get = function(req, res) {
-    return ApiUtils.handlePromise(res, this.service.get(req.param['profileId']));
+    return ApiUtils.handlePromise(res, this.service.get(req.params['id']));
 };
 
 ProfileResource.prototype.add = function(req, res) {
@@ -24,11 +26,11 @@ ProfileResource.prototype.add = function(req, res) {
 };
 
 ProfileResource.prototype.update = function(req, res) {
-    return ApiUtils.handlePromise(res, this.service.update(req.param('profileId'), req.body));
+    return ApiUtils.handlePromise(res, this.service.update(req.params['id'], req.body));
 };
 
 ProfileResource.prototype.remove = function(req, res) {
-    return ApiUtils.handlePromise(res, this.service.remove(req.param('profileId')));
+    return ApiUtils.handlePromise(res, this.service.remove(req.params['id']));
 };
 
 module.exports = ProfileResource;

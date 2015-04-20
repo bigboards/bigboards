@@ -84,8 +84,18 @@ module.exports.registerGet = function(app, path, fn) {
     winston.info('   [GET] ' + path);
 };
 
+module.exports.registerSecureGet = function(app, path, guard, fn) {
+    app.get(path, guard, fn);
+    winston.info('   [GET] ' + path);
+};
+
 module.exports.registerPut = function(app, path, fn) {
     app.put(path, function(req, res) { return fn(req, res); });
+    winston.info('   [PUT] ' + path);
+};
+
+module.exports.registerSecurePut = function(app, path, guard, fn) {
+    app.put(path, guard, function(req, res) { return fn(req, res); });
     winston.info('   [PUT] ' + path);
 };
 
@@ -94,38 +104,37 @@ module.exports.registerPost = function(app, path, fn) {
     winston.info('  [POST] ' + path);
 };
 
+module.exports.registerSecurePost = function(app, path, guard, fn) {
+    app.post(path, guard, function(req, res) { return fn(req, res); });
+    winston.info('  [POST] ' + path);
+};
+
 module.exports.registerDelete = function(app, path, fn) {
     app.delete(path, function(req, res) { return fn(req, res); });
     winston.info('[DELETE] ' + path);
 };
 
-module.exports.asTribeMember = function(req, res, tribe, fn) {
-    if (this.isAuthorized(req, tribe, 'MEMBER')) {
-        return fn(req, res);
-    } else {
-        return res.send(401, 'The service is only available to members of the ' + tribe + ' tribe');
-    }
+module.exports.registerSecureDelete = function(app, path, guard, fn) {
+    app.delete(path, guard, function(req, res) { return fn(req, res); });
+    winston.info('[DELETE] ' + path);
 };
 
-module.exports.asTribeChief = function(req, res, tribe, fn) {
-    if (this.isAuthorized(req, tribe, 'CHIEF')) {
-        return fn(req, res);
-    } else {
-        return res.send(401, 'The service is only available to chiefs of the ' + tribe + ' tribe');
-    }
+module.exports.onlyIfUser = function(req, res, next) {
+    var user = req.user;
+
+    if (! user) return res.status(403).send("Not Authorized");
+
+    return next();
 };
 
-module.exports.isAuthorized = function(req, organisation, role) {
-    if (!req.profile) return false;
+module.exports.onlyIfOwner = function(req, res, next) {
+    var owner = req.param('owner');
+    var user = req.user;
 
-    // -- perform tribe validation if needed
-    if (role != null || role != 'ANY') {
-        // -- if you need to be a chief, you should have the tribe in your profile.chief
-        if (role == 'CHIEF' && req.profile.chief.indexOf(organisation) == -1) return false;
+    if (! owner) return res.status(400).send("No owner has been defined");
+    if (! user) return res.status(403).send("Not Authorized");
 
-        // -- if you need to be a member, you should have the tribe in your profile.tribes
-        if (role == 'MEMBER' && req.profile.organisations.indexOf(organisation) == -1) return false;
-    }
+    if (user != owner) return res.status(403).send("Not Authorized");
 
-    return true;
+    return next();
 };

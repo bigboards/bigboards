@@ -17,10 +17,14 @@ var storage = require('./storage')(
 /* -- Services -- */
 var Auth = require('./services/auth');
 var Profile = require('./services/profile');
+var Stack = require('./services/stack');
+var Tutorial = require('./services/tutorial');
 
 var services = {};
-services.Profile = new Profile.Service(storage);
-services.Auth = new Auth.Service(storage);
+services.tutorial = new Tutorial.Service(storage);
+services.stack = new Stack.Service(storage);
+services.profile = new Profile.Service(storage);
+services.auth = new Auth.Service(storage);
 
 /* -- Security -- */
 var passport = require('passport');
@@ -41,7 +45,7 @@ passport.use(new BitbucketStrategy(Config.oauth.bitbucket,
             origin: 'bitbucket'
         };
 
-        services.Auth.login(profileId, token, profileData)
+        services.auth.login(profileId, token, profileData)
             .then(function(user) { return done(null, user); })
             .fail(function(error) { return done(error, null); });
     }
@@ -50,9 +54,9 @@ passport.use(new BitbucketStrategy(Config.oauth.bitbucket,
 var GitHubStrategy = require('passport-github').Strategy;
 passport.use(new GitHubStrategy(Config.oauth.github,
     function(accessToken, refreshToken, profile, done) {
-        var profileId = profile.id;
+        var profileId = profile.username;
         var profileData = {
-            username: profile.id,
+            username: profile.username,
             name: profile.name,
             email: profile.email,
             bio: profile.bio,
@@ -61,22 +65,26 @@ passport.use(new GitHubStrategy(Config.oauth.github,
             origin: 'github'
         };
 
-        services.Auth.login(profileId, accessToken, profileData)
-            .then(function(user) { return done(null, user); })
+        services.auth.login(profileId, accessToken, profileData)
+            .then(function(user) {
+                return done(null, user);
+            })
             .fail(function(error) { return done(error, null); });
     }
 ));
 
 var app = express();
 app.use(passport.initialize());
-app.use(AuthMiddleware.auth(services.Auth));
+app.use(AuthMiddleware.auth(services.auth));
 app.use(express.static(__dirname + '/client'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(errorHandler);
 
 Auth.link(app, services, passport);
-Profile.link(app, services, passport);
+Profile.link(app, services);
+Stack.link(app, services);
+Tutorial.link(app, services);
 
 app.listen(Config.port, function () {
     winston.info();

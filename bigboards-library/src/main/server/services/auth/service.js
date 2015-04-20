@@ -33,22 +33,26 @@ AuthService.prototype.isAuthenticated = function(tokenString) {
 
 AuthService.prototype.login = function(profileId, tokenString, profileData) {
     var self = this;
+
+    var handleProfile = function(profile) {
+        return self.storage.auth.add({
+            profile_id: profileId,
+            token: tokenString,
+            "valid_from": moment().format()
+        }).then(function () {
+            profile.token = tokenString;
+
+            return profile;
+        });
+    };
+
     return this.storage.profile.get(profileId)
+        .then(handleProfile)
         .fail(function(error) {
-            if (error.name != 'NotFoundError') throw error;
+            if (error.status != 404 && error.name != 'NotFoundError') throw error;
 
             return self.storage.profile.add(profileData)
-                .then(function(user) {
-                    return self.storage.auth.add({
-                        profile_id: profileId,
-                        token: tokenString,
-                        "valid_from": moment().format()
-                    });
-                }).then(function() {
-                    user.token = tokenString;
-
-                    return user;
-                });
+                .then(handleProfile);
         });
 };
 

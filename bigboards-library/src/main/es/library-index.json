@@ -5,7 +5,7 @@
     },
     "mappings": {
         "auth": {
-            "_id": { "path": "token" },
+            "_id" : { "path": "token" },
             "_source": { "enabled": true },
             "_ttl": { "enabled": true, "default" : "1h" },
             "dynamic": "strict",
@@ -16,7 +16,7 @@
             }
         },
         "profile": {
-            "_id" : { "path" : "username" },
+            "_id" : { "path": "username" },
             "_source": { "enabled": true },
             "_timestamp" : {"enabled": true, "store": "yes"},
             "dynamic": false,
@@ -31,13 +31,12 @@
             }
         },
         "stack": {
+            "_id" : { "path": "id" },
             "_source": { "enabled": true },
             "_timestamp" : {"enabled": true, "store": "yes"},
             "dynamic": false,
-            "transform" : {
-                "script" : "ctx._id = ctx._source['owner'] + '/' + ctx._source['slug']"
-            },
             "properties": {
+                "id": { "type": "string", "index": "not_analyzed"},
                 "owner": { "type": "string", "index": "not_analyzed"},
                 "slug": {"type": "string", "index": "not_analyzed" },
                 "name": { "type": "string" },
@@ -69,7 +68,9 @@
                                 "host_path": { "type": "string", "index": "not_analyzed" },
                                 "container_path": { "type": "string", "index": "not_analyzed" }
                             }
-                        }
+                        },
+                        "pre_install": { "type": "string", "index": "not_analyzed" },
+                        "post_install": { "type": "string", "index": "not_analyzed" }
                     }
                 },
                 "groups": {
@@ -84,13 +85,12 @@
             }
         },
         "tutorial": {
+            "_id" : { "path": "id" },
             "_source": {"enabled": true},
             "_timestamp": { "enabled": true, "store": "yes" },
             "dynamic": false,
-            "transform": {
-                "script": "ctx._id = ctx._source['owner'] + '/' + ctx._source['slug']"
-            },
             "properties": {
+                "id": { "type": "string", "index": "not_analyzed"},
                 "owner": { "type": "string", "index": "not_analyzed"},
                 "slug": {"type": "string", "index": "not_analyzed" },
                 "name": { "type": "string" },

@@ -12,7 +12,7 @@ module.exports.auth = function(authService) {
                 .then(function(response) {
                     if (response.authenticated === true) {
                         req.profile = response.profile;
-                        req.user = response.profile.data.id;
+                        req.user = response.profile.id;
                         req.token = parts[1];
                         next();
                     } else return res.status(403).send('Not Authenticated');

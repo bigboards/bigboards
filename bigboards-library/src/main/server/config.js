@@ -18,7 +18,7 @@ module.exports = {
             elasticsearch: {
                 host: 'localhost:9200',
                 log: 'debug',
-                apiVersion: '1.1'
+                apiVersion: '1.5'
             },
             oauth: {
                 bitbucket: {

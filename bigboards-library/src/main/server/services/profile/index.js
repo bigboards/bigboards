@@ -10,8 +10,8 @@ module.exports = {
         API.registerGet(app, '/api/v1/p', function(req, res) { return resource.search(req, res); });
         API.registerPut(app, '/api/v1/p/', function(req, res) { return resource.add(req, res); });
 
-        API.registerGet(app, '/api/v1/p/:profileId', function(req, res) { return resource.get(req, res); });
-        API.registerPut(app, '/api/v1/p/:profileId', function(req, res) { return resource.update(req, res); });
-        API.registerDelete(app, '/api/v1/p/:profileId', function(req, res) { return resource.remove(req, res); });
+        API.registerGet(app, '/api/v1/p/:id', function(req, res) { return resource.get(req, res); });
+        API.registerPut(app, '/api/v1/p/:id', function(req, res) { return resource.update(req, res); });
+        API.registerDelete(app, '/api/v1/p/:id', function(req, res) { return resource.remove(req, res); });
     }
 };

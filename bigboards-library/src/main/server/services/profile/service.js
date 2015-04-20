@@ -5,7 +5,15 @@ function ProfileService(storage) {
 }
 
 ProfileService.prototype.search = function(queryString, paging) {
-    return this.storage.profile.search({ query: { query_string: { query: queryString } } }, paging);
+    var query = { "match_all": {} };
+
+    if (queryString) {
+        query = {
+            "query_string": {"query": queryString}
+        }
+    }
+
+    return this.storage.profile.search({ query: query }, paging);
 };
 
 ProfileService.prototype.get = function(id) {
