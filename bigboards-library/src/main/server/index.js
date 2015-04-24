@@ -73,10 +73,12 @@ passport.use(new GitHubStrategy(Config.oauth.github,
     }
 ));
 
+console.log(Config.content);
+
 var app = express();
 app.use(passport.initialize());
 app.use(AuthMiddleware.auth(services.auth));
-app.use(express.static(__dirname + '/client'));
+app.use(express.static(Config.content));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(errorHandler);

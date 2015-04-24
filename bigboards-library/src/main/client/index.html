@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js" ng-app="bb.library">
+<html lang="en" ng-app="hive">
 <head>
     <meta charset="UTF-8" />
 
@@ -16,17 +16,11 @@
 
     <link rel="shortcut icon" href="favicon.ico">
 
-    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="bower_components/fontawesome/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css" href="bower_components/angular-flip-dr/src/flip.css">
-    <link rel="stylesheet" type="text/css" href="bower_components/angular-snap/angular-snap-only.css">
-    <link rel="stylesheet" type="text/css" href="bower_components/snapjs/snap.css">
-
-    <link rel="stylesheet" type="text/css" href="app/app.css" />
-    <link rel="stylesheet" type="text/css" href="app/library.css" />
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+    <link rel="stylesheet" href="style/main.css">
+    <link rel="stylesheet" href="style/style.css">
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
-
 
     <!--[if lt IE 9]>
     <script type="text/javascript" src="bower_components/html5shiv/dist/html5shiv.js"></script>
@@ -34,34 +28,46 @@
 </head>
 
 <body ng-controller="ApplicationController">
-<div id="wrap" class="library">
-    <tint ng-repeat="tint in data" tint="tint"></tint>
-</div>
+    <md-toolbar layout="row">
+        <div class="md-toolbar-tools">
+            <md-button class="md-icon-button" aria-label="Settings" ng-click="toggleSidebar()">
+                <!--<md-icon md-font-icon="icon-menu" style="font-size: 24px; height: 24px;"></md-icon>-->
+                <span style="font-size: 24px; height: 24px;">&#11041;</span>
+            </md-button>
+            <h2>
+                <span>BigBoards</span>
+            </h2>
+            <span flex></span>
 
-<tasks></tasks>
+        </div>
+    </md-toolbar>
+    <div layout="row" flex>
+        <ng-include src="'app/common/sidebar.html'"></ng-include>
 
-<script src="https://togetherjs.com/togetherjs-min.js"></script>
-<script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
-<script type="text/javascript" src="bower_components/socket.io-client/dist/socket.io.js"></script>
+        <div layout="column" flex id="content">
+            <md-content layout="column" flex class="md-padding" ng-view>
 
-<script type="text/javascript" src="bower_components/snapjs/snap.js"></script>
-<script type="text/javascript" src="bower_components/angular/angular.js"></script>
-<script type="text/javascript" src="bower_components/angular-animate/angular-animate.js"></script>
-<script type="text/javascript" src="bower_components/angular-snap/angular-snap.js"></script>
-<script type="text/javascript" src="bower_components/angular-flip-dr/src/angular-flip.js"></script>
-<script type="text/javascript" src="bower_components/angular-resource/angular-resource.js"></script>
-<script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
-<script type="text/javascript" src="bower_components/angular-socket-io/socket.js"></script>
-<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-<script type="text/javascript" src="bower_components/d3/d3.js"></script>
+            </md-content>
+        </div>
+    </div>
 
-<script type="text/javascript" src="app/library.js"></script>
-<script type="text/javascript" src="app/services.js"></script>
-<script type="text/javascript" src="app/directives.js"></script>
-<script type="text/javascript" src="app/controllers.js"></script>
 
-<!--<script src="lib/socket.io/socket.io.js"></script>-->
-<!--<script src="lib/term.js/term.js"></script>-->
-<!--<script src="lib/tty.js/tty.js"></script>-->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-material/angular-material.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-socket-io/socket.js"></script>
+
+    <script src="bower_components/socket.io-client/dist/socket.io.js"></script>
+
+    <script src="app/hive.js"></script>
+
+    <script src="app/common/services.js"></script>
+
+    <script src="app/dashboard/module.js"></script>
+    <script src="app/library/module.js"></script>
+
 </body>
 </html>
