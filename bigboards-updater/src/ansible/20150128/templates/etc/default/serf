@@ -1,5 +1,5 @@
 ## SERF Agent Config File
 SERF_HOME=/opt/serf
 
-EXT_IFACE="eth0:0"
-INT_IFACE="eth0"
+EXT_IFACE="{{ ansible_local.bb.node.nic0 }}:0"
+INT_IFACE="{{ ansible_local.bb.node.nic0 }}"

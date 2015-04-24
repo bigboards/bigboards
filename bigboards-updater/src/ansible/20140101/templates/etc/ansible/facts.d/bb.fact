@@ -17,3 +17,8 @@ range=172.20.40
 [node]
 sequence={{ ansible_local.hex.node.sequence }}
 role={{ ansible_local.hex.node.role }}
+{% if ansible_machine == 'armv7l' %}
+nic0=eth0
+{% else %}
+nic0=p2p1
+{% endif %}
