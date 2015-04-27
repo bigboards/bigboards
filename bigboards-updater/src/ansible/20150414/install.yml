@@ -1,52 +1,5 @@
----
-- hosts: all:!localhost
-  sudo: yes
-  tasks:
-    - name: copy the kernel debs to the remote system
-      copy:
-        src: 'files/{{ item }}'
-        dest: '/tmp/{{ item }}'
-        mode: 777
-      with_items:
-        - 'linux-firmware-image-3.19.0-armv7-x4_1cross_armhf.deb'
-        - 'linux-headers-3.19.0-armv7-x4_1cross_armhf.deb'
-        - 'linux-image-3.19.0-armv7-x4_1cross_armhf.deb'
-        - 'linux-libc-dev_1cross_armhf.deb'
+- include: install-arm.yml
+  when: ansible_local.bb.hex.arch == 'arm'
 
-    - name: make sure the new kernel is installed
-      apt:
-        deb: '{{ item }}'
-        force: 'yes'
-      with_items:
-        - '/tmp/linux-firmware-image-3.19.0-armv7-x4_1cross_armhf.deb'
-        - '/tmp/linux-headers-3.19.0-armv7-x4_1cross_armhf.deb'
-        - '/tmp/linux-image-3.19.0-armv7-x4_1cross_armhf.deb'
-        - '/tmp/linux-libc-dev_1cross_armhf.deb'
-
-    - name: get the system version
-      shell: if [ "$(dmesg |grep 'chip 4329' |wc -l)" -eq "1" ]; then echo "B1"; elif [ "$(dmesg |grep 'chip 4330' |wc -l)" -eq "1"  ]; then echo "C1"; else echo "unknown"; fi
-      register: system_version
-      sudo: 'no'
-
-    - name: make sure the correct uEnv file is loaded
-      copy:
-        src: 'files/uEnv-{{system_version.stdout}}.txt'
-        dest: '/boot/uEnv.txt'
-
-    - name: make sure the correct kernel is being loaded
-      file:
-        src: '/boot/vmlinuz-3.19.0-armv7-x4'
-        dest: '/boot/zImage'
-        state: 'link'
-
-    - name: make sure the docker data directory exists
-      file:
-        state: 'directory'
-        path: '/data/docker'
-        owner: 'bb'
-        mode: '777'
-
-    - name: make sure docker is using the correct backend storage
-      copy:
-        src: 'files/docker.io'
-        dest: '/etc/default/docker.io'
+- include: install-intel.yml
+  when: ansible_local.bb.hex.arch == 'intel'

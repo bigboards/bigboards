@@ -1,6 +1,11 @@
 [hex]
 id={{ ansible_local.hex.id }}
 name={{ ansible_local.hex.name }}
+{% if ansible_machine == 'armv7l' %}
+arch=arm
+{% else %}
+arch=intel
+{% endif %}
 
 [network]
 {% if ansible_local.hex.network is defined and ansible_local.hex.network.range is defined %}
@@ -12,3 +17,8 @@ range=172.20.40
 [node]
 sequence={{ ansible_local.hex.node.sequence }}
 role={{ ansible_local.hex.node.role }}
+{% if ansible_machine == 'armv7l' %}
+nic0=eth0
+{% else %}
+nic0=p2p1
+{% endif %}
