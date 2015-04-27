@@ -143,6 +143,7 @@
         - libffi-dev
         - supervisor
         - python-dev
+        - python-setuptools
 
     - name: make sure supervisor runs as the root user
       template:
