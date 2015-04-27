@@ -24,7 +24,7 @@
   sudo: yes
   tasks:
     - name: be sure the harddisk is initialized
-      shell: creates=/dev/sda1 parted /dev/sda mklabel msdos mkpart primary 0% 100%
+      shell: creates=/dev/sda1 parted -s /dev/sda mklabel msdos mkpart primary 0% 100%
 
     - name: be sure the harddrive filesystem has been created
       shell: creates=/root/.sda1.initialized mkfs.ext4 /dev/sda1 && touch /root/.sda1.initialized
