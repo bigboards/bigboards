@@ -267,7 +267,7 @@
 
     - name: be sure the docker version is up to date
       copy:
-        src: 'files/usr/bin/docker-1.3.0-{{hex.arch}}'
+        src: 'files/usr/bin/docker-1.3.0-{{ansible_local.bb.hex.arch}}'
         dest: '/usr/bin/docker'
       notify: Restart Docker
 
