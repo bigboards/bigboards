@@ -12,7 +12,6 @@
     <modules>
         <module>bigboards-mmc</module>
         <module>bigboards-updater</module>
-        <module>bigboards-library</module>
         <module>bigboards-docker</module>
         <module>bigboards-cli</module>
     </modules>
