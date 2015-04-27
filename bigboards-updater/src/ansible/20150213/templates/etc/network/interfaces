@@ -2,8 +2,8 @@ auto lo
 iface lo inet loopback
 
 # internal network interface
-auto eth0
-iface eth0 inet static
+auto {{ ansible_local.bb.node.nic0 }}
+iface {{ ansible_local.bb.node.nic0 }} inet static
     address {{ ansible_local.bb.network.range | default('172.20.40') }}.{{ ansible_local.bb.node.sequence }}
     netmask 255.255.255.0
 {% if ansible_hostname == (ansible_local.bb.hex.name + '-n1') %}
@@ -13,8 +13,8 @@ iface eth0 inet static
 {% endif %}
 
 # external network interface
-auto eth0:0
-iface eth0:0 inet dhcp
+auto {{ ansible_local.bb.node.nic0 }}:0
+iface {{ ansible_local.bb.node.nic0 }}:0 inet dhcp
 
 {% if ansible_local.bb.hex.arch == 'arm' %}
 # usb network interface
