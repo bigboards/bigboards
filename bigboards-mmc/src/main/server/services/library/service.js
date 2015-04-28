@@ -18,7 +18,7 @@ function LibraryService(settings, services, templater) {
     this.hiveLibrary = [];
 
     this.loadLocalLibrary();
-    this.loadHiveLibrary();
+    //this.loadHiveLibrary();
 }
 
 LibraryService.prototype.loadLocalLibrary = function() {

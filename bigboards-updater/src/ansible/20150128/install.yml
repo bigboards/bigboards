@@ -210,7 +210,14 @@
       copy:
         src: 'files/opt/serf/bin/serf-{{ansible_machine}}'
         dest: '/opt/serf/bin/serf'
+        mode: 755
       notify: Restart Serf
+
+    - name: be sure there is a link to serf
+      file:
+        src: "/opt/serf/bin/serf"
+        dest: "/usr/bin/serf"
+        state: "link"
 
     - name: be sure the serf files are up to date
       template:
