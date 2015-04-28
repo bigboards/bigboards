@@ -16,9 +16,16 @@
         - 'docker-1.5.0-{{ ansible_local.bb.hex.arch }}'
 
     - name: make sure docker can reach its depending libraries
+      when: ansible_local.bb.hex.arch == 'arm'
       file:
         src: '/lib/arm-linux-gnueabihf/libdevmapper.so.1.02.1'
         dest: '/lib/arm-linux-gnueabihf/libdevmapper.so.1.02'
+        state: 'link'
+    - name: make sure docker can reach its depending libraries
+      when: ansible_local.bb.hex.arch == 'intel'
+      file:
+        src: '/lib/x86_64-linux-gnu/libdevmapper.so.1.02.1'
+        dest: '/lib/x86_64-linux-gnu/libdevmapper.so.1.02'
         state: 'link'
 
     - name: make sure the docker file is removed before attempting to link it
