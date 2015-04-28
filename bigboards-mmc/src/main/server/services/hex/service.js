@@ -17,37 +17,62 @@ function HexService(settings, configuration, templater, services, serf) {
 
     var self = this;
 
-    self.serf.members().then(function(members) {
-        self.nodeCache = members;
-    });
+    self._updateNodeList();
 
     var serfMemberHandler = this.serf.stream('member-join,member-leave,member-update');
     serfMemberHandler.on('data', function(data) {
         if (!data || !data.data || !data.data.Members) return;
 
-        //if (data.Event == 'member-join') {
-        //    data.data.Members.forEach(function(member) {
-        //        self.addNode(member);
-        //    });
-        //} else if (data.Event == 'member-leave') {
-        //    data.data.Members.forEach(function(member) {
-        //        self.removeNode(member);
-        //    });
-        //} else if (data.Event == 'member-update') {
-        //    data.data.Members.forEach(function(member) {
-        //        self.updateNode(member);
-        //    });
-        //}
-
-        self.serf.members().then(function(members) {
-            self.nodeCache = members;
-        });
+        self._updateNodeList();
     });
 
     mkdirp.sync(this.settings.dir.tints + '/stack');
     mkdirp.sync(this.settings.dir.tints + '/dataset');
     mkdirp.sync(this.settings.dir.tints + '/tutor');
 }
+
+HexService.prototype._updateNodeList = function() {
+    var self = this;
+
+    return self.serf.members().then(function(members) {
+        var newNodeList = [];
+
+        for ( var idx in members ) {
+            var item = members[idx];
+
+            var int_itf = item.Tags['network.internal'];
+            var ext_itf = item.Tags['network.external'];
+
+            newNodeList.push({
+                name: item.Name,
+                status: item.Status,
+                role: item.Tags['role'],
+                arch: item.Tags['arch'],
+                hex_id: item.Tags['hex-id'],
+                network: {
+                    internal: {
+                        itf: int_itf,
+                        ip: item.Tags['network.' + int_itf + '.ip'],
+                        mac: item.Tags['network.' + int_itf + '.mac'],
+                        netmask: item.Tags['network.' + int_itf + '.netmask'],
+                        broadcast: item.Tags['network.' + int_itf + '.broadcast']
+                    },
+                    external: {
+                        itf: ext_itf,
+                        ip: item.Tags['network.' + ext_itf + '.ip'],
+                        mac: item.Tags['network.' + ext_itf + '.mac'],
+                        netmask: item.Tags['network.' + ext_itf + '.netmask'],
+                        broadcast: item.Tags['network.' + ext_itf + '.broadcast']
+                    }
+                }
+            });
+        }
+
+        self.nodeCache = newNodeList;
+
+        return newNodeList;
+    });
+};
 
 HexService.prototype.get = function() {
     return this.configuration.get().then(function(data) {
