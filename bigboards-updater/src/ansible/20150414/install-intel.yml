@@ -2,6 +2,9 @@
 - hosts: all:!localhost
   sudo: yes
   tasks:
+    - name: make sure the correct kernel is being used
+      apt: name="linux-image-extra-$(uname -r)" state=latest
+
     - name: make sure the docker data directory exists
       file:
         state: 'directory'
