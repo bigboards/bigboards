@@ -3,7 +3,7 @@
   sudo: yes
   tasks:
     - name: make sure the correct kernel is being used
-      apt: name="linux-image-extra-$(uname -r)" state=latest
+      apt: name="linux-image-extra-{{ansible_kernel}}" state=latest
 
     - name: make sure the docker data directory exists
       file:
