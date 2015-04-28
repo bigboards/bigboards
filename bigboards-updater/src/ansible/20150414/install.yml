@@ -1,5 +1,0 @@
-- include: install-arm.yml
-  when: ansible_local.bb.hex.arch == 'arm'
-
-- include: install-intel.yml
-  when: ansible_local.bb.hex.arch == 'intel'

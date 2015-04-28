@@ -9,18 +9,18 @@
 
     - name: make sure we use docker version 1.5.0
       copy:
-        src: 'files/docker-1.5.0-{{ ansible_local.bb.hex.arch }}'
+        src: 'files/docker-1.5.0-{{ ansible_machine }}'
         dest: '/usr/bin/docker-1.5.0'
         mode: 777
 
     - name: make sure docker can reach its depending libraries
-      when: ansible_local.bb.hex.arch == 'arm'
+      when: ansible_machine == 'armv7l'
       file:
         src: '/lib/arm-linux-gnueabihf/libdevmapper.so.1.02.1'
         dest: '/lib/arm-linux-gnueabihf/libdevmapper.so.1.02'
         state: 'link'
     - name: make sure docker can reach its depending libraries
-      when: ansible_local.bb.hex.arch == 'intel'
+      when: ansible_machine == 'x86_64'
       file:
         src: '/lib/x86_64-linux-gnu/libdevmapper.so.1.02.1'
         dest: '/lib/x86_64-linux-gnu/libdevmapper.so.1.02'

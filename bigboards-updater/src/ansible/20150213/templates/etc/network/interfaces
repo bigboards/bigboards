@@ -16,7 +16,7 @@ iface {{ ansible_local.bb.node.nic0 }} inet static
 auto {{ ansible_local.bb.node.nic0 }}:0
 iface {{ ansible_local.bb.node.nic0 }}:0 inet dhcp
 
-{% if ansible_local.bb.hex.arch == 'arm' %}
+{% if ansible_machine == 'armv7l' %}
 # usb network interface
 auto usb0
 iface usb0 inet static

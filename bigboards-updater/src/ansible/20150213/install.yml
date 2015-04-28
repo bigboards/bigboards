@@ -19,7 +19,7 @@
         line: '{{ item }}'
         regexp: '^{{ item }}$'
         state: 'present'
-      when: ansible_local.bb.hex.arch == "arm"
+      when: ansible_machine == "armv7l"
       with_items:
         - usbnet
         - g_ether
