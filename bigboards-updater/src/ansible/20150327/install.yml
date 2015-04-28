@@ -9,11 +9,9 @@
 
     - name: make sure we use docker version 1.5.0
       copy:
-        src: 'files/{{ item }}'
-        dest: '/usr/bin/{{ item }}'
+        src: 'files/docker-1.5.0-{{ ansible_local.bb.hex.arch }}'
+        dest: '/usr/bin/docker-1.5.0'
         mode: 777
-      with_items:
-        - 'docker-1.5.0-{{ ansible_local.bb.hex.arch }}'
 
     - name: make sure docker can reach its depending libraries
       when: ansible_local.bb.hex.arch == 'arm'
