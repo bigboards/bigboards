@@ -3,4 +3,4 @@
   sudo: yes
   tasks:
     - name: be sure the meta file is updated
-      template: src=meta.json.j2 dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.id }}/meta.json
+      template: src=meta.json.j2 dest=/opt/bb/tints.d/stack/{{ tint.owner }}/{{ tint.slug }}/meta.json

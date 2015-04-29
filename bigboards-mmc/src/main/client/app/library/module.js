@@ -34,12 +34,7 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
                 type: $scope.tint.type
             },
             {
-                tint: {
-                    type: $scope.tint.type,
-                    owner: $scope.tint.owner,
-                    slug: $scope.tint.slug,
-                    uri: $scope.tint.uri
-                }
+                tint: $scope.tint
             },
             function(attempt) {
                 $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');

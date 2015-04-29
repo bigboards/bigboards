@@ -32,20 +32,20 @@
 ##
 ###############################################################################
 
-    - name: make a working copy of the tint metadata
-      copy:
-        src: "{{ tint.path }}/tint.yml"
-        dest: "{{ tint.path }}/work/_tint.yml"
-
-    - name: remove lines with ansible variables from tint metadata
-      lineinfile:
-        dest: "{{ tint.path }}/work/_tint.yml"
-        create: "yes"
-        regexp: '\{\{(.*nodes.*)\}\}' #REMARK: must be single quotes here to allow escape characters
-        state: "absent"
-
-    - name: source the tint metadata file
-      include_vars: "{{ tint.path }}/work/_tint.yml"
+#    - name: make a working copy of the tint metadata
+#      copy:
+#        src: "{{ tint.path }}/tint.yml"
+#        dest: "{{ tint.path }}/work/_tint.yml"
+#
+#    - name: remove lines with ansible variables from tint metadata
+#      lineinfile:
+#        dest: "{{ tint.path }}/work/_tint.yml"
+#        create: "yes"
+#        regexp: '\{\{(.*nodes.*)\}\}' #REMARK: must be single quotes here to allow escape characters
+#        state: "absent"
+#
+#    - name: source the tint metadata file
+#      include_vars: "{{ tint.path }}/work/_tint.yml"
 
     - name: create the group_vars file
       template:
@@ -82,42 +82,42 @@
 
     - file:
         state: "directory"
-        path: "{{ tint.path }}/work/roles/{{ item.key }}"
-      with_dict: stack.containers
+        path: "{{ tint.path }}/work/roles/{{ item.name }}"
+      with_items: tint.stack.containers
 
     - file:
         state: "directory"
-        path: "{{ tint.path }}/work/roles/{{ item.key }}/tasks"
-      with_dict: stack.containers
+        path: "{{ tint.path }}/work/roles/{{ item.name }}/tasks"
+      with_items: tint.stack.containers
 
     - file:
         state: "directory"
-        path: "{{ tint.path }}/work/roles/{{ item.key }}/files"
-      with_dict: stack.containers
+        path: "{{ tint.path }}/work/roles/{{ item.name }}/files"
+      with_items: tint.stack.containers
 
     - name: create the role install task file
       template:
         src: "docker-init.conf.j2"
-        dest: "{{ tint.path }}/work/roles/{{ item.key }}/files/{{ item.key }}.conf"
-      with_dict: stack.containers
+        dest: "{{ tint.path }}/work/roles/{{ item.name }}/files/{{ item.name }}.conf"
+      with_items: tint.stack.containers
 
     - name: create the role main task file
       template:
         src: "role_main.yml.j2"
-        dest: "{{ tint.path }}/work/roles/{{ item.key }}/tasks/main.yml"
-      with_dict: stack.containers
+        dest: "{{ tint.path }}/work/roles/{{ item.name }}/tasks/main.yml"
+      with_items: tint.stack.containers
 
     - name: create the role install task file
       template:
         src: "role_install.yml.j2"
-        dest: "{{ tint.path }}/work/roles/{{ item.key }}/tasks/install.yml"
-      with_dict: stack.containers
+        dest: "{{ tint.path }}/work/roles/{{ item.name }}/tasks/install.yml"
+      with_items: tint.stack.containers
 
     - name: create the role uninstall task file
       template:
         src: "role_uninstall.yml.j2"
-        dest: "{{ tint.path }}/work/roles/{{ item.key }}/tasks/uninstall.yml"
-      with_dict: stack.containers
+        dest: "{{ tint.path }}/work/roles/{{ item.name }}/tasks/uninstall.yml"
+      with_items: tint.stack.containers
 
     - stat:
         path: "{{ tint.path }}/config/all/"
@@ -126,19 +126,19 @@
     - name: copy the general configuration templates from the tint to the work directory
       copy:
         src: "{{ tint.path }}/config/all/"
-        dest: "{{ tint.path }}/work/roles/{{ item.key }}/templates"
-      with_dict: stack.containers
+        dest: "{{ tint.path }}/work/roles/{{ item.name }}/templates"
+      with_items: tint.stack.containers
       when: st.stat.exists == True
 
     - stat:
-        path: "{{ tint.path }}/config/{{ item.key }}/"
+        path: "{{ tint.path }}/config/{{ item.name }}/"
       register: role_config
-      with_dict: stack.containers
+      with_items: tint.stack.containers
 
     - name: copy the configuration templates from the tint to the work directory
       copy:
-        src: "{{ tint.path }}/config/{{ item.item.key }}/"
-        dest: "{{ tint.path }}/work/roles/{{ item.item.key }}/templates/"
+        src: "{{ tint.path }}/config/{{ item.item.name }}/"
+        dest: "{{ tint.path }}/work/roles/{{ item.item.name }}/templates/"
       when: item.stat.exists
       with_items: role_config.results
 

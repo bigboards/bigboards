@@ -1,4 +1,4 @@
-{% for group in stack.groups %}
+{% for group in tint.stack.groups %}
 - hosts: {{ group.runs_on }}
   sudo: yes
   roles:

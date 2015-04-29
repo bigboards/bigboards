@@ -13,7 +13,7 @@
         - /data/{{ tint.owner }}/{{ tint.slug }}/data
         - /data/{{ tint.owner }}/{{ tint.slug }}/files
 
-{% for group in stack.groups %}
+{% for group in tint.stack.groups %}
 - hosts: {{ group.runs_on }}
   sudo: yes
   roles:

@@ -1,40 +1,40 @@
-{% if item.value.pre_install is defined %}{{ lookup('file', tint.path + '/' + item.value.pre_install) }}{% endif %}
+{% if item.pre_install is defined %}{{ lookup('file', tint.path + '/' + item.pre_install) }}{% endif %}
 
 - name: make sure the role template directory exists
   file:
     state: "directory"
-    path: "{{'{{'}} config_path {{'}}'}}/{{ item.key }}"
+    path: "{{'{{'}} config_path {{'}}'}}/{{ item.name }}"
 
 - name: make sure the role template directory is empty
-  shell: "rm -rf {{'{{'}} config_path {{'}}'}}/{{ item.key }}/*"
+  shell: "rm -rf {{'{{'}} config_path {{'}}'}}/{{ item.name }}/*"
 
 - name: make sure the configuration files are available
   template:
     src: "{{ '{{' }} item {{ '}}' }}"
-    dest: "{{'{{'}} config_path {{'}}'}}/{{ item.key }}/"
+    dest: "{{'{{'}} config_path {{'}}'}}/{{ item.name }}/"
   with_fileglob:
     - ../templates/*
 
 - name: make sure the docker image is the latest one
-  shell: docker pull {{ item.value.image }}
+  shell: docker pull {{ item.image }}-{{ansible_machine}}
 
 - name: make sure the container exists
   docker:
     docker_api_version: "1.15"
-    name: "{{ item.key }}"
+    name: "{{ item.name }}"
     net: "host"
-    ports: "{{ item.value.ports|join(',') }}"
+    ports: "{{ item.ports|join(',') }}"
     publish_all_ports: "yes"
-    volumes: "{{ '{{' }} config_path {{ '}}/' + item.value.config.host_path }}:{{ item.value.config.container_path }},{{ '{{' }} tmp_path {{ '}}/' + item.key }}:/tmp,{{ '{{' }} data_path {{ '}}/' + item.key }}:/data"
+    volumes: "{{ '{{' }} config_path {{ '}}/' + item.config.host_path }}:{{ item.config.container_path }},{{ '{{' }} tmp_path {{ '}}/' + item.name }}:/tmp,{{ '{{' }} data_path {{ '}}/' + item.name }}:/data"
     memory_limit: 1073741824
-    image: "{{ item.value.image }}"
-    command: "{{ item.value.command }}"
+    image: "{{ item.image }}-{{ansible_machine}}"
+    command: "{{ item.command }}"
     state: running
 
 - name: make sure the init file is available
-  copy: src={{ item.key }}.conf dest=/etc/init/{{ item.key }}.conf
+  copy: src={{ item.name }}.conf dest=/etc/init/{{ item.name }}.conf
 
 - name: make sure the service is started at boot
-  service: name={{ item.key }} enabled=yes state=started
+  service: name={{ item.name }} enabled=yes state=started
 
-{% if item.value.post_install is defined %}{{ lookup('file', tint.path + '/' + item.value.post_install) }}{% endif %}
+{% if item.post_install is defined %}{{ lookup('file', tint.path + '/' + item.post_install) }}{% endif %}

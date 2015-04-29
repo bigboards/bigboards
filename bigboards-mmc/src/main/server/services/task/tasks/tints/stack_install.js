@@ -30,21 +30,21 @@ module.exports = function(configuration, services) {
                 var tintPath = env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug;
                 scope.tint.path = tintPath;
 
+                // -- clean the views of the nodes variable
+                for (var viewIdx in scope.tint.stack.views) {
+                    delete scope.tint.stack.views[viewIdx].url;
+                }
+
                 winston.info('Installing tint ' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
 
-                return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.slug)
-                    .then(function(ft) {
-                        console.log("Update the tint state to 'installing'");
-                        scope.tintMeta = ft;
-                        scope.tintMeta['state'] = 'partial';
-                        scope.tintMetaString = JSON.stringify(extractEssentials(scope.tintMeta));
+                console.log("Update the tint state to 'installing'");
+                scope.tintMeta = scope.tint;
+                scope.tintMeta['state'] = 'partial';
+                scope.tintMetaString = JSON.stringify(extractEssentials(scope.tintMeta));
 
-                        return scope;
-                    })
-                    .then(function(scope) {
-                        console.log("Running the stack pre-install script");
-                        return TaskUtils.playbook(env, 'tints/stack_pre_install', scope);
-                    })
+                console.log("Running the stack pre-install script");
+                return TaskUtils
+                    .playbook(env, 'tints/stack_pre_install', scope)
                     .then(function() {
                         var tintEnv = {
                             workdir: tintPath + '/work',
