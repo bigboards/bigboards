@@ -22,9 +22,7 @@ pushd /opt/bb/runtimes/bigboards-mmc
 
     # -- install the nodejs api dependencies
     npm install
-popd
 
-pushd /opt/bb/runtimes/bigboards-mmc/client
     # -- remove the old modules
     rm -rf bower_components
 
