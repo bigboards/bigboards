@@ -45,6 +45,14 @@
                             </mapper>
                         </data>
                         <data>
+                            <src>${project.basedir}/bower.json</src>
+                            <type>file</type>
+                            <mapper>
+                                <type>perm</type>
+                                <prefix>/opt/bb/runtimes/${project.name}/client</prefix>
+                            </mapper>
+                        </data>
+                        <data>
                             <src>${project.basedir}/src/init</src>
                             <type>directory</type>
                             <mapper>
