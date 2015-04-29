@@ -1,6 +1,7 @@
 [hex]
-id = 6ab1bf88-f421-4d92-b1f6-2aca350539e7
-name = testing
+id = dev
+name = dev
+arch = x86_64
 
 [network]
 range = 172.20.50

@@ -13,6 +13,7 @@ module.exports = {
     },
     environments: {
         development: {
+            firmware: "feniks-wip",
             is_dev: true,
             is_prod: false,
             port: process.env.PORT || 7000,
@@ -28,11 +29,14 @@ module.exports = {
                 patches: fsu.absolute('/opt/bb/runtimes/bigboards-updater/patches'),
                 facts: fsu.absolute('local/facts.d/')
             },
-            url: {
-                library: 'http://library.bigboards.io'
+            hive: {
+                host: 'hive.bigboards.io',
+                port: 80,
+                path: '/api/v1/library'
             }
         },
         production: {
+            firmware: "feniks-wip",
             is_dev: false,
             is_prod: true,
             port: process.env.PORT || 7000,
@@ -48,8 +52,10 @@ module.exports = {
                 patches: '/opt/bb/runtimes/bigboards-updater/patches',
                 facts: '/etc/ansible/facts.d/'
             },
-            url: {
-                library: 'http://library.bigboards.io'
+            hive: {
+                host: 'hive.bigboards.io',
+                port: 80,
+                path: '/api/v1/library'
             }
         }
     }

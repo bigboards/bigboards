@@ -1,15 +1,93 @@
 app.factory('socket', function (settings, socketFactory) {
-    return socketFactory({
-        ioSocket: io.connect(settings.api + '/')
+    //return socketFactory({
+    //    ioSocket: io.connect(settings.api + '/')
+    //});
+
+    //return socketFactory();
+
+    var myIoSocket = io.connect('http://localhost:7000/');
+
+    mySocket = socketFactory({
+        ioSocket: myIoSocket
     });
+
+    return mySocket;
 });
 
-app.service('Hex', function(settings, $resource) {
-    return $resource(settings.api + '/api/v1/hex', { }, {
-        'me': { method: 'GET', isArray: false},
-        'halt': { method: 'DELETE', isArray: false}
-    });
-});
+app.service('Hex', [ 'settings', '$http', 'toaster', function(settings, $http, toaster) {
+    var Hex = function Hex() {
+        this.id = null;
+        this.name = null;
+        this.arch = null;
+        this.installedTints = [];
+
+        this.reload();
+    };
+
+    Hex.prototype.reload = function() {
+        var self = this;
+
+        $http.get(settings.api + '/api/v1/hex')
+            .success(function(data, status, headers, config) {
+                self.id = data.id;
+                self.name = data.name;
+                self.arch = data.arch;
+            })
+            .error(function(data, status, headers, config) {
+                toaster.pop({
+                    type: 'error',
+                    title: 'Initialization Failed',
+                    body: 'Failed to retrieve the information for this hex. The hex responded with the following message: "' + data + '"',
+                    showCloseButton: true
+                });
+            });
+
+        $http.get(settings.api + '/api/v1/hex/tints')
+            .success(function(data, status, headers, config) {
+                self.installedTints = data;
+            })
+            .error(function(data, status, headers, config) {
+                toaster.pop({
+                    type: 'error',
+                    title: 'Initialization Failed',
+                    body: 'Failed to retrieve the the list of installed tints. The hex responded with the following message: "' + data + '"',
+                    showCloseButton: true
+                });
+            });
+    };
+
+    Hex.prototype.halt = function() {
+        $http.delete(settings.api + '/api/v1/hex')
+            .success(function(data, status, headers, config) {
+                toaster.pop({
+                    type: 'success',
+                    title: 'Hex Halted',
+                    body: 'All services on this hex have been disabled. You can now safely remove the power.',
+                    showCloseButton: true
+                });
+            })
+            .error(function(data, status, headers, config) {
+                toaster.pop({
+                    type: 'error',
+                    title: 'Shutdown Failed',
+                    body: 'Failed to power off this hex. The hex responded with the following message: "' + data + '"',
+                    showCloseButton: true
+                });
+            });
+    };
+
+    Hex.prototype.isInstalled = function(type, owner, slug) {
+        var id = '[' + type + ']' + owner + '$' + slug;
+
+        for (var idx in this.installedTints)
+            if(this.installedTints[idx].id == id)
+                return true;
+
+        return false;
+    };
+
+    return new Hex();
+}]);
 
 app.service('Nodes', function(settings, $resource) {
     return $resource(settings.api + '/api/v1/hex/nodes', { }, {

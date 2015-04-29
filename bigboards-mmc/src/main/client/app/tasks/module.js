@@ -1,4 +1,4 @@
-var tasksModule = angular.module('bb.tasks', ['ngResource', 'drFlip']);
+var tasksModule = angular.module('bb.tasks', ['ngResource']);
 
 tasksModule.controller('TaskListController', function($scope, $location, Tasks, socket) {
     $scope.tasks = Tasks.list();

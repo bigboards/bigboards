@@ -4,6 +4,7 @@ var winston = require('winston'),
 module.exports = {
     Resource: require('./resource'),
     Service: require('./service'),
+    prepare: function(settings, services) { },
     io: function(socket, services) {
         services.task.on('task:started', function(data) {
             socket.emit('task:started', data);

@@ -6,6 +6,8 @@ var Q = require('q'),
     request = require('request'),
     fs = require('fs'),
     fsu = require('../../utils/fs-utils'),
+    netUtils = require('../../utils/net-utils'),
+    sysUtils = require('../../utils/sys-utils'),
     strUtils = require('../../utils/string-utils'),
     Providers = require('./providers');
 
@@ -17,8 +19,8 @@ function LibraryService(settings, services, templater) {
     this.localLibrary = [];
     this.hiveLibrary = [];
 
-    this.loadLocalLibrary();
-    //this.loadHiveLibrary();
+    //this.loadLocalLibrary();
+    this.loadHiveLibrary();
 }
 
 LibraryService.prototype.loadLocalLibrary = function() {
@@ -40,25 +42,13 @@ LibraryService.prototype.loadLocalLibrary = function() {
 
 LibraryService.prototype.loadHiveLibrary = function() {
     var self = this;
-    var defer = Q.defer();
 
-    http.get(this.settings.url.hive, function(res) {
-        console.log("Got response: " + res.statusCode);
-    }).on('error', function(e) {
-        console.log("Got error: " + e.message);
+    return netUtils.getJson(this.settings.hive.host, this.settings.hive.port, this.settings.hive.path, {
+        'BB-Architecture': sysUtils.architecture(),
+        'BB-Firmware': this.settings.firmware
+    }).then(function(data) {
+        self.hiveLibrary = data.data;
     });
-
-    fs.exists(this.settings.dir.tints + '/library_cache.json', function(exists) {
-        if (exists) {
-            fsu.readJsonFile(self.settings.dir.tints + '/library_cache.json')
-                .then(function(data) { self.localLibrary = (data) ? data : {}; })
-                .fail(function(error) { defer.reject(error); });
-        } else {
-            defer.resolve({});
-        }
-    });
-
-    return defer.promise;
 };
 
 LibraryService.prototype.refresh = function() {
@@ -75,19 +65,25 @@ LibraryService.prototype.saveLocalLibrary = function() {
 LibraryService.prototype.listTintsForType = function(type) {
     var self = this;
 
-    if (! this.libraryCache) return Q({});
-
     return this.services.hex.listNodes().then(function(nodes) {
-        return self.templater.createScope(nodes).then(function(scope) {
-            return Q.all([
-                self.templater.templateWithScope(self.localLibrary[type], scope),
-                self.templater.templateWithScope(self.hiveLibrary[type], scope)
-            ]).then(function (responses) {
-                return {
-                    local: responses[0],
-                    hive: responses[1]
-                }
-            });
+        var scope = self.templater.createScope(nodes);
+
+        var promises = [];
+
+        var local = self.localLibrary[type];
+        if (local && local.length > 0) promises.push(self.templater.templateWithScope(self.localLibrary[type], scope));
+
+        var hive = self.hiveLibrary[type];
+        if (hive && hive.length > 0) promises.push(self.templater.templateWithScope(self.hiveLibrary[type], scope));
+
+        return Q.all(promises).then(function (responses) {
+            var result = {local: [], hive: []};
+
+            var i = 0;
+            if (local && local.length > 0) result.local = responses[i++];
+            if (hive && hive.length > 0) result.hive = responses[i];
+
+            return result;
         });
     });
 };

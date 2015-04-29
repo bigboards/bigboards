@@ -8,9 +8,9 @@ var Q = require('q'),
     log = require('winston'),
     tu = require('../../utils/tint-utils');
 
-function TutorialService(settings, configuration, services, templater) {
+function TutorialService(settings, config, services, templater) {
     this.settings = settings;
-    this.configuration = configuration;
+    this.config = config;
     this.services = services;
     this.templater = templater;
 

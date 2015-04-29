@@ -9,7 +9,7 @@
             <div class="caption-details">
                 <h2>{{tint.name}}</h2>
                 <div class="subtitle-container">
-                    <span class="subtitle">{{ tint.owner.displayName }}</span>
+                    <span class="subtitle">{{ tint.owner }}</span>
                 </div>
                 <div class="category-container">
                     <span class="category">{{ tint.type }} tint</span>
@@ -23,7 +23,6 @@
                 <div class="item-action" ng-if="isInstalled != null && isInstalled" ng-click="install()" role="button">Re-install</div>
                 <div class="item-action" ng-if="isInstalled != null && isInstalled" ng-click="uninstall()" role="button">Uninstall</div>
                 <div class="item-action" ng-if="isInstalled != null && !isInstalled" ng-click="install()" role="button">Install</div>
-                <div class="item-action danger" ng-if="isInstalled != null && !isInstalled" ng-click="remove()" role="button">Remove From Library</div>
             </div>
         </div>
     </div>

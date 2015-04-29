@@ -167,6 +167,8 @@ EOF
 
                 for D in `find ${SLUG}/docker -mindepth 1 -type d`
                 do
+                    sed -i -- "s/__arch__/${ARCH}/g" ${D}/Dockerfile
+
                     CONTAINER_NAME="$(basename $D)"
                     IMAGE_NAME="${BB_USERNAME}/${CONTAINER_NAME}-${ARCH}:latest"
 

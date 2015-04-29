@@ -1,64 +1,9 @@
-var libraryModule = angular.module('bb.library', ['ngResource', 'drFlip']);
+var libraryModule = angular.module('bb.library', ['ngResource']);
 
 libraryModule.controller('LibraryController', ['$scope', 'Library', 'Stacks', 'ApiFeedback', '$location', '$modal', function($scope,   Library,   Stacks,   ApiFeedback,   $location,   $modal) {
     $scope.library = {
         stacks: Library.find({type: 'stack'}),
-        tutors: Library.find({type: 'tutor'})
-    };
-
-    //Stacks.list(function(stacks) {
-    //    if (!stacks || stacks.length == 0) return;
-    //
-    //    $scope.installedStack = stacks[0];
-    //});
-
-    $scope.refresh = function() {
-        Library.refresh();
-        $scope.library.stacks = Library.find({type: 'stack'});
-        $scope.library.tutors = Library.find({type: 'tutor'});
-    };
-
-    $scope.isStackInstalled = function(stack) {
-        if (!$scope.installedStack) return false;
-        else return ($scope.installedStack.tint_id == stack.tint_id);
-    };
-
-    $scope.addItem = function() {
-        var modalInstance = $modal.open({
-            templateUrl: 'app/library/addTint.html',
-            controller: 'AddLibraryItemController',
-            size: 'lg'
-        });
-
-        modalInstance.result.then(function (item) {
-            $scope.library.stacks = Library.find({type: 'stack'});
-            $scope.library.tutors = Library.find({type: 'tutor'});
-        });
-    };
-}]);
-
-
-libraryModule.controller('AddLibraryItemController', ['$scope', '$modalInstance', 'Library', 'ApiFeedback', function($scope, $modalInstance, Library, ApiFeedback) {
-    $scope.model = {
-        url: null
-    };
-
-    $scope.alerts = [];
-
-    $scope.closeAlert = function(index) {
-        $scope.alerts.splice(index, 1);
-    };
-
-    $scope.ok = function () {
-        Library.persist($scope.model, function() {
-            $modalInstance.close($scope.model);
-        }, function(error) {
-            $scope.alerts.push({type: 'danger', msg: 'Please validate the data you entered. We encountered the following error: ' + error.message})
-        });
-    };
-
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
+        tutorials: Library.find({type: 'tutorial'})
     };
 }]);
 
@@ -73,7 +18,7 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
         Tints.list().$promise.then(function(installed) {
             for (var idx in installed) {
                 if (installed[idx]['slug'] != $scope.tint.slug) continue;
-                if (installed[idx]['owner']['username'] != $scope.tint.owner.username) continue;
+                if (installed[idx]['owner'] != $scope.tint.owner) continue;
 
                 $scope.isInstalled = true;
                 return;
@@ -86,12 +31,12 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
     $scope.install = function() {
         Tints.install(
             {
-                type: $scope.tint.type
+                type: $scope.tint.data.type
             },
             {
                 tint: {
                     type: $scope.tint.type,
-                    owner: $scope.tint.owner.username,
+                    owner: $scope.tint.owner,
                     slug: $scope.tint.slug,
                     uri: $scope.tint.uri
                 }
@@ -110,7 +55,7 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
             Tints.uninstall(
                 {
                     type: $scope.tint.type,
-                    owner: $scope.tint.owner.username,
+                    owner: $scope.tint.owner,
                     slug: $scope.tint.slug
                 },
                 function(attempt) {
@@ -120,28 +65,15 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
             );
         }
     };
-
-    $scope.remove =  function() {
-        Library.remove(
-            { type: $scope.tint.type, tintId: $scope.tint.slug, owner: $scope.tint.owner.username },
-            function() {
-                $location.path('/library');
-            },
-            ApiFeedback.onError()
-        );
-    };
 }]);
 
 
 libraryModule.service('Library', function(settings, $resource) {
     return $resource(
-        settings.api + '/api/v1/library/:type/:owner/:tintId',
-        {type: '@type', owner: '@owner', tintId: '@tintId'},
+        'http://hive.bigboards.io/api/v1/library/:type/:owner/:slug',
+        {type: '@type', owner: '@owner', slug: '@slug'},
         {
-            'find': { method: 'GET', isArray: false},
-            'refresh': { method: 'POST', isArray: false},
-            'persist': { method: 'PUT', isArray: false},
-            'remove': { method: 'DELETE', isArray: false}
+            'find': { method: 'GET', isArray: false}
         }
     );
 });

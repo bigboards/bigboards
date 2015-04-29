@@ -1,1 +1,1 @@
-var updateModule = angular.module('bb.update', ['ngResource', 'drFlip']);
+var updateModule = angular.module('bb.update', ['ngResource']);

@@ -25,14 +25,15 @@ serfer.connect().then(function() {
     serverConfig.environment = app.get('env');
 
     var configuration = new Container.Configuration(serverConfig.dir.facts + 'bb.fact');
+    configuration.get().then(function(config) {
+        var services = initializeServices(serverConfig, config, serfer, app);
+        services.task.registerDefaultTasks(config, services);
 
-    var services = initializeServices(serverConfig, configuration, serfer, app);
-    services.task.registerDefaultTasks(configuration, services);
+        var io = initializeSocketIO(server, services);
 
-    var io = initializeSocketIO(server, services);
-
-    server.listen(app.get('port'), function () {
-        winston.info('BigBoards-mmc listening on port ' + app.get('port'));
+        server.listen(app.get('port'), function () {
+            winston.info('BigBoards-mmc listening on port ' + app.get('port'));
+        });
     });
 }).fail(function(error) {
     handleError(error);
@@ -83,7 +84,7 @@ function initializeExpress() {
 
 function initializeSocketIO(server, services) {
     var io = require('socket.io').listen(server);
-    io.set('log level', 1); // reduce logging
+    //io.set('log level', 1); // reduce logging
 
     // -- Initialize Socket.io communication
     io.sockets.on('connection', function(socket) {

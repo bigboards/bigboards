@@ -1,4 +1,4 @@
-FROM bigboards/base-armv7l
+FROM bigboards/base-__arch__
 
 MAINTAINER bigboards
 

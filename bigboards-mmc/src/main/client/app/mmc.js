@@ -7,11 +7,12 @@ var app = angular.module( 'mmc', [
     'bb.tasks',
     'bb.update',
     'bb.tints.tutor',
-    'nvd3ChartDirectives',
     'btford.socket-io',
     'btford.markdown',
     'ui.bootstrap',
-    'ngStorage'
+    'ngStorage',
+    'ngAnimate',
+    'toaster'
 ]);
 
 app.constant('settings', {
@@ -19,8 +20,9 @@ app.constant('settings', {
     //api: 'http://infinite-n1:7000'
 });
 
-app.config(['$routeProvider', '$sceProvider',  function($routeProvider, $sceProvider) {
+app.config(['$routeProvider', '$sceProvider', '$httpProvider', function($routeProvider, $sceProvider, $httpProvider) {
     $sceProvider.enabled(false);
+    $httpProvider.defaults.headers.common['BB-Firmware'] = 'feniks-wip';
 
     $routeProvider
         .when('/dashboard', {
@@ -78,7 +80,7 @@ app.config(['$routeProvider', '$sceProvider',  function($routeProvider, $sceProv
             controller: 'LibraryItemViewController',
             resolve : {
                 tint: ['$route', 'Library', function($route, Library) {
-                    return Library.find({type: $route.current.params.type, owner: $route.current.params.owner, tintId: $route.current.params.slug});
+                    return Library.get({type: $route.current.params.type, owner: $route.current.params.owner, slug: $route.current.params.slug});
                 }]
             }
         })
@@ -89,17 +91,19 @@ app.config(['$routeProvider', '$sceProvider',  function($routeProvider, $sceProv
         });
 }]);
 
-app.run(['$rootScope', function($rootScope) {
+app.run(['$rootScope', '$http', 'Hex', function($rootScope, $http, Hex) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         if (current.$$route) {
             $rootScope.title = current.$$route.title;
         }
     });
+
+    $http.defaults.headers.common['BB-Architecture'] = Hex.arch;
 }]);
 
 app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket', 'Firmware', function($scope, $location, Hex, socket, Firmware) {
     $scope.currentItem = null;
-    $scope.hex = Hex.me();
+    $scope.hex = Hex;
 
     $scope.menu = [
         {

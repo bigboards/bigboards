@@ -1,11 +1,4 @@
 <bb-header title="'Library'">
-    <div class="action" ng-click="refresh()" >
-        <span class="fa fa-refresh"></span>
-        <span>refresh</span>
-    </div>
-    <div class="action" ng-click="addItem()" >
-        <span class="fa fa-2x fa-plus"></span>
-    </div>
 </bb-header>
 
 <bb-content>
@@ -38,17 +31,17 @@
                     <h3>Stacks</h3>
                 </div>
                 <div class="row">
-                    <tint-card type="stack" format="tiny" tint="tint" ng-repeat="(tintId, tint) in library.stacks"></tint-card>
+                    <tint-card type="stack" format="tiny" tint="tint" ng-repeat="tint in library.stacks.data"></tint-card>
                 </div>
             </div>
         </div>
         <div class="row ml-15 mr-15 mb-15">
             <div class="col-md-12">
                 <div class="row">
-                    <h3>Tutors</h3>
+                    <h3>Tutorials</h3>
                 </div>
                 <div class="row">
-                    <tint-card type="tutor" format="tiny" tint="tint" ng-repeat="(tintId, tint) in library.tutors"></tint-card>
+                    <tint-card type="tutor" format="tiny" tint="tint" ng-repeat="tint in library.tutorials.data"></tint-card>
                 </div>
             </div>
         </div>

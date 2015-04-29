@@ -6,24 +6,22 @@ function Templater(configuration) {
 }
 
 Templater.prototype.createScope = function(nodes) {
-    return this.configuration.get().then(function(data) {
-        var scope = {};
+    var scope = {};
 
-        scope.hex = {
-            id: (data) ? data.hex.id : 'unknown',
-            name: (data) ? data.hex.name : 'unknown'
+    scope.hex = {
+        id: (this.configuration) ? this.configuration.hex.id : 'unknown',
+        name: (this.configuration) ? this.configuration.hex.name : 'unknown'
+    };
+
+    scope.nodes = {};
+    nodes.forEach(function (node) {
+        scope.nodes[node.name] = {
+            ip: node.network.external.ip,
+            status: node.status
         };
-
-        scope.nodes = {};
-        nodes.forEach(function (node) {
-            scope.nodes[node.Name] = {
-                ip: (node.Tags) ? node.Tags['network.eth0:0.ip'] : 'none',
-                status: node.Status
-            };
-        });
-
-        return scope;
     });
+
+    return scope;
 };
 
 Templater.prototype.templateWithScope = function(obj, scope) {

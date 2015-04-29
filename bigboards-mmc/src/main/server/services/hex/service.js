@@ -7,9 +7,9 @@ var Q = require('q'),
     fs = require('fs'),
     log = require('winston');
 
-function HexService(settings, configuration, templater, services, serf) {
+function HexService(settings, config, templater, services, serf) {
     this.settings = settings;
-    this.configuration = configuration;
+    this.config = config;
     this.templater = templater;
     this.services = services;
     this.serf = serf;
@@ -75,14 +75,12 @@ HexService.prototype._updateNodeList = function() {
 };
 
 HexService.prototype.get = function() {
-    return this.configuration.get().then(function(data) {
-        if (!data) {
-            return { id: 'unknown', name: 'unknown' }
-        } else return {
-            id: data.hex.id,
-            name: data.hex.name
-        };
+    if (this.config) return Q({
+        id: this.config.hex.id,
+        name: this.config.hex.name,
+        arch: this.config.hex.arch
     });
+    else return Q({ id: 'unknown', name: 'unknown', arch: 'unknown' });
 };
 
 HexService.prototype.powerdown = function() {
@@ -184,9 +182,9 @@ function parseManifest(hexService, templater, tintRoot, type, owner, tintId) {
 
     return fsu.readYamlFile(tintDir + '/tint.yml').then(function(content) {
         return hexService.listNodes().then(function(nodes) {
-            return templater.createScope(nodes).then(function(scope) {
-                return templater.templateWithScope(content, scope);
-            });
+            var scope = templater.createScope(nodes);
+
+            return templater.templateWithScope(content, scope);
         }).fail(function(error) {
             console.log('unable to parse the tint meta file: ' + error.message);
         });

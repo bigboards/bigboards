@@ -4,6 +4,7 @@ var winston = require('winston'),
 module.exports = {
     Resource: require('./resource'),
     Service: require('./service'),
+    prepare: function(settings, services) { },
     io: function(socket, services) {},
     link: function(app, services) {
         var resource = new this.Resource(services.tutorials);
