@@ -31,7 +31,7 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
     $scope.install = function() {
         Tints.install(
             {
-                type: $scope.tint.data.type
+                type: $scope.tint.type
             },
             {
                 tint: {
