@@ -17,7 +17,7 @@
 
   - shell: docker rm -f {{ item }}
     ignore_errors: yes
-    with_items: docker_running.stdout_lines
+    with_items: docker_available.stdout_lines
 
   - file:
       path: "/data/{{ item }}"
