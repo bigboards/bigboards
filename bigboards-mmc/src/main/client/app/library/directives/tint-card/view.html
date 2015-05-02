@@ -4,23 +4,23 @@
             <div class="cover-image-container">
                 <div class="cover-outer-align">
                     <div class="cover-inner-align">
-                        <img ng-src="{{ tint.data.logo }}" alt="{{ tint.data.slug }}">
+                        <img ng-src="{{ tint.logo }}" alt="{{ tint.slug }}">
                     </div>
                 </div>
             </div>
-            <a class="card-click-target" href="#/library/{{tint.data.type}}/{{tint.data.owner}}/{{tint.data.slug}}">
+            <a class="card-click-target" href="#/library/{{tint.type}}/{{tint.owner}}/{{tint.slug}}">
                 <span class="preview-overlay-container"></span>
             </a>
         </div>
         <div class="details">
             <h2>
-                <a class="title" href="#/library/{{tint.data.type}}/{{tint.data.owner}}/{{tint.data.slug}}">
-                    {{ tint.data.name }}
+                <a class="title" href="#/library/{{tint.type}}/{{tint.owner}}/{{tint.slug}}">
+                    {{ tint.name }}
                     <span class="paragraph-end"></span>
                 </a>
             </h2>
             <div class="subtitle-container">
-                <a class="subtitle" href="#/library/{{tint.data.type}}/{{tint.data.owner}}/{{tint.data.slug}}">{{ tint.data.owner }}</a>
+                <a class="subtitle" href="#/library/{{tint.type}}/{{tint.owner}}/{{tint.slug}}">{{ tint.owner }}</a>
             </div>
         </div>
     </div>

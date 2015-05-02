@@ -94,9 +94,9 @@ LibraryService.prototype.getTint = function(type, owner, slug) {
     if (! this.libraryCache.hasOwnProperty(type)) return Q.fail();
 
     return this.services.hex.listNodes().then(function(nodes) {
-        return self.templater.createScope(nodes).then(function(scope) {
-            return self.templater.templateWithScope(self.libraryCache[type][strUtils.toTintGUID(owner, slug)], scope);
-        });
+        var scope = self.templater.createScope(nodes);
+
+        return self.templater.templateWithScope(self.libraryCache[type][strUtils.toTintGUID(owner, slug)], scope);
     });
 };
 

@@ -1,7 +1,9 @@
 var Q = require('q'),
-    winston = require('winston');
+    winston = require('winston'),
+    deepcopy = require('deepcopy');
 
-var TaskUtils = require('../../../../utils/task-utils');
+var TaskUtils = require('../../../../utils/task-utils'),
+    TintUtils = require('../../../../utils/tint-utils');
 
 module.exports = function(configuration, services) {
     return {
@@ -21,34 +23,31 @@ module.exports = function(configuration, services) {
             }
         ],
         execute: function(env, scope) {
-             // -- TODO: check if the uninstall script exists
+            var tintPath = env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug;
+            var metadata = deepcopy(scope.tint);
 
             return services.hex.get()
                 .then(function(hex) {
                     scope.hex = hex;
-                })
-                .then(function() {
-                    return services.library.getTint(scope.tint.type, scope.tint.owner, scope.tint.slug);
-                })
-                .then(function(ft) {
-                    console.log("Update the tint state to 'partial'");
-                    scope.tintMeta = ft;
-                    scope.tintMeta['state'] = 'partial';
-                    scope.tintMetaString = JSON.stringify(scope.tintMeta);
 
-                    return scope;
-                })
-                .then(function() {
-                    var tintEnv = {
-                        workdir: env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug + '/work',
-                        hostFile: '_hosts',
-                        verbose: env.verbose
-                    };
+                    return TintUtils.setTintState(env.settings.dir.tints, metadata, 'uninstalling')
+                        .then(function() {
+                            var tintEnv = {
+                                workdir: tintPath + '/work',
+                                hostFile: '_hosts',
+                                verbose: env.verbose
+                            };
 
-                    return TaskUtils.playbook(tintEnv, '_uninstall', scope);
+                            return TaskUtils.playbook(tintEnv, '_uninstall', scope);
+                        });
+
+
                 })
                 .then(function() {
-                    return TaskUtils.removeFile(env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
+                    return TaskUtils.removeFile(tintPath);
+                })
+                .then(function() {
+                    return TintUtils.removeTintState(tintPath, scope.tint);
                 });
 
         }

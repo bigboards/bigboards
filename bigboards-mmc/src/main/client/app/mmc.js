@@ -10,19 +10,21 @@ var app = angular.module( 'mmc', [
     'btford.socket-io',
     'btford.markdown',
     'ui.bootstrap',
-    'ngStorage',
     'ngAnimate',
-    'toaster'
+    'toaster',
+    'webStorageModule'
 ]);
 
-app.constant('settings', {
-    api: ''
-    //api: 'http://infinite-n1:7000'
-});
+app.factory('identity', ['webStorage', function(webStorage) {
+    return webStorage.session.get('identity');
+}]);
 
-app.config(['$routeProvider', '$sceProvider', '$httpProvider', function($routeProvider, $sceProvider, $httpProvider) {
+app.factory('settings', ['webStorage', function(webStorage) {
+    return webStorage.session.get('settings');
+}]);
+
+app.config(['$routeProvider', '$sceProvider', function($routeProvider, $sceProvider) {
     $sceProvider.enabled(false);
-    $httpProvider.defaults.headers.common['BB-Firmware'] = 'feniks-wip';
 
     $routeProvider
         .when('/dashboard', {
@@ -71,7 +73,15 @@ app.config(['$routeProvider', '$sceProvider', '$httpProvider', function($routePr
         .when('/library', {
             title: 'Library',
             templateUrl: 'app/library/library.html',
-            controller: 'LibraryController'
+            controller: 'LibraryController',
+            resolve: {
+                stacks: ['Library', function(Library) {
+                    return Library.find('stack');
+                }],
+                tutorials: ['Library', function(Library) {
+                    return Library.find('tutorial');
+                }]
+            }
         })
 
         .when('/library/:type/:owner/:slug', {
@@ -79,26 +89,37 @@ app.config(['$routeProvider', '$sceProvider', '$httpProvider', function($routePr
             templateUrl: 'app/library/view.html',
             controller: 'LibraryItemViewController',
             resolve : {
-                tint: ['$route', 'Library', function($route, Library) {
-                    return Library.get({type: $route.current.params.type, owner: $route.current.params.owner, slug: $route.current.params.slug});
+                tint: ['$route', 'Hex', 'Library', function($route, Hex, Library) {
+                    var type = $route.current.params.type;
+                    var owner = $route.current.params.owner;
+                    var slug = $route.current.params.slug;
+
+                    return Hex.isInstalled(type, owner, slug).then(function(isInstalled) {
+                        if (isInstalled) {
+                            return Hex.getTint(type, owner, slug);
+                        } else {
+                            return Library.get({ type: type, owner: owner, slug: slug });
+                        }
+                    });
+
                 }]
             }
         })
-
 
         .otherwise({
             redirectTo: '/dashboard'
         });
 }]);
 
-app.run(['$rootScope', '$http', 'Hex', function($rootScope, $http, Hex) {
+app.run(['$rootScope', '$http', 'Hex', 'identity', function($rootScope, $http, Hex, identity) {
+    $http.defaults.headers.common['BB-Firmware'] = 'feniks-wip';
+    $http.defaults.headers.common['BB-Architecture'] = identity.arch;
+
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         if (current.$$route) {
             $rootScope.title = current.$$route.title;
         }
     });
-
-    $http.defaults.headers.common['BB-Architecture'] = Hex.arch;
 }]);
 
 app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket', 'Firmware', function($scope, $location, Hex, socket, Firmware) {

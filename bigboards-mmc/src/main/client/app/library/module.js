@@ -1,41 +1,25 @@
 var libraryModule = angular.module('bb.library', ['ngResource']);
 
-libraryModule.controller('LibraryController', ['$scope', 'Library', 'Stacks', 'ApiFeedback', '$location', '$modal', function($scope,   Library,   Stacks,   ApiFeedback,   $location,   $modal) {
+libraryModule.controller('LibraryController', ['$scope', 'Library', 'stacks', 'tutorials', function($scope,   Library,   stacks, tutorials) {
     $scope.library = {
-        stacks: Library.find({type: 'stack'}),
-        tutorials: Library.find({type: 'tutorial'})
+        stacks: stacks.data,
+        tutorials: tutorials.data
     };
 }]);
 
-libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 'tint', 'Library', 'ApiFeedback', 'Tints', function($scope, $location, tint, Library, ApiFeedback, Tints) {
+libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 'tint', 'ApiFeedback', 'Hex', '$routeParams', function($scope, $location, tint, ApiFeedback, Hex, $routeParams) {
     $scope.tint = tint;
     $scope.isInstalled = null;
     $scope.tintDetails = 'app/library/partials/empty.html';
 
-    $scope.tint.$promise.then(function() {
-        $scope.tintDetails = 'app/library/partials/' + tint.type + '.html';
-
-        Tints.list().$promise.then(function(installed) {
-            for (var idx in installed) {
-                if (installed[idx]['slug'] != $scope.tint.slug) continue;
-                if (installed[idx]['owner'] != $scope.tint.owner) continue;
-
-                $scope.isInstalled = true;
-                return;
-            }
-
-            $scope.isInstalled = false;
-        });
+    $scope.tintDetails = 'app/library/partials/' + $scope.tint.type + '.html';
+    Hex.isInstalled($scope.tint.type, $scope.tint.owner, $scope.tint.slug).then(function(isInstalled) {
+        $scope.isInstalled = isInstalled;
     });
 
     $scope.install = function() {
-        Tints.install(
-            {
-                type: $scope.tint.type
-            },
-            {
-                tint: $scope.tint
-            },
+        Hex.install(
+            { tint: $scope.tint },
             function(attempt) {
                 $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
             },
@@ -47,7 +31,7 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
         var confirmed = confirm("Are you sure? This will remove the tint from the hex.");
 
         if (confirmed) {
-            Tints.uninstall(
+            Hex.uninstall(
                 {
                     type: $scope.tint.type,
                     owner: $scope.tint.owner,
@@ -63,12 +47,27 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
 }]);
 
 
-libraryModule.service('Library', function(settings, $resource) {
-    return $resource(
-        'http://hive.bigboards.io/api/v1/library/:type/:owner/:slug',
-        {type: '@type', owner: '@owner', slug: '@slug'},
-        {
-            'find': { method: 'GET', isArray: false}
-        }
-    );
-});
+libraryModule.service('Library', ['settings', '$http', function(settings, $http) {
+    var Library = function Library() {
+
+    };
+
+    Library.prototype.get = function(type, owner, slug) {
+        var url = 'http://hive.bigboards.io/api/v1/library/' + type + '/' + owner + '/' + slug;
+        return $http.get(url).then(function(data) {
+            return data.data;
+        });
+    };
+
+    Library.prototype.find = function(type, owner) {
+        var url = 'http://hive.bigboards.io/api/v1/library';
+        if (type) url += ('/' + type);
+        if (owner) url += ('/' + owner);
+
+        return $http.get(url).then(function(data) {
+            return data.data;
+        });
+    };
+
+    return new Library();
+}]);

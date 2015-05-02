@@ -1,9 +1,6 @@
 var Q = require('q'),
-    uuid = require('node-uuid'),
-    Errors = require('../../errors'),
-    yaml = require("js-yaml"),
-    mkdirp = require('mkdirp'),
     fsu = require('../../utils/fs-utils'),
+    tu = require('../../utils/tint-utils'),
     fs = require('fs'),
     log = require('winston');
 
@@ -26,9 +23,9 @@ function HexService(settings, config, templater, services, serf) {
         self._updateNodeList();
     });
 
-    mkdirp.sync(this.settings.dir.tints + '/stack');
-    mkdirp.sync(this.settings.dir.tints + '/dataset');
-    mkdirp.sync(this.settings.dir.tints + '/tutor');
+    fsu.mkdir(this.settings.dir.tints + '/stack');
+    fsu.mkdir(this.settings.dir.tints + '/dataset');
+    fsu.mkdir(this.settings.dir.tints + '/tutorial');
 }
 
 HexService.prototype._updateNodeList = function() {
@@ -121,40 +118,40 @@ HexService.prototype.removeNode = function(node) {
  *********************************************************************************************************************/
 HexService.prototype.listTints = function() {
     var self = this;
+    var metafile = this.settings.dir.tints + '/meta.json';
 
-    var promises = [];
+    return fsu.exists(metafile).then(function(exists) {
+        if (exists) {
+            return fsu.readJsonFile(metafile).then(function(metadata) {
+                return self.listNodes().then(function(nodes) {
+                    var scope = self.templater.createScope(nodes);
 
-    var types = fs.readdirSync(self.settings.dir.tints);
-    for (var i in types) {
-        var typeStat = fs.statSync(self.settings.dir.tints + '/' + types[i]);
-        if (typeStat.isDirectory()) {
-            var owners = fs.readdirSync(self.settings.dir.tints + '/' + types[i]);
-
-            for (var j in owners) {
-                var files = fs.readdirSync(self.settings.dir.tints + '/' + types[i] + '/' + owners[j]);
-
-                for (var k in files) {
-                    promises.push(parseManifest(self, self.templater, self.settings.dir.tints, types[i], owners[j], files[k]));
-                }
-            }
+                    return self.templater.templateWithScope(metadata, scope);
+                });
+            });
+        } else {
+            return {};
         }
-    }
-
-    return Q.allSettled(promises).then(function (responses) {
-        var result = [];
-
-        for (var i in responses) {
-            if (responses[i] != null) {
-                result.push(responses[i].value);
-            }
-        }
-
-        return result;
     });
 };
 
-HexService.prototype.getTint = function(type, owner, tint) {
-    return parseManifest(this, this.templater, this.settings.dir.tints, type, owner, tint);
+HexService.prototype.getTint = function(type, owner, slug) {
+    var self = this;
+    var metafile = self.settings.dir.tints + '/meta.json';
+
+    return fsu.exists(metafile).then(function(exists) {
+        if (exists) {
+            return fsu.readJsonFile(metafile).then(function(metadata) {
+                return self.listNodes().then(function(nodes) {
+                    var scope = self.templater.createScope(nodes);
+
+                    return self.templater.templateWithScope(metadata[tu.toTintId(type, owner, slug)], scope);
+                });
+            });
+        } else {
+            return {};
+        }
+    });
 };
 
 HexService.prototype.getTintResource = function(type, owner, tint, resource) {
@@ -175,21 +172,6 @@ HexService.prototype.removeTint = function(tint) {
 HexService.prototype.installTint = function(tint) {
     return this.services.task.invoke(tint.type + '_install', { tint: tint });
 };
-
-function parseManifest(hexService, templater, tintRoot, type, owner, tintId) {
-    var tintDir = tintRoot + '/' + type + '/' + owner + '/' + tintId;
-    var self = this;
-
-    return fsu.readYamlFile(tintDir + '/tint.yml').then(function(content) {
-        return hexService.listNodes().then(function(nodes) {
-            var scope = templater.createScope(nodes);
-
-            return templater.templateWithScope(content, scope);
-        }).fail(function(error) {
-            console.log('unable to parse the tint meta file: ' + error.message);
-        });
-    });
-}
 
 function indexForNode(nodeList, node) {
     // -- discover the index of the node

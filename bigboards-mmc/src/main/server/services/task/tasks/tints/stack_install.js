@@ -1,10 +1,12 @@
 var Q = require('q'),
     winston = require('winston'),
     fs = require('fs'),
+    deepcopy = require('deepcopy'),
     Providers = require('../../../library/providers');
 
 var TaskUtils = require('../../../../utils/task-utils'),
-    FsUtils = require('../../../../utils/fs-utils');
+    FsUtils = require('../../../../utils/fs-utils'),
+    TintUtils = require('../../../../utils/tint-utils');
 
 module.exports = function(configuration, services) {
     return {
@@ -29,6 +31,7 @@ module.exports = function(configuration, services) {
 
                 var tintPath = env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug;
                 scope.tint.path = tintPath;
+                var metadata = deepcopy(scope.tint);
 
                 // -- clean the views of the nodes variable
                 for (var viewIdx in scope.tint.stack.views) {
@@ -37,14 +40,16 @@ module.exports = function(configuration, services) {
 
                 winston.info('Installing tint ' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
 
-                console.log("Update the tint state to 'installing'");
-                scope.tintMeta = scope.tint;
-                scope.tintMeta['state'] = 'partial';
-                scope.tintMetaString = JSON.stringify(extractEssentials(scope.tintMeta));
-
-                console.log("Running the stack pre-install script");
-                return TaskUtils
-                    .playbook(env, 'tints/stack_pre_install', scope)
+                return TintUtils
+                    .setTintState(env.settings.dir.tints, metadata, 'installing')
+                    .then(function() {
+                        winston.info('Generating the scripts needed to install the tint');
+                        return TaskUtils
+                            .playbook(env, 'tints/stack_pre_install', scope)
+                            .then(function() {
+                                return TintUtils.setTintState(env.settings.dir.tints, metadata, 'generated');
+                            });
+                    })
                     .then(function() {
                         var tintEnv = {
                             workdir: tintPath + '/work',
@@ -52,26 +57,14 @@ module.exports = function(configuration, services) {
                             verbose: env.verbose
                         };
 
-                        return TaskUtils.playbook(tintEnv, '_install', scope);
-                    })
-                    .then(function() {
-                        console.log("Running the stack post-install script using 'installed' as the outcome");
-
-                        scope.tintMeta['state'] = 'installed';
-
-                        return FsUtils.jsonFile(tintPath + '/meta.json', scope.tintMeta);
-                    })
-                    .fail(function(error) {
-                        console.log("Running the stack post-install script using 'partial' as the outcome because of :\n");
-                        console.log(error.message);
-
-                        scope.tintMeta['state'] = 'partial';
-
-                        return FsUtils.jsonFile(tintPath + '/meta.json', scope.tintMeta);
+                        winston.info('Installing the tint');
+                        return TaskUtils
+                            .playbook(tintEnv, '_install', scope)
+                            .then(function() {
+                                return TintUtils.setTintState(env.settings.dir.tints, metadata, 'installed');
+                            });
                     });
             });
-
-
         }
     };
 };

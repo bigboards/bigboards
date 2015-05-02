@@ -103,11 +103,11 @@ function initializeServices(serverConfig, config, serf, app) {
 
     var services = {};
 
-    services.hex = new Services.Hex.Service(serverConfig, config, templater, services, serf);
-    Services.Hex.link(app, services);
-
     services.task = new Services.Task.Service(serverConfig);
     Services.Task.link(app, services);
+
+    services.hex = new Services.Hex.Service(serverConfig, config, templater, services, serf);
+    Services.Hex.link(app, services);
 
     services.library = new Services.Library.Service(serverConfig, services, templater);
     Services.Library.link(app, services);

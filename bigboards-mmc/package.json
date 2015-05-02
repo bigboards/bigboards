@@ -9,6 +9,7 @@
     "async": "~0.2.9",
     "bitbucket-rest": "0.0.1",
     "cors": "^2.5.2",
+    "deepcopy": "^0.5.0",
     "events": "~1.0.0",
     "express": "3.4.7",
     "express-params": "0.0.3",

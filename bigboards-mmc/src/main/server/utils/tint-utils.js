@@ -21,3 +21,45 @@ module.exports.toTutorialElementPath = function(generationPath, path) {
 module.exports.toTutorialTocPath = function(generationPath) {
     return generationPath + '/toc.bbt'
 };
+
+module.exports.toTintId = function(type, owner, slug) {
+    return '[' + type + ']' + owner + '$' + slug;
+};
+
+module.exports.setTintState = function(metadataPath, metadata, newState) {
+    metadata.state = newState;
+    var metadataFile = metadataPath + '/meta.json';
+
+    return fsu.exists(metadataFile).then(function(exists) {
+        if (exists) {
+            return fsu.readJsonFile(metadataFile).then(function(installedTints) {
+                installedTints[metadata.id] = metadata;
+
+                return fsu.jsonFile(metadataFile, installedTints);
+            });
+        } else {
+            var installedTints = {};
+            installedTints[metadata.id] = metadata;
+
+            return fsu.jsonFile(metadataFile, installedTints);
+        }
+    });
+
+
+};
+
+module.exports.removeTintState = function(metadataPath, metadata) {
+    var metadataFile = metadataPath + '/meta.json';
+
+    return fsu.exists(metadataFile).then(function(exists) {
+        if (exists) {
+            return fsu.readJsonFile(metadataFile).then(function(installedTints) {
+                delete installedTints[metadata.id];
+
+                return fsu.jsonFile(metadataFile, installedTints);
+            });
+        }
+    });
+
+
+};

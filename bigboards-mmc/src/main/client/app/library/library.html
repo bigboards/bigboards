@@ -31,7 +31,7 @@
                     <h3>Stacks</h3>
                 </div>
                 <div class="row">
-                    <tint-card type="stack" format="tiny" tint="tint" ng-repeat="tint in library.stacks.data"></tint-card>
+                    <tint-card type="stack" format="tiny" tint="tint.data" ng-repeat="tint in library.stacks"></tint-card>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
                     <h3>Tutorials</h3>
                 </div>
                 <div class="row">
-                    <tint-card type="tutor" format="tiny" tint="tint" ng-repeat="tint in library.tutorials.data"></tint-card>
+                    <tint-card type="tutor" format="tiny" tint="tint.data" ng-repeat="tint in library.tutorials"></tint-card>
                 </div>
             </div>
         </div>

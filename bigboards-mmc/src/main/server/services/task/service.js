@@ -206,7 +206,14 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
             var errorStream = fs.createWriteStream(taskLogDir + '/error.log');
             var outputStream = fs.createWriteStream(taskLogDir + '/output.log');
 
-            this.currentTask = { attempt: taskId, task: { code: task.code, description: task.description } };
+            this.currentTask = {
+                attempt: taskId,
+                task: {
+                    code: task.code,
+                    description: task.description,
+                    parameters: parameters
+                }
+            };
 
             // -- invoke the task
             winston.log('info', 'invoking task "%s": %s', taskCode, task.description);
@@ -216,7 +223,9 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
                 var env = this.createTaskEnvironment();
 
                 task.execute(env, executionScope).then(function (data) {
-                    eventEmitter.emit('task:finished', { attempt: taskId, data: data });
+                    self.currentTask.data = data;
+
+                    eventEmitter.emit('task:finished', self.currentTask);
 
                     outputStream.close();
                     errorStream.close();
@@ -230,13 +239,15 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
                     outputStream.close();
                     errorStream.close();
 
-                    eventEmitter.emit('task:failed', { attempt: self.currentTask, error: error });
+                    self.currentTask.error = error;
+
+                    eventEmitter.emit('task:failed', self.currentTask);
                     self.currentTask = null;
                 }, function (progress) {
                     if (progress.channel == 'output') outputStream.write(progress.data);
                     else if (progress.channel == 'error') errorStream.write(progress.data);
 
-                    eventEmitter.emit('task:busy', { attempt: self.currentTask, data: progress });
+                    eventEmitter.emit('task:busy', { attempt: self.currentTask, data: progress.data });
                 });
 
                 deferred.resolve(self.currentTask);
@@ -246,6 +257,7 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
                 winston.log('info', err.stack);
 
                 eventEmitter.emit('task:failed', { attempt: self.currentTask, error: err });
+            } finally {
                 self.currentTask = null;
             }
 

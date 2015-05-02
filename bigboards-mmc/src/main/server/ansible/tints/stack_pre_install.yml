@@ -1,6 +1,5 @@
 ---
 - hosts: local
-  sudo: yes
   tasks:
     - name: be sure the tint directory exists
       file: state=directory path=/opt/bb/tints.d/stack
@@ -31,21 +30,6 @@
 ## Inventory
 ##
 ###############################################################################
-
-#    - name: make a working copy of the tint metadata
-#      copy:
-#        src: "{{ tint.path }}/tint.yml"
-#        dest: "{{ tint.path }}/work/_tint.yml"
-#
-#    - name: remove lines with ansible variables from tint metadata
-#      lineinfile:
-#        dest: "{{ tint.path }}/work/_tint.yml"
-#        create: "yes"
-#        regexp: '\{\{(.*nodes.*)\}\}' #REMARK: must be single quotes here to allow escape characters
-#        state: "absent"
-#
-#    - name: source the tint metadata file
-#      include_vars: "{{ tint.path }}/work/_tint.yml"
 
     - name: create the group_vars file
       template:

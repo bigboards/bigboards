@@ -1,4 +1,4 @@
-<bb-header title="'Hi, I am ' + hex.name">
+<bb-header title="'Hi, I am ' + deviceName">
     <div class="action" ng-click="powerOff()" >
         <span class="fa fa-power-off"></span>
         <span>power off</span>
@@ -34,10 +34,10 @@
                 </div>
             </div>
             <div class="tints col-sm-12 col-md-12 col-lg-4">
-                <h3 ng-if="!installedTints || installedTints.length == 0">Currently there is no stack tint installed. You may go to the <a href="#/library">library</a> to install one</h3>
+                <h3 ng-if="! hasInstalledTints()">Currently there is no tint installed. You may go to the <a href="#/library">library</a> to install one.</h3>
 
                 <div>
-                    <tint-card type="{{tint.type}}" format="tiny" tint="tint" ng-repeat="tint in installedTints" ></tint-card>
+                    <tint-card type="{{tint.type}}" format="tiny" tint="tint" ng-repeat="(key, tint) in tints" ></tint-card>
                 </div>
             </div>
         </div>

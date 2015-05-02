@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="no-js" ng-app="mmc">
+<html lang="en" class="no-js">
 <head>
     <meta charset="UTF-8" />
 
@@ -105,7 +105,7 @@
 <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
 <script type="text/javascript" src="bower_components/angular-socket-io/socket.js"></script>
 <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
-<script type="text/javascript" src="bower_components/ngstorage/ngStorage.min.js"></script>
+<script type="text/javascript" src="bower_components/angular-webstorage/angular-webstorage.min.js"></script>
 <script type="text/javascript" src="bower_components/angularjs-toaster/toaster.js"></script>
 
 <script type="text/javascript" src="app/mmc.js"></script>
@@ -153,6 +153,19 @@
 <!-- UserVoice - A tab to launch the Classic Widget -->
 <script>
     UserVoice = window.UserVoice || [];
+</script>
+
+<script>
+    angular.element(document).ready(function() {
+        $.getJSON('http://nhex-n1:7000/api/v1/hex', function(data) {
+            sessionStorage.setItem('identity', JSON.stringify(data));
+            sessionStorage.setItem('settings', JSON.stringify({
+                api: 'http://nhex-n1:7000'
+            }));
+
+            angular.bootstrap(document, ['mmc']);
+        });
+    });
 </script>
 
 </body>

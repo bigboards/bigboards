@@ -6,20 +6,20 @@ module.exports = {
     Service: require('./service'),
     prepare: function(settings, services) { },
     io: function(socket, services) {
-        services.task.on('task:started', function(data) {
-            socket.emit('task:started', data);
+        services.task.on('task:started', function(attempt) {
+            socket.emit('task:started', attempt);
         });
 
-        services.task.on('task:finished', function(data) {
-            socket.emit('task:finished', data);
+        services.task.on('task:finished', function(attempt) {
+            socket.emit('task:finished', attempt);
         });
 
-        services.task.on('task:failed', function(data) {
-            socket.emit('task:failed', data);
+        services.task.on('task:failed', function(attempt) {
+            socket.emit('task:failed', attempt);
         });
 
-        services.task.on('task:busy', function(data) {
-            socket.emit('task:busy', data.data);
+        services.task.on('task:busy', function(attempt) {
+            socket.emit('task:busy', attempt);
         });
     },
     link: function(app, services) {

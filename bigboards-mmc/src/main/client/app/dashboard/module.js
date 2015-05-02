@@ -4,6 +4,14 @@ dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'Ti
                                           function ($scope,   Hex,   Nodes,   Tints,   Tasks,   socket,   ApiFeedback,   $location) {
     $scope.nodes = Nodes.list();
 
+    Hex.getInstalledTints().then(function(installedTints) {
+        $scope.tints = installedTints;
+    });
+
+    Hex.getIdentity().then(function(identity) {
+        $scope.deviceName = identity.name;
+    });
+
     $scope.model = {
         metrics: {}
     };
@@ -20,20 +28,12 @@ dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'Ti
     });
 
     socket.on('task:finished', function(task) {
-        $scope.loadStacks();
+        $scope.tints = Hex.getInstalledTints();
     });
 
     socket.on('task:failed', function(task) {
-        $scope.loadStacks();
+        $scope.tints = Hex.getInstalledTints();
     });
-
-    $scope.loadStacks = function() {
-        Tints.list(function(installedTints) {
-            if (!installedTints || installedTints.length == 0) return;
-
-            $scope.installedTints = installedTints;
-        });
-    };
 
     $scope.getMetric = function(node, metric) {
         if (! $scope.model.metrics) return 'na';
@@ -44,7 +44,7 @@ dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'Ti
     };
 
     $scope.hasInstalledTints = function() {
-        return this.tints.length > 0;
+        return $scope.tints && Object.keys($scope.tints).length > 0;
     };
 
     $scope.update = function() {
@@ -54,36 +54,6 @@ dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'Ti
         );
     };
 
-    $scope.uninstallStack = function(stack) {
-        var confirmed = confirm("Are you sure? This will remove the current tint from the hex.");
-
-        if (confirmed) {
-            Stacks.uninstall(
-                {id: stack.tint_id, owner: stack.owner.username},
-                function(attempt) {
-                    $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
-                },
-                ApiFeedback.onError()
-            );
-        }
-    };
-
-  $scope.reinstallStack =  function(stack) {
-      Stacks.install(
-          { },
-          { "tint": {
-              "owner": stack.owner.username,
-              "type": "stack",
-              "id": stack['tint_id'],
-              "uri": 'https://bitbucket.org/' + stack.owner.username + '/' + stack['tint_id'] + '.git'
-          } },
-          function(attempt) {
-              $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
-          },
-          ApiFeedback.onError()
-      );
-  };
-
     $scope.powerOff = function() {
         Hex.halt(function(attempt) {
                 $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
@@ -91,7 +61,4 @@ dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'Ti
             ApiFeedback.onError()
         );
     };
-
-    // -- load the stack from the server
-    $scope.loadStacks();
 }]);

@@ -1,59 +1,82 @@
-app.factory('socket', function (settings, socketFactory) {
-    //return socketFactory({
-    //    ioSocket: io.connect(settings.api + '/')
-    //});
+app.factory('socket', function (settings, socketFactory, $location) {
+    var ioUrl = $location.protocol() + '://' + $location.host() + ':' + $location.port() + '/';
 
-    //return socketFactory();
+    if (settings.api)
+        ioUrl = settings.api;
 
-    var myIoSocket = io.connect('http://localhost:7000/');
+    var myIoSocket = io.connect(ioUrl);
 
-    mySocket = socketFactory({
+    return socketFactory({
         ioSocket: myIoSocket
     });
-
-    return mySocket;
 });
 
-app.service('Hex', [ 'settings', '$http', 'toaster', function(settings, $http, toaster) {
+app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(settings, $http, $q, toaster, socket) {
     var Hex = function Hex() {
-        this.id = null;
-        this.name = null;
-        this.arch = null;
-        this.installedTints = [];
+        this.identity = null;
+        this._identityLoaded = false;
 
-        this.reload();
-    };
+        this.installedTints = null;
+        this._installedTintsLoaded = false;
 
-    Hex.prototype.reload = function() {
         var self = this;
 
-        $http.get(settings.api + '/api/v1/hex')
-            .success(function(data, status, headers, config) {
-                self.id = data.id;
-                self.name = data.name;
-                self.arch = data.arch;
-            })
-            .error(function(data, status, headers, config) {
-                toaster.pop({
-                    type: 'error',
-                    title: 'Initialization Failed',
-                    body: 'Failed to retrieve the information for this hex. The hex responded with the following message: "' + data + '"',
-                    showCloseButton: true
-                });
-            });
+        // -- register a task listener for installing and uninstalling tasks
+        socket.on('task:finished', function(data) {
+            if (data.task.code == 'stack_install' || data.task.code == 'tutor_install') {
+                self._installedTintsLoaded = false;
+            }
+        });
 
-        $http.get(settings.api + '/api/v1/hex/tints')
-            .success(function(data, status, headers, config) {
-                self.installedTints = data;
-            })
-            .error(function(data, status, headers, config) {
-                toaster.pop({
-                    type: 'error',
-                    title: 'Initialization Failed',
-                    body: 'Failed to retrieve the the list of installed tints. The hex responded with the following message: "' + data + '"',
-                    showCloseButton: true
-                });
+        socket.on('task:failed', function(data) {
+            if (data.task.code == 'stack_install' || data.task.code == 'tutor_install') {
+                self._installedTintsLoaded = false;
+            }
+        });
+    };
+
+    Hex.prototype.getInstalledTints = function(force) {
+        var self = this;
+
+        if (force)
+            this._installedTintsLoaded = false;
+
+        if (this._installedTintsLoaded) {
+            return $q(function(resolve, reject) {
+                resolve(self.installedTints);
             });
+        } else {
+            return $http
+                .get(settings.api + '/api/v1/hex/tints')
+                .then(function(response) {
+                    self.installedTints = response.data;
+                    self._installedTintsLoaded = true;
+
+                    return self.installedTints;
+                });
+        }
+    };
+
+    Hex.prototype.getIdentity = function(force) {
+        var self = this;
+
+        if (force)
+            this._identityLoaded = false;
+
+        if (this._identityLoaded) {
+            return $q(function(resolve, reject) {
+                resolve(self.identity);
+            });
+        } else {
+            return $http
+                .get(settings.api + '/api/v1/hex')
+                .then(function(response) {
+                    self.identity = response.data;
+                    self._identityLoaded = true;
+
+                    return self.identity;
+                });
+        }
     };
 
     Hex.prototype.halt = function() {
@@ -79,11 +102,60 @@ app.service('Hex', [ 'settings', '$http', 'toaster', function(settings, $http, t
     Hex.prototype.isInstalled = function(type, owner, slug) {
         var id = '[' + type + ']' + owner + '$' + slug;
 
-        for (var idx in this.installedTints)
-            if(this.installedTints[idx].id == id)
-                return true;
+        return this.getInstalledTints().then(function(tints) {
+            return (tints[id] != null);
+        });
+    };
 
-        return false;
+    Hex.prototype.getTint = function(type, owner, slug) {
+        var id = '[' + type + ']' + owner + '$' + slug;
+
+        return this.getInstalledTints().then(function(tints) {
+            return tints[id];
+        }).catch(function() {
+            toaster.pop({
+                type: 'error',
+                body: 'Unable to get the tint with id ' + id
+            })
+        });
+    };
+
+    Hex.prototype.install = function(tint, onSuccess, onError) {
+        var self = this;
+
+        $http.post(settings.api + '/api/v1/hex/tints', tint)
+            .success(function(data, status, headers, config) {
+                self.getInstalledTints(true);
+                if (onSuccess) onSuccess(data);
+            })
+            .error(function(data, status, headers, config) {
+                if (onError) onError(data);
+                toaster.pop({
+                    type: 'error',
+                    title: 'Installation Failed',
+                    body: 'Failed to install the tint with id ' + tint.id + '. The hex responded with the following message: "' + data + '"',
+                    showCloseButton: true
+                });
+            });
+    };
+
+    Hex.prototype.uninstall = function(tint, onSuccess, onError) {
+        var self = this;
+
+        $http.delete(settings.api + '/api/v1/hex/tints/' + tint.type + '/' + tint.owner + '/' + tint.slug)
+            .success(function(data, status, headers, config) {
+                self.getInstalledTints(true);
+                if (onSuccess) onSuccess(data);
+            })
+            .error(function(data, status, headers, config) {
+                if (onError) onError(data);
+                toaster.pop({
+                    type: 'error',
+                    title: 'Uninstallation Failed',
+                    body: 'Failed to uninstall the tint with id ' + tint.id + '. The hex responded with the following message: "' + data + '"',
+                    showCloseButton: true
+                });
+            });
     };
 
     return new Hex();
@@ -326,7 +398,7 @@ app.factory('Rest', ['$http', 'settings', function($http, settings) {
     return new rest(settings.api);
 }]);
 
-app.factory('ApiFeedback', function($rootScope) {
+app.factory('ApiFeedback', function($rootScope, toaster) {
     var ApiFeedback = function ApiFeedback() {};
 
     ApiFeedback.prototype.onSuccess = function(msg, cb) {
@@ -410,31 +482,34 @@ app.factory('ApiFeedback', function($rootScope) {
     };
 
     ApiFeedback.prototype.success = function(message) {
-        $rootScope.$emit({
-            level: 'success',
-            message: message
+        toaster.pop({
+            type: 'success',
+            body: 'message',
+            showCloseButton: true
         });
     };
 
     ApiFeedback.prototype.info = function(message) {
-        $rootScope.$emit({
-            level: 'info',
-            message: message
+        toaster.pop({
+            type: 'info',
+            body: 'message',
+            showCloseButton: true
         });
     };
 
     ApiFeedback.prototype.danger = function(message) {
-        console.log(message);
-        $rootScope.$emit({
-            level: 'danger',
-            message: message
+        toaster.pop({
+            type: 'error',
+            body: 'message',
+            showCloseButton: true
         });
     };
 
     ApiFeedback.prototype.warning = function(message) {
-        $rootScope.$emit({
-            level: 'warning',
-            message: message
+        toaster.pop({
+            type: 'warning',
+            body: 'message',
+            showCloseButton: true
         });
     };
 
