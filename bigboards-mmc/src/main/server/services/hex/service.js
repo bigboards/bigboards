@@ -2,7 +2,8 @@ var Q = require('q'),
     fsu = require('../../utils/fs-utils'),
     tu = require('../../utils/tint-utils'),
     fs = require('fs'),
-    log = require('winston');
+    log = require('winston'),
+    Errors = require('../../errors');
 
 function HexService(settings, config, templater, services, serf) {
     this.settings = settings;
@@ -174,7 +175,32 @@ HexService.prototype.removeTint = function(type, owner, slug) {
 };
 
 HexService.prototype.installTint = function(tint) {
-    return this.services.task.invoke(tint.type + '_install', { tint: tint });
+    var self = this;
+
+    return this.listTints().then(function(installedTints) {
+        return self.services.task.current().then(function(currentTask) {
+            if (currentTask) {
+                throw new Errors.TaskAlreadyStartedError('An task is already running. Wait for it to complete before installing the tint');
+            } else {
+                for (var param in installedTints) {
+                    if (!installedTints.hasOwnProperty(param)) continue;
+
+                    // -- ignore the same tint if it is already installed. That would allow us to reinstall it.
+                    if (param == tint.id) continue;
+
+                    // -- ignore if the tint to install is not a stack. Only stacks can be installed one at the time
+                    if (tint.type != 'stack') continue;
+
+                    // -- ignore stacks
+                    if (installedTints[param].type != 'stack') continue;
+
+                    throw new Errors.TintInstallationError('A stack tint has already been installed. Remove it first before trying to install a new one.');
+                }
+
+                return self.services.task.invoke(tint.type + '_install', { tint: tint });
+            }
+        });
+    });
 };
 
 function indexForNode(nodeList, node) {
