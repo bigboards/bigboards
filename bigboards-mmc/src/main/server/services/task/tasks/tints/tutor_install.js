@@ -1,7 +1,6 @@
 var Q = require('q'),
     winston = require('winston'),
-    fs = require('fs'),
-    Providers = require('../../../library/providers');
+    fs = require('fs');
 
 var TaskUtils = require('../../../../utils/task-utils'),
     FsUtils = require('../../../../utils/fs-utils'),

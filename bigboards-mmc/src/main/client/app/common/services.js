@@ -23,14 +23,14 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
 
         // -- register a task listener for installing and uninstalling tasks
         socket.on('task:finished', function(data) {
-            if (data.task.code == 'stack_install' || data.task.code == 'tutor_install') {
-                self._installedTintsLoaded = false;
+            if (data.task.code.indexOf('install') != -1) {
+                self.getInstalledTints(true);
             }
         });
 
         socket.on('task:failed', function(data) {
-            if (data.task.code == 'stack_install' || data.task.code == 'tutor_install') {
-                self._installedTintsLoaded = false;
+            if (data.task.code.indexOf('install') != -1) {
+                self.getInstalledTints(true);
             }
         });
     };

@@ -165,8 +165,12 @@ HexService.prototype.getTintResource = function(type, owner, tint, resource) {
     })
 };
 
-HexService.prototype.removeTint = function(tint) {
-    return this.services.task.invoke(tint.type + '_uninstall', { tint: tint });
+HexService.prototype.removeTint = function(type, owner, slug) {
+    var self = this;
+
+    return this.getTint(type, owner, slug).then(function(tint) {
+        return self.services.task.invoke(type + '_uninstall', { tint: tint });
+    });
 };
 
 HexService.prototype.installTint = function(tint) {

@@ -166,11 +166,7 @@ HexResource.prototype.removeTint = function(req, res) {
     var slug = req.param('slug');
     if (!slug) return res.send(400, 'No slug has been passed!');
 
-    return ApiUtils.handlePromise(res, this.hexService.removeTint({
-        type: type,
-        owner: owner,
-        slug: slug
-    }));
+    return ApiUtils.handlePromise(res, this.hexService.removeTint(type, owner, slug));
 };
 
 module.exports = HexResource;

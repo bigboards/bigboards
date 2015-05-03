@@ -224,30 +224,25 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
 
                 task.execute(env, executionScope).then(function (data) {
                     self.currentTask.data = data;
-
                     eventEmitter.emit('task:finished', self.currentTask);
-
-                    outputStream.close();
-                    errorStream.close();
-
-                    self.currentTask = null;
 
                 }, function (error) {
                     winston.log('info', 'Task invocation resulted in an error: ' + error);
                     winston.log('info', error.stack);
 
-                    outputStream.close();
-                    errorStream.close();
-
                     self.currentTask.error = error;
-
                     eventEmitter.emit('task:failed', self.currentTask);
-                    self.currentTask = null;
+
                 }, function (progress) {
                     if (progress.channel == 'output') outputStream.write(progress.data);
                     else if (progress.channel == 'error') errorStream.write(progress.data);
 
                     eventEmitter.emit('task:busy', { attempt: self.currentTask, data: progress.data });
+                }).fin(function() {
+                    outputStream.close();
+                    errorStream.close();
+
+                    self.currentTask = null;
                 });
 
                 deferred.resolve(self.currentTask);
@@ -257,8 +252,6 @@ TaskService.prototype.invoke = function(taskCode, parameters) {
                 winston.log('info', err.stack);
 
                 eventEmitter.emit('task:failed', { attempt: self.currentTask, error: err });
-            } finally {
-                self.currentTask = null;
             }
 
         } catch (error) {

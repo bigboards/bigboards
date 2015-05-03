@@ -1,8 +1,7 @@
 var Q = require('q'),
     winston = require('winston'),
     fs = require('fs'),
-    deepcopy = require('deepcopy'),
-    Providers = require('../../../library/providers');
+    deepcopy = require('deepcopy');
 
 var TaskUtils = require('../../../../utils/task-utils'),
     FsUtils = require('../../../../utils/fs-utils'),
@@ -58,23 +57,12 @@ module.exports = function(configuration, services) {
                         };
 
                         winston.info('Installing the tint');
-                        return TaskUtils
-                            .playbook(tintEnv, '_install', scope)
-                            .then(function() {
-                                return TintUtils.setTintState(env.settings.dir.tints, metadata, 'installed');
-                            });
+                        return TaskUtils.playbook(tintEnv, '_install', scope);
+                    })
+                    .then(function() {
+                        return TintUtils.setTintState(env.settings.dir.tints, metadata, 'installed');
                     });
             });
         }
     };
 };
-
-function extractEssentials(tintMeta) {
-    return {
-        type: tintMeta.type,
-        owner: tintMeta.owner,
-        slug: tintMeta.slug,
-        uri: tintMeta.uri,
-        state: tintMeta.state
-    }
-}

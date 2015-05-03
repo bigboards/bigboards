@@ -30,7 +30,8 @@ module.exports = function(configuration, services) {
                 .then(function(hex) {
                     scope.hex = hex;
 
-                    return TintUtils.setTintState(env.settings.dir.tints, metadata, 'uninstalling')
+                    return TintUtils
+                        .setTintState(env.settings.dir.tints, metadata, 'uninstalling')
                         .then(function() {
                             var tintEnv = {
                                 workdir: tintPath + '/work',
@@ -40,14 +41,12 @@ module.exports = function(configuration, services) {
 
                             return TaskUtils.playbook(tintEnv, '_uninstall', scope);
                         });
-
-
                 })
                 .then(function() {
                     return TaskUtils.removeFile(tintPath);
                 })
                 .then(function() {
-                    return TintUtils.removeTintState(tintPath, scope.tint);
+                    return TintUtils.removeTintState(env.settings.dir.tints, scope.tint);
                 });
 
         }

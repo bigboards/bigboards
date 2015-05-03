@@ -27,6 +27,7 @@ serfer.connect().then(function() {
     var configuration = new Container.Configuration(serverConfig.dir.facts + 'bb.fact');
     configuration.get().then(function(config) {
         var services = initializeServices(serverConfig, config, serfer, app);
+
         services.task.registerDefaultTasks(config, services);
 
         var io = initializeSocketIO(server, services);
@@ -44,9 +45,7 @@ process.on('uncaughtException', function(err) {
 });
 
 function initializeHttpServer(app) {
-    var server = http.createServer(app);
-
-    return server;
+    return http.createServer(app);
 }
 
 function initializeExpress() {
@@ -90,7 +89,6 @@ function initializeSocketIO(server, services) {
     io.sockets.on('connection', function(socket) {
         Services.Hex.io(socket, services);
         Services.Task.io(socket, services);
-        Services.Library.io(socket, services);
         Services.Tutorials.io(socket, services);
     });
 
@@ -108,9 +106,6 @@ function initializeServices(serverConfig, config, serf, app) {
 
     services.hex = new Services.Hex.Service(serverConfig, config, templater, services, serf);
     Services.Hex.link(app, services);
-
-    services.library = new Services.Library.Service(serverConfig, services, templater);
-    Services.Library.link(app, services);
 
     services.tutorials = new Services.Tutorials.Service(serverConfig, config, services, templater);
     Services.Tutorials.link(app, services);

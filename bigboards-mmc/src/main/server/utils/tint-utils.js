@@ -31,32 +31,42 @@ module.exports.setTintState = function(metadataPath, metadata, newState) {
     var metadataFile = metadataPath + '/meta.json';
 
     return fsu.exists(metadataFile).then(function(exists) {
-        if (exists) {
+        if (exists && installedTints) {
             return fsu.readJsonFile(metadataFile).then(function(installedTints) {
                 installedTints[metadata.id] = metadata;
 
-                return fsu.jsonFile(metadataFile, installedTints);
+                return fsu.jsonFile(metadataFile, installedTints).then(function() {
+                    console.log('updated the tints state for ' + metadata.id + ' to ' + newState + ' into ' + metadataFile);
+                });
             });
         } else {
             var installedTints = {};
             installedTints[metadata.id] = metadata;
 
-            return fsu.jsonFile(metadataFile, installedTints);
+            return fsu.jsonFile(metadataFile, installedTints).then(function() {
+                console.log('created the tints state for ' + metadata.id + ' as ' + newState + ' into ' + metadataFile);
+            });
         }
     });
-
-
 };
 
 module.exports.removeTintState = function(metadataPath, metadata) {
+    console.log('removed the tints state for ' + metadata.id);
     var metadataFile = metadataPath + '/meta.json';
 
     return fsu.exists(metadataFile).then(function(exists) {
         if (exists) {
             return fsu.readJsonFile(metadataFile).then(function(installedTints) {
-                delete installedTints[metadata.id];
+                var remainingTints = [];
 
-                return fsu.jsonFile(metadataFile, installedTints);
+                Object.keys(installedTints).forEach(function(property) {
+                    if (! installedTints.hasOwnProperty(property)) return;
+
+                    if (property != metadata.id)
+                        remainingTints[property] = installedTints[property];
+                });
+
+                return fsu.jsonFile(metadataFile, remainingTints);
             });
         }
     });
