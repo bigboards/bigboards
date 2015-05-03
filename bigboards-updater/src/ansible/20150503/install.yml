@@ -7,3 +7,9 @@
         src: 'templates/etc/serf/serf.conf'
         dest: '/etc/serf/serf.conf'
       notify: Restart Serf
+
+  handlers:
+    - name: Restart Serf
+      service:
+        name: 'serf'
+        state: 'restarted'
