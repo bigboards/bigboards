@@ -1,0 +1,9 @@
+---
+- hosts: all:!localhost
+  sudo: yes
+  tasks:
+    - name: be sure serf has the right configuration
+      template:
+        src: 'templates/etc/serf/serf.conf'
+        dest: '/etc/serf/serf.conf'
+      notify: Restart Serf
