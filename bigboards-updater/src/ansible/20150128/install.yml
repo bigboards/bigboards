@@ -280,6 +280,4 @@
 
   handlers:
     - name: Restart Docker
-      service:
-        name: 'docker.io'
-        state: 'restarted'
+      command: service docker.io restart

@@ -13,11 +13,11 @@ globals {
   debug_level = 0
   max_udp_msg_len = 1472
   mute = no
-{% if ansible_hostname in groups['host_coordinators'] %}
+{% if 'host_coordinators' in group_names %}
   deaf = no
 {% else %}
   deaf = yes
-{% endif %)
+{% endif %}
   host_dmax = 0 /*secs */
   cleanup_threshold = 300 /*secs */
   gexec = no
@@ -25,10 +25,10 @@ globals {
 }
 
 cluster {
-  name = "{{anisble_local.bb.hex.name}}"
+  name = "{{ansible_local.bb.hex.name}}"
   owner = "unspecified"
   latlong = "unspecified"
-  url = "{{anisble_hostname}}.local/ganglia"
+  url = "{{ansible_hostname}}.local/ganglia"
 }
 
 host {
@@ -36,19 +36,20 @@ host {
 }
 
 udp_send_channel {
-  host = {{hex.name}}-n1
+  host = {{ansible_local.bb.hex.name}}-n1.hex
   port = 8649
   ttl = 1
 }
 
 udp_recv_channel {
-{% if ansible_hostname in groups['host_coordinators'] %}
+{% if 'host_coordinators' in group_names %}
+  bind = {{ hostvars[ansible_hostname]['ansible' + ansible_local.bb.node.nic0].ipv4.address }}
   port = 8649
 {% endif %}
 }
 
 tcp_accept_channel {
-{% if ansible_hostname in groups['host_coordinators'] %}
+{% if 'host_coordinators' in group_names %}
   port = 8649
 {% endif %}
 }

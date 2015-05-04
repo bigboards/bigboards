@@ -3,9 +3,7 @@
   sudo: yes
   tasks:
     - name: make sure docker is stopped
-      service:
-        name: 'docker.io'
-        state: 'stopped'
+      command: service docker.io stop
 
     - name: make sure we use docker version 1.5.0
       copy:
@@ -42,6 +40,4 @@
         - { src: 'docker-1.5.0', dest: 'docker.io' }
 
     - name: make sure docker is started
-      service:
-        name: 'docker.io'
-        state: 'started'
+      command: service docker.io start

@@ -2,14 +2,14 @@
 - hosts: host-coordinators
   sudo: yes
   tasks:
-    name: Install ganglia server (Ubuntu)
+    - name: Install ganglia server (Ubuntu)
       apt: pkg={{item}} state=latest
       with_items:
         - ganglia-webfrontend
         - gmetad
 
     - name: Create the ganglia data directory
-      file: state=directory path={{item}}
+      file: state=directory path={{item}} owner=nobody
       with_items:
         - "/data/ganglia"
         - "/data/ganglia/rrds"
@@ -28,13 +28,12 @@
 
   handlers:
     - name: restart apache
-      service: name=apache2 state=restarted
+      command: service apache2 restart
 
     # gmetad and ganglia-monitor init scripts does not support `status`
     # argument.
     - name: restart gmetad
       command: service gmetad restart
-      when: '"ganglia_master" in group_names'
 
 - hosts: host
   sudo: yes
