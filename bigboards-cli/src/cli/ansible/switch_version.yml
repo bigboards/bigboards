@@ -28,11 +28,13 @@
   tasks:
     - name: make sure the running daemons are stopped
       service: name={{ item }} state=stopped
+      ignore_errors: yes
       with_items:
         - bigboards-mmc
 
     - name: make sure the running daemons are removed
       apt: name={{ item }} state=absent
+      ignore_errors: yes
       with_items:
         - bigboards-mcc
         - bigboards-updater
