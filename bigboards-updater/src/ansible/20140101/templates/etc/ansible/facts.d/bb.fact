@@ -19,6 +19,8 @@ sequence={{ ansible_local.hex.node.sequence }}
 role={{ ansible_local.hex.node.role }}
 {% if ansible_machine == 'armv7l' %}
 nic0=eth0
+nic1=eth0:0
 {% else %}
 nic0=p2p1
+nic1=p2p1:0
 {% endif %}
