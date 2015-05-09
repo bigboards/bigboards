@@ -45,7 +45,8 @@
   handlers:
     - name: Restart Network
       command: bash -c "ifdown {{ item }} && ifup {{ item }}"
-      with_items: ansible_interfaces|reject('sameas', 'lo')
+      when: item != 'lo'
+      with_items: ansible_interfaces
 
 ## ####################################################################################################################
 ## ANSIBLE
