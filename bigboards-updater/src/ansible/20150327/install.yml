@@ -5,11 +5,7 @@
     - name: make sure docker is stopped
       command: service docker.io stop
 
-    - name: make sure we use docker version 1.5.0
-      copy:
-        src: 'files/docker-1.5.0-{{ ansible_machine }}'
-        dest: '/usr/bin/docker-1.5.0'
-        mode: 777
+## LIBRARIES ##################################################################
 
     - name: make sure docker can reach its depending libraries
       when: ansible_machine == 'armv7l'
@@ -23,6 +19,14 @@
         src: '/lib/x86_64-linux-gnu/libdevmapper.so.1.02.1'
         dest: '/lib/x86_64-linux-gnu/libdevmapper.so.1.02'
         state: 'link'
+
+## DOCKER BINARY ##############################################################
+
+    - name: make sure we use version 1.5.0 of the docker binary
+      copy:
+        src: 'files/{{ ansible_machine }}/docker-1.5.0'
+        dest: '/usr/bin/docker-1.5.0'
+        mode: 777
 
     - name: make sure the docker file is removed before attempting to link it
       file:
@@ -38,6 +42,30 @@
       with_items:
         - { src: 'docker-1.5.0', dest: 'docker' }
         - { src: 'docker-1.5.0', dest: 'docker.io' }
+
+## DOCKERINIT BINARY ##########################################################
+
+    - name: make sure we use version 1.5.0 of the dockerinit binary
+      when: ansible_machine == 'armv7l'
+      copy:
+        src: 'files/{{ ansible_machine }}/dockerinit-1.5.0'
+        dest: '/usr/lib/docker.io/dockerinit-1.5.0'
+        mode: 755
+
+    - name: make sure the docker file is removed before attempting to link it
+      when: ansible_machine == 'armv7l'
+      file:
+        path: '/usr/lib/docker.io/dockerinit'
+        state: 'absent'
+
+    - name: make sure the links for the docker binary are correct
+      when: ansible_machine == 'armv7l'
+      file:
+        src: '/usr/lib/docker.io/dockerinit-1.5.0'
+        dest: '/usr/lib/docker.io/dockerinit'
+        mode: 755
+        state: 'link'
+
 
     - name: make sure docker is started
       command: service docker.io start
