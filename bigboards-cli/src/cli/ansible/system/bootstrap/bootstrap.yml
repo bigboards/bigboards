@@ -49,9 +49,9 @@
     - assert:
       that:
         - "nic_ref is defined"
-        - "hex_ip_range.stdout is defined"
-        - "node_sequence.stdout is defined"
-        - "hex_name_id is defined"
+        - "hex_ip_range.stdout|length > 0"
+        - "node_sequence.stdout|length > 0"
+        - "hex_name_id.stdout|length > 0"
 
     - name: make sure the correct bigboards facts are available
       template:
