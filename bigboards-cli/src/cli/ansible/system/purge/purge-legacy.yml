@@ -8,17 +8,17 @@
     - name: be sure the lxc bb-template container is removed
       shell: lxc-destroy -f -n {{item}} removes=/var/lib/lxc/{{item}}
       ignore_errors: yes
-      with_items: lxc_containers.stdout.lines
+      with_items: lxc_containers.stdout_lines
 
     - name: remove the deprecated hex facts
       file:
         path: '/etc/ansible/facts.d/hex.fact'
         state: 'absent'
 
-  - file:
-      path: "/data/{{ item }}"
-      state: "absent"
-    with_lines: find /data/ ! -readable -prune -type f -printf "%P\n"
+    - file:
+        path: "/data/{{ item }}"
+        state: "absent"
+      with_lines: find /data/ ! -readable -prune -type f -printf "%P\n"
 
 - hosts: localhost
   sudo: yes

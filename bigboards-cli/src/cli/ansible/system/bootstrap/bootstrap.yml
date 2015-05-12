@@ -1,4 +1,4 @@
-- hosts: all:!localhost
+- hosts: host
   sudo: yes
   tasks:
     - name: load the facts (armv7l)
@@ -15,17 +15,43 @@
         node_nic_external: p2p2
         hex_arch: x86_64
 
+    - name: check if there is a br0 interface
+      shell: [ `ifconfig br9 2> /dev/null |wc -l` -gt 0 ] && echo "yes" || echo "no"
+      register: has_bridge
+
+    - name: set the nic to use as a reference (armv7l && bridge)
+      when: ansible_machine == 'armv7l' and 'yes' in has_bridge.stdout
+      set_fact:
+        nic_ref: br0
+
+    - name: set the nic to use as a reference (armv7l && no bridge)
+      when: ansible_machine == 'armv7l' and 'no' in has_bridge.stdout
+      set_fact:
+        nic_ref: eth0
+
+    - name: set the nic to use as a reference
+      when: ansible_machine == 'x86_64'
+      set_fact:
+        nic_ref: p2p1
+
     - name: determine the hex ip range
-      shell: echo `ifconfig {{ node_nic_internal }} 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'` | rev | cut -c 3- | rev
+      shell: echo `ifconfig {{ nic_ref }} 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'` | rev | cut -c 3- | rev
       register: hex_ip_range
 
     - name: determine the hex node sequence
-      shell: echo `ifconfig p2p1 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'` | rev | cut -d '.' -f 1
+      shell: echo `ifconfig {{ nic_ref }} 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'` | rev | cut -d '.' -f 1
       register: node_sequence
 
     - name: determine the hex name and id
       shell: hostname |cut -d '-' -f 1
       register: hex_name_id
+
+    - assert:
+      that:
+        - "nic_ref is defined"
+        - "hex_ip_range.stdout is defined"
+        - "node_sequence.stdout is defined"
+        - "hex_name_id is defined"
 
     - name: make sure the correct bigboards facts are available
       template:
@@ -43,7 +69,7 @@
         - usbnet
         - g_ether
 
-- hosts: all:!localhost
+- hosts: host
   sudo: yes
   tasks:
 ## x86_64 #####################################################################
@@ -66,9 +92,7 @@
 
     - name: make sure the new kernel is installed
       when: ansible_machine == 'armv7l'
-      apt:
-        deb: '{{ item }}'
-        force: 'yes'
+      shell: dpkg -i {{ item }}
       with_items:
         - '/tmp/linux-firmware-image-3.19.0-armv7-x4_1cross_armhf.deb'
         - '/tmp/linux-headers-3.19.0-armv7-x4_1cross_armhf.deb'
@@ -84,7 +108,7 @@
     - name: make sure the correct uEnv file is loaded
       when: ansible_machine == 'armv7l'
       copy:
-        src: 'files/arm/uEnv-{{system_version.stdout}}.txt'
+        src: 'kernel/uEnv-{{system_version.stdout}}.txt'
         dest: '/boot/uEnv.txt'
 
     - name: make sure the correct kernel is being loaded
@@ -95,7 +119,7 @@
         state: 'link'
 
 
-- hosts: all:!localhost
+- hosts: host
   sudo: yes
   tasks:
     - name: generate a correct mac address for the internal interface
