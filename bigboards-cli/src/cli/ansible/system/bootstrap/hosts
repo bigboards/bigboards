@@ -1,0 +1,5 @@
+127.0.0.1   localhost
+
+{% for host in groups['host'] %}
+{{ hostvars[host]['ansible_' + ansible_local.bb.node.nic_int]['ipv4']['address'] }}  {{ hostvars[host]['ansible_hostname'] }}   {{ hostvars[host]['ansible_hostname'] }}.hex
+{% endfor %}

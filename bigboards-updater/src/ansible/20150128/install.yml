@@ -2,8 +2,6 @@
 - hosts: host
   sudo: yes
   tasks:
-    - shell: date
-
 ## ####################################################################################################################
 ## ANSIBLE
 ## ####################################################################################################################
@@ -54,6 +52,11 @@
         src: 'templates/etc/ntpd.conf'
         dest: '/etc/ntpd.conf'
 
+    - name: make sure the ntp defaults file is up to date
+      template:
+        src: 'templates/etc/default/ntp'
+        dest: '/etc/default/ntp'
+
   handlers:
     - name: Restart NTPD
       service:
@@ -73,12 +76,6 @@
       with_items:
         - dnsmasq
 
-    - name: make sure a correct hosts file is being used
-      template:
-          src: "templates/etc/hosts-master"
-          dest: "/etc/hosts"
-      notify: Restart DNSMasq
-
     - name: make sure the correct dnsmasq file is being used
       template:
           src: "templates/etc/dnsmasq.conf"
@@ -87,17 +84,7 @@
 
   handlers:
     - name: Restart DNSMasq
-      service:
-        name: 'dnsmasq'
-        state: 'restarted'
-
-- hosts: host-workers
-  sudo: yes
-  tasks:
-    - name: make sure a correct hosts file is being used
-      template:
-          src: "templates/etc/hosts-worker"
-          dest: "/etc/hosts"
+      shell: service dnsmasq restart
 
 ## ####################################################################################################################
 ## AVAHI
@@ -125,9 +112,7 @@
 
   handlers:
     - name: Restart Avahi
-      service:
-        name: 'avahi-daemon'
-        state: 'restarted'
+      shell: service avahi-daemon restart
 
 ## ####################################################################################################################
 ## BUTTERFLY
@@ -208,7 +193,7 @@
 
     - name: be sure serf is installed
       copy:
-        src: 'files/opt/serf/bin/serf-{{ansible_machine}}'
+        src: 'files/{{ansible_machine}}/serf'
         dest: '/opt/serf/bin/serf'
         mode: 755
       notify: Restart Serf
@@ -239,9 +224,7 @@
 
   handlers:
     - name: Restart Serf
-      service:
-        name: 'serf'
-        state: 'restarted'
+      shell: service serf restart
 
 ## ####################################################################################################################
 ## DOCKER.IO
@@ -260,7 +243,14 @@
         - build-essential
       notify: Restart Docker
 
-    - name: be sure the requests for python are removed
+    - name: make sure the docker data directory exists
+      file:
+        state: 'directory'
+        path: '/data/docker'
+        owner: 'bb'
+        mode: '777'
+
+    - name: be sure the requests package for python is removed
       file:
         path: '/usr/local/lib/python2.7/dist-packages/requests'
         state: 'absent'
@@ -272,11 +262,94 @@
         state: 'latest'
       notify: Restart Docker
 
-    - name: be sure the docker version is up to date
-      copy:
-        src: 'files/usr/bin/docker-1.3.0-{{ansible_machine}}'
-        dest: '/usr/bin/docker'
+
+    - name: be sure the docker defaults are updated
       notify: Restart Docker
+      copy:
+        src: 'templates/etc/default/docker.io'
+        dest: '/etc/default/docker.io'
+        owner: 'root'
+        group: 'root'
+        mode: 644
+
+    - name: be sure the docker upstart script is updated
+      notify: Restart Docker
+      copy:
+        src: 'templates/etc/init/docker.io.conf'
+        dest: '/etc/init/docker.io.conf'
+        owner: 'root'
+        group: 'root'
+        mode: 644
+
+## LIBRARIES ##################################################################
+
+    - name: make sure docker can reach its depending libraries
+      notify: Restart Docker
+      when: ansible_machine == 'armv7l'
+      file:
+        src: '/lib/arm-linux-gnueabihf/libdevmapper.so.1.02.1'
+        dest: '/lib/arm-linux-gnueabihf/libdevmapper.so.1.02'
+        state: 'link'
+
+    - name: make sure docker can reach its depending libraries
+      notify: Restart Docker
+      when: ansible_machine == 'x86_64'
+      file:
+        src: '/lib/x86_64-linux-gnu/libdevmapper.so.1.02.1'
+        dest: '/lib/x86_64-linux-gnu/libdevmapper.so.1.02'
+        state: 'link'
+
+## DOCKER BINARY ##############################################################
+
+    - name: make sure we use version 1.5.0 of the docker binary
+      notify: Restart Docker
+      copy:
+        src: 'files/{{ ansible_machine }}/docker-1.5.0'
+        dest: '/usr/bin/docker-1.5.0'
+        mode: 777
+
+    - name: make sure the docker file is removed before attempting to link it
+      notify: Restart Docker
+      file:
+        path: '/usr/bin/docker'
+        state: 'absent'
+
+    - name: make sure the links for the docker binary are correct
+      notify: Restart Docker
+      file:
+        src: '/usr/bin/{{item.src}}'
+        dest: '/usr/bin/{{item.dest}}'
+        mode: 777
+        state: 'link'
+      with_items:
+        - { src: 'docker-1.5.0', dest: 'docker' }
+        - { src: 'docker-1.5.0', dest: 'docker.io' }
+
+## DOCKERINIT BINARY ##########################################################
+
+    - name: make sure we use version 1.5.0 of the dockerinit binary
+      when: ansible_machine == 'armv7l'
+      notify: Restart Docker
+      copy:
+        src: 'files/{{ ansible_machine }}/dockerinit-1.5.0'
+        dest: '/usr/lib/docker.io/dockerinit-1.5.0'
+        mode: 755
+
+    - name: make sure the docker file is removed before attempting to link it
+      when: ansible_machine == 'armv7l'
+      notify: Restart Docker
+      file:
+        path: '/usr/lib/docker.io/dockerinit'
+        state: 'absent'
+
+    - name: make sure the links for the docker binary are correct
+      when: ansible_machine == 'armv7l'
+      notify: Restart Docker
+      file:
+        src: '/usr/lib/docker.io/dockerinit-1.5.0'
+        dest: '/usr/lib/docker.io/dockerinit'
+        mode: 755
+        state: 'link'
 
   handlers:
     - name: Restart Docker

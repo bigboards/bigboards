@@ -224,8 +224,14 @@ EOF
         ;;
     system)
         case "${2}" in
+            bootstrap)
+                ${PLAYBOOK} ${DIR}/ansible/system/bootstrap/bootstrap.yml
+                ;;
             purge)
-                ${PLAYBOOK} ${DIR}/ansible/system/purge.yml
+                ${PLAYBOOK} ${DIR}/ansible/system/purge/purge.yml
+                ;;
+            purge-legacy)
+                ${PLAYBOOK} ${DIR}/ansible/system/purge/purge-legacy.yml
                 ;;
             version)
                 if [ "$(dmesg |grep 'chip 4329' |wc -l)" -eq "1" ]; then
@@ -243,6 +249,8 @@ Manage the system.
 USAGE: $0 system [purge|version|help]
 
 OPTIONS
+
+    bootstrap   Bootstrap the system. This should only be needed the first time you boot the hex.
 
     purge       Clear the system from all containers and state. You will end up with a
                 pristine system to start from.

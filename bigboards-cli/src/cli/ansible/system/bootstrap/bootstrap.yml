@@ -1,0 +1,144 @@
+- hosts: all:!localhost
+  sudo: yes
+  tasks:
+    - name: load the facts (armv7l)
+      when: ansible_machine == 'armv7l'
+      set_fact:
+        node_nic_internal: eth0
+        node_nic_external: eth1
+        hex_arch: armv7l
+
+    - name: load the facts (x86_64)
+      when: ansible_machine == 'x86_64'
+      set_fact:
+        node_nic_internal: p2p1
+        node_nic_external: p2p2
+        hex_arch: x86_64
+
+    - name: determine the hex ip range
+      shell: echo `ifconfig {{ node_nic_internal }} 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'` | rev | cut -c 3- | rev
+      register: hex_ip_range
+
+    - name: determine the hex node sequence
+      shell: echo `ifconfig p2p1 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'` | rev | cut -d '.' -f 1
+      register: node_sequence
+
+    - name: determine the hex name and id
+      shell: hostname |cut -d '-' -f 1
+      register: hex_name_id
+
+    - name: make sure the correct bigboards facts are available
+      template:
+        src: bb.fact
+        dest: /etc/ansible/facts.d/bb.fact
+
+    - name: load the modules we needed
+      lineinfile:
+        dest: '/etc/modules'
+        line: '{{ item }}'
+        regexp: '^{{ item }}$'
+        state: 'present'
+      when: ansible_machine == 'armv7l'
+      with_items:
+        - usbnet
+        - g_ether
+
+- hosts: all:!localhost
+  sudo: yes
+  tasks:
+## x86_64 #####################################################################
+    - name: make sure the correct kernel is being used
+      when: ansible_machine == 'x86_64'
+      apt: name="linux-image-extra-{{ansible_kernel}}" state=latest
+
+## ARMV7L #####################################################################
+    - name: copy the kernel debs to the remote system
+      when: ansible_machine == 'armv7l'
+      copy:
+        src: 'kernel/{{ item }}'
+        dest: '/tmp/{{ item }}'
+        mode: 777
+      with_items:
+        - 'linux-firmware-image-3.19.0-armv7-x4_1cross_armhf.deb'
+        - 'linux-headers-3.19.0-armv7-x4_1cross_armhf.deb'
+        - 'linux-image-3.19.0-armv7-x4_1cross_armhf.deb'
+        - 'linux-libc-dev_1cross_armhf.deb'
+
+    - name: make sure the new kernel is installed
+      when: ansible_machine == 'armv7l'
+      apt:
+        deb: '{{ item }}'
+        force: 'yes'
+      with_items:
+        - '/tmp/linux-firmware-image-3.19.0-armv7-x4_1cross_armhf.deb'
+        - '/tmp/linux-headers-3.19.0-armv7-x4_1cross_armhf.deb'
+        - '/tmp/linux-image-3.19.0-armv7-x4_1cross_armhf.deb'
+        - '/tmp/linux-libc-dev_1cross_armhf.deb'
+
+    - name: get the system version
+      when: ansible_machine == 'armv7l'
+      shell: if [ "$(dmesg |grep 'chip 4329' |wc -l)" -eq "1" ]; then echo "B1"; elif [ "$(dmesg |grep 'chip 4330' |wc -l)" -eq "1"  ]; then echo "C1"; else echo "unknown"; fi
+      register: system_version
+      sudo: 'no'
+
+    - name: make sure the correct uEnv file is loaded
+      when: ansible_machine == 'armv7l'
+      copy:
+        src: 'files/arm/uEnv-{{system_version.stdout}}.txt'
+        dest: '/boot/uEnv.txt'
+
+    - name: make sure the correct kernel is being loaded
+      when: ansible_machine == 'armv7l'
+      file:
+        src: '/boot/vmlinuz-3.19.0-armv7-x4'
+        dest: '/boot/zImage'
+        state: 'link'
+
+
+- hosts: all:!localhost
+  sudo: yes
+  tasks:
+    - name: generate a correct mac address for the internal interface
+      shell: echo "02$(cat /sys/class/net/{{ ansible_local.bb.node.nic_int }}/address |cut -c 3-14)"
+      register: nic_ext_mac
+
+    - name: make sure the network interfaces are set correctly
+      template:
+        src: interfaces
+        dest: /etc/network/interfaces
+
+    - name: make sure the dhcp configuration is set correctly
+      template:
+        src: dhclient.conf
+        dest: /etc/dhcp/dhclient.conf
+
+    - name: make sure the dns configuration is set correctly
+      template:
+        src: resolv.conf
+        dest: /etc/resolv.conf
+
+    - name: make sure the network hosts are set correctly
+      template:
+        src: hosts
+        dest: /etc/hosts
+
+#    - name: make sure the network is restarted
+#      command: bash -c "ifdown {{ item }} && ifup {{ item }}"
+#      when: item != 'lo'
+#      with_items: ansible_interfaces
+
+- hosts: localhost
+  tasks:
+    - name: make sure the bb directory exists
+      sudo: yes
+      file:
+        path: /opt/bb
+        state: directory
+        owner: bb
+        group: bigboards
+
+    - name: make sure the hosts used by ansible are correct
+      sudo: yes
+      template:
+        src: ansible_hosts
+        dest: /etc/ansible/hosts
