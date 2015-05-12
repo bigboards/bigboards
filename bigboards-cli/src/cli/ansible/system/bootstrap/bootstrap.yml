@@ -15,14 +15,14 @@
         node_nic_external: p2p2
         hex_arch: x86_64
 
-    - name: check if there is a br0 interface
-      shell: [ `ifconfig br9 2> /dev/null |wc -l` -gt 0 ] && echo "yes" || echo "no"
+    - name: check if there is a br1 interface
+      shell: "[ $(ifconfig br1 2> /dev/null |wc -l) -gt 0 ] && echo 'yes' || echo 'no'"
       register: has_bridge
 
     - name: set the nic to use as a reference (armv7l && bridge)
       when: ansible_machine == 'armv7l' and 'yes' in has_bridge.stdout
       set_fact:
-        nic_ref: br0
+        nic_ref: br1
 
     - name: set the nic to use as a reference (armv7l && no bridge)
       when: ansible_machine == 'armv7l' and 'no' in has_bridge.stdout
@@ -47,11 +47,11 @@
       register: hex_name_id
 
     - assert:
-      that:
-        - "nic_ref is defined"
-        - "hex_ip_range.stdout|length > 0"
-        - "node_sequence.stdout|length > 0"
-        - "hex_name_id.stdout|length > 0"
+        that:
+          - "nic_ref is defined"
+          - "hex_ip_range.stdout|length > 0"
+          - "node_sequence.stdout|length > 0"
+          - "hex_name_id.stdout|length > 0"
 
     - name: make sure the correct bigboards facts are available
       template:
