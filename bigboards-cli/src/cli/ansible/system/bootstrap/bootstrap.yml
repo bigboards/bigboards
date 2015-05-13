@@ -123,7 +123,7 @@
   sudo: yes
   tasks:
     - name: generate a correct mac address for the internal interface
-      shell: echo "02$(cat /sys/class/net/{{ ansible_local.bb.node.nic_int }}/address |cut -c 3-14)"
+      shell: echo "02$(cat /sys/class/net/{{ ansible_local.bb.node.nic_int }}/address |cut -c 3-17)"
       register: nic_ext_mac
 
     - name: make sure the network interfaces are set correctly
