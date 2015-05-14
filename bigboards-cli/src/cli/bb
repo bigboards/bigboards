@@ -227,7 +227,7 @@ EOF
             bootstrap)
                 # Check if the hosts file exists inside the /opt/bb directory
                 HOSTSFILE=/opt/bb/hosts
-                [ ! -f "$HOSTSFILE" ] && HOSTSFILE = /etc/ansible/hosts
+                [ ! -f "$HOSTSFILE" ] && HOSTSFILE=/etc/ansible/hosts
 
                 ${PLAYBOOK} -i ${HOSTSFILE} ${DIR}/ansible/system/bootstrap/bootstrap.yml
                 ;;
