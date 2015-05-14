@@ -3,7 +3,7 @@
 # -- bb : BigBoards management script
 # -- ----------------------------------------------------------------------- --
 ACTION=${1}
-PLAYBOOK="ansible-playbook -i /opt/bb/hosts"
+PLAYBOOK="ansible-playbook"
 DIR=$(dirname "$(readlink -f ${BASH_SOURCE[0]})" )
 
 if [[ $EUID -eq 0 ]];
@@ -225,7 +225,11 @@ EOF
     system)
         case "${2}" in
             bootstrap)
-                ${PLAYBOOK} ${DIR}/ansible/system/bootstrap/bootstrap.yml
+                # Check if the hosts file exists inside the /opt/bb directory
+                HOSTSFILE=/opt/bb/hosts
+                [ ! -f "$HOSTSFILE" ] && HOSTSFILE = /etc/ansible/hosts
+
+                ${PLAYBOOK} -i ${HOSTSFILE} ${DIR}/ansible/system/bootstrap/bootstrap.yml
                 ;;
             purge)
                 ${PLAYBOOK} ${DIR}/ansible/system/purge/purge.yml
