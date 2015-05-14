@@ -1,3 +1,25 @@
+- hosts: localhost
+  tasks:
+    - name: make sure the bb directory exists
+      sudo: yes
+      file:
+        path: /opt/bb
+        state: directory
+        owner: bb
+        group: bigboards
+
+    - name: make sure the hosts used by ansible are correct
+      sudo: yes
+      template:
+        src: ansible_hosts
+        dest: /etc/ansible/hosts
+
+    - name: make sure the old hosts file is not available anymore
+      sudo: yes
+      file:
+        path: /opt/bb/hosts
+        state: absent
+
 - hosts: host
   sudo: yes
   tasks:
@@ -150,19 +172,3 @@
 #      command: bash -c "ifdown {{ item }} && ifup {{ item }}"
 #      when: item != 'lo'
 #      with_items: ansible_interfaces
-
-- hosts: localhost
-  tasks:
-    - name: make sure the bb directory exists
-      sudo: yes
-      file:
-        path: /opt/bb
-        state: directory
-        owner: bb
-        group: bigboards
-
-    - name: make sure the hosts used by ansible are correct
-      sudo: yes
-      template:
-        src: ansible_hosts
-        dest: /etc/ansible/hosts
