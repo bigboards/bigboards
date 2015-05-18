@@ -27,7 +27,7 @@ requestPowerCycle() {
     echo "##                                                                            ##"
     echo "##                            I M P O R T A N T                               ##"
     echo "##                                                                            ##"
-    echo "##   You must powercycle the hex in order for the changed to be picked up!    ##"
+    echo "##   You must powercycle the hex in order for the changes to be picked up!    ##"
     echo "##                                                                            ##"
     echo "################################################################################"
     echo

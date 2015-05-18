@@ -32,7 +32,6 @@
         replace: '{{ ip_prefix }}'
       with_items:
         - '/etc/network/interfaces'
-        - '/etc/hosts'
         - '/etc/resolv.conf'
         - '/etc/dhcp/dhclient.conf'
 
@@ -42,6 +41,14 @@
         section: 'network'
         option: 'range'
         value: '{{ ip_prefix }}'
+
+    - name: finaly replace the occurances of the old prefix in the hosts file
+      replace:
+        dest: '{{ item }}'
+        regexp: '{{ orig_ip_prefix }}'
+        replace: '{{ ip_prefix }}'
+      with_items:
+        - '/etc/hosts'
 
     - name: be sure the modifications are saved to disk
       shell: sync && sync
