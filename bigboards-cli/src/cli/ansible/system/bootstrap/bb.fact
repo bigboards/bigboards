@@ -10,7 +10,7 @@ range={{ hex_ip_range.stdout }}
 sequence={{ node_sequence.stdout }}
 nic_int={{ node_nic_internal }}
 nic_ext={{ node_nic_external }}
-{% if node_sequence == 1 %}
+{% if node_sequence.stdout == "1" %}
 role=master
 {% else %}
 role=slave
