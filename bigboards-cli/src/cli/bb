@@ -64,12 +64,12 @@ update() {
 }
 
 case "${ACTION}" in
-    version)
+    firmware)
         case "${2}" in
-            switch)
+            upgrade)
                 [ -z "${3}" ] && echo "No target version provided! Please specify this as 3rd parameter ..." && usage
 
-                ${PLAYBOOK} --extra-vars "version=${3}" ${DIR}/ansible/switch_version.yml
+                ${PLAYBOOK} --extra-vars "version=${3}" ${DIR}/ansible/firmware/upgrade/main.yml
                 ;;
             update)
                 update
@@ -78,7 +78,7 @@ case "${ACTION}" in
                 cat <<-EOF
 Manage the software version on the hex.
 
-USAGE: $0 version [switch|update|help] [arguments]
+USAGE: $0 firmware [upgrade|update|help] [arguments]
 
 OPTIONS
 
@@ -86,11 +86,11 @@ OPTIONS
             functionality of the hex.
 
 
-    switch  Switch to a new release of the software. A release is different from an update
+    upgrade Upgrade to a new release of the software. A release is different from an update
             and is considered to be a major upgrade.
 
             arguments:
-                container-name     The name of the container to connect to
+                release-name     The name of the release to upgrade to
 
 
     help    Show this help message
@@ -108,7 +108,7 @@ EOF
                     exit 3
                 fi
 
-                ${PLAYBOOK} --extra-vars "ip_prefix=${3}" ${DIR}/ansible/switch_ip/switch_ip.yml
+                ${PLAYBOOK} --extra-vars "ip_prefix=${3}" ${DIR}/ansible/network/switch_ip/main.yml
                 ;;
             help|*)
                 cat <<-EOF
@@ -229,8 +229,6 @@ EOF
     system)
         case "${2}" in
             bootstrap)
-
-
                 ${PLAYBOOK} ${DIR}/ansible/system/bootstrap/bootstrap.yml
 
                 [ $? -eq 0 ] && echo "Please powercycle the hex in order for the changes to kick in!"
@@ -281,7 +279,7 @@ USAGE: $0 [version|network|run|mmc|container|system|help]
 
 OPTIONS
 
-    version     Manage the software version on the hex.
+    firmware    Manage the hex firmware.
     network     Manage the network.
     run         Run a command on all nodes of the hex.
     mmc         Pass a command to the mmc daemon.
