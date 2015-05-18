@@ -20,6 +20,20 @@ usage() {
     echo "Usage: $0 [version|network|run|mmc|container|system|help]" 1>&2; exit 1;
 }
 
+requestPowerCycle() {
+    echo
+    echo
+    echo "################################################################################"
+    echo "##                                                                            ##"
+    echo "##                            I M P O R T A N T                               ##"
+    echo "##                                                                            ##"
+    echo "##   You must powercycle the hex in order for the changed to be picked up!    ##"
+    echo "##                                                                            ##"
+    echo "################################################################################"
+    echo
+    echo
+}
+
 validateTintBuilder() {
     [ ! -e "${HOME}/.tint-builder" ] && echo "No .tint-builder file found in the home directory of ${USER} " && exit 8;
     source "${HOME}/.tint-builder"
@@ -108,7 +122,11 @@ EOF
                     exit 3
                 fi
 
-                ${PLAYBOOK} --extra-vars "ip_prefix=${3}" ${DIR}/ansible/network/switch_ip/main.yml
+                ORIGINAL_RANGE=$(grep "range" /etc/ansible/facts.d/bb.fact |cut -d '=' -f2)
+
+                ${PLAYBOOK} --extra-vars "ip_prefix=${3} orig_ip_prefix=${ORIGINAL_RANGE//\./\\.}" ${DIR}/ansible/network/switch_ip/main.yml
+
+                [ $? -eq 0 ] && requestPowerCycle
                 ;;
             help|*)
                 cat <<-EOF
@@ -231,7 +249,7 @@ EOF
             bootstrap)
                 ${PLAYBOOK} ${DIR}/ansible/system/bootstrap/bootstrap.yml
 
-                [ $? -eq 0 ] && echo "Please powercycle the hex in order for the changes to kick in!"
+                [ $? -eq 0 ] && requestPowerCycle
                 ;;
             purge)
                 ${PLAYBOOK} ${DIR}/ansible/system/purge/purge.yml

@@ -18,17 +18,23 @@
         - docker.io
         - serf
 
-    - name: update the network configuration on all nodes
-      template:
-        src: '{{ item }}'
-        dest: '/{{ item }}'
-        owner: 'root'
-        group: 'root'
+#    - name: update the network configuration on all nodes
+#      template:
+#        src: '{{ item }}'
+#        dest: '/{{ item }}'
+#        owner: 'root'
+#        group: 'root'
+
+    - name: replace occurances of the network prefix
+      replace:
+        dest: '{{ item }}'
+        regexp: '{{ orig_ip_prefix }}'
+        replace: '{{ ip_prefix }}'
       with_items:
-        - 'etc/network/interfaces'
-        - 'etc/hosts'
-        - 'etc/resolv.conf'
-        - 'etc/dhclient.conf'
+        - '/etc/network/interfaces'
+        - '/etc/hosts'
+        - '/etc/resolv.conf'
+        - '/etc/dhclient.conf'
 
     - name: be sure the internal ip address has been saved to the facts
       ini_file:
@@ -40,8 +46,8 @@
     - name: be sure the modifications are saved to disk
       shell: sync && sync
 
-- hosts: localhost
-  sudo: yes
-  tasks:
-    - debug:
-        msg: 'Please powercycle your hex to activate the changes'
+#- hosts: localhost
+#  sudo: yes
+#  tasks:
+#    - debug:
+#        msg: 'Please powercycle your hex to activate the changes'
