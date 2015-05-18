@@ -34,7 +34,7 @@
         - '/etc/network/interfaces'
         - '/etc/hosts'
         - '/etc/resolv.conf'
-        - '/etc/dhclient.conf'
+        - '/etc/dhcp/dhclient.conf'
 
     - name: be sure the internal ip address has been saved to the facts
       ini_file:
