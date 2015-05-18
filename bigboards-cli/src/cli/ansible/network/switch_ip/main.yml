@@ -4,6 +4,7 @@
   tasks:
     - name: make sure the running daemons are stopped
       service: name={{ item }} state=stopped
+      ignore_errors: yes
       with_items:
         - bigboards-mmc
 
