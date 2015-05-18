@@ -232,6 +232,8 @@ EOF
 
 
                 ${PLAYBOOK} ${DIR}/ansible/system/bootstrap/bootstrap.yml
+
+                [ $? -eq 0 ] && echo "Please powercycle the hex in order for the changes to kick in!"
                 ;;
             purge)
                 ${PLAYBOOK} ${DIR}/ansible/system/purge/purge.yml

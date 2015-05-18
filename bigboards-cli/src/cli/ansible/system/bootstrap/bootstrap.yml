@@ -1,25 +1,3 @@
-- hosts: localhost
-  tasks:
-    - name: make sure the bb directory exists
-      sudo: yes
-      file:
-        path: /opt/bb
-        state: directory
-        owner: bb
-        group: bigboards
-
-    - name: make sure the hosts used by ansible are correct
-      sudo: yes
-      template:
-        src: ansible_hosts
-        dest: /etc/ansible/hosts
-
-    - name: make sure the old hosts file is not available anymore
-      sudo: yes
-      file:
-        path: /opt/bb/hosts
-        state: absent
-
 - hosts: host
   sudo: yes
   tasks:
@@ -90,6 +68,28 @@
       with_items:
         - usbnet
         - g_ether
+
+- hosts: localhost
+  tasks:
+    - name: make sure the bb directory exists
+      sudo: yes
+      file:
+        path: /opt/bb
+        state: directory
+        owner: bb
+        group: bigboards
+
+    - name: make sure the hosts used by ansible are correct
+      sudo: yes
+      template:
+        src: ansible_hosts
+        dest: /etc/ansible/hosts
+
+    - name: make sure the old hosts file is not available anymore
+      sudo: yes
+      file:
+        path: /opt/bb/hosts
+        state: absent
 
 - hosts: host
   sudo: yes
@@ -184,11 +184,11 @@
         src: 'default/ntp'
         dest: '/etc/default/ntp'
 
-  handlers:
-    - name: Restart NTPD
-      service:
-        name: 'ntp'
-        state: 'restarted'
+#  handlers:
+#    - name: Restart NTPD
+#      service:
+#        name: 'ntp'
+#        state: 'restarted'
 
 ## ####################################################################################################################
 ## DNSMASQ
@@ -207,11 +207,11 @@
       template:
           src: "dnsmasq.conf"
           dest: "/etc/dnsmasq.conf"
-      notify: Restart DNSMasq
+#      notify: Restart DNSMasq
 
-  handlers:
-    - name: Restart DNSMasq
-      shell: service dnsmasq restart
+#  handlers:
+#    - name: Restart DNSMasq
+#      shell: service dnsmasq restart
 
 ## ####################################################################################################################
 ## DNS
@@ -239,13 +239,13 @@
       template:
         src: "avahi/avahi-daemon.conf"
         dest: "/etc/avahi/avahi-daemon.conf"
-      notify: Restart Avahi
+#      notify: Restart Avahi
 
     - name: make sure the avahi-daemon init file is up to date
       template:
         src: "init/avahi-daemon.conf"
         dest: "/etc/init/avahi-daemon.conf"
-      notify: Restart Avahi
+#      notify: Restart Avahi
 
     - name: make sure avahi is started and will start on boot
       service:
@@ -253,6 +253,6 @@
         state: "running"
         enabled: "yes"
 
-  handlers:
-    - name: Restart Avahi
-      shell: service avahi-daemon restart
+#  handlers:
+#    - name: Restart Avahi
+#      shell: service avahi-daemon restart
