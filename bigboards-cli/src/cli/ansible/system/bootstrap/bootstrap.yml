@@ -69,6 +69,32 @@
         - usbnet
         - g_ether
 
+
+    - name: make sure the bb user has a valid home directory
+      file:
+        state: present
+        path: '/home/bb'
+        owner: bb
+        group: bigboards
+
+    - name: make sure the resources from the old home are moved into the new one.
+      shell: mv /opt/bb/{{ item }} /home/bb/{{ item }} creates=/home/bb/{{ item }}
+      with_items:
+        - '.ansible'
+        - '.bash_history'
+        - '.cache'
+        - '.local'
+        - '.npm'
+        - '.rnd'
+        - '.ssh'
+        - '.viminfo'
+
+    - name: make sure the bb user has the right directory
+      user:
+        name: 'bb'
+        home: '/home/bb'
+
+
 - hosts: localhost
   tasks:
     - name: make sure the bb directory exists
