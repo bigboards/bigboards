@@ -72,7 +72,7 @@
 
     - name: make sure the bb user has a valid home directory
       file:
-        state: present
+        state: directory
         path: '/home/bb'
         owner: bb
         group: bigboards
