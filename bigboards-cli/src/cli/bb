@@ -3,7 +3,6 @@
 # -- bb : BigBoards management script
 # -- ----------------------------------------------------------------------- --
 ACTION=${1}
-PLAYBOOK="ansible-playbook"
 DIR=$(dirname "$(readlink -f ${BASH_SOURCE[0]})" )
 
 if [[ $EUID -eq 0 ]];
@@ -11,6 +10,11 @@ then
    echo "The BB command may not be run as root"
    exit 1
 fi
+
+# Check if the hosts file exists inside the /opt/bb directory
+HOSTSFILE=/opt/bb/hosts
+[ ! -f "$HOSTSFILE" ] && HOSTSFILE=/etc/ansible/hosts
+PLAYBOOK="ansible-playbook -i ${HOSTSFILE}"
 
 usage() {
     echo "Usage: $0 [version|network|run|mmc|container|system|help]" 1>&2; exit 1;
@@ -225,11 +229,9 @@ EOF
     system)
         case "${2}" in
             bootstrap)
-                # Check if the hosts file exists inside the /opt/bb directory
-                HOSTSFILE=/opt/bb/hosts
-                [ ! -f "$HOSTSFILE" ] && HOSTSFILE=/etc/ansible/hosts
 
-                ${PLAYBOOK} -i ${HOSTSFILE} ${DIR}/ansible/system/bootstrap/bootstrap.yml
+
+                ${PLAYBOOK} ${DIR}/ansible/system/bootstrap/bootstrap.yml
                 ;;
             purge)
                 ${PLAYBOOK} ${DIR}/ansible/system/purge/purge.yml
