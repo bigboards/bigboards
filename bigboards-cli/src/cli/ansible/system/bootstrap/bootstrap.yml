@@ -77,8 +77,8 @@
         owner: bb
         group: bigboards
 
-    - name: make sure the resources from the old home are moved into the new one.
-      shell: mv /opt/bb/{{ item }} /home/bb/{{ item }} creates=/home/bb/{{ item }}
+    - name: make sure the resources from the old home are copied into the new one.
+      shell: cp /opt/bb/{{ item }} /home/bb/{{ item }} creates=/home/bb/{{ item }}
       with_items:
         - '.ansible'
         - '.bash_history'
@@ -94,6 +94,18 @@
         dest: '/etc/passwd'
         regexp: '/opt/bb'
         replace: '/home/bb'
+
+    - name: make sure the resources from the old home are removed.
+      shell: rm -rf /opt/bb/{{ item }} removes=/opt/bb/{{ item }}
+      with_items:
+        - '.ansible'
+        - '.bash_history'
+        - '.cache'
+        - '.local'
+        - '.npm'
+        - '.rnd'
+        - '.ssh'
+        - '.viminfo'
 
 - hosts: localhost
   tasks:
