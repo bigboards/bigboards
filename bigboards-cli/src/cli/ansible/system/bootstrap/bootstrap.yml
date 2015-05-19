@@ -91,7 +91,7 @@
 
     - name: make sure the bb user has the right directory
       replace:
-        path: '/etc/passwd'
+        dest: '/etc/passwd'
         regexp: '/opt/bb'
         replace: '/home/bb'
 
