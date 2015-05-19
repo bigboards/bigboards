@@ -90,10 +90,10 @@
         - '.viminfo'
 
     - name: make sure the bb user has the right directory
-      user:
-        name: 'bb'
-        home: '/home/bb'
-
+      replace:
+        path: '/etc/passwd'
+        regexp: '/opt/bb'
+        replace: '/home/bb'
 
 - hosts: localhost
   tasks:
