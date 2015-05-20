@@ -95,6 +95,9 @@
         regexp: '/opt/bb'
         replace: '/home/bb'
 
+- hosts: host
+  sudo: yes
+  tasks:
     - name: make sure the resources from the old home are removed.
       shell: rm -rf /opt/bb/{{ item }} removes=/opt/bb/{{ item }}
       with_items:
