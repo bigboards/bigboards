@@ -78,7 +78,7 @@
         group: bigboards
 
     - name: make sure the resources from the old home are copied into the new one.
-      shell: cp /opt/bb/{{ item }} /home/bb/{{ item }} creates=/home/bb/{{ item }}
+      shell: cp -r /opt/bb/{{ item }} /home/bb/{{ item }} creates=/home/bb/{{ item }}
       with_items:
         - '.ansible'
         - '.bash_history'
