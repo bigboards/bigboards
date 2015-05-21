@@ -42,7 +42,7 @@ module.exports = {
             port: process.env.PORT || 7000,
             host: os.hostname(),
             file: {
-                hosts: '/opt/bb/hosts'
+                hosts: '/etc/ansible/hosts'
             },
             dir: {
                 root: '/opt/bb',
