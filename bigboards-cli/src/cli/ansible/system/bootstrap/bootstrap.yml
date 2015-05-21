@@ -77,6 +77,14 @@
         owner: bb
         group: bigboards
 
+    - name: make sure the resources in the old home are owned by the bb user
+      file:
+        state: directory
+        path: '/opt/bb'
+        owner: bb
+        group: bigboards
+        recurse: yes
+
     - name: make sure the resources from the old home are copied into the new one.
       sudo: no
       shell: cp -r /opt/bb/{{ item }} /home/bb/{{ item }} creates=/home/bb/{{ item }}
