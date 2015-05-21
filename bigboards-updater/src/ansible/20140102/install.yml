@@ -37,17 +37,15 @@
         dest: '/{{ item }}'
       with_items:
         - 'etc/network/interfaces'
-        - 'etc/init.d/networking'
-        - 'etc/init/networking.conf'
         - 'etc/dhcp/dhclient.conf'
         - 'etc/resolv.conf'
       notify: Restart Network
 
   handlers:
     - name: Restart Network
-      service:
-        name: 'networking'
-        state: 'restarted'
+      command: bash -c "ifdown {{ item }} && ifup {{ item }}"
+      when: item != 'lo'
+      with_items: ansible_interfaces
 
 ## ####################################################################################################################
 ## ANSIBLE
