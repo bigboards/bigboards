@@ -44,7 +44,6 @@ module.exports.removeFile = function(path, verbose, cwd) {
     var deferred = Q.defer();
 
     var pb = new Ansible.AdHoc()
-        .inventory('/opt/bb/hosts')
         .hosts('localhost')
         .module('file')
         .asSudo()
