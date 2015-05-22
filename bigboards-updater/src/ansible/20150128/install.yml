@@ -273,6 +273,15 @@
         mode: 755
         state: 'link'
 
+    - name: make sure the docker.io libraries are linked to docker
+      when: ansible_machine == 'armv7l'
+      notify: Restart Docker
+      file:
+        src: '/usr/lib/docker.io'
+        dest: '/usr/lib/docker'
+        mode: 755
+        state: 'link'
+
   handlers:
     - name: Restart Docker
       command: service docker.io restart
