@@ -119,6 +119,15 @@
         - '.ssh'
         - '.viminfo'
 
+    - name: make sure the bigboards data directory exists and has the right permissions
+      file:
+        path: "{{ item }}"
+        owner: bb
+        group: bigboards
+      with_items:
+        - /data
+        - /data/bigboards
+
 - hosts: localhost
   tasks:
     - name: make sure the bb directory exists
