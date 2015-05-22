@@ -124,6 +124,7 @@
         path: "{{ item }}"
         owner: bb
         group: bigboards
+        state: directory
       with_items:
         - /data
         - /data/bigboards
