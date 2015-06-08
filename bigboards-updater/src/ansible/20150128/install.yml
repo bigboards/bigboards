@@ -36,6 +36,9 @@
     - name: be sure the data directory is mounted
       shell: creates=/data/lost+found mount /data
 
+    - name: be sure anyone can write in the data directory
+      file: state=directory path=/data owner=bb group=bigboards mode=777
+
 ## ####################################################################################################################
 ## BUTTERFLY
 ## ####################################################################################################################
