@@ -31,3 +31,11 @@
         - "stack"
         - "dataset"
         - "tutor"
+    - name: uninstall bigboards-node
+      apt:
+        name: "{{item}}"
+        state: "absent"
+        purge: "yes"
+      with_items:
+        - "bigboards-node"
+        - "bigboards-mmc"
