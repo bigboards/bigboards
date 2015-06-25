@@ -31,7 +31,7 @@
         - "stack"
         - "dataset"
         - "tutor"
-    - name: uninstall bigboards-node
+    - name: uninstall bigboards apps
       apt:
         name: "{{item}}"
         state: "absent"
@@ -39,3 +39,10 @@
       with_items:
         - "bigboards-node"
         - "bigboards-mmc"
+    - name: remove trailing directories
+      file:
+        path: "{{item}}"
+        state: "absent"
+      with_items:
+        - "/opt/bb/runtimes/bigboards-node"
+        - "/opt/bb/runtimes/bigboards-mmc"
