@@ -1,0 +1,9 @@
+[program:{{ item.name }}]
+command=/usr/local/bin/butterfly.server.py --unsecure --host=0.0.0.0 --login=false --port=8090 --cmd="bb container attach {{item.name}}"
+user=bb
+autostart=true
+autorestart=true
+directory=/opt/bb
+stdout_logfile=/var/log/hadoop-shell.log
+redirect_stderr=true
+environment=HOME="/home/bb",USER="bb"
