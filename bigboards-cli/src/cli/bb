@@ -177,6 +177,7 @@ EOF
                 echo "Logging into the docker hub"
                 sudo docker login -e ${BB_EMAIL} -u ${BB_USERNAME} -p ${BB_PASSWORD}
 
+                [ ! -e ~/build ] && mkdir ~/build
                 pushd ~/build
                 if [ -e "${SLUG}" ];
                 then

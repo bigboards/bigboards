@@ -11,8 +11,8 @@
     - name: load the facts (x86_64)
       when: ansible_machine == 'x86_64'
       set_fact:
-        node_nic_internal: p2p1
-        node_nic_external: p2p2
+        node_nic_internal: eth0
+        node_nic_external: eth1
         hex_arch: x86_64
 
     - name: check if there is a br1 interface
