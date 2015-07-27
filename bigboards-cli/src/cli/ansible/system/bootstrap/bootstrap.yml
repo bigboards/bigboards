@@ -32,7 +32,7 @@
     - name: set the nic to use as a reference
       when: ansible_machine == 'x86_64'
       set_fact:
-        nic_ref: p2p1
+        nic_ref: eth0
 
     - name: determine the hex ip range
       shell: echo `ifconfig {{ nic_ref }} 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'` | rev | cut -c 3- | rev
@@ -299,12 +299,6 @@
       template:
         src: "avahi/avahi-daemon.conf"
         dest: "/etc/avahi/avahi-daemon.conf"
-#      notify: Restart Avahi
-
-    - name: make sure the avahi-daemon init file is up to date
-      template:
-        src: "init/avahi-daemon.conf"
-        dest: "/etc/init/avahi-daemon.conf"
 #      notify: Restart Avahi
 
     - name: make sure avahi is started and will start on boot
