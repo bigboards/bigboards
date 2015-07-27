@@ -75,14 +75,14 @@
         state: directory
         path: '/home/bb'
         owner: bb
-        group: bigboards
+        group: root
 
     - name: make sure the resources in the old home are owned by the bb user
       file:
         state: directory
         path: '/opt/bb'
         owner: bb
-        group: bigboards
+        group: root
         recurse: yes
 
     - name: make sure the resources from the old home are copied into the new one.
@@ -123,7 +123,7 @@
       file:
         path: "{{ item }}"
         owner: bb
-        group: bigboards
+        group: root
         state: directory
       with_items:
         - /data
@@ -137,7 +137,7 @@
         path: /opt/bb
         state: directory
         owner: bb
-        group: bigboards
+        group: root
 
     - name: make sure the hosts used by ansible are correct
       sudo: yes
