@@ -8,12 +8,12 @@
         node_nic_external: eth1
         hex_arch: armv7l
 
-    - name: load the facts (x86_64)
-      when: ansible_machine == 'x86_64'
+    - name: load the facts (amd64)
+      when: ansible_machine == 'amd64'
       set_fact:
         node_nic_internal: eth0
         node_nic_external: eth1
-        hex_arch: x86_64
+        hex_arch: amd64
 
     - name: check if there is a br1 interface
       shell: "[ $(ifconfig br1 2> /dev/null |wc -l) -gt 0 ] && echo 'yes' || echo 'no'"
@@ -30,7 +30,7 @@
         nic_ref: eth0
 
     - name: set the nic to use as a reference
-      when: ansible_machine == 'x86_64'
+      when: ansible_machine == 'amd64'
       set_fact:
         nic_ref: eth0
 
@@ -154,9 +154,9 @@
 - hosts: host
   sudo: yes
   tasks:
-## x86_64 #####################################################################
+## amd64 ######################################################################
     - name: make sure the correct kernel is being used
-      when: ansible_machine == 'x86_64'
+      when: ansible_machine == 'amd64'
       apt: name="linux-image-extra-{{ansible_kernel}}" state=latest
 
 ## ARMV7L #####################################################################
