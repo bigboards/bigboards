@@ -20,6 +20,47 @@ usage() {
     echo "Usage: $0 [version|network|run|mmc|container|system|help]" 1>&2; exit 1;
 }
 
+verifyPrerequisites() {
+    if [ ! -e "/usr/bin/ansible" ]; then
+        echo
+        echo "Ansible has not been found. We will install it before continuing."
+        echo
+
+        sudo apt-get install -y software-properties-common
+        sudo apt-add-repository -y ppa:ansible/ansible
+        sudo apt-get update
+        sudo apt-get install -y ansible
+    fi
+}
+
+verifyHostsFile() {
+    if [ ! -e "/etc/ansible/hosts" ]; then
+
+        HEX_NAME_ID=$(hostname |cut -d '-' -f 1)
+
+        echo
+        echo "No ansible hosts file has been found. Generating one for ${HEX_NAME_ID}."
+        echo
+
+cat << EOF > /etc/ansible/hosts
+[host:children]
+host-coordinators
+host-workers
+
+[host-coordinators]
+${HEX_NAME_ID}-n1   ansible_ssh_user=bb
+
+[host-workers]
+${HEX_NAME_ID}-n2   ansible_ssh_user=bb
+${HEX_NAME_ID}-n3   ansible_ssh_user=bb
+${HEX_NAME_ID}-n4   ansible_ssh_user=bb
+${HEX_NAME_ID}-n5   ansible_ssh_user=bb
+${HEX_NAME_ID}-n6   ansible_ssh_user=bb
+
+EOF
+    fi
+}
+
 requestPowerCycle() {
     echo
     echo
@@ -76,6 +117,9 @@ update() {
 
     sudo service bigboards-mmc restart
 }
+
+verifyPrerequisites
+verifyHostsFile
 
 case "${ACTION}" in
     firmware)
