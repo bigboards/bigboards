@@ -47,7 +47,7 @@ generateHostsFile() {
         echo "No ansible hosts file has been found. Generating one for ${HEX_NAME_ID}."
         echo
 
-cat << EOF > /etc/ansible/hosts
+cat << EOF | sudo tee /etc/ansible/hosts
 [host:children]
 host-coordinators
 host-workers
