@@ -34,8 +34,13 @@ verifyPrerequisites() {
 }
 
 verifyHostsFile() {
-    if [ ! -e "/etc/ansible/hosts" ]; then
+    VALID_ANSIBLE_HOSTS=$(grep "\[hosts\]" /etc/ansible/hosts | wc -l)
 
+    [ ! -e "/etc/ansible/hosts" ] && generateHostsFile && return
+    [ "$VALID_ANSIBLE_HOSTS" == "0" ] && generateHostsFile && return
+}
+
+generateHostsFile() {
         HEX_NAME_ID=$(hostname |cut -d '-' -f 1)
 
         echo
@@ -58,7 +63,6 @@ ${HEX_NAME_ID}-n5   ansible_ssh_user=bb
 ${HEX_NAME_ID}-n6   ansible_ssh_user=bb
 
 EOF
-    fi
 }
 
 requestPowerCycle() {
