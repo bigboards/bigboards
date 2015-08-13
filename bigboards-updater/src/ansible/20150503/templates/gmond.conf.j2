@@ -43,7 +43,7 @@ udp_send_channel {
 
 udp_recv_channel {
 {% if 'host-coordinators' in group_names %}
-  bind = {{ hostvars[ansible_hostname]['ansible' + ansible_local.bb.node.nic_int].ipv4.address }}
+  bind = {{ hostvars[ansible_hostname]['ansible_' + ansible_local.bb.node.nic_int].ipv4.address }}
   port = 8649
 {% endif %}
 }
