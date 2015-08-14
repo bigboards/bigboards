@@ -26,6 +26,10 @@
       template: src=templates/gmetad.conf.j2 dest=/etc/ganglia/gmetad.conf
       notify: restart gmetad
 
+    - name: Configure webfrontend
+      copy: src=files/etc/ganglia-webfrontend/conf.php dest=/etc/ganglia-webfrontend/conf.php owner=root group=root mode=644
+      notify: restart apache
+
   handlers:
     - name: restart apache
       command: service apache2 restart
