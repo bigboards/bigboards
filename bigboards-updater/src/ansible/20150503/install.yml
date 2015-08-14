@@ -9,7 +9,7 @@
         - gmetad
 
     - name: Create the ganglia data directory
-      file: state=directory path={{item}} owner=nobody
+      file: state=directory path={{item}} owner=nobody group=ganglia mode=777
       with_items:
         - "/data/ganglia"
         - "/data/ganglia/rrds"
