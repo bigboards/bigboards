@@ -28,7 +28,7 @@
       shell: creates=/root/.sda1.initialized mkfs.ext4 /dev/sda1 && touch /root/.sda1.initialized
 
     - name: be sure the data mountpoint exists
-      file: state=directory path=/data owner=bb group=bigboards
+      file: state=directory path=/data owner=bb
 
     - name: be sure the correct FSTAB file is installed
       template: src=templates/etc/fstab-{{ ansible_machine }} dest=/etc/fstab
@@ -37,7 +37,7 @@
       shell: creates=/data/lost+found mount /data
 
     - name: be sure anyone can write in the data directory
-      file: state=directory path=/data owner=bb group=bigboards mode=777
+      file: state=directory path=/data owner=bb mode=777 recurse=yes
 
 ## ####################################################################################################################
 ## BUTTERFLY
