@@ -1,3 +1,0 @@
-uname_r=3.19.0-armv7-x4
-dtb=imx6q-wandboard-revb1.dtb
-cmdline=video=HDMI-A-1:1024x768@60e
