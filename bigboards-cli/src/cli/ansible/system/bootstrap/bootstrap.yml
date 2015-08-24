@@ -298,20 +298,20 @@
 ## ####################################################################################################################
 ## AVAHI
 ## ####################################################################################################################
-- hosts: host
-  sudo: yes
-  tasks:
-    - name: make sure the avahi configuration file is up to date
-      template:
-        src: "avahi/avahi-daemon.conf"
-        dest: "/etc/avahi/avahi-daemon.conf"
-#      notify: Restart Avahi
-
-    - name: make sure avahi is started and will start on boot
-      service:
-        name: "avahi-daemon"
-        state: "running"
-        enabled: "yes"
+#- hosts: host
+#  sudo: yes
+#  tasks:
+#    - name: make sure the avahi configuration file is up to date
+#      template:
+#        src: "avahi/avahi-daemon.conf"
+#        dest: "/etc/avahi/avahi-daemon.conf"
+##      notify: Restart Avahi
+#
+#    - name: make sure avahi is started and will start on boot
+#      service:
+#        name: "avahi-daemon"
+#        state: "running"
+#        enabled: "yes"
 
 #  handlers:
 #    - name: Restart Avahi
