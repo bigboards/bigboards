@@ -15,9 +15,6 @@
         insertafter: '^#host_key_checking '
         line: 'host_key_checking = False'
 
-    - name: install bower
-      npm: name=bower global=yes state=latest
-
 ## ####################################################################################################################
 ## HDD
 ## ####################################################################################################################
@@ -31,7 +28,7 @@
       shell: creates=/root/.sda1.initialized mkfs.ext4 /dev/sda1 && touch /root/.sda1.initialized
 
     - name: be sure the data mountpoint exists
-      file: state=directory path=/data owner=bb group=root
+      file: state=directory path=/data owner=bb group=bigboards
 
     - name: be sure the correct FSTAB file is installed
       template: src=templates/etc/fstab-{{ ansible_machine }} dest=/etc/fstab
@@ -40,7 +37,7 @@
       shell: creates=/data/lost+found mount /data
 
     - name: be sure anyone can write in the data directory
-      file: state=directory path=/data owner=bb group=root mode=777
+      file: state=directory path=/data owner=bb group=bigboards mode=777
 
 ## ####################################################################################################################
 ## BUTTERFLY
@@ -52,9 +49,7 @@
       apt:
         name: "{{ item }}"
         state: "latest"
-        update_cache: "yes"
       with_items:
-        - libssl-dev
         - libffi-dev
         - supervisor
         - python-dev
