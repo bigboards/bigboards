@@ -36,7 +36,7 @@ module.exports = {
             }
         },
         production: {
-            firmware: "feniks-wip",
+            firmware: "gemini",
             is_dev: false,
             is_prod: true,
             port: process.env.PORT || 7000,

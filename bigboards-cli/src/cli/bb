@@ -48,6 +48,9 @@ generateHostsFile() {
         echo
 
 cat << EOF | sudo tee /etc/ansible/hosts
+[local]
+127.0.0.1	connection=local
+
 [host:children]
 host-coordinators
 host-workers

@@ -132,4 +132,3 @@
         recurse: "yes"
         path: "{{ tint.path }}"
         owner: "bb"
-        group: "bigboards"
