@@ -37,14 +37,6 @@
   copy: src={{ item.name }}.conf dest=/etc/init/{{ item.name }}.conf
   sudo: yes
 
-- name: make sure there is a butterfly shell available
-  template:
-    src: "role_shell.conf.j2"
-    dest: "/etc/supervisor.d/{{ item.name }}"
-
-- name: make sure supervisord is restarted
-  shell: supervisorctl reload
-
 - name: make sure the service is started at boot
   service: name={{ item.name }} enabled=yes state=started
   sudo: yes
