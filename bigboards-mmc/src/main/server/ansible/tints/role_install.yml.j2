@@ -1,5 +1,12 @@
 {% if item.pre_install is defined %}{{ lookup('file', tint.path + '/' + item.pre_install) }}{% endif %}
 
+- name: make sure the role data directory exists
+  file:
+    state: "directory"
+    path: "{{'{{'}} data_path {{'}}'}}/{{ item.name }}"
+    owner: bb
+    mode: 0755
+
 - name: make sure the role template directory exists
   file:
     state: "directory"
