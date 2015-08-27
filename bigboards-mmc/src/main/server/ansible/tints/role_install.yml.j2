@@ -42,7 +42,7 @@
 {% if item.env is defined %}
     env:
   {% for envVar in item.env %}
-      - {{envVar.key}}={{envVar.value}}
+      - {{envVar.key}}="{{envVar.value}}"
   {% endfor %}
 {% endif %}
 
