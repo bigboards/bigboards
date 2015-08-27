@@ -39,6 +39,12 @@
     image: "{{ item.image }}-{{ansible_machine}}"
     command: "{{ item.command }}"
     state: running
+{% if item.env is defined %}
+    env:
+  {% for envVar in item.env %}
+      - {{envVar.key}}={{envVar.value}}
+  {% endfor %}
+{% endif %}
 
 - name: make sure the init file is available
   copy: src={{ item.name }}.conf dest=/etc/init/{{ item.name }}.conf
