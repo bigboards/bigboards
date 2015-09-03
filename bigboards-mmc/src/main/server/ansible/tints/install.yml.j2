@@ -2,9 +2,11 @@
   tasks:
 {% raw %}
     - name: make sure the directories are available
-      file: state=directory path={{ item }}
-      owner: bb
-      mode: 0755
+      file:
+        state: directory
+        path: '{{ item }}'
+        owner: bb
+        mode: 0755
       with_items:
 {% endraw %}
         - /data
