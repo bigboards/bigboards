@@ -2,7 +2,7 @@
   tasks:
 {% raw %}
     - name: make sure the directories are available
-      file: state=directory path={{ item }}
+      file: state=directory path={{ item }} owner="bb" mode=0755
       with_items:
 {% endraw %}
         - /data
@@ -11,6 +11,7 @@
         - /data/{{ tint.owner }}/{{ tint.slug }}/config
         - /data/{{ tint.owner }}/{{ tint.slug }}/data
         - /data/{{ tint.owner }}/{{ tint.slug }}/files
+        - /data/{{ tint.owner }}/{{ tint.slug }}/tmp
 
 {% for group in tint.stack.groups %}
 - hosts: {{ group.runs_on }}
