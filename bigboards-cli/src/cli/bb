@@ -34,7 +34,7 @@ verifyPrerequisites() {
 }
 
 verifyHostsFile() {
-    VALID_ANSIBLE_HOSTS=$(grep "\[hosts\]" /etc/ansible/hosts | wc -l)
+    VALID_ANSIBLE_HOSTS=$(grep "\[host-coordinators\]" /etc/ansible/hosts | wc -l)
 
     [ ! -e "/etc/ansible/hosts" ] && generateHostsFile && return
     [ "$VALID_ANSIBLE_HOSTS" == "0" ] && generateHostsFile && return
