@@ -1,4 +1,4 @@
-- hosts: host
+- hosts: all:!localhost
   sudo: yes
   tasks:
     - name: load the facts (armv7l)
@@ -110,7 +110,7 @@
         regexp: '/opt/bb'
         replace: '/home/bb'
 
-- hosts: host
+- hosts: all:!localhost
   sudo: yes
   tasks:
     - name: make sure the resources from the old home are removed.
@@ -157,7 +157,7 @@
         path: /opt/bb/hosts
         state: absent
 
-- hosts: host
+- hosts: all:!localhost
   sudo: yes
   tasks:
 ## x86_64 ######################################################################
@@ -207,7 +207,7 @@
         state: 'link'
 
 
-- hosts: host
+- hosts: all:!localhost
   sudo: yes
   tasks:
     - name: generate a correct mac address for the internal interface
@@ -230,9 +230,22 @@
 #      with_items: ansible_interfaces
 
 ## ####################################################################################################################
+## Base packages
+## ####################################################################################################################
+- hosts: all:!localhost
+  sudo: yes
+  tasks:
+    - name: make sure some necessary packages are installed
+      apt:
+        name: '{{ item }}'
+        state: 'latest'
+      with_items:
+        - parted
+
+## ####################################################################################################################
 ## NTP
 ## ####################################################################################################################
-- hosts: host
+- hosts: all:!localhost
   sudo: yes
   tasks:
     - name: make sure the ntp daemon is installed
@@ -282,7 +295,7 @@
 ## ####################################################################################################################
 ## DNS
 ## ####################################################################################################################
-- hosts: host
+- hosts: all:!localhost
   sudo: yes
   tasks:
     - name: make sure the dhcp configuration is set correctly
