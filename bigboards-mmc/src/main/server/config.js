@@ -33,6 +33,9 @@ module.exports = {
                 host: 'hive.bigboards.io',
                 port: 80,
                 path: '/api/v1/library'
+            },
+            docker: {
+                registry: 'index.docker.io'
             }
         },
         production: {
@@ -56,6 +59,9 @@ module.exports = {
                 host: 'hive.bigboards.io',
                 port: 80,
                 path: '/api/v1/library'
+            },
+            docker: {
+                registry: 'index.docker.io'
             }
         }
     }
