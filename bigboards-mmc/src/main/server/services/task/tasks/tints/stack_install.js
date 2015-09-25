@@ -27,6 +27,7 @@ module.exports = function(configuration, services) {
         execute: function(env, scope) {
             return services.hex.get().then(function(hex) {
                 scope.hex = hex;
+                scope.docker_registry = env.settings.docker.registry;
 
                 var tintPath = env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug;
                 scope.tint.path = tintPath;

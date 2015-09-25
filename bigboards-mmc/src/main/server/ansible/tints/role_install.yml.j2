@@ -36,7 +36,7 @@
     publish_all_ports: "yes"
     volumes: "{{ '{{' }} config_path {{ '}}/' + item.config.host_path }}:{{ item.config.container_path }},{{ '{{' }} tmp_path {{ '}}/' + item.name }}:/tmp,{{ '{{' }} data_path {{ '}}/' + item.name }}:/data"
     memory_limit: 1073741824
-    image: "{{settings.docker.registry}}/{{ item.image }}-{{ansible_machine}}"
+    image: "{{docker_registry}}/{{ item.image }}-{{ansible_machine}}"
     command: "{{ item.command }}"
     state: running
 {% if item.env is defined %}
