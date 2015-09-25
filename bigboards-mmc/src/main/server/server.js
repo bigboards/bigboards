@@ -98,6 +98,7 @@ function initializeSocketIO(server, services) {
     // -- Initialize Socket.io communication
     io.sockets.on('connection', function(socket) {
         Services.Hex.io(socket, services);
+        Services.Settings.io(socket, services);
         Services.Task.io(socket, services);
         Services.Tutorials.io(socket, services);
     });
@@ -113,6 +114,9 @@ function initializeServices(serverConfig, config, serf, app) {
 
     services.task = new Services.Task.Service(serverConfig);
     Services.Task.link(app, services);
+
+    services.settings = new Services.Settings.Service(serverConfig);
+    Services.Settings.link(app, services);
 
     services.hex = new Services.Hex.Service(serverConfig, config, templater, services, serf);
     Services.Hex.link(app, services);

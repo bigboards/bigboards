@@ -14,6 +14,7 @@ module.exports = {
     environments: {
         development: {
             firmware: "feniks-wip",
+            version: "0.0.0",
             is_dev: true,
             is_prod: false,
             port: process.env.PORT || 7000,
@@ -40,6 +41,7 @@ module.exports = {
         },
         production: {
             firmware: "gemini",
+            version: "1.2.0",
             is_dev: false,
             is_prod: true,
             port: process.env.PORT || 7000,

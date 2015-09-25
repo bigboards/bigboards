@@ -159,9 +159,10 @@
     angular.element(document).ready(function() {
         var api = '';
 
-        $.getJSON(api + '/api/v1/hex', function(data) {
-            sessionStorage.setItem('identity', JSON.stringify(data));
-            sessionStorage.setItem('settings', JSON.stringify({ api: api }));
+        $.getJSON(api + '/api/v1/settings/client', function(data) {
+            data.api = api;
+
+            sessionStorage.setItem('settings', JSON.stringify(data));
 
             angular.bootstrap(document, ['mmc']);
         });

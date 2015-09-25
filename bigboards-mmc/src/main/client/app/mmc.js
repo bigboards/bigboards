@@ -15,10 +15,6 @@ var app = angular.module( 'mmc', [
     'webStorageModule'
 ]);
 
-app.factory('identity', ['webStorage', function(webStorage) {
-    return webStorage.session.get('identity');
-}]);
-
 app.factory('settings', ['webStorage', function(webStorage) {
     return webStorage.session.get('settings');
 }]);
