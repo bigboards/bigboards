@@ -53,14 +53,14 @@ libraryModule.service('Library', ['settings', '$http', function(settings, $http)
     };
 
     Library.prototype.get = function(type, owner, slug) {
-        var url = 'http://hive.bigboards.io/api/v1/library/' + type + '/' + owner + '/' + slug;
+        var url = 'http://' + settings.hive + '/api/v1/library/' + type + '/' + owner + '/' + slug;
         return $http.get(url).then(function(data) {
             return data.data;
         });
     };
 
     Library.prototype.find = function(type, owner) {
-        var url = 'http://hive.bigboards.io/api/v1/library';
+        var url = 'http://' + settings.hive + '/api/v1/library/';
         if (type) url += ('/' + type);
         if (owner) url += ('/' + owner);
 
