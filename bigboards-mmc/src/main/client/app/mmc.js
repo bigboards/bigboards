@@ -144,6 +144,11 @@ app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket',
         //    path: '/tutors'
         //},
         {
+            label: 'Stats',
+            icon: 'fa-area-chart',
+            url: $location.protocol() + '://' + $location.host() + '/ganglia'
+        },
+        {
             label: 'Docs',
             icon: 'fa-book',
             url: 'http://docs.bigboards.io'
