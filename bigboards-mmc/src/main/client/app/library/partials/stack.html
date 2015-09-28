@@ -11,7 +11,7 @@
                 <th ng-if="isInstalled != null && isInstalled" class="col-sm-1"></th>
             </tr>
             </thead>
-            <tr ng-repeat="view in tint.data.stack.views">
+            <tr ng-repeat="view in tint.data.stack[0].views">
                 <td>{{view.label}}</td>
                 <td>{{view.description}}</td>
                 <td ng-if="isInstalled != null && isInstalled">
