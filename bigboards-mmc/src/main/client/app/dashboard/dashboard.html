@@ -36,8 +36,37 @@
             <div class="tints col-sm-12 col-md-12 col-lg-4">
                 <h3 ng-if="! hasInstalledTints()">Currently there is no tint installed. You may go to the <a href="#/library">library</a> to install one.</h3>
 
-                <div>
-                    <tint-card type="{{tint.type}}" format="tiny" tint="tint" ng-repeat="(key, tint) in tints" ></tint-card>
+                <div ng-if="hasInstalledTints()">
+                    <div ng-repeat="(key, tint) in tints">
+                        <div class="card-content">
+                            <div class="cover">
+                                <div class="cover-image-container">
+                                    <div class="cover-outer-align">
+                                        <div class="cover-inner-align">
+                                            <img ng-src="{{ tint.logo }}" alt="{{ tint.slug }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="details">
+                                <h2>
+                                    <a class="title" href="#/library/{{tint.type}}/{{tint.owner.username}}/{{tint.slug}}">
+                                        {{ tint.name }}
+                                        <span class="paragraph-end"></span>
+                                    </a>
+                                </h2>
+                                <div class="subtitle-container">
+                                    <a class="subtitle" href="#/library/{{tint.type}}/{{tint.owner.username}}/{{tint.slug}}">{{ tint.owner.firstname }} {{ tint.owner.surname }}</a>
+                                </div>
+                            </div>
+                            <h4>Available Views</h4>
+                            <ul>
+                                <li ng-repeat="view in tint.stack.views">
+                                    <a ng-href="{{view.url}}">{{view.label}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

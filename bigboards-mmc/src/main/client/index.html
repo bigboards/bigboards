@@ -157,7 +157,7 @@
 
 <script>
     angular.element(document).ready(function() {
-        var api = '';
+        var api = 'http://jack.hex.bigboards.io:7000';
 
         $.getJSON(api + '/api/v1/settings/client', function(data) {
             data.api = api;
