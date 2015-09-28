@@ -5,19 +5,16 @@ var Q = require('q'),
     log = require('winston'),
     Errors = require('../../errors');
 
-function SettingsService(settings, config, templater, services, serf) {
+function SettingsService(settings, config) {
     this.settings = settings;
     this.config = config;
-    this.templater = templater;
-    this.services = services;
-    this.serf = serf;
 }
 
 /*********************************************************************************************************************
  * Hex
  *********************************************************************************************************************/
 SettingsService.prototype.getHexSettings = function() {
-    return  this.config;
+    return this.config;
 };
 
 /*********************************************************************************************************************

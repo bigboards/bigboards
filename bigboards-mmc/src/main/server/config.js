@@ -3,17 +3,17 @@ var os = require('os'),
 
 module.exports = {
     lookupEnvironment: function() {
-        if (os.platform() === 'linux') {
+        if (process.env.BB_ENVIRONMENT) {
+            console.log('Loading ' + process.env.BB_ENVIRONMENT + ' Settings');
+            return this.environments[process.env.BB_ENVIRONMENT];
+        } else {
             console.log('Loading Production Settings');
             return this.environments.production;
-        } else {
-            console.log('Loading Development Settings');
-            return this.environments.development;
         }
     },
     environments: {
         development: {
-            firmware: "feniks-wip",
+            firmware: "gemini",
             version: "0.0.0",
             is_dev: true,
             is_prod: false,
@@ -31,7 +31,7 @@ module.exports = {
                 facts: fsu.absolute('local/facts.d/')
             },
             hive: {
-                host: 'hive.bigboards.io',
+                host: 'hive-api-test-env.elasticbeanstalk.com',
                 port: 80,
                 path: '/api/v1/library'
             },
@@ -58,7 +58,7 @@ module.exports = {
                 facts: '/etc/ansible/facts.d/'
             },
             hive: {
-                host: 'hive.bigboards.io',
+                host: 'hive-api-test-env.elasticbeanstalk.com',
                 port: 80,
                 path: '/api/v1/library'
             },

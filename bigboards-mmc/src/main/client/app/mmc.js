@@ -107,9 +107,9 @@ app.config(['$routeProvider', '$sceProvider', function($routeProvider, $sceProvi
         });
 }]);
 
-app.run(['$rootScope', '$http', 'Hex', 'identity', function($rootScope, $http, Hex, identity) {
+app.run(['$rootScope', '$http', 'Hex', 'settings', function($rootScope, $http, Hex, settings) {
     $http.defaults.headers.common['BB-Firmware'] = 'feniks-wip';
-    $http.defaults.headers.common['BB-Architecture'] = identity.arch;
+    $http.defaults.headers.common['BB-Architecture'] = settings.arch;
 
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         if (current.$$route) {

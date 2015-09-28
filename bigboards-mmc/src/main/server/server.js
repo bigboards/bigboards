@@ -115,7 +115,7 @@ function initializeServices(serverConfig, config, serf, app) {
     services.task = new Services.Task.Service(serverConfig);
     Services.Task.link(app, services);
 
-    services.settings = new Services.Settings.Service(serverConfig);
+    services.settings = new Services.Settings.Service(serverConfig, config);
     Services.Settings.link(app, services);
 
     services.hex = new Services.Hex.Service(serverConfig, config, templater, services, serf);
