@@ -94,7 +94,9 @@ app.config(['$routeProvider', '$sceProvider', function($routeProvider, $sceProvi
                         if (isInstalled) {
                             return Hex.getTint(type, owner, slug);
                         } else {
-                            return Library.get(type, owner, slug);
+                            return Library.get(type, owner, slug).then(function(tint) {
+                                return tint.data;
+                            });
                         }
                     });
 

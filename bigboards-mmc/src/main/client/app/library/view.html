@@ -4,15 +4,15 @@
     <div class="row caption-block">
         <div class="col-md-8 col-md-offset-2 caption-block-content">
             <div class="caption-image-container">
-                <img ng-src="{{ tint.data.logo }}" alt="{{ tint.data.slug }}">
+                <img ng-src="{{ tint.logo }}" alt="{{ tint.slug }}">
             </div>
             <div class="caption-details">
-                <h2>{{tint.data.name}}</h2>
+                <h2>{{tint.name}}</h2>
                 <div class="subtitle-container">
-                    <span class="subtitle">{{ tint.data.owner.firstname }} {{ tint.data.owner.surname }}</span>
+                    <span class="subtitle">{{ tint.owner.firstname }} {{ tint.owner.surname }}</span>
                 </div>
                 <div class="category-container">
-                    <span class="category">{{ tint.data.type }} tint</span>
+                    <span class="category">{{ tint.type }} tint</span>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
                     <h3 class="mb-15">Description</h3>
                 </div>
                 <div class="section-detail">
-                    <p class="mb-30">{{tint.data.description}}</p>
+                    <p class="mb-30">{{tint.description}}</p>
                 </div>
             </div>
 

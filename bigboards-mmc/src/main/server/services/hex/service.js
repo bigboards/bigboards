@@ -177,6 +177,8 @@ HexService.prototype.removeTint = function(type, owner, slug) {
 HexService.prototype.installTint = function(tint) {
     var self = this;
 
+    var id = tu.toTintId(tint.type, tint.owner, tint.slug);
+
     return this.listTints().then(function(installedTints) {
         return self.services.task.current().then(function(currentTask) {
             if (currentTask) {
@@ -186,7 +188,7 @@ HexService.prototype.installTint = function(tint) {
                     if (!installedTints.hasOwnProperty(param)) continue;
 
                     // -- ignore the same tint if it is already installed. That would allow us to reinstall it.
-                    if (param == tint.id) continue;
+                    if (param == id) continue;
 
                     // -- ignore if the tint to install is not a stack. Only stacks can be installed one at the time
                     if (tint.type != 'stack') continue;

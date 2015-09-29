@@ -12,14 +12,14 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
     $scope.isInstalled = null;
     $scope.tintDetails = 'app/library/partials/empty.html';
 
-    $scope.tintDetails = 'app/library/partials/' + $scope.tint.data.type + '.html';
-    Hex.isInstalled($scope.tint.data.type, $scope.tint.data.owner, $scope.tint.data.slug).then(function(isInstalled) {
+    $scope.tintDetails = 'app/library/partials/' + $scope.tint.type + '.html';
+    Hex.isInstalled($scope.tint.type, $scope.tint.owner, $scope.tint.slug).then(function(isInstalled) {
         $scope.isInstalled = isInstalled;
     });
 
     $scope.install = function() {
         Hex.install(
-            { tint: $scope.tint.data },
+            { tint: $scope.tint },
             function(attempt) {
                 $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');
             },
@@ -33,9 +33,9 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
         if (confirmed) {
             Hex.uninstall(
                 {
-                    type: $scope.tint.data.type,
-                    owner: $scope.tint.data.owner,
-                    slug: $scope.tint.data.slug
+                    type: $scope.tint.type,
+                    owner: $scope.tint.owner,
+                    slug: $scope.tint.slug
                 },
                 function(attempt) {
                     $location.path('/tasks/' + attempt.task.code + '/attempts/' + attempt.attempt + '/output');

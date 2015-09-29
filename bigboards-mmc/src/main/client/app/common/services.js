@@ -120,10 +120,10 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
         });
     };
 
-    Hex.prototype.install = function(tint, onSuccess, onError) {
+    Hex.prototype.install = function(data, onSuccess, onError) {
         var self = this;
 
-        $http.post(settings.api + '/api/v1/hex/tints', tint)
+        $http.post(settings.api + '/api/v1/hex/tints', data)
             .success(function(data, status, headers, config) {
                 self.getInstalledTints(true);
                 if (onSuccess) onSuccess(data);
@@ -133,7 +133,7 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
                 toaster.pop({
                     type: 'error',
                     title: 'Installation Failed',
-                    body: 'Failed to install the tint with id ' + tint.id + '. The hex responded with the following message: "' + data + '"',
+                    body: data.message,
                     showCloseButton: true
                 });
             });
