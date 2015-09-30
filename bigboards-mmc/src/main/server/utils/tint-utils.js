@@ -30,21 +30,23 @@ module.exports.setTintState = function(metadataPath, metadata, newState) {
     metadata.state = newState;
     var metadataFile = metadataPath + '/meta.json';
 
+    var tintId = module.exports.toTintId(metadata.type, metadata.owner, metadata.slug);
+
     return fsu.exists(metadataFile).then(function(exists) {
         if (exists && installedTints) {
             return fsu.readJsonFile(metadataFile).then(function(installedTints) {
-                installedTints[metadata.id] = metadata;
+                installedTints[tintId] = metadata;
 
                 return fsu.jsonFile(metadataFile, installedTints).then(function() {
-                    console.log('updated the tints state for ' + metadata.id + ' to ' + newState + ' into ' + metadataFile);
+                    console.log('updated the tints state for ' + tintId + ' to ' + newState + ' into ' + metadataFile);
                 });
             });
         } else {
             var installedTints = {};
-            installedTints[metadata.id] = metadata;
+            installedTints[tintId] = metadata;
 
             return fsu.jsonFile(metadataFile, installedTints).then(function() {
-                console.log('created the tints state for ' + metadata.id + ' as ' + newState + ' into ' + metadataFile);
+                console.log('created the tints state for ' + tintId + ' as ' + newState + ' into ' + metadataFile);
             });
         }
     });

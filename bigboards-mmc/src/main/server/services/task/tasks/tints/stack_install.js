@@ -31,6 +31,7 @@ module.exports = function(configuration, services) {
 
                 var tintPath = env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug;
                 scope.tint.path = tintPath;
+                scope.tint.id = TintUtils.toTintId(scope.tint.type, scope.tint.owner, scope.tint.slug);
                 var metadata = deepcopy(scope.tint);
 
                 // -- clean the views of the nodes variable
