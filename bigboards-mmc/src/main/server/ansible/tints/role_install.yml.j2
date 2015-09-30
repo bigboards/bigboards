@@ -41,7 +41,7 @@
       - "{{ '{{' }} tmp_path {{ '}}/' + item.name }}:/tmp"
       - "{{ '{{' }} data_path {{ '}}/' + item.name }}:/data"
 {% for volume in item.volumes %}
-      - "{{ '{{' }} config_path {{ '}}/' + {{volume.host}}:{{volume.container}}"
+      - "{{ '{{' }} config_path {{ '}}/' + volume.host }}:{{volume.container}}"
 {% endfor %}
     image: "{{docker_registry}}/{{ item.image }}-{{ansible_machine}}"
     command: "{{ item.command }}"
