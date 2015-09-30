@@ -43,7 +43,6 @@
 {% for volume in item.volumes %}
       - "{{ '{{' }} config_path {{ '}}/' + {{volume.host}}:{{volume.container}}"
 {% endfor %}
-    memory_limit: 1073741824
     image: "{{docker_registry}}/{{ item.image }}-{{ansible_machine}}"
     command: "{{ item.command }}"
     state: running
