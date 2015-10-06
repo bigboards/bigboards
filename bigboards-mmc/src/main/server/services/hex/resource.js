@@ -41,6 +41,24 @@ HexResource.prototype.powerdown = function(req, res) {
 };
 
 /*********************************************************************************************************************
+ * LINK
+ *********************************************************************************************************************/
+
+/**
+ * @api {delete} /api/v1/hex Prepare the hex for power down.
+ * @apiVersion 1.0.5
+ *
+ * @apiName PowerDownHex
+ * @apiGroup Hex
+ * @apiGroupDescription all APIs to fully control your Hex
+ */
+HexResource.prototype.link = function(req, res) {
+    var token = req.body.token;
+
+    return ApiUtils.handlePromise(res, this.hexService.link(token));
+};
+
+/*********************************************************************************************************************
  * NODES
  *********************************************************************************************************************/
 

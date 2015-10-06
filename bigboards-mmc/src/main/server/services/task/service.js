@@ -90,11 +90,11 @@ TaskService.prototype.listAttempts = function(taskCode) {
     return defer.promise;
 };
 
-TaskService.prototype.registerDefaultTasks = function(configuration, services) {
+TaskService.prototype.registerDefaultTasks = function(hexConfig, services) {
     // -- dummy
-    this.register(require('./tasks/dummy/dummy')(configuration));
+    this.register(require('./tasks/dummy/dummy')(hexConfig));
 
-    this.register(require('./tasks/system/halt')(configuration));
+    this.register(require('./tasks/system/halt')(hexConfig));
 
     // -- network
 //    this.register(require('./tasks/network/network_internal')(configuration));
@@ -104,10 +104,10 @@ TaskService.prototype.registerDefaultTasks = function(configuration, services) {
 //    this.register(require('./tasks/lxc/lxc_restart')(configuration));
 
     // -- tint tasks
-    this.register(require('./tasks/tints/stack_install')(configuration, services));
-    this.register(require('./tasks/tints/stack_uninstall')(configuration, services));
-    this.register(require('./tasks/tints/tutor_install')(configuration, services));
-    this.register(require('./tasks/tints/tutor_uninstall')(configuration, services));
+    this.register(require('./tasks/tints/stack_install')(hexConfig, services));
+    this.register(require('./tasks/tints/stack_uninstall')(hexConfig, services));
+    this.register(require('./tasks/tints/tutor_install')(hexConfig, services));
+    this.register(require('./tasks/tints/tutor_uninstall')(hexConfig, services));
 
     // -- update / patch
 //    this.register(require('./tasks/patch/update')(configuration));

@@ -66,6 +66,12 @@ app.config(['$routeProvider', '$sceProvider', function($routeProvider, $sceProvi
             controller: 'TaskAttemptController'
         })
 
+        .when('/settings', {
+            title: 'Settings',
+            templateUrl: 'app/settings/view.html',
+            controller: 'SettingsController'
+        })
+
         .when('/library', {
             title: 'Library',
             templateUrl: 'app/library/library.html',
@@ -145,6 +151,11 @@ app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket',
         //    icon: 'fa-graduation-cap',
         //    path: '/tutors'
         //},
+        {
+            label: 'Settings',
+            icon: 'fa-cog',
+            path: '/settings'
+        },
         {
             label: 'Stats',
             icon: 'fa-area-chart',

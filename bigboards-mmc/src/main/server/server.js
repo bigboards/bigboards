@@ -12,9 +12,10 @@ var express = require('express'),
     winston = require('winston'),
     Serfer = require('serfer/src/'),
     Q = require('q'),
-    Templater = require('./utils/templater');
+    Templater = require('./utils/templater'),
+    KV = require('./kv');
 
-serverConfig = initializeConfiguration();
+mmcConfig = initializeMMCConfiguration();
 
 var serfer = new Serfer();
 serfer.connect().then(function() {
@@ -22,19 +23,18 @@ serfer.connect().then(function() {
     var server = initializeHttpServer(app);
 
     // -- get the runtime environment
-    serverConfig.environment = app.get('env');
+    mmcConfig.environment = app.get('env');
 
-    var configuration = new Container.Configuration(serverConfig.dir.facts + 'bb.fact');
-    configuration.get().then(function(config) {
-        var services = initializeServices(serverConfig, config, serfer, app);
+    var hexConfig = new KV(mmcConfig.file.hex);
 
-        services.task.registerDefaultTasks(config, services);
+    var services = initializeServices(mmcConfig, hexConfig, serfer, app);
 
-        var io = initializeSocketIO(server, services);
+    services.task.registerDefaultTasks(hexConfig, services);
 
-        server.listen(app.get('port'), function () {
-            winston.info('BigBoards-mmc listening on port ' + app.get('port'));
-        });
+    var io = initializeSocketIO(server, services);
+
+    server.listen(app.get('port'), function () {
+        winston.info('BigBoards-mmc listening on port ' + app.get('port'));
     });
 }).fail(function(error) {
     handleError(error);
@@ -44,7 +44,7 @@ process.on('uncaughtException', function(err) {
     handleError(err);
 });
 
-function initializeConfiguration() {
+function initializeMMCConfiguration() {
     var config = require('./config').lookupEnvironment();
 
     // -- read the environment variables which will allow configuration parameters to be overridden
@@ -68,7 +68,7 @@ function initializeExpress() {
         methods: 'GET,PUT,POST,DELETE'
     };
 
-    app.set('port', serverConfig.port);
+    app.set('port', mmcConfig.port);
     //app.use(function(req, res, next) {
     //    res.header("Access-Control-Allow-Origin", "*");
     //    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -83,7 +83,7 @@ function initializeExpress() {
     app.use(app.router);
 
     // development only
-    if (serverConfig.is_dev) {
+    if (mmcConfig.is_dev) {
         app.use(express.logger('dev'));
         app.use(express.errorHandler());
     }
@@ -106,22 +106,22 @@ function initializeSocketIO(server, services) {
     return io;
 }
 
-function initializeServices(serverConfig, config, serf, app) {
-    var templater = new Templater(config);
+function initializeServices(mmcConfig, hexConfig, serf, app) {
+    var templater = new Templater(hexConfig);
     winston.log('info', 'Service Registration:');
 
     var services = {};
 
-    services.task = new Services.Task.Service(serverConfig);
+    services.task = new Services.Task.Service(mmcConfig);
     Services.Task.link(app, services);
 
-    services.settings = new Services.Settings.Service(serverConfig, config);
+    services.settings = new Services.Settings.Service(mmcConfig, hexConfig);
     Services.Settings.link(app, services);
 
-    services.hex = new Services.Hex.Service(serverConfig, config, templater, services, serf);
+    services.hex = new Services.Hex.Service(mmcConfig, hexConfig, templater, services, serf);
     Services.Hex.link(app, services);
 
-    services.tutorials = new Services.Tutorials.Service(serverConfig, config, services, templater);
+    services.tutorials = new Services.Tutorials.Service(mmcConfig, hexConfig, services, templater);
     Services.Tutorials.link(app, services);
 
     return services;

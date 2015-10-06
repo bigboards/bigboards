@@ -8,9 +8,9 @@ var Q = require('q'),
     log = require('winston'),
     tu = require('../../utils/tint-utils');
 
-function TutorialService(settings, config, services, templater) {
-    this.settings = settings;
-    this.config = config;
+function TutorialService(mmcConfig, hexConfig, services, templater) {
+    this.mmcConfig = mmcConfig;
+    this.hexConfig = hexConfig;
     this.services = services;
     this.templater = templater;
 
@@ -25,15 +25,15 @@ TutorialService.prototype.listInstalled = function() {
 
     var promises = [];
 
-    var typeStat = fs.statSync(self.settings.dir.tints + '/tutor');
+    var typeStat = fs.statSync(self.mmcConfig.dir.tints + '/tutor');
     if (typeStat.isDirectory()) {
-        var owners = fs.readdirSync(self.settings.dir.tints + '/tutor');
+        var owners = fs.readdirSync(self.mmcConfig.dir.tints + '/tutor');
 
         for (var j in owners) {
-            var files = fs.readdirSync(self.settings.dir.tints + '/tutor/' + owners[j]);
+            var files = fs.readdirSync(self.mmcConfig.dir.tints + '/tutor/' + owners[j]);
 
             for (var k in files) {
-                promises.push(tu.parseManifest(self.services.hex, self.templater, self.settings.dir.tints, 'tutor', owners[j], files[k]));
+                promises.push(tu.parseManifest(self.services.hex, self.templater, self.mmcConfig.dir.tints, 'tutor', owners[j], files[k]));
             }
         }
     }
@@ -52,18 +52,18 @@ TutorialService.prototype.listInstalled = function() {
 };
 
 TutorialService.prototype.get = function(owner, slug) {
-    return tu.parseManifest(this.services.hex, this.templater, this.settings.dir.tints, 'tutor', owner, slug);
+    return tu.parseManifest(this.services.hex, this.templater, this.mmcConfig.dir.tints, 'tutor', owner, slug);
 };
 
 TutorialService.prototype.getToc = function(owner, slug) {
-    var resourcePath = tu.toTutorialTocPath(this.settings.dir.tints + '/tutor/' + owner + '/' + slug + '/work');
+    var resourcePath = tu.toTutorialTocPath(this.mmcConfig.dir.tints + '/tutor/' + owner + '/' + slug + '/work');
     return fsu.readJsonFile(resourcePath);
 };
 
 TutorialService.prototype.getPage = function(owner, slug, path) {
     var self = this;
 
-    var resourcePath = tu.toTutorialElementPath(self.settings.dir.tints + '/tutor/' + owner + '/' + slug + '/work', path);
+    var resourcePath = tu.toTutorialElementPath(self.mmcConfig.dir.tints + '/tutor/' + owner + '/' + slug + '/work', path);
 
     return fsu.readJsonFile(resourcePath);
 };

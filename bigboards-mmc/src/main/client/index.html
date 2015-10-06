@@ -134,6 +134,8 @@
 <script type="text/javascript" src="app/tints/module.js"></script>
 <script type="text/javascript" src="app/tints/tints.js"></script>
 
+<script type="text/javascript" src="app/settings/module.js"></script>
+
 <script type="text/javascript" src="app/library/directives/tint-card/directive.js"></script>
 
 <script type="text/javascript" src="app/tasks/module.js"></script>
@@ -157,7 +159,8 @@
 
 <script>
     angular.element(document).ready(function() {
-        var api = 'http://jack.hex.bigboards.io:7000';
+        var api = '';
+        //var api = 'http://jack.hex.bigboards.io:7000';
 
         $.getJSON(api + '/api/v1/settings/client', function(data) {
             data.api = api;

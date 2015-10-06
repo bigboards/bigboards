@@ -20,7 +20,8 @@ module.exports = {
             port: process.env.PORT || 7000,
             host: os.hostname(),
             file: {
-                hosts: fsu.absolute('local/root/hosts')
+                hosts: fsu.absolute('local/root/hosts'),
+                hex: fsu.absolute('local/hex.yml')
             },
             dir: {
                 root: fsu.absolute('local/root'),
@@ -47,7 +48,8 @@ module.exports = {
             port: process.env.PORT || 7000,
             host: os.hostname(),
             file: {
-                hosts: '/etc/ansible/hosts'
+                hosts: '/etc/ansible/hosts',
+                hex: '/etc/bigboards/hex.yml'
             },
             dir: {
                 root: '/opt/bb',

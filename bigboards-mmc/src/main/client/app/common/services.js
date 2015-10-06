@@ -57,6 +57,11 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
         }
     };
 
+    Hex.prototype.link = function(token) {
+        return $http
+            .post(settings.api + '/api/v1/hex/link', {token: token});
+    };
+
     Hex.prototype.getIdentity = function(force) {
         var self = this;
 

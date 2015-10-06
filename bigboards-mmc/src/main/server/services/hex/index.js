@@ -12,6 +12,9 @@ module.exports = {
         API.registerGet(app, '/api/v1/hex', function(req, res) { return resource.get(req, res); });
         API.registerDelete(app, '/api/v1/hex', function(req, res) { return resource.powerdown(req, res); });
 
+        // --  link
+        API.registerPost(app, '/api/v1/hex/link', function(req, res) { return resource.link(req, res); });
+
         // -- Nodes
         API.registerGet(app, '/api/v1/hex/nodes', function(req, res) { return resource.listNodes(req, res); });
 

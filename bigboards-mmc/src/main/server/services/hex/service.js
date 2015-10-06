@@ -3,11 +3,13 @@ var Q = require('q'),
     tu = require('../../utils/tint-utils'),
     fs = require('fs'),
     log = require('winston'),
-    Errors = require('../../errors');
+    Errors = require('../../errors'),
+    jwt = require('jsonwebtoken'),
+    https = require('https');
 
-function HexService(settings, config, templater, services, serf) {
-    this.settings = settings;
-    this.config = config;
+function HexService(mmcConfig, hexConfig, templater, services, serf) {
+    this.mmcConfig = mmcConfig;
+    this.hexConfig = hexConfig;
     this.templater = templater;
     this.services = services;
     this.serf = serf;
@@ -24,9 +26,9 @@ function HexService(settings, config, templater, services, serf) {
         self._updateNodeList();
     });
 
-    fsu.mkdir(this.settings.dir.tints + '/stack');
-    fsu.mkdir(this.settings.dir.tints + '/dataset');
-    fsu.mkdir(this.settings.dir.tints + '/tutorial');
+    fsu.mkdir(this.mmcConfig.dir.tints + '/stack');
+    fsu.mkdir(this.mmcConfig.dir.tints + '/dataset');
+    fsu.mkdir(this.mmcConfig.dir.tints + '/tutorial');
 }
 
 HexService.prototype._updateNodeList = function() {
@@ -73,16 +75,78 @@ HexService.prototype._updateNodeList = function() {
 };
 
 HexService.prototype.get = function() {
-    if (this.config) return Q({
-        id: this.config.hex.id,
-        name: this.config.hex.name,
-        arch: this.config.hex.arch
+    if (this.hexConfig) return Q({
+        id: this.hexConfig.get('id'),
+        name: this.hexConfig.get('name'),
+        arch: this.hexConfig.get('arch')
     });
     else return Q({ id: 'unknown', name: 'unknown', arch: 'unknown' });
 };
 
 HexService.prototype.powerdown = function() {
     return this.services.task.invoke('halt', { });
+};
+
+/*********************************************************************************************************************
+ * LINK
+ *********************************************************************************************************************/
+
+/**
+ * Link a hex to a user.
+ *
+ * @param token the token used for authenticating and identifying the user to which to link the hex.
+ */
+HexService.prototype.link = function(token) {
+    // -- link the device to the profile. We can do this by calling auth0 and adding it to the metadata. I think we
+    // -- should make use of a dedicated api from auth0 for this but I don't find any documentation about that yet.
+    // -- look at https://github.com/auth0/docs/issues/416 for that.
+    var defer = Q.defer();
+
+    var decodedToken = jwt.decode(token);
+
+    var data = {
+        app_metadata: {
+            hexes: {}
+        }
+    };
+
+    data.app_metadata.hexes[this.hexConfig.get('id')] = {
+        name: this.hexConfig.get('name'),
+        architecture: this.hexConfig.get('arch')
+    };
+
+    var options = {
+        hostname: 'bigboards.auth0.com',
+        port: 443,
+        path: '/api/v2/users/' + decodedToken.sub,
+        method: 'PATCH',
+        headers: {
+            'Authorization': "Bearer " + token,
+            'Content-Type': 'application/json'
+        }
+    };
+
+    var req = https.request(options, function(res) {
+        var body = '';
+        res.setEncoding('utf8');
+        res.on('data', function (chunk) {
+            body += chunk;
+        });
+        res.on('end', function() {
+            if (res.statusCode == 200) defer.resolve(JSON.parse(body));
+            else defer.reject(body);
+        })
+    });
+
+    req.on('error', function(e) {
+        defer.reject(e);
+    });
+
+    // write data to request body
+    req.write(JSON.stringify(data));
+    req.end();
+
+    return defer.promise;
 };
 
 /*********************************************************************************************************************
@@ -119,7 +183,7 @@ HexService.prototype.removeNode = function(node) {
  *********************************************************************************************************************/
 HexService.prototype.listTints = function() {
     var self = this;
-    var metafile = this.settings.dir.tints + '/meta.json';
+    var metafile = this.mmcConfig.dir.tints + '/meta.json';
 
     return fsu.exists(metafile).then(function(exists) {
         if (exists) {
@@ -138,7 +202,7 @@ HexService.prototype.listTints = function() {
 
 HexService.prototype.getTint = function(type, owner, slug) {
     var self = this;
-    var metafile = self.settings.dir.tints + '/meta.json';
+    var metafile = self.mmcConfig.dir.tints + '/meta.json';
 
     return fsu.exists(metafile).then(function(exists) {
         if (exists) {
@@ -156,7 +220,7 @@ HexService.prototype.getTint = function(type, owner, slug) {
 };
 
 HexService.prototype.getTintResource = function(type, owner, tint, resource) {
-    var resourcePath = this.settings.dir.tints + '/' + type + '/' + owner + '/' + tint + '/' + resource;
+    var resourcePath = this.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + tint + '/' + resource;
     return fsu.exists(resourcePath).then(function(exists) {
         if (exists) {
             return fsu.readFile(resourcePath);
