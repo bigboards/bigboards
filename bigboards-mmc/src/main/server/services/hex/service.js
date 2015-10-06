@@ -97,6 +97,8 @@ HexService.prototype.powerdown = function() {
  * @param token the token used for authenticating and identifying the user to which to link the hex.
  */
 HexService.prototype.link = function(token) {
+    var self = this;
+
     // -- link the device to the profile. We can do this by calling auth0 and adding it to the metadata. I think we
     // -- should make use of a dedicated api from auth0 for this but I don't find any documentation about that yet.
     // -- look at https://github.com/auth0/docs/issues/416 for that.
@@ -146,7 +148,16 @@ HexService.prototype.link = function(token) {
     req.write(JSON.stringify(data));
     req.end();
 
-    return defer.promise;
+    return defer.promise.then(function(profile) {
+        // -- save the profile to the local storage. Also save the hive token
+        self.hexConfig.set([
+            { key: 'hive.token', value: decodedToken.hive_token },
+            { key: 'hive.user.id', value: decodedToken.sub },
+            { key: 'hive.user.name', value: profile.name },
+            { key: 'hive.user.email', value: profile.email },
+            { key: 'hive.user.picture', value: profile.picture }
+        ])
+    });
 };
 
 /*********************************************************************************************************************

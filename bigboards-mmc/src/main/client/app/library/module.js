@@ -49,12 +49,16 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
 
 libraryModule.service('Library', ['settings', '$http', function(settings, $http) {
     var Library = function Library() {
+        this.options = {};
 
+        if (settings.hive_token) {
+            this.options.headers = {'Authorization': 'Bearer ' + settings.hive_token};
+        }
     };
 
     Library.prototype.get = function(type, owner, slug) {
         var url = 'http://' + settings.hive.host + ':' + settings.hive.port + settings.hive.path + '/' + type + '/' + owner + '/' + slug;
-        return $http.get(url).then(function(data) {
+        return $http.get(url, this.options).then(function(data) {
             return data.data;
         });
     };
@@ -64,7 +68,7 @@ libraryModule.service('Library', ['settings', '$http', function(settings, $http)
         if (type) url += ('/' + type);
         if (owner) url += ('/' + owner);
 
-        return $http.get(url).then(function(data) {
+        return $http.get(url, this.options).then(function(data) {
             return data.data;
         });
     };

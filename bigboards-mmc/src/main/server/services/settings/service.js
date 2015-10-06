@@ -24,6 +24,7 @@ SettingsService.prototype.getClientSettings = function() {
         name: this.hexConfig.get('name'),
         arch: this.hexConfig.get('arch'),
         hive: this.mmcConfig.hive,
+        hive_token: this.hexConfig.get('hive.token'),
         firmware: this.mmcConfig.firmware,
         version: this.mmcConfig.version
     });

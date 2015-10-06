@@ -5,16 +5,16 @@ var fs = require('fs'),
 function KeyValueStore(file) {
     this.file = file;
 
+    var self = this;
+
     // -- check if the file exists
     fsu.exists(file).then(function(exists) {
         if (!exists) {
-            log.info('Unable to find the file backing the key/value store at '  + file + '. Creating it.');
-
-            fsu.jsonFile(file, {});
+            log.error('Unable to find the file backing the key/value store at '  + file + '!');
+        } else {
+            self.reload();
         }
     });
-
-    this.reload();
 }
 
 KeyValueStore.prototype.reload = function() {
@@ -73,7 +73,6 @@ KeyValueStore.prototype.list = function(prefix) {
 module.exports = KeyValueStore;
 
 function persist(path, contents) {
-    fsu.jsonFile(path, contents).then(function() {
-        log.debug('KeyValueStore persisted to disk!');
-    });
+    fsu.writeYamlFileSync(path, contents);
+    log.debug('KeyValueStore persisted to disk!');
 }

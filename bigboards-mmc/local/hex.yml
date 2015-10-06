@@ -1,4 +1,9 @@
 id: dev
 name: dev
-arch: arch
+arch: x86_64
 network_range: 172.20.50
+hive.token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoiRGFhbiBHZXJpdHMiLCJlbWFpbCI6ImRhYW4uZ2VyaXRzQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJpYXQiOjE0NDQxNjkwNTUsImp0aSI6ImQ1NTZlZDY2ZTc5M2M2ZDBjNTNhODUzOWZhZjRjNzg2IiwiYXVkIjoiQ1dBeFg1V0xKM2tZdEQzM1Ftbk83RWxwcEhlTjZvcHkiLCJpc3MiOiJodHRwczovL2JpZ2JvYXJkcy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDM3Mjg0OTIwMTIzOTMwNTc2NDAifQ.USUdS_0cL5MIqguRNCUg7Baqaqus2YuAThhF47988jw
+hive.user.id: "google-oauth2|103728492012393057640"
+hive.user.name: Daan Gerits
+hive.user.email: "daan.gerits@gmail.com"
+hive.user.picture: "https://lh4.googleusercontent.com/-rZ403M9vm4M/AAAAAAAAAAI/AAAAAAAAA24/RU_2COpEa-Y/photo.jpg"

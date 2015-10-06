@@ -139,7 +139,7 @@ module.exports.readYamlFileSync = function(file) {
     return yaml.safeLoad(this.readFileSync(file));
 };
 
-module.exports.writeYamlFileSync = function(file,  obj) {
+module.exports.writeYamlFileSync = function(file, obj) {
     return this.writeFileSync(file, yaml.safeDump(obj));
 };
 
