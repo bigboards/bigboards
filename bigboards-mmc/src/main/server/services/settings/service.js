@@ -21,8 +21,8 @@ SettingsService.prototype.getHexSettings = function() {
 SettingsService.prototype.getClientSettings = function() {
     return Q({
         id: this.hexConfig.get('id'),
-        name: this.config.get('name'),
-        arch: this.config.get('arch'),
+        name: this.hexConfig.get('name'),
+        arch: this.hexConfig.get('arch'),
         hive: this.mmcConfig.hive,
         firmware: this.mmcConfig.firmware,
         version: this.mmcConfig.version

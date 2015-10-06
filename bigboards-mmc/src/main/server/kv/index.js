@@ -6,13 +6,15 @@ function KeyValueStore(file) {
     this.file = file;
 
     // -- check if the file exists
-    fs.access(file, function(err) {
-        if (err) {
+    fsu.exists(file).then(function(exists) {
+        if (!exists) {
             log.info('Unable to find the file backing the key/value store at '  + file + '. Creating it.');
 
             fsu.jsonFile(file, {});
         }
-    })
+    });
+
+    this.reload();
 }
 
 KeyValueStore.prototype.reload = function() {
