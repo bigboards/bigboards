@@ -1,4 +1,23 @@
-<textarea ng-model="linkToken">
+<div class="ml-15">
+<div class="page-header">
+    <h1>Link your hex to the hive.</h1>
+</div>
 
-</textarea>
-<button class="btn btn-primary" ng-click="link(linkToken)">Link</button>
+<p>
+    You can link your hex to the hive by performing the following steps:
+    <ul>
+        <li>Log into the hive at http://hive.test.bigboards.io</li>
+        <li>Click on the linked hexes menu item</li>
+        <li>Copy the code you see there</li>
+        <li>Paste the code into the textarea below</li>
+        <li>Press the link button</li>
+    </ul>
+</p>
+
+    <div>
+        <textarea ng-model="linkToken" style="width: 400px; height: 150px;">
+        </textarea>
+    </div>
+
+<button class="btn btn-primary" ng-click="link(linkToken)">Link this hex!</button>
+</div>
