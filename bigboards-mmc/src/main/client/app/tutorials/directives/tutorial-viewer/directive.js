@@ -48,11 +48,11 @@ app.directive('tutorialViewer', function() {
 
             $scope.navigateTo = function(path) {
                 Tutorials
-                    .page($scope.tutorial.owner.username, $scope.tutorial.slug, path.join('/'))
+                    .page($scope.tutorial.owner, $scope.tutorial.slug, path.join('/'))
                     .success(function(data, status, headers, config) {
                         $scope.currentItem = data;
                         $scope.currentView = 'content';
-                        $localStorage[$scope.tutorial.owner.username + '-' + $scope.tutorial.slug] = path;
+                        $localStorage[$scope.tutorial.owner + '-' + $scope.tutorial.slug] = path;
                     })
                     .error(function(data, status, headers, config) {
                         $scope.error = data;
@@ -66,10 +66,10 @@ app.directive('tutorialViewer', function() {
                 else return 'app/tutorials/directives/tutorial-viewer/error.html';
             };
 
-            var currentPath = $localStorage[$scope.tutorial.owner.username + '-' + $scope.tutorial.slug];
+            var currentPath = $localStorage[$scope.tutorial.owner + '-' + $scope.tutorial.slug];
             if (!currentPath) {
                 Tutorials
-                    .toc($scope.tutorial.owner.username, $scope.tutorial.slug)
+                    .toc($scope.tutorial.owner, $scope.tutorial.slug)
                     .success(function (data, status, headers, config) {
                         $scope.currentView = 'toc';
                         $scope.toc = data;
