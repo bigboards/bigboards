@@ -254,10 +254,10 @@
         name: 'ntp'
         state: 'latest'
 
-    - name: make sure the ntpd.conf file is up to date
+    - name: make sure the ntp.conf file is up to date
       template:
-        src: 'ntpd.conf'
-        dest: '/etc/ntpd.conf'
+        src: 'ntp.conf'
+        dest: '/etc/ntp.conf'
 
     - name: make sure the ntp defaults file is up to date
       template:
