@@ -75,15 +75,7 @@ app.config(['$routeProvider', '$sceProvider', function($routeProvider, $sceProvi
         .when('/library', {
             title: 'Library',
             templateUrl: 'app/library/library.html',
-            controller: 'LibraryController',
-            resolve: {
-                stacks: ['Library', function(Library) {
-                    return Library.find('stack');
-                }],
-                tutorials: ['Library', function(Library) {
-                    return Library.find('tutorial');
-                }]
-            }
+            controller: 'LibraryController'
         })
 
         .when('/library/:type/:owner/:slug', {

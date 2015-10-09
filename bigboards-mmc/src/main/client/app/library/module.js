@@ -1,10 +1,19 @@
 var libraryModule = angular.module('bb.library', ['ngResource']);
 
-libraryModule.controller('LibraryController', ['$scope', 'Library', 'stacks', 'tutorials', function($scope,   Library,   stacks, tutorials) {
-    $scope.library = {
-        stacks: stacks.data,
-        tutorials: tutorials.data
-    };
+libraryModule.controller('LibraryController', ['$scope', 'Library', 'Hex', function($scope,   Library, Hex) {
+    Hex.getIdentity().then(function(config) {
+        if (config['hive.user.id']) {
+            Library.list({owner: config['hive.user.id']}).then(function(data) {
+                $scope.myTints = data.data;
+            });
+        } else {
+            $scope.myTints = [];
+        }
+    });
+
+    Library.list({scope: 'public'}).then(function(data) {
+        $scope.allTints = data.data;
+    });
 }]);
 
 libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 'tint', 'ApiFeedback', 'Hex', '$routeParams', function($scope, $location, tint, ApiFeedback, Hex, $routeParams) {
@@ -46,7 +55,6 @@ libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 't
     };
 }]);
 
-
 libraryModule.service('Library', ['settings', '$http', function(settings, $http) {
     var Library = function Library() {
         this.options = {};
@@ -63,10 +71,17 @@ libraryModule.service('Library', ['settings', '$http', function(settings, $http)
         });
     };
 
-    Library.prototype.find = function(type, owner) {
+    Library.prototype.list = function(query) {
         var url = 'http://' + settings.hive.host + ':' + settings.hive.port + settings.hive.path;
-        if (type) url += ('/' + type);
-        if (owner) url += ('/' + owner);
+
+        var queryParameters = [];
+        if (query.scope) queryParameters.push('scope=' + encodeURIComponent(query.scope));
+        if (query.type) queryParameters.push('t=' + encodeURIComponent(query.type));
+        if (query.owner) queryParameters.push('o=' + encodeURIComponent(query.owner));
+
+        if (queryParameters.length > 0) {
+            url += ('?' + queryParameters.join('&'))
+        }
 
         return $http.get(url, this.options).then(function(data) {
             return data.data;

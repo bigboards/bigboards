@@ -13,8 +13,8 @@ module.exports = {
     },
     environments: {
         development: {
-            firmware: "gemini",
-            version: "0.0.0",
+            firmware: "v1.3",
+            version: "1.3.0",
             is_dev: true,
             is_prod: false,
             port: process.env.PORT || 7000,
