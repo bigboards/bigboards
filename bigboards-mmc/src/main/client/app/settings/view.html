@@ -1,23 +1,29 @@
 <div class="ml-15">
-<div class="page-header">
-    <h1>Link your hex to the hive.</h1>
-</div>
-
-<p>
-    You can link your hex to the hive by performing the following steps:
-    <ul>
-        <li>Log into the hive at http://hive.test.bigboards.io</li>
-        <li>Click on the linked hexes menu item</li>
-        <li>Copy the code you see there</li>
-        <li>Paste the code into the textarea below</li>
-        <li>Press the link button</li>
-    </ul>
-</p>
-
-    <div>
-        <textarea ng-model="linkToken" style="width: 400px; height: 150px;">
-        </textarea>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Hex Details</h3>
+        </div>
+        <div class="panel-body">
+            <div class="col-lg-12">
+                <span class="col-lg-4">Hex ID:</span>
+                <span class="col-lg-8">{{hexConfig.id}}</span>
+            </div>
+            <div class="col-lg-12">
+                <span class="col-lg-4">Hex Name:</span>
+                <span class="col-lg-8">{{hexConfig.name}}</span>
+            </div>
+            <div class="col-lg-12">
+                <span class="col-lg-4">Hex Architecture:</span>
+                <span class="col-lg-8">{{hexConfig.arch}}</span>
+            </div>
+        </div>
     </div>
 
-<button class="btn btn-primary" ng-click="link(linkToken)">Link this hex!</button>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Hive</h3>
+        </div>
+        <div class="panel-body" ng-include="hiveLinkPart">
+        </div>
+    </div>
 </div>

@@ -70,6 +70,10 @@ KeyValueStore.prototype.list = function(prefix) {
     return result;
 };
 
+KeyValueStore.prototype.all = function() {
+    return this.cache;
+};
+
 module.exports = KeyValueStore;
 
 function persist(path, contents) {

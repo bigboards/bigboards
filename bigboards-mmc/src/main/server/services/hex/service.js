@@ -5,7 +5,8 @@ var Q = require('q'),
     log = require('winston'),
     Errors = require('../../errors'),
     jwt = require('jsonwebtoken'),
-    https = require('https');
+    https = require('https'),
+    auth0 =  require('../../auth0');
 
 function HexService(mmcConfig, hexConfig, templater, services, serf) {
     this.mmcConfig = mmcConfig;
@@ -75,12 +76,7 @@ HexService.prototype._updateNodeList = function() {
 };
 
 HexService.prototype.get = function() {
-    if (this.hexConfig) return Q({
-        id: this.hexConfig.get('id'),
-        name: this.hexConfig.get('name'),
-        arch: this.hexConfig.get('arch')
-    });
-    else return Q({ id: 'unknown', name: 'unknown', arch: 'unknown' });
+    return Q(this.hexConfig.all());
 };
 
 HexService.prototype.powerdown = function() {
@@ -102,61 +98,55 @@ HexService.prototype.link = function(token) {
     // -- link the device to the profile. We can do this by calling auth0 and adding it to the metadata. I think we
     // -- should make use of a dedicated api from auth0 for this but I don't find any documentation about that yet.
     // -- look at https://github.com/auth0/docs/issues/416 for that.
-    var defer = Q.defer();
-
-    var decodedToken = jwt.decode(token);
-
-    var data = {
-        app_metadata: {
-            hexes: {}
-        }
+    var metadata = {
+        hexes: {}
     };
 
-    data.app_metadata.hexes[this.hexConfig.get('id')] = {
+    metadata.hexes[this.hexConfig.get('id')] = {
         name: this.hexConfig.get('name'),
         architecture: this.hexConfig.get('arch')
     };
 
-    var options = {
-        hostname: 'bigboards.auth0.com',
-        port: 443,
-        path: '/api/v2/users/' + decodedToken.sub,
-        method: 'PATCH',
-        headers: {
-            'Authorization': "Bearer " + token,
-            'Content-Type': 'application/json'
-        }
+    return auth0.user.updateMetadata(token, metadata)
+        .then(function(profile) {
+
+            var hiveToken = jwt.decode(token).hive_token;
+            var decodedToken = jwt.decode(hiveToken);
+
+            // -- save the profile to the local storage. Also save the hive token
+            self.hexConfig.set([
+                { key: 'hive.token', value: token },
+                { key: 'hive.user.id', value: decodedToken.hive_id },
+                { key: 'hive.user.name', value: profile.name },
+                { key: 'hive.user.email', value: profile.email },
+                { key: 'hive.user.picture', value: profile.picture }
+            ])
+        });
+};
+
+HexService.prototype.unlink = function() {
+    var self = this;
+
+    // -- link the device to the profile. We can do this by calling auth0 and adding it to the metadata. I think we
+    // -- should make use of a dedicated api from auth0 for this but I don't find any documentation about that yet.
+    // -- look at https://github.com/auth0/docs/issues/416 for that.
+    var token = this.hexConfig.get('hive.token');
+
+    var metadata = {
+        hexes: {}
     };
 
-    var req = https.request(options, function(res) {
-        var body = '';
-        res.setEncoding('utf8');
-        res.on('data', function (chunk) {
-            body += chunk;
-        });
-        res.on('end', function() {
-            if (res.statusCode == 200) defer.resolve(JSON.parse(body));
-            else defer.reject(body);
-        })
-    });
+    metadata.hexes[this.hexConfig.get('id')] = null;
 
-    req.on('error', function(e) {
-        defer.reject(e);
-    });
+    return auth0.user.get(token).then(function(profile) {
+        delete profile.app_metadata.hexes[self.hexConfig.get('id')];
 
-    // write data to request body
-    req.write(JSON.stringify(data));
-    req.end();
-
-    return defer.promise.then(function(profile) {
-        // -- save the profile to the local storage. Also save the hive token
-        self.hexConfig.set([
-            { key: 'hive.token', value: decodedToken.hive_token },
-            { key: 'hive.user.id', value: decodedToken.sub },
-            { key: 'hive.user.name', value: profile.name },
-            { key: 'hive.user.email', value: profile.email },
-            { key: 'hive.user.picture', value: profile.picture }
-        ])
+        return auth0.user.updateMetadata(token, profile.app_metadata)
+            .then(function(profile) {
+                //return auth0.token.blacklist(token).then(function() {
+                return self.hexConfig.remove(['hive.token', 'hive.user.id', 'hive.user.name', 'hive.user.email', 'hive.user.picture']);
+                //});
+            });
     });
 };
 

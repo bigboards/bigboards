@@ -58,6 +58,10 @@ HexResource.prototype.link = function(req, res) {
     return ApiUtils.handlePromise(res, this.hexService.link(token));
 };
 
+HexResource.prototype.unlink = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.unlink());
+};
+
 /*********************************************************************************************************************
  * NODES
  *********************************************************************************************************************/

@@ -35,6 +35,10 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
         });
     };
 
+    Hex.prototype.get = function() {
+        return $http.get(settings.api + '/api/v1/hex');
+    };
+
     Hex.prototype.getInstalledTints = function(force) {
         var self = this;
 
@@ -58,8 +62,17 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
     };
 
     Hex.prototype.link = function(token) {
+        var self = this;
+
         return $http
             .post(settings.api + '/api/v1/hex/link', {token: token});
+    };
+
+    Hex.prototype.unlink = function() {
+        var self = this;
+
+        return $http
+            .delete(settings.api + '/api/v1/hex/link');
     };
 
     Hex.prototype.getIdentity = function(force) {

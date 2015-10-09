@@ -14,6 +14,7 @@ module.exports = {
 
         // --  link
         API.registerPost(app, '/api/v1/hex/link', function(req, res) { return resource.link(req, res); });
+        API.registerDelete(app, '/api/v1/hex/link', function(req, res) { return resource.unlink(req, res); });
 
         // -- Nodes
         API.registerGet(app, '/api/v1/hex/nodes', function(req, res) { return resource.listNodes(req, res); });
