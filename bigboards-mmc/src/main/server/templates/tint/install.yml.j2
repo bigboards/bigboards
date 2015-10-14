@@ -1,9 +1,8 @@
 [% for group in tint.stack.groups %]
 - hosts: [[ group.runs_on ]]
   sudo: yes
-  roles:
-  [% for role in group.containers %]
+  roles: [% for role in group.containers %]
     - { role: [[ role ]], mode: 'install' }
-  [% endfor %]
+[% endfor %]
 
 [% endfor %]

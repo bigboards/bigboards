@@ -1,4 +1,4 @@
-{% include generator.pre_install ignore missing %}
+[% include generator.pre_install ignore missing %]
 
 - name: make sure the role data directory exists
   file:
@@ -13,7 +13,7 @@
 ##
 ###############################################################################
 [% for volume in role.volumes %]
-[% if isRelativePath(volume) %]
+[% if isRelativePath(volume.host) %]
 - name: make sure the configuration directory exists
   file: state="directory" path="[[ dirs.config ]]/[[ volume.host ]]" owner="bb"
 
@@ -51,7 +51,7 @@
     volumes:
       - "[[ dirs.role_data ]]:/data"
 [% for volume in role.volumes %]
-[% if isRelativePath(volume) %]
+[% if isRelativePath(volume.host) %]
       - "[[ dirs.config ]]/[[ volume.host ]]:[[ volume.container ]]"
 [% else %]
       - "[[ volume.host ]]:[[ volume.container ]]"
@@ -75,4 +75,4 @@
   service: name=[[ role.name ]] enabled=yes state=started
   sudo: yes
 
-{% include generator.post_install ignore missing %}
+[% include generator.post_install ignore missing %]
