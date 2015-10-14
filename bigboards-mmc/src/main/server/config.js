@@ -27,6 +27,7 @@ module.exports = {
                 root: fsu.absolute('local/root'),
                 tints: fsu.absolute('local/tints.d'),
                 tasks: fsu.absolute('src/main/server/ansible'),
+                templates: fsu.absolute('src/main/server/templates'),
                 tasklogs: fsu.absolute('local/log/tasks'),
                 patches: fsu.absolute('/opt/bb/runtimes/bigboards-updater/patches'),
                 facts: fsu.absolute('local/facts.d/')
@@ -55,6 +56,7 @@ module.exports = {
                 root: '/opt/bb',
                 tints: '/opt/bb/tints.d',
                 tasks: '/opt/bb/runtimes/bigboards-mmc/server/ansible',
+                templates: '/opt/bb/runtimes/bigboards-mmc/server/templates',
                 tasklogs: '/var/log/bigboards/tasks',
                 patches: '/opt/bb/runtimes/bigboards-updater/patches',
                 facts: '/etc/ansible/facts.d/'

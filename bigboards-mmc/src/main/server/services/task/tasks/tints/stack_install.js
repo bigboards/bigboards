@@ -68,13 +68,13 @@ function setupTintStructure(variables) {
     fss.mkdir(variables.generator.tint);
 
     // -- checkout the configuration files from the git repository
-    return checkoutIfNeeded(scope.tint.url, variables.generator.git).then(function() {
+    return checkoutIfNeeded(variables.tint.uri, variables.generator.git).then(function() {
         generateAnsibleCode(variables);
     });
 }
 
 function generateAnsibleCode(variables) {
-    var templateHome = __dirname + '../../../../templates/tint';
+    var templateHome = variables.generator.templates + '/tint';
 
     // -- make sure the directory in which we will generate the ansible code is available
     fss.mkdir(variables.generator.ansible);
@@ -96,7 +96,7 @@ function generateAnsibleCode(variables) {
 }
 
 function generateAnsibleRoleCode(variables) {
-    var templateHome = __dirname + '../../../../templates/tint/role';
+    var templateHome = variables.generator.templates + '/tint/role';
 
     fss.mkdir(variables.generator.role);
 
@@ -138,7 +138,7 @@ function checkoutIfNeeded(repoUrl, repoPath) {
         });
     }
 
-    return defer.promise();
+    return defer.promise;
 }
 
 function createVariableScope(env, hex, scope) {
@@ -156,7 +156,8 @@ function createVariableScope(env, hex, scope) {
             git: tintPath + '/git',
             tint: tintPath,
             ansible: tintPath + '/ansible',
-            hosts: tintPath + '/ansible/hosts'
+            hosts: tintPath + '/ansible/hosts',
+            templates: env.settings.dir.templates
         },
         dirs: {
             data: '/data' + '/' + scope.tint.owner + '_' + scope.tint.slug + '/data',

@@ -112,7 +112,7 @@ function initializeServices(mmcConfig, hexConfig, serf, app) {
 
     var services = {};
 
-    services.task = new Services.Task.Service(mmcConfig);
+    services.task = new Services.Task.Service(mmcConfig, hexConfig);
     Services.Task.link(app, services);
 
     services.settings = new Services.Settings.Service(mmcConfig, hexConfig);
