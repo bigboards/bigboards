@@ -13,7 +13,7 @@
 ##
 ###############################################################################
 [% for volume in role.volumes %]
-[% if volume|first != '/' %]
+[% if isRelativePath(volume) %]
 - name: make sure the configuration directory exists
   file: state="directory" path="[[ dirs.config ]]/[[ volume.host ]]" owner="bb"
 
@@ -51,7 +51,7 @@
     volumes:
       - "[[ dirs.role_data ]]:/data"
 [% for volume in role.volumes %]
-[% if volume|first != '/' %]
+[% if isRelativePath(volume) %]
       - "[[ dirs.config ]]/[[ volume.host ]]:[[ volume.container ]]"
 [% else %]
       - "[[ volume.host ]]:[[ volume.container ]]"
@@ -60,7 +60,7 @@
     image: "[[ docker_registry ]]/[[ role.image ]]-{{ ansible_machine }}"
     command: "[[ role.command ]]"
     state: running
-[% if role.environment is defined %]
+[% if not isFalsy(role.environment) %]
     env:
   [% for envVar in role.environment %]
       [[ envVar.key ]]: "[[ envVar.value ]]"

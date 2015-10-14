@@ -10,8 +10,16 @@ var renderer = new swig.Swig({
     tagControls: ['[%', '%]'],
     cmtControls: ['[#', '#]'],
     locals: {
-        lookup: function(lookupType, path) {
-            return module.exports.readFile(path);
+        isRelativePath: function(path) {
+            return path.indexOf('/') != 0;
+        },
+        isFalsy: function(value) {
+            if (value == 0) return true;
+            if (value == false) return true;
+            if (value == null) return true;
+            if (value == undefined) return true;
+
+            return false;
         }
     }
 });
