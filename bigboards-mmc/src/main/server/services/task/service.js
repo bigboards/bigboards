@@ -9,8 +9,9 @@ var util = require("util"),
 
 var Errors = require('../../errors');
 
-var TaskService = function(settings) {
-    this.settings = settings;
+var TaskService = function(mmcConfig, hexConfig) {
+    this.settings = mmcConfig;
+    this.hexConfig = hexConfig;
     this.tasks = {};
     this.currentTask = null;
 
@@ -174,7 +175,8 @@ TaskService.prototype.createTaskEnvironment = function() {
         hostFile: this.settings.file.hosts,
         workdir: this.settings.dir.tasks,
         verbose: false,
-        settings: this.settings
+        settings: this.settings,
+        hexConfig: this.hexConfig
     }
 };
 

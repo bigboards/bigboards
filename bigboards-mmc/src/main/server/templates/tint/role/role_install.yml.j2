@@ -1,0 +1,78 @@
+{% if role.pre_install is defined %}{{ lookup('file', dirs.tint + '/' + role.pre_install) }}{% endif %}
+
+- name: make sure the role data directory exists
+  file:
+    state: "directory"
+    path: "{{ dirs.role_data }}"
+    owner: bb
+    mode: 0755
+
+###############################################################################
+##
+## Volumes
+##
+###############################################################################
+{% for volume in role.volumes %}
+{% if volume.host[:1] != '/' %}
+- name: make sure the configuration directory exists
+  file: state="directory" path="{{dirs.config}}/{{ volume.host }}" owner="bb"
+
+- name: make sure the configuration files are available
+  template:
+    src: "{{ '{{' }} item {{ '}}' }}"
+    dest: "{{ dirs.config }}/{{ volume.host }}"
+  with_fileglob:
+    - ../templates/*
+
+{% endif %}
+{% endfor %}
+
+- name: make sure the docker image is the latest one
+  sudo: yes
+  shell: docker pull {{ role.image }}-{{ansible_machine}}
+
+###############################################################################
+##
+## Docker
+##
+###############################################################################
+
+- name: make sure the container exists
+  sudo: yes
+  docker:
+    docker_api_version: "1.15"
+    name: "{{ role.name }}"
+    net: "host"
+    ports:
+{% for port in role.ports %}
+      - "{{port.host}}:{{port.container}}"
+{% endfor %}
+    publish_all_ports: "yes"
+    volumes:
+      - "{{ dirs.role_data }}:/data"
+{% for volume in role.volumes %}
+{% if volume.host[:1] != '/' %}
+      - "{{ dirs.config }}/{{ volume.host }}:{{ volume.container }}"
+{$ else $}
+      - "{{ volume.host }}:{{ volume.container }}"
+{$ endif %}
+{% endfor %}
+    image: "{{docker_registry}}/{{ role.image }}-{{ansible_machine}}"
+    command: "{{ role.command }}"
+    state: running
+{% if role.environment is defined %}
+    env:
+  {% for envVar in role.environment %}
+      {{envVar.key}}: "{{envVar.value}}"
+  {% endfor %}
+{% endif %}
+
+- name: make sure the init file is available
+  copy: src={{ role.name }}.conf dest=/etc/init/{{ role.name }}.conf
+  sudo: yes
+
+- name: make sure the service is started at boot
+  service: name={{ role.name }} enabled=yes state=started
+  sudo: yes
+
+{% if role.post_install is defined %}{{ lookup('file', generator.tint + '/' + role.post_install) }}{% endif %}
