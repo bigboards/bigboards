@@ -89,6 +89,8 @@ function generateAnsibleCode(variables) {
     variables.tint.stack.containers.forEach(function(container) {
         variables.role = container;
         variables.generator.role = variables.generator.ansible + '/roles/' + container.name;
+        variables.generator.pre_install = variables.generator.git + '/' + container.pre_install;
+        variables.generator.post_install = variables.generator.git + '/' + container.post_install;
         variables.dirs.role_data = variables.dirs.data + '/' + container.name;
 
         generateAnsibleRoleCode(variables);

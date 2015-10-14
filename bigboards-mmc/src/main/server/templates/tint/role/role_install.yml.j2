@@ -1,4 +1,4 @@
-[% if role.pre_install is defined %] [[ lookup('file', dirs.tint + '/' + role.pre_install) ]] [% endif %]
+{% include generator.pre_install ignore missing %}
 
 - name: make sure the role data directory exists
   file:
@@ -75,4 +75,4 @@
   service: name=[[ role.name ]] enabled=yes state=started
   sudo: yes
 
-[% if role.post_install is defined %] [[ lookup('file', generator.tint + '/' + role.post_install) ]] [% endif %]
+{% include generator.post_install ignore missing %}
