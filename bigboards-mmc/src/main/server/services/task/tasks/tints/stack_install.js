@@ -123,20 +123,13 @@ function generateAnsibleRoleCode(variables) {
 function checkoutIfNeeded(repoUrl, repoPath) {
     var defer = Q.defer();
 
-    if (fss.exists(repoPath)) {
-        var repo = gift(repoPath);
+    fss.rmdir(repoPath);
 
-        repo.sync(function(err) {
-            if (err) defer.reject(err);
-            defer.resolve(repo);
-        });
-    } else {
-        gift.clone(repoUrl, repoPath, function(err, repo) {
-            if (err) defer.reject(err);
+    gift.clone(repoUrl, repoPath, function(err, repo) {
+        if (err) defer.reject(err);
 
-            defer.resolve(repo);
-        });
-    }
+        defer.resolve(repo);
+    });
 
     return defer.promise;
 }

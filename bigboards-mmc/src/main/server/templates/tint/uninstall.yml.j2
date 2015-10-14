@@ -1,14 +1,14 @@
-{% for group in tint.stack.groups %}
-- hosts: {{ group.runs_on }}
+[% for group in tint.stack.groups %]
+- hosts: [[ group.runs_on ]]
   sudo: yes
   roles:
-  {% for role in group.containers %}
-    - { role: {{ role }}, mode: 'uninstall' }
-  {% endfor %}
+  [% for role in group.containers %]
+    - { role: [[ role ]], mode: 'uninstall' }
+  [% endfor %]
 
-{% endfor %}
+[% endfor %]
 
 - hosts: all:!localhost
   sudo: yes
   tasks:
-    - file: state="absent" path="/data/{{ tint.owner }}"
+    - file: state="absent" path="/data/[[ tint.owner ]]"

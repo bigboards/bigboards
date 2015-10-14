@@ -5,6 +5,17 @@ var Q = require('q'),
     swig = require('swig'),
     mkdirp = require('mkdirp');
 
+var renderer = new swig.Swig({
+    varControls: ['[[', ']]'],
+    tagControls: ['[%', '%]'],
+    cmtControls: ['[#', '#]'],
+    locals: {
+        lookup: function(lookupType, path) {
+            return module.exports.readFile(path);
+        }
+    }
+});
+
 /**********************************************************************************************************************
  ** GENERAL
  *********************************************************************************************************************/
@@ -72,7 +83,7 @@ module.exports.rmdir = function(path) {
  ** TEMPLATING
  *********************************************************************************************************************/
 module.exports.generateFile = function(templatePath, targetPath, variables) {
-    var content = swig.renderFile(templatePath, variables);
+    var content = renderer.renderFile(templatePath, variables);
     this.writeFile(targetPath, content);
 };
 
