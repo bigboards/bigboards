@@ -1,6 +1,6 @@
 [% include generator.pre_install ignore missing %]
 
-- name: make sure the role data directory exists
+- name: make sure the [[ role.name ]] role data directory exists
   file:
     state: "directory"
     path: "[[ dirs.role_data ]]"
@@ -14,10 +14,10 @@
 ###############################################################################
 [% for volume in role.volumes %]
 [% if isRelativePath(volume.host) %]
-- name: make sure the configuration directory exists
+- name: make sure the [[ role.name ]] configuration directory exists
   file: state="directory" path="[[ dirs.config ]]/[[ volume.host ]]" owner="bb"
 
-- name: make sure the configuration files are available
+- name: make sure the [[ role.name ]] configuration files are available
   template:
     src: "{{ item }}"
     dest: "[[ dirs.config ]]/[[ volume.host ]]"
@@ -26,8 +26,7 @@
 
 [% endif %]
 [% endfor %]
-
-- name: make sure the docker image is the latest one
+- name: make sure the [[ role.image ]] docker image is the latest one
   sudo: yes
   shell: docker pull [[ role.image ]]-{{ ansible_machine }}
 
@@ -37,41 +36,30 @@
 ##
 ###############################################################################
 
-- name: make sure the container exists
+- name: make sure the [[ role.name ]] docker container exists
   sudo: yes
   docker:
     docker_api_version: "1.15"
     name: "[[ role.name ]]"
     net: "host"
-    ports:
-[% for port in role.ports %]
-      - "[[ port.host ]]:[[ port.container ]]"
-[% endfor %]
+    ports:[% for port in role.ports %]
+      - "[[ port.host ]]:[[ port.container ]]"[% endfor %]
     publish_all_ports: "yes"
     volumes:
-      - "[[ dirs.role_data ]]:/data"
-[% for volume in role.volumes %]
-[% if isRelativePath(volume.host) %]
-      - "[[ dirs.config ]]/[[ volume.host ]]:[[ volume.container ]]"
-[% else %]
-      - "[[ volume.host ]]:[[ volume.container ]]"
-[% endif %]
-[% endfor %]
-    image: "[[ docker_registry ]]/[[ role.image ]]-{{ ansible_machine }}"
+      - "[[ dirs.role_data ]]:/data"[% for volume in role.volumes %][% if isRelativePath(volume.host) %]
+      - "[[ dirs.config ]]/[[ volume.host ]]:[[ volume.container ]]"[% else %]
+      - "[[ volume.host ]]:[[ volume.container ]]"[% endif %][% endfor %]
+    image: "[[ docker.registry ]]/[[ role.image ]]-{{ ansible_machine }}"
     command: "[[ role.command ]]"
-    state: running
-[% if not isFalsy(role.environment) %]
-    env:
-  [% for envVar in role.environment %]
-      [[ envVar.key ]]: "[[ envVar.value ]]"
-  [% endfor %]
-[% endif %]
+    state: running[% if not isFalsy(role.environment) %]
+    env:[% for envVar in role.environment %]
+      [[ envVar.key ]]: "[[ envVar.value ]]"[% endfor %][% endif %]
 
-- name: make sure the init file is available
+- name: make sure the [[ role.name ]] init file is available
   copy: src=[[ role.name ]].conf dest=/etc/init/[[ role.name ]].conf
   sudo: yes
 
-- name: make sure the service is started at boot
+- name: make sure the [[ role.name ]] service is started at boot
   service: name=[[ role.name ]] enabled=yes state=started
   sudo: yes
 
