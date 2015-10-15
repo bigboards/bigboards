@@ -84,7 +84,7 @@ function persist(path, contents) {
 function serialize(value) {
     if (!value) return null;
 
-    if( Object.prototype.toString.call( key ) === '[object Array]' ) {
+    if( Object.prototype.toString.call( value ) === '[object Array]' ) {
         return value.join(',');
     } else {
         return value;
