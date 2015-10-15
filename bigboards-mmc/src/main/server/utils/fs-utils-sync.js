@@ -36,12 +36,7 @@ module.exports.absolute = function(path) {
 };
 
 module.exports.exists = function(path) {
-    try {
-        fs.accessSync(path, fs.F_OK);
-        return true;
-    } catch (err) {
-        return false;
-    }
+    return  fs.existsSync(path);
 };
 
 module.exports.fileName = function(path) {
