@@ -35,11 +35,11 @@ module.exports = function(configuration, services) {
                         .then(function() {
                             var tintEnv = {
                                 workdir: tintPath + '/work',
-                                hostFile: '_hosts',
+                                hostFile: 'hosts',
                                 verbose: env.verbose
                             };
 
-                            return TaskUtils.playbook(tintEnv, '_uninstall', scope);
+                            return TaskUtils.playbook(tintEnv, 'uninstall', scope);
                         });
                 })
                 .then(function() {

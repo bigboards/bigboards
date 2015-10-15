@@ -29,17 +29,17 @@ KeyValueStore.prototype.set = function(key, value) {
     var self = this;
     if( Object.prototype.toString.call( key ) === '[object Array]' ) {
         key.forEach(function(k) {
-            self.cache[k.key] = k.value;
+            self.cache[k.key] = serialize(k.value);
         })
     } else {
-        this.cache[key] = value;
+        this.cache[key] = serialize(value);
     }
 
     persist(this.file, this.cache);
 };
 
 KeyValueStore.prototype.get = function(key) {
-    return this.cache[key];
+    return deserialize(this.cache[key]);
 };
 
 KeyValueStore.prototype.remove = function(key) {
@@ -79,4 +79,24 @@ module.exports = KeyValueStore;
 function persist(path, contents) {
     fsu.writeYamlFileSync(path, contents);
     log.debug('KeyValueStore persisted to disk!');
+}
+
+function serialize(value) {
+    if (!value) return null;
+
+    if( Object.prototype.toString.call( key ) === '[object Array]' ) {
+        return value.join(',');
+    } else {
+        return value;
+    }
+}
+
+function deserialize(cypher) {
+    if (!cypher) return null;
+
+    if (cypher.indexOf(',') != -1) {
+        return cypher.split(',');
+    }
+
+    return cypher;
 }

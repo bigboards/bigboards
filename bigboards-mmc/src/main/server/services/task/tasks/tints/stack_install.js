@@ -41,18 +41,22 @@ module.exports = function(configuration, services) {
                     { key: 'stack.status', value: 'installing' }
                 ]);
 
-                return setupTintStructure(variables).then(function() {
-                    var tintEnv = {
-                        workdir: variables.generator.ansible,
-                        hostFile: variables.generator.hosts,
-                        verbose: variables.verbose
-                    };
+                return TintUtils
+                    .setTintState(env.settings.dir.tints, metadata, 'installing')
+                    .then(function() {
+                        return setupTintStructure(variables).then(function() {
+                            var tintEnv = {
+                                workdir: variables.generator.ansible,
+                                hostFile: variables.generator.hosts,
+                                verbose: variables.verbose
+                            };
 
-                    winston.info('Installing the tint');
-                    return TaskUtils.playbook(tintEnv, 'install', variables).then(function() {
-                        env.hexConfig.set('stack.status', 'installed');
+                            winston.info('Installing the tint');
+                            return TaskUtils.playbook(tintEnv, 'install', variables).then(function() {
+                                return TintUtils.setTintState(env.settings.dir.tints, metadata, 'installed');
+                            });
+                        });
                     });
-                });
             });
         }
     };
