@@ -88,8 +88,8 @@ function generateAnsibleCode(variables) {
     variables.tint.stack.containers.forEach(function(container) {
         variables.role = container;
         variables.generator.role = variables.generator.ansible + '/roles/' + container.name;
-        variables.generator.pre_install = variables.generator.git + '/' + container.pre_install;
-        variables.generator.post_install = variables.generator.git + '/' + container.post_install;
+        variables.generator.pre_install = variables.generator.git + '/scripts/' + container.pre_install;
+        variables.generator.post_install = variables.generator.git + '/scripts/' + container.post_install;
         variables.dirs.role_data = variables.dirs.data + '/' + container.name;
 
         generateAnsibleRoleCode(variables);
@@ -117,7 +117,7 @@ function generateAnsibleRoleCode(variables) {
         if (! fss.exists(variables.dir.git + '/' + volume.host)) return;
 
         fss.mkdir(variables.generator.role + '/templates/' + volume.host);
-        fss.generateDir(variables.generator.git + '/' + volume.host, variables.generator.role + '/templates/' + volume.host, variables);
+        fss.generateDir(variables.generator.git + '/config/' + volume.host, variables.generator.role + '/templates/' + volume.host, variables);
     });
 }
 
