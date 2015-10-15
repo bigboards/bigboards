@@ -34,7 +34,7 @@ module.exports = function(configuration, services) {
                         .setTintState(env.settings.dir.tints, metadata, 'uninstalling')
                         .then(function() {
                             var tintEnv = {
-                                workdir: tintPath + '/work',
+                                workdir: tintPath + '/ansible',
                                 hostFile: 'hosts',
                                 verbose: env.verbose
                             };
