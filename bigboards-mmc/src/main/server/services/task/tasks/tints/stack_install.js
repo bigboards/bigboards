@@ -36,13 +36,8 @@ module.exports = function(configuration, services) {
 
                 winston.info('Installing tint ' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
 
-                env.hexConfig.set([
-                    { key: 'stack.id', value: variables.tint.id },
-                    { key: 'stack.status', value: 'installing' }
-                ]);
-
                 return TintUtils
-                    .setTintState(env.settings.dir.tints, metadata, 'installing')
+                    .setTintState(env.settings.dir.tints, variables.tint, 'installing')
                     .then(function() {
                         return setupTintStructure(variables).then(function() {
                             var tintEnv = {
@@ -53,7 +48,7 @@ module.exports = function(configuration, services) {
 
                             winston.info('Installing the tint');
                             return TaskUtils.playbook(tintEnv, 'install', variables).then(function() {
-                                return TintUtils.setTintState(env.settings.dir.tints, metadata, 'installed');
+                                return TintUtils.setTintState(env.settings.dir.tints, variables.tint, 'installed');
                             });
                         });
                     });
