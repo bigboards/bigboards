@@ -3,6 +3,7 @@ var Q = require('q'),
     yaml = require("js-yaml"),
     ini = require('ini'),
     swig = require('swig'),
+    log = require('winston'),
     mkdirp = require('mkdirp');
 
 var renderer = new swig.Swig({
@@ -86,12 +87,20 @@ module.exports.rmdir = function(path) {
  ** TEMPLATING
  *********************************************************************************************************************/
 module.exports.generateFile = function(templatePath, targetPath, variables) {
+    log.info('Generating ' + templatePath + ' to ' + targetPath);
     var content = renderer.renderFile(templatePath, variables);
-    this.writeFile(targetPath, content);
+
+    if (!content || content == "") {
+        log.warn('No content to be written!')
+    } else {
+        this.writeFile(targetPath, content);
+    }
 };
 
 module.exports.generateDir = function(pathContainingTemplates, targetPath, variables) {
     var self = this;
+
+    log.info('Generating directory ' + pathContainingTemplates + ' to ' + targetPath);
 
     var dirContents = this.readDir(pathContainingTemplates);
     dirContents.forEach(function(child) {

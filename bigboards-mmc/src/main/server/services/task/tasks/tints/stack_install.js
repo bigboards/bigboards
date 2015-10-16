@@ -1,5 +1,5 @@
 var Q = require('q'),
-    winston = require('winston'),
+    log = require('winston'),
     fs = require('fs'),
     fss = require('../../../../utils/fs-utils-sync'),
     deepcopy = require('deepcopy'),
@@ -34,7 +34,7 @@ module.exports = function(configuration, services) {
                 //    delete scope.tint.stack.views[viewIdx].url;
                 //}
 
-                winston.info('Installing tint ' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
+                log.info('Installing tint ' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
 
                 return TintUtils
                     .setTintState(env.settings.dir.tints, variables.tint, 'installing')
@@ -46,7 +46,7 @@ module.exports = function(configuration, services) {
                                 verbose: variables.verbose
                             };
 
-                            winston.info('Installing the tint');
+                            log.info('Installing the tint');
                             return TaskUtils.playbook(tintEnv, 'install', variables).then(function() {
                                 return TintUtils.setTintState(env.settings.dir.tints, variables.tint, 'installed');
                             });
