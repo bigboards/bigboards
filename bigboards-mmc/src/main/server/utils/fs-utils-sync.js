@@ -53,7 +53,7 @@ module.exports.fileName = function(path) {
  ** DIRECTORIES
  *********************************************************************************************************************/
 module.exports.readDir = function(path) {
-    return fs.readDirSync(path);
+    return fs.readdirSync(path);
 };
 
 module.exports.mkdir = function(path) {
@@ -100,7 +100,7 @@ module.exports.generateDir = function(pathContainingTemplates, targetPath, varia
             self.mkdir(targetPath + '/' + child);
             self.generateDir(pathContainingTemplates + '/' + child, targetPath + '/' + child, variables);
         } else {
-            self.generateFile(pathContainingTemplates + '/' + child, targetPath, variables);
+            self.generateFile(pathContainingTemplates + '/' + child, targetPath + '/' + child, variables);
         }
     });
 };
@@ -110,11 +110,11 @@ module.exports.generateDir = function(pathContainingTemplates, targetPath, varia
  *********************************************************************************************************************/
 
 module.exports.readFile = function(file) {
-    return fs.readFile(file, {encoding: 'utf8'});
+    return fs.readFileSync(file, 'utf8');
 };
 
 module.exports.writeFile = function(file, content) {
-    return fs.writeFile(file, content, 'utf8');
+    return fs.writeFileSync(file, content, 'utf8');
 };
 
 /**********************************************************************************************************************
