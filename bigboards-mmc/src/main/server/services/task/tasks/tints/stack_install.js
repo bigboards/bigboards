@@ -99,6 +99,11 @@ function generateAnsibleCode(variables, registryService) {
             if (registry) container.registry = registry;
         }
 
+        // -- substitute the role image with an updated one. In case of bigboards images we append the hex architecture
+        if (container.image.indexOf('bigboards/') == 0) {
+            container.image = container.image + '-' + variables.hex.arch;
+        }
+
         generateAnsibleRoleCode(variables);
     });
 }

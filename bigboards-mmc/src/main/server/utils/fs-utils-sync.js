@@ -14,6 +14,9 @@ var renderer = new swig.Swig({
         isRelativePath: function(path) {
             return path.indexOf('/') != 0;
         },
+        startsWith: function(str, prefix) {
+            return str.indexOf(prefix) != 0;
+        },
         isFalsy: function(value) {
             if (value == 0) return true;
             if (value == false) return true;
