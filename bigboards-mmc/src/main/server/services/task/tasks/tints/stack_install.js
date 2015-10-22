@@ -39,7 +39,7 @@ module.exports = function(configuration, services) {
                 return TintUtils
                     .setTintState(env.settings.dir.tints, variables.tint, 'installing')
                     .then(function() {
-                        return setupTintStructure(variables).then(function() {
+                        return setupTintStructure(variables, services.registry).then(function() {
                             var tintEnv = {
                                 workdir: variables.generator.ansible,
                                 hostFile: variables.generator.hosts,
@@ -62,17 +62,17 @@ function cleanup(variables) {
     if (variables.generator.tint) fss.rmdir();
 }
 
-function setupTintStructure(variables) {
+function setupTintStructure(variables, registryService) {
     // -- be sure the tint path exists
     fss.mkdir(variables.generator.tint);
 
     // -- checkout the configuration files from the git repository
     return checkoutIfNeeded(variables.tint.uri, variables.generator.git).then(function() {
-        generateAnsibleCode(variables);
+        generateAnsibleCode(variables, registryService);
     });
 }
 
-function generateAnsibleCode(variables) {
+function generateAnsibleCode(variables, registryService) {
     var templateHome = variables.generator.templates + '/tint';
 
     // -- make sure the directory in which we will generate the ansible code is available
@@ -91,6 +91,13 @@ function generateAnsibleCode(variables) {
         variables.generator.pre_install = variables.generator.git + '/scripts/' + container.pre_install;
         variables.generator.post_install = variables.generator.git + '/scripts/' + container.post_install;
         variables.dirs.role_data = variables.dirs.data + '/' + container.name;
+
+        // -- check if the role has a registry set. If it has one, we will look for registry credentials in the hex
+        if (container.registry) {
+            // -- check if we can find credentials for this registry
+            var registry = registryService.get(container.registry);
+            if (registry) container.registry = registry;
+        }
 
         generateAnsibleRoleCode(variables);
     });

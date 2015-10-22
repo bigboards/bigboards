@@ -179,6 +179,40 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
     return new Hex();
 }]);
 
+app.service('Registry', [ 'settings', '$http', '$q', 'toaster', 'socket', function(settings, $http, $q, toaster, socket) {
+    var Registry = function Registry() {
+        var self = this;
+    };
+
+    Registry.prototype.list = function() {
+        return $http.get(settings.api + '/api/v1/registry');
+    };
+
+    Registry.prototype.get = function(registryName) {
+        if (! registryName) throw new Error('No registry name provided!');
+
+        return $http.get(settings.api + '/api/v1/registry/' + registryName);
+    };
+
+    Registry.prototype.add = function(data) {
+        return $http.put(settings.api + '/api/v1/registry', data);
+    };
+
+    Registry.prototype.update = function(registryName, data) {
+        if (! registryName) throw new Error('No registry name provided!');
+
+        return $http.post(settings.api + '/api/v1/registry/' + registryName, data);
+    };
+
+    Registry.prototype.remove = function(registryName) {
+        if (! registryName) throw new Error('No registry name provided!');
+
+        return $http.delete(settings.api + '/api/v1/registry/' + registryName);
+    };
+
+    return new Registry();
+}]);
+
 app.service('Nodes', function(settings, $resource) {
     return $resource(settings.api + '/api/v1/hex/nodes', { }, {
         'list': { method: 'GET', isArray: true}

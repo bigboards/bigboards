@@ -21,6 +21,7 @@ module.exports = {
             host: os.hostname(),
             file: {
                 hosts: fsu.absolute('local/root/hosts'),
+                registry: fsu.absolute('local/registries.yml'),
                 hex: fsu.absolute('local/hex.yml')
             },
             dir: {
@@ -50,6 +51,7 @@ module.exports = {
             host: os.hostname(),
             file: {
                 hosts: '/etc/ansible/hosts',
+                registry: '/etc/bigboards/registries.yml',
                 hex: '/etc/bigboards/hex.yml'
             },
             dir: {

@@ -13,7 +13,8 @@ var express = require('express'),
     Serfer = require('serfer/src/'),
     Q = require('q'),
     Templater = require('./utils/templater'),
-    KV = require('./kv');
+    KV = require('./kv'),
+    ObjStore = require('./obj');
 
 mmcConfig = initializeMMCConfiguration();
 
@@ -26,8 +27,9 @@ serfer.connect().then(function() {
     mmcConfig.environment = app.get('env');
 
     var hexConfig = new KV(mmcConfig.file.hex);
+    var registryStore = new ObjStore(mmcConfig.file.registry);
 
-    var services = initializeServices(mmcConfig, hexConfig, serfer, app);
+    var services = initializeServices(mmcConfig, hexConfig, registryStore, serfer, app);
 
     services.task.registerDefaultTasks(hexConfig, services);
 
@@ -101,12 +103,13 @@ function initializeSocketIO(server, services) {
         Services.Settings.io(socket, services);
         Services.Task.io(socket, services);
         Services.Tutorials.io(socket, services);
+        Services.Registry.io(socket, services);
     });
 
     return io;
 }
 
-function initializeServices(mmcConfig, hexConfig, serf, app) {
+function initializeServices(mmcConfig, hexConfig, registryStore, serf, app) {
     var templater = new Templater(hexConfig);
     winston.log('info', 'Service Registration:');
 
@@ -123,6 +126,9 @@ function initializeServices(mmcConfig, hexConfig, serf, app) {
 
     services.tutorials = new Services.Tutorials.Service(mmcConfig, hexConfig, services, templater);
     Services.Tutorials.link(app, services);
+
+    services.registry = new Services.Registry.Service(mmcConfig, hexConfig, registryStore);
+    Services.Registry.link(app, services);
 
     return services;
 }

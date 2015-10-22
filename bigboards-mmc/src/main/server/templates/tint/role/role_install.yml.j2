@@ -26,15 +26,22 @@
 
 [% endif %]
 [% endfor %]
-- name: make sure the [[ role.image ]] docker image is the latest one
-  sudo: yes
-  shell: docker pull [[ role.image ]]-{{ ansible_machine }}
 
 ###############################################################################
 ##
 ## Docker
 ##
 ###############################################################################
+
+{% if not isFalsy(role.registry) %}
+- name: login to the docker registry
+  sudo: yes
+  shell: docker login -e [[ role.registry.email ]] -u [[ role.registry.user ]] -p [[ role.registry.password ]] [[ role.registry.name ]]
+{% endif %}
+
+- name: make sure the [[ role.image ]] docker image is the latest one
+  sudo: yes
+  shell: docker pull [[ role.image ]]-{{ ansible_machine }}
 
 - name: make sure the [[ role.name ]] docker container exists
   sudo: yes
@@ -45,11 +52,30 @@
     ports:[% for port in role.ports %]
       - "[[ port.host ]]:[[ port.container ]]"[% endfor %]
     publish_all_ports: "yes"
+[% if not isFalsy(role.volumes_from) %]
+    volumes_from:[% for v in role.volumes_from %]
+      - "[[ v ]]"[% endfor %]
+[% endif %]
     volumes:
-      - "[[ dirs.role_data ]]:/data"[% for volume in role.volumes %][% if isRelativePath(volume.host) %]
-      - "[[ dirs.config ]]/[[ volume.host ]]:[[ volume.container ]]"[% else %]
-      - "[[ volume.host ]]:[[ volume.container ]]"[% endif %][% endfor %]
+      - "[[ dirs.role_data ]]:/data"
+[%- for volume in role.volumes %]
+[%- if isFalsy(volume.host) %]
+      - "[[ volume.container ]]"
+[%- elseif isRelativePath(volume.host) %]
+      - "[[ dirs.config ]]/[[ volume.host ]]:[[ volume.container ]]"
+[%- else %]
+      - "[[ volume.host ]]:[[ volume.container ]]"
+[%- endif %]
+[%- endfor %]
+[% if not isFalsy(role.registry) %]
+    image: "[[ role.registry.name ]]/[[ role.image ]]-{{ ansible_machine }}"
+[% else %]
     image: "[[ docker.registry ]]/[[ role.image ]]-{{ ansible_machine }}"
+[% endif %]
+[% if not isFalsy(role.links) %]
+    links:[% for link in role.links %]
+      - "[[ link ]]"[% endfor %]
+[% endif %]
 [% if not isFalsy(role.command) %]
     command: "[[ role.command ]]"
 [% endif %]
@@ -58,7 +84,7 @@
 [% endif %]
     state: running[% if not isFalsy(role.environment) %]
     env:[% for envVar in role.environment %]
-      [[ envVar.key ]]: "[[ envVar.value ]]"[% endfor %][% endif %]
+      [% if isFalsy(envVar.value) %] [[ envVar.key ]] [% else %] [[ envVar.key ]]: "[[ envVar.value ]]"[% endif %][% endfor %][% endif %]
 
 - name: make sure the [[ role.name ]] init file is available
   copy: src=[[ role.name ]].conf dest=/etc/init/[[ role.name ]].conf
