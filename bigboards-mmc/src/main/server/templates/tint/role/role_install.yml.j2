@@ -1,11 +1,11 @@
-[% include generator.pre_install ignore missing %]
-
 - name: make sure the [[ role.name ]] role data directory exists
   file:
     state: "directory"
     path: "[[ dirs.role_data ]]"
     owner: bb
     mode: 0755
+
+[% include generator.pre_install ignore missing %]
 
 ###############################################################################
 ##
