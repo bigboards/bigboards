@@ -17,6 +17,8 @@ var renderer = new swig.Swig({
         isFalsy: function(value) {
             if (value == 0) return true;
             if (value == false) return true;
+            if (value == "false") return true;
+            if (value == "") return true;
             if (value == null) return true;
             if (value == undefined) return true;
 
@@ -87,11 +89,11 @@ module.exports.rmdir = function(path) {
  ** TEMPLATING
  *********************************************************************************************************************/
 module.exports.generateFile = function(templatePath, targetPath, variables) {
-    log.info('Generating ' + templatePath + ' to ' + targetPath);
+    log.log('info', 'Generating ' + templatePath + ' to ' + targetPath);
     var content = renderer.renderFile(templatePath, variables);
 
     if (!content || content == "") {
-        log.warn('No content to be written!')
+        log.log('warn', 'No content to be written!')
     } else {
         this.writeFile(targetPath, content);
     }
@@ -100,7 +102,7 @@ module.exports.generateFile = function(templatePath, targetPath, variables) {
 module.exports.generateDir = function(pathContainingTemplates, targetPath, variables) {
     var self = this;
 
-    log.info('Generating directory ' + pathContainingTemplates + ' to ' + targetPath);
+    log.log('info', 'Generating directory ' + pathContainingTemplates + ' to ' + targetPath);
 
     var dirContents = this.readDir(pathContainingTemplates);
     dirContents.forEach(function(child) {

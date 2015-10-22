@@ -22,7 +22,7 @@
     src: "{{ item }}"
     dest: "[[ dirs.config ]]/[[ volume.host ]]"
   with_fileglob:
-    - ../templates/*
+    - ../templates/[[volume.host]]/*
 
 [% endif %]
 [% endfor %]
@@ -50,7 +50,12 @@
       - "[[ dirs.config ]]/[[ volume.host ]]:[[ volume.container ]]"[% else %]
       - "[[ volume.host ]]:[[ volume.container ]]"[% endif %][% endfor %]
     image: "[[ docker.registry ]]/[[ role.image ]]-{{ ansible_machine }}"
+[% if not isFalsy(role.privileged) %]
     command: "[[ role.command ]]"
+[% endif %]
+[% if not isFalsy(role.privileged) %]
+    privileged: yes
+[% endif %]
     state: running[% if not isFalsy(role.environment) %]
     env:[% for envVar in role.environment %]
       [[ envVar.key ]]: "[[ envVar.value ]]"[% endfor %][% endif %]

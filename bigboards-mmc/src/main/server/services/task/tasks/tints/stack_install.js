@@ -99,6 +99,8 @@ function generateAnsibleCode(variables) {
 function generateAnsibleRoleCode(variables) {
     var templateHome = variables.generator.templates + '/tint/role';
 
+    log.log('info', 'processing role ' + JSON.stringify(variables.role));
+
     fss.mkdir(variables.generator.role);
 
     fss.mkdir(variables.generator.role + '/tasks');
@@ -113,8 +115,8 @@ function generateAnsibleRoleCode(variables) {
     // -- generate the config files from git into the templates folder
     fss.mkdir(variables.generator.role + '/templates');
     variables.role.volumes.forEach(function(volume) {
-        if (volume.host.indexOf('/') != 0) return;
-        if (! fss.exists(variables.dir.git + '/' + volume.host)) return;
+        if (volume.host.indexOf('/') == 0) return;
+        if (! fss.exists(variables.generator.git + '/config/' + volume.host)) return;
 
         fss.mkdir(variables.generator.role + '/templates/' + volume.host);
         fss.generateDir(variables.generator.git + '/config/' + volume.host, variables.generator.role + '/templates/' + volume.host, variables);
