@@ -95,8 +95,9 @@ function generateAnsibleCode(variables, registryService) {
         // -- check if the role has a registry set. If it has one, we will look for registry credentials in the hex
         if (container.registry) {
             // -- check if we can find credentials for this registry
-            var registry = registryService.get(container.registry);
+            var registry = registryService.getRegistry(container.registry);
             if (registry) container.registry = registry;
+            else throw new Error('Unable to find a mapping for registry ' +  container.registry);
         }
 
         // -- substitute the role image with an updated one. In case of bigboards images we append the hex architecture
@@ -127,6 +128,7 @@ function generateAnsibleRoleCode(variables) {
     // -- generate the config files from git into the templates folder
     fss.mkdir(variables.generator.role + '/templates');
     variables.role.volumes.forEach(function(volume) {
+        if (! volume.host) return;
         if (volume.host.indexOf('/') == 0) return;
         if (! fss.exists(variables.generator.git + '/config/' + volume.host)) return;
 

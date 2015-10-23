@@ -33,15 +33,15 @@
 ##
 ###############################################################################
 
-{% if not isFalsy(role.registry) %}
+[% if not isFalsy(role.registry) %]
 - name: login to the docker registry
   sudo: yes
   shell: docker login -e [[ role.registry.email ]] -u [[ role.registry.user ]] -p [[ role.registry.password ]] [[ role.registry.name ]]
-{% endif %}
+[% endif %]
 
 - name: make sure the [[ role.image ]] docker image is the latest one
   sudo: yes
-  shell: docker pull [[ role.image ]]-{{ ansible_machine }}
+  shell: docker pull [[ role.image ]]
 
 - name: make sure the [[ role.name ]] docker container exists
   sudo: yes
@@ -68,9 +68,9 @@
 [%- endif %]
 [%- endfor %]
 [% if not isFalsy(role.registry) %]
-    image: "[[ role.registry.name ]]/[[ role.image ]]-{{ ansible_machine }}"
+    image: "[[ role.registry.name ]]/[[ role.image ]]"
 [% else %]
-    image: "[[ docker.registry ]]/[[ role.image ]]-{{ ansible_machine }}"
+    image: "[[ docker.registry ]]/[[ role.image ]]"
 [% endif %]
 [% if not isFalsy(role.links) %]
     links:[% for link in role.links %]

@@ -21,6 +21,7 @@ var renderer = new swig.Swig({
             if (value == 0) return true;
             if (value == false) return true;
             if (value == "false") return true;
+            if (value == {}) return true;
             if (value == "") return true;
             if (value == null) return true;
             if (value == undefined) return true;
