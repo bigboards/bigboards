@@ -1,3 +1,20 @@
+## CONFIGURATION ##############################################################
+# We use a new configuration directory in /etc/bigboards. It should be owned
+# by the bb user and should contain a hex.yml and registries.yml. If registries.yml
+# does not exist, it will be created by the MMC
+- hosts: host-coordinators
+  sudo: yes
+  tasks:
+    - name: make sure the /etc/bigboards directory exists
+      file:
+        path: "/etc/bigboards"
+        state: "directory"
+        owner: "bb"
+        mode: "755"
+
+    - name: make sure the hex.yml file exists
+      template: src=templates/hex.yml.j2 dest=/etc/bigboards/hex.yml owner=bb mode=755
+
 ## DOCKER BINARY ##############################################################
 - hosts: host
   sudo: yes

@@ -41,7 +41,11 @@
 
 - name: make sure the [[ role.image ]] docker image is the latest one
   sudo: yes
-  shell: docker pull [[ role.image ]]
+[%- if not isFalsy(role.registry) %]
+  shell: docker pull [[ role.registry.name ]]/[[ role.image ]]
+[%- else %]
+  shell: docker pull [[ docker.registry ]]/[[ role.image ]]
+[%- endif %]
 
 - name: make sure the [[ role.name ]] docker container exists
   sudo: yes
