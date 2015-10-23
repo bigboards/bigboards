@@ -8,7 +8,7 @@ function ObjectStore(file) {
     var self = this;
 
     // -- check if the file exists
-    if (! fss.exists()) {
+    if (! fss.exists(file)) {
         log.log('info', 'Creating an empty object store at ' + file);
         fss.writeYamlFile(file, {});
     }

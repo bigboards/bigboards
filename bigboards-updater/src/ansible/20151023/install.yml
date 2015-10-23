@@ -1,0 +1,43 @@
+## DOCKER BINARY ##############################################################
+
+    - name: make sure we use the latest docker version
+      notify: Restart Docker
+      copy:
+        src: 'files/{{ ansible_machine }}/docker'
+        dest: '/usr/bin/docker'
+        mode: 777
+
+    - name: make sure the links for the docker binary are correct
+      notify: Restart Docker
+      file:
+        src: '/usr/bin/{{item.src}}'
+        dest: '/usr/bin/{{item.dest}}'
+        mode: 777
+        state: 'link'
+      with_items:
+        - { src: 'docker', dest: 'docker.io' }
+
+## DOCKERINIT BINARY ##########################################################
+
+    - name: make sure dockerinit is removed
+      when: ansible_machine == 'armv7l'
+      notify: Restart Docker
+      file:
+        dest: '{{ item }}'
+        state: 'absent'
+      with_items:
+        - '/usr/lib/docker.io/dockerinit-1.5.0'
+        - '/usr/lib/docker.io/dockerinit'
+
+    - name: make sure the docker.io libraries are linked to docker
+      when: ansible_machine == 'armv7l'
+      notify: Restart Docker
+      file:
+        src: '/usr/lib/docker.io'
+        dest: '/usr/lib/docker'
+        mode: 755
+        state: 'link'
+
+  handlers:
+    - name: Restart Docker
+      command: service docker.io restart

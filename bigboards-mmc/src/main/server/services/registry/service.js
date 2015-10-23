@@ -13,10 +13,10 @@ RegistryService.prototype.getRegistries = function() {
     return Q(this.store.all());
 };
 
-RegistryService.prototype.getRegistry = function(name) {
+RegistryService.prototype.getRegistry = function(name, sync) {
     if (! name) throw new Errors.IllegalParameterError("No registry name provided.");
 
-    return Q(this.store[name]);
+    return (sync) ? this.store.get(name) : Q(this.store.get(name));
 };
 
 RegistryService.prototype.addRegistry = function(registryData) {

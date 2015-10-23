@@ -95,7 +95,7 @@ function generateAnsibleCode(variables, registryService) {
         // -- check if the role has a registry set. If it has one, we will look for registry credentials in the hex
         if (container.registry) {
             // -- check if we can find credentials for this registry
-            var registry = registryService.getRegistry(container.registry);
+            var registry = registryService.getRegistry(container.registry, true);
             if (registry) container.registry = registry;
             else throw new Error('Unable to find a mapping for registry ' +  container.registry);
         }
