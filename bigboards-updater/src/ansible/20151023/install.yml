@@ -1,5 +1,7 @@
 ## DOCKER BINARY ##############################################################
-
+- hosts: host
+  sudo: yes
+  tasks:
     - name: make sure we use the latest docker version
       notify: Restart Docker
       copy:
