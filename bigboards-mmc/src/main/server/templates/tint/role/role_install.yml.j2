@@ -48,7 +48,9 @@
   docker:
     docker_api_version: "1.15"
     name: "[[ role.name ]]"
+[% if isFalsy(role.links) %]
     net: "host"
+[% endif %]
     ports:[% for port in role.ports %]
       - "[[ port.host ]]:[[ port.container ]]"[% endfor %]
     publish_all_ports: "yes"
