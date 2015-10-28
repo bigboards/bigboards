@@ -27,26 +27,38 @@ var renderer = new swig.Swig({
             if (value == undefined) return true;
 
             return false;
-        }
+        },
+        isDirectory: isDirectory,
+        isFile: isFile,
+        parentFileName: parentFileName
     }
 });
 
 /**********************************************************************************************************************
  ** GENERAL
  *********************************************************************************************************************/
+module.exports.absolute = absolute;
+module.exports.exists = exists;
+module.exports.fileName = fileName;
+module.exports.parentFileName = parentFileName;
+module.exports.mkdir = mkdir;
+module.exports.isDirectory = isDirectory;
+module.exports.isFile = isFile;
+module.exports.rmdir = rmdir;
+module.exports.readDir = readDir;
 
-module.exports.absolute = function(path) {
+function absolute(path) {
     var p = path;
     if (p.indexOf('/') != 0) p = '/' + p;
 
     return process.cwd() + p;
-};
+}
 
-module.exports.exists = function(path) {
+function exists(path) {
     return  fs.existsSync(path);
-};
+}
 
-module.exports.fileName = function(path) {
+function fileName(path) {
     if (path) {
         var start = path.lastIndexOf("/")+1;
         var end = path.length;
@@ -54,24 +66,33 @@ module.exports.fileName = function(path) {
     }
 
     return undefined;
-};
+}
+
+function parentFileName(path) {
+    var idx = path.lastIndexOf('/');
+    return (idx == -1) ? path : path.substring(0, idx);
+}
 
 /**********************************************************************************************************************
  ** DIRECTORIES
  *********************************************************************************************************************/
-module.exports.readDir = function(path) {
+function readDir(path) {
     return fs.readdirSync(path);
-};
+}
 
-module.exports.mkdir = function(path) {
+function mkdir(path) {
     return mkdirp.sync(path);
-};
+}
 
-module.exports.isDirectory = function(path) {
+function isDirectory(path) {
     return fs.statSync(path).isDirectory();
-};
+}
 
-module.exports.rmdir = function(path) {
+function isFile(path) {
+    return fs.statSync(path).isFile();
+}
+
+function rmdir(path) {
     var deleteFolderRecursive = function(path) {
         if( fs.existsSync(path) ) {
             fs.readdirSync(path).forEach(function(file,index){
@@ -87,82 +108,93 @@ module.exports.rmdir = function(path) {
     };
 
     return deleteFolderRecursive(path);
-};
+}
 
 /**********************************************************************************************************************
  ** TEMPLATING
  *********************************************************************************************************************/
-module.exports.generateFile = function(templatePath, targetPath, variables) {
+
+module.exports.generateDir = generateDir;
+module.exports.generateFile = generateFile;
+
+function generateFile(templatePath, targetPath, variables) {
     log.log('info', 'Generating ' + templatePath + ' to ' + targetPath);
     var content = renderer.renderFile(templatePath, variables);
 
     if (!content || content == "") {
         log.log('warn', 'No content to be written!')
     } else {
-        this.writeFile(targetPath, content);
+        writeFile(targetPath, content);
     }
-};
+}
 
-module.exports.generateDir = function(pathContainingTemplates, targetPath, variables) {
-    var self = this;
-
+function generateDir(pathContainingTemplates, targetPath, variables) {
     log.log('info', 'Generating directory ' + pathContainingTemplates + ' to ' + targetPath);
 
-    var dirContents = this.readDir(pathContainingTemplates);
+    var dirContents = readDir(pathContainingTemplates);
     dirContents.forEach(function(child) {
-        if (self.isDirectory(pathContainingTemplates + '/' + child)) {
+        if (isDirectory(pathContainingTemplates + '/' + child)) {
             // -- also create the directory in the target path
-            self.mkdir(targetPath + '/' + child);
-            self.generateDir(pathContainingTemplates + '/' + child, targetPath + '/' + child, variables);
+            mkdir(targetPath + '/' + child);
+            generateDir(pathContainingTemplates + '/' + child, targetPath + '/' + child, variables);
         } else {
-            self.generateFile(pathContainingTemplates + '/' + child, targetPath + '/' + child, variables);
+            generateFile(pathContainingTemplates + '/' + child, targetPath + '/' + child, variables);
         }
     });
-};
+}
 
 /**********************************************************************************************************************
  ** PLAIN FILES
  *********************************************************************************************************************/
+module.exports.readFile = readFile;
+module.exports.writeFile = writeFile;
 
-module.exports.readFile = function(file) {
+function readFile(file) {
     return fs.readFileSync(file, 'utf8');
-};
+}
 
-module.exports.writeFile = function(file, content) {
+function writeFile(file, content) {
     return fs.writeFileSync(file, content, 'utf8');
-};
+}
 
 /**********************************************************************************************************************
  ** YAML FILES
  *********************************************************************************************************************/
+module.exports.readYamlFile = readYamlFile;
+module.exports.writeYamlFile = writeYamlFile;
 
-module.exports.readYamlFile = function(file) {
-    return yaml.safeLoad(this.readFile(file));
-};
+function readYamlFile(file) {
+    return yaml.safeLoad(readFile(file));
+}
 
-module.exports.writeYamlFile = function(file, obj) {
-    return this.writeFile(file, yaml.safeDump(obj));
-};
+function writeYamlFile(file, obj) {
+    return writeFile(file, yaml.safeDump(obj));
+}
 
 /**********************************************************************************************************************
  ** JSON FILES
  *********************************************************************************************************************/
+module.exports.readJsonFile = readJsonFile;
+module.exports.writeJsonFile = writeJsonFile;
 
-module.exports.readJsonFile = function(file) {
-    return JSON.parse(this.readFile(file));
-};
+function readJsonFile(file) {
+    return JSON.parse(readFile(file));
+}
 
-module.exports.writeJsonFile = function(path, obj) {
-    this.writeFile(path, JSON.stringify(obj));
-};
+function writeJsonFile(path, obj) {
+    writeFile(path, JSON.stringify(obj));
+}
 
 /**********************************************************************************************************************
  ** INI FILES
  *********************************************************************************************************************/
-module.exports.readIniFile = function(file) {
-    return ini.parse(this.readFile(file));
-};
+module.exports.readIniFile = readIniFile;
+module.exports.writeIniFile = writeIniFile;
 
-module.exports.writeIniFile = function(path, obj) {
-    this.writeFile(path, ini.stringify(obj, { whitespace: true }));
-};
+function readIniFile(file) {
+    return ini.parse(readFile(file));
+}
+
+function writeIniFile(path, obj) {
+    writeFile(path, ini.stringify(obj, { whitespace: true }));
+}

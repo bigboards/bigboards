@@ -13,7 +13,8 @@
 ##
 ###############################################################################
 [% for volume in role.volumes %]
-[% if isRelativePath(volume.host) %]
+[%- if isRelativePath(volume.host) %]
+[%- if isDirectory(generator.git + '/config/' + volume.host) %]
 - name: make sure the [[ role.name ]] configuration directory exists
   file: state="directory" path="[[ dirs.config ]]/[[ volume.host ]]" owner="bb"
 
@@ -24,7 +25,17 @@
   with_fileglob:
     - ../templates/[[volume.host]]/*
 
-[% endif %]
+[% else %]
+- name: make sure the [[ role.name ]] configuration directory exists
+  file: state="directory" path="[[ parentFileName(dirs.config + '/' + volume.host) ]]" owner="bb"
+
+- name: make sure the [[ volume.container ]] volume exists
+  template:
+    src: "../templates/[[ volume.host ]]"
+    dest: "[[ dirs.config ]]/[[ volume.host ]]"
+
+[% endif -%]
+[% endif -%]
 [% endfor %]
 
 ###############################################################################
@@ -52,8 +63,8 @@
   docker:
     docker_api_version: "1.15"
     name: "[[ role.name ]]"
-[% if isFalsy(role.links) %]
-    net: "host"
+[% if not isFalsy(role.networking) %]
+    net: "[[ role.networking ]]"
 [% endif %]
     ports:[% for port in role.ports %]
       - "[[ port.host ]]:[[ port.container ]]"[% endfor %]

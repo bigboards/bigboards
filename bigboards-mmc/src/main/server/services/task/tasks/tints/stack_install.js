@@ -132,8 +132,14 @@ function generateAnsibleRoleCode(variables) {
         if (volume.host.indexOf('/') == 0) return;
         if (! fss.exists(variables.generator.git + '/config/' + volume.host)) return;
 
-        fss.mkdir(variables.generator.role + '/templates/' + volume.host);
-        fss.generateDir(variables.generator.git + '/config/' + volume.host, variables.generator.role + '/templates/' + volume.host, variables);
+        if (fss.isDirectory(variables.generator.git + '/config/' + volume.host)) {
+            fss.mkdir(variables.generator.role + '/templates/' + volume.host);
+            fss.generateDir(variables.generator.git + '/config/' + volume.host, variables.generator.role + '/templates/' + volume.host, variables);
+        } else {
+            // -- create the parent directory
+            fss.mkdir(fss.parentFileName(variables.generator.role + '/templates/' + volume.host));
+            fss.generateFile(variables.generator.git + '/config/' + volume.host, variables.generator.role + '/templates/' + volume.host, variables);
+        }
     });
 }
 
