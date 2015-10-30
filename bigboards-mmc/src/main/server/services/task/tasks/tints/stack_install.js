@@ -67,7 +67,7 @@ function setupTintStructure(variables, registryService) {
     fss.mkdir(variables.generator.tint);
 
     // -- checkout the configuration files from the git repository
-    return checkoutIfNeeded(variables.tint.uri, variables.generator.git).then(function() {
+    return checkoutIfNeeded(variables.tint.uri, variables.generator.git, variables.firmware).then(function() {
         generateAnsibleCode(variables, registryService);
     });
 }
@@ -143,15 +143,43 @@ function generateAnsibleRoleCode(variables) {
     });
 }
 
-function checkoutIfNeeded(repoUrl, repoPath) {
+function checkoutIfNeeded(repoUrl, repoPath, firmware) {
     var defer = Q.defer();
 
     fss.rmdir(repoPath);
 
+    defer.notify({channel: 'output', data: "Cloning the configuration repository " + repoUrl + " to " + repoPath});
+
     gift.clone(repoUrl, repoPath, function(err, repo) {
         if (err) defer.reject(err);
 
-        defer.resolve(repo);
+        // -- check which branches are available
+        repo.branches(function(err, heads) {
+            if (err) defer.reject(err);
+
+            defer.notify({channel: 'output', data: "Discovered the following configuration branches: \n"});
+
+            var firmwareBranchFound = false;
+            heads.forEach(function(branch) {
+                if (branch.name == firmware) {
+                    defer.notify({channel: 'output', data: "  use -> " + branch.name + '\n'});
+                    firmwareBranchFound = true;
+                } else {
+                    defer.notify({channel: 'output', data: "      -- " + branch.name + '\n'});
+                }
+            });
+
+            if (firmwareBranchFound) {
+                defer.notify({channel: 'output', data: "Using configuration branch " + firmware});
+
+                repo.checkout(firmware, function(err) {
+                    if (err) defer.reject(err);
+                    else defer.resolve(repo);
+                });
+            } else {
+                defer.resolve(repo);
+            }
+        });
     });
 
     return defer.promise;
@@ -165,6 +193,7 @@ function createVariableScope(env, hex, scope) {
         hex: deepcopy(hex),
         tint: deepcopy(scope.tint),
         verbose: env.verbose,
+        firmware: env.settings.firmware,
         docker: {
             registry: env.settings.docker.registry
         },
