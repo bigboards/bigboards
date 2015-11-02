@@ -115,7 +115,7 @@ HexService.prototype.link = function(token) {
 
             // -- save the profile to the local storage. Also save the hive token
             self.hexConfig.set([
-                { key: 'hive.token', value: token },
+                { key: 'hive.token', value: hiveToken },
                 { key: 'hive.user.id', value: decodedToken.hive_id },
                 { key: 'hive.user.name', value: profile.name },
                 { key: 'hive.user.email', value: profile.email },
@@ -138,16 +138,17 @@ HexService.prototype.unlink = function() {
 
     metadata.hexes[this.hexConfig.get('id')] = null;
 
-    return auth0.user.get(token).then(function(profile) {
-        delete profile.app_metadata.hexes[self.hexConfig.get('id')];
+    // TODO: This needs to be implemented the correct way.
+    //return auth0.user.get(token).then(function(profile) {
+    //    delete profile.app_metadata.hexes[self.hexConfig.get('id')];
 
-        return auth0.user.updateMetadata(token, profile.app_metadata)
-            .then(function(profile) {
+        //return auth0.user.updateMetadata(token, profile.app_metadata)
+        //    .then(function(profile) {
                 //return auth0.token.blacklist(token).then(function() {
-                return self.hexConfig.remove(['hive.token', 'hive.user.id', 'hive.user.name', 'hive.user.email', 'hive.user.picture']);
+                return Q(self.hexConfig.remove(['hive.token', 'hive.user.id', 'hive.user.name', 'hive.user.email', 'hive.user.picture']));
                 //});
-            });
-    });
+            //});
+    //});
 };
 
 /*********************************************************************************************************************

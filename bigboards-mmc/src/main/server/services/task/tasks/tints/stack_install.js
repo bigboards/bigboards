@@ -153,31 +153,19 @@ function checkoutIfNeeded(repoUrl, repoPath, firmware) {
     gift.clone(repoUrl, repoPath, function(err, repo) {
         if (err) defer.reject(err);
 
-        // -- check which branches are available
-        repo.branches(function(err, heads) {
-            if (err) defer.reject(err);
-
-            defer.notify({channel: 'output', data: "Discovered the following configuration branches: \n"});
-
-            var firmwareBranchFound = false;
-            heads.forEach(function(branch) {
-                if (branch.name == firmware) {
-                    defer.notify({channel: 'output', data: "  use -> " + branch.name + '\n'});
-                    firmwareBranchFound = true;
-                } else {
-                    defer.notify({channel: 'output', data: "      -- " + branch.name + '\n'});
-                }
-            });
-
-            if (firmwareBranchFound) {
-                defer.notify({channel: 'output', data: "Using configuration branch " + firmware});
+        // -- try to checkout the branch with the current firmware
+        defer.notify({channel: 'output', data: "Checking if a firmware branch is available for firmware " + firmware + "\n"});
+        repo.checkout(firmware, function(err) {
+            if (err) {
+                defer.notify({channel: 'output', data: "Using the master as configuration branch " + firmware + "\n"});
+                defer.resolve(repo);
+            } else {
+                defer.notify({channel: 'output', data: "Using configuration branch " + firmware + "\n"});
 
                 repo.checkout(firmware, function(err) {
                     if (err) defer.reject(err);
                     else defer.resolve(repo);
                 });
-            } else {
-                defer.resolve(repo);
             }
         });
     });
