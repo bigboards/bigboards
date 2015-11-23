@@ -36,7 +36,7 @@ module.exports = {
             hive: {
                 host: 'hive-api-test-env.elasticbeanstalk.com',
                 port: 80,
-                path: '/api/v1/library'
+                path: '/api/v2/library'
             },
             docker: {
                 registry: 'index.docker.io'
@@ -66,7 +66,7 @@ module.exports = {
             hive: {
                 host: 'hive-api-test-env.elasticbeanstalk.com',
                 port: 80,
-                path: '/api/v1/library'
+                path: '/api/v2/library'
             },
             docker: {
                 registry: 'index.docker.io'
