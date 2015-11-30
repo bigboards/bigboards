@@ -64,7 +64,7 @@ module.exports = {
                 facts: '/etc/ansible/facts.d/'
             },
             hive: {
-                host: 'hive-api-test-env.elasticbeanstalk.com',
+                host: 'api.hive.bigboards.io',
                 port: 80,
                 path: '/api/v1/library'
             },
