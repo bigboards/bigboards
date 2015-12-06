@@ -77,7 +77,10 @@ libraryModule.service('Library', ['settings', '$http', function(settings, $http)
         var queryParameters = [];
         if (query.scope) queryParameters.push('scope=' + encodeURIComponent(query.scope));
         if (query.type) queryParameters.push('t=' + encodeURIComponent(query.type));
-        if (query.owner) queryParameters.push('o=' + encodeURIComponent(query.owner));
+        if (query.owner) {
+            queryParameters.push('o=' + encodeURIComponent(query.owner));
+            queryParameters.push('c=' + encodeURIComponent(query.owner));
+        }
 
         if (queryParameters.length > 0) {
             url += ('?' + queryParameters.join('&'))
