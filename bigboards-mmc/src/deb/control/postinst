@@ -34,5 +34,5 @@ pushd /opt/bb/runtimes/bigboards-mmc/client
     rm -rf bower_components
 
     # -- make sure bower installs all dependencies
-    sudo -u bb bower install --config.interactive=false
+    sudo -u bb bower --config.interactive=false install
 popd
