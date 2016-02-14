@@ -1,5 +1,5 @@
 #!/bin/bash
-BRANCH="$(git branch | sed -n '/\* /s///p')"
+BRANCH="$BUILDKITE_BRANCH"
 AWS_PROFILE=personal
 
 deb-s3 upload -p -b apt.bigboards.io -a armv7l -c $BRANCH bigboards-cli/target/*.deb
