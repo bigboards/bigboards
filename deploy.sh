@@ -1,15 +1,15 @@
 #!/bin/bash
-IFS='/' read -a array <<< "$1"
-BRANCH="${array[2]}"
+BRANCH="$BUILDKITE_BRANCH"
+export AWS_PROFILE=personal
 
-deb-s3 upload -p -b apt.bigboards.io --arch armv7l -c $BRANCH --access-key-id=$2 --secret-access-key=$3 bigboards-cli/target/*.deb
-deb-s3 upload -p -b apt.bigboards.io --arch armhf -c $BRANCH --access-key-id=$2 --secret-access-key=$3 bigboards-cli/target/*.deb
-deb-s3 upload -p -b apt.bigboards.io --arch amd64 -c $BRANCH --access-key-id=$2 --secret-access-key=$3 bigboards-cli/target/*.deb
+deb-s3 upload -p -b apt.bigboards.io -a armv7l -c $BRANCH bigboards-cli/target/*.deb
+deb-s3 upload -p -b apt.bigboards.io -a armhf -c $BRANCH bigboards-cli/target/*.deb
+deb-s3 upload -p -b apt.bigboards.io -a amd64 -c $BRANCH bigboards-cli/target/*.deb
 
-deb-s3 upload -p -b apt.bigboards.io --arch armv7l -c $BRANCH --access-key-id=$2 --secret-access-key=$3 bigboards-mmc/target/*.deb
-deb-s3 upload -p -b apt.bigboards.io --arch armhf -c $BRANCH --access-key-id=$2 --secret-access-key=$3 bigboards-mmc/target/*.deb
-deb-s3 upload -p -b apt.bigboards.io --arch amd64 -c $BRANCH --access-key-id=$2 --secret-access-key=$3 bigboards-mmc/target/*.deb
+deb-s3 upload -p -b apt.bigboards.io -a armv7l -c $BRANCH bigboards-mmc/target/*.deb
+deb-s3 upload -p -b apt.bigboards.io -a armhf -c $BRANCH bigboards-mmc/target/*.deb
+deb-s3 upload -p -b apt.bigboards.io -a amd64 -c $BRANCH bigboards-mmc/target/*.deb
 
-deb-s3 upload -p -b apt.bigboards.io --arch armv7l -c $BRANCH --access-key-id=$2 --secret-access-key=$3 bigboards-updater/target/*.deb
-deb-s3 upload -p -b apt.bigboards.io --arch armhf -c $BRANCH --access-key-id=$2 --secret-access-key=$3 bigboards-updater/target/*.deb
-deb-s3 upload -p -b apt.bigboards.io --arch amd64 -c $BRANCH --access-key-id=$2 --secret-access-key=$3 bigboards-updater/target/*.deb
+deb-s3 upload -p -b apt.bigboards.io -a armv7l -c $BRANCH bigboards-updater/target/*.deb
+deb-s3 upload -p -b apt.bigboards.io -a armhf -c $BRANCH bigboards-updater/target/*.deb
+deb-s3 upload -p -b apt.bigboards.io -a amd64 -c $BRANCH bigboards-updater/target/*.deb
