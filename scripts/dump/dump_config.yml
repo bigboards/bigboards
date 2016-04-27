@@ -1,0 +1,28 @@
+- hosts: all:!localhost
+  become: yes
+  become_user: root
+  tasks:
+    - name: dump the actual network configuration (ifconfig)
+      shell: ifconfig -a > /tmp/ifconfig.dump
+
+    - name: dump the actual network configuration (route)
+      shell: route -n > /tmp/route.dump
+
+    - name: gather the files we need
+      fetch: src=/{{item}} dest=/tmp/dumps
+      with_items:
+        - "etc/network/interfaces"
+        - "etc/hosts"
+        - "etc/ansible/hosts"
+        - "etc/sysctl.conf"
+        - "etc/ansible/facts.d/bb.fact"
+        - "etc/resolv.conf"
+        - "tmp/ifconfig.dump"
+        - "tmp/route.dump"
+        - "tmp/iptables.dump"
+        - "var/log/syslog"
+
+- hosts: localhost
+  tasks:
+    - name: compress the files into an archive
+      shell: tar -czf ~/dumps-{{ansible_hostname}}-$(date +"%Y%m%d_%H%M").tgz /tmp/dumps
