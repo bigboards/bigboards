@@ -77,7 +77,7 @@ function generateAnsibleCode(variables, registryService) {
 
     // -- make sure the directory in which we will generate the ansible code is available
     fss.mkdir(variables.generator.ansible);
-    fss.generateFile(templateHome + '/hosts.j2', variables.generator.ansible + '/hosts', variables);
+    generateHostsInventoryFile(variables.hex, variables.generator.ansible + '/hosts');
     fss.generateFile(templateHome + '/install.yml.j2', variables.generator.ansible + '/install.yml', variables);
     fss.generateFile(templateHome + '/uninstall.yml.j2', variables.generator.ansible + '/uninstall.yml', variables);
 
@@ -143,6 +143,17 @@ function generateAnsibleRoleCode(variables) {
     });
 }
 
+function generateHostsInventoryFile(hex, path) {
+    var content = "";
+
+    for (var i = 1; i <= hex.node_count; i++) {
+        content += "[n" + i + "]\n";
+        content += hex.name + "-n" + i + "	ansible_ssh_user=bb\n\n";
+    }
+
+    fss.writeFile(path, content);
+}
+
 function checkoutIfNeeded(repoUrl, repoPath, firmware) {
     var defer = Q.defer();
 
@@ -200,6 +211,7 @@ function createVariableScope(env, hex, scope) {
 
     // -- the tint is missing a tint id, so we need to add that to it
     variables.tint.id = TintUtils.toTintId(scope.tint.type, scope.tint.owner, scope.tint.slug);
+    variables.hex.node_count = hex.node_count || 6;
 
     return variables;
 }

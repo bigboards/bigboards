@@ -1,0 +1,5 @@
+127.0.0.1   localhost
+
+{% for host in groups['host'] %}
+{{ network_range }}.{{ loop.index }} {{ host }}   {{ host }}.hex
+{% endfor %}
