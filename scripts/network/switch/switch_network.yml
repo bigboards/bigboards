@@ -14,3 +14,17 @@
 
     - name: change the hosts file
       template: src=./hosts.j2 dest=/etc/hosts owner=root group=root mode=644
+
+- hosts: host-workers
+  become: yes
+  become_user: root
+  tasks:
+    - name: change the dhcp client configuration of host-workers to master node ip
+      lineinfile: dest="/etc/dhcp/dhclient.conf" regexp="^prepend domain-name-servers" line="prepend domain-name-servers {{network_range}}.1;"
+
+- hosts: host-coordinators
+  become: yes
+  become_user: root
+  tasks:
+    - name: change the dhcp client configuration of host-coordinators to google
+      lineinfile: dest="/etc/dhcp/dhclient.conf" regexp="^prepend domain-name-servers" line="prepend domain-name-servers 8.8.8.8, 8.8.4.4;"
