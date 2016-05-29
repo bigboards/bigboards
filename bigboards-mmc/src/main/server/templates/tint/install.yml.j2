@@ -6,3 +6,8 @@
 [% endfor %]
 
 [% endfor %]
+
+- hosts: all:!localhost
+  sudo: yes
+  tasks:
+    - shell: sync && sync
