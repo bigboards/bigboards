@@ -44,22 +44,16 @@ HexResource.prototype.powerdown = function(req, res) {
  * LINK
  *********************************************************************************************************************/
 
-/**
- * @api {delete} /api/v1/hex Prepare the hex for power down.
- * @apiVersion 1.0.5
- *
- * @apiName PowerDownHex
- * @apiGroup Hex
- * @apiGroupDescription all APIs to fully control your Hex
- */
-HexResource.prototype.link = function(req, res) {
-    var token = req.body.token;
-
-    return ApiUtils.handlePromise(res, this.hexService.link(token));
+HexResource.prototype.pair = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.pair());
 };
 
-HexResource.prototype.unlink = function(req, res) {
-    return ApiUtils.handlePromise(res, this.hexService.unlink());
+HexResource.prototype.pairCallback = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.pairCallback(req.body.token));
+};
+
+HexResource.prototype.unpair = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.unpair());
 };
 
 /*********************************************************************************************************************

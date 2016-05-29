@@ -53,8 +53,9 @@ app.controller('SettingsController', ['$scope', 'Hex', 'Registry', function($sco
         $scope.creating = false;
     };
 
-    $scope.link = function(token) {
-        Hex.link(token).then(function(response) {
+    $scope.link = function() {
+        Hex.link().then(function(response) {
+            $scope.code = response.data.code;
             refresh();
         }, function(error) {
             console.log(error);
@@ -72,12 +73,14 @@ app.controller('SettingsController', ['$scope', 'Hex', 'Registry', function($sco
     function refresh() {
         Hex.get().then(function(hexConfiguration) {
             $scope.hexConfig = hexConfiguration.data;
+            $scope.code = $scope.hexConfig['pair.code'];
             $scope.hiveLinkPart = determineHiveLinkPart($scope.hexConfig);
         });
     }
 
     function determineHiveLinkPart(hexConfig) {
-        if (hexConfig && hexConfig['hive.token']) return 'app/settings/partials/linked.part.html';
+        if (hexConfig && hexConfig['pair.code']) return 'app/settings/partials/pending.part.html';
+        else if (hexConfig && hexConfig['hive.token']) return 'app/settings/partials/linked.part.html';
         else return 'app/settings/partials/unlinked.part.html';
     }
 

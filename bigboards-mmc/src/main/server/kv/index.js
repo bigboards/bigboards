@@ -8,13 +8,11 @@ function KeyValueStore(file) {
     var self = this;
 
     // -- check if the file exists
-    fsu.exists(file).then(function(exists) {
-        if (!exists) {
-            log.error('Unable to find the file backing the key/value store at '  + file + '!');
-        } else {
-            self.reload();
-        }
-    });
+    if (! fs.existsSync(file)) {
+        log.error('Unable to find the file backing the key/value store at '  + file + '!');
+    } else {
+        self.reload();
+    }
 }
 
 KeyValueStore.prototype.reload = function() {
@@ -40,6 +38,10 @@ KeyValueStore.prototype.set = function(key, value) {
 
 KeyValueStore.prototype.get = function(key) {
     return deserialize(this.cache[key]);
+};
+
+KeyValueStore.prototype.has = function(key) {
+    return this.cache.hasOwnProperty(key);
 };
 
 KeyValueStore.prototype.remove = function(key) {

@@ -20,14 +20,14 @@ mmcConfig = initializeMMCConfiguration();
 
 var serfer = new Serfer();
 serfer.connect().then(function() {
+    var hexConfig = new KV(mmcConfig.file.hex);
+    var registryStore = new ObjStore(mmcConfig.file.registry);
+
     var app = initializeExpress();
     var server = initializeHttpServer(app);
 
     // -- get the runtime environment
     mmcConfig.environment = app.get('env');
-
-    var hexConfig = new KV(mmcConfig.file.hex);
-    var registryStore = new ObjStore(mmcConfig.file.registry);
 
     var services = initializeServices(mmcConfig, hexConfig, registryStore, serfer, app);
 

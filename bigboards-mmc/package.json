@@ -30,13 +30,16 @@
     "restler": "3.2.2",
     "serfer": "^0.1.2",
     "shelljs": "~0.2.6",
+    "shortid": "^2.2.6",
     "socket.io": "~1.0",
     "socket.io-client": "^1.0.6",
     "string": "~1.8.0",
     "swig": "^1.4.2",
     "underscore": "~1.5.2",
+    "unirest": "^0.5.0",
     "util": "~0.10.2",
-    "winston": "^0.7.3"
+    "winston": "^0.7.3",
+    "msgpack-js-v5-ng": "~0.3.0-v5"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

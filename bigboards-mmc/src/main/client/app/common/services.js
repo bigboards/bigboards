@@ -65,14 +65,14 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
         var self = this;
 
         return $http
-            .post(settings.api + '/api/v1/hex/link', {token: token});
+            .post(settings.api + '/api/v1/hex/pair', {token: token})
     };
 
     Hex.prototype.unlink = function() {
         var self = this;
 
         return $http
-            .delete(settings.api + '/api/v1/hex/link');
+            .delete(settings.api + '/api/v1/hex/unpair');
     };
 
     Hex.prototype.getIdentity = function(force) {

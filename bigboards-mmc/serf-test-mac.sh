@@ -1,7 +1,7 @@
 #!/bin/bash
 
-INT_IFACE="ham0"
-EXT_IFACE="en0"
+INT_IFACE="lo"
+EXT_IFACE="wlp2s0"
 
 TAGS="-tag hex-name=dev -tag hex-id=dev -tag arch=x86_64 -tag role=master"
 
@@ -27,4 +27,4 @@ TAGS="${TAGS} -tag network.${EXT_IFACE}.netmask=${EXT_BCAST}"
 TAGS="${TAGS} -tag network.${EXT_IFACE}.broadcast=${EXT_MASK}"
 TAGS="${TAGS} -tag network.${EXT_IFACE}.mac=${EXT_MAC}"
 
-serf agent -node dev-n1 ${TAGS}
+/work/runtimes/serf agent -node dev-n1 ${TAGS}

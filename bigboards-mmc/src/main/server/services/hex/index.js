@@ -13,8 +13,9 @@ module.exports = {
         API.registerDelete(app, '/api/v1/hex', function(req, res) { return resource.powerdown(req, res); });
 
         // --  link
-        API.registerPost(app, '/api/v1/hex/link', function(req, res) { return resource.link(req, res); });
-        API.registerDelete(app, '/api/v1/hex/link', function(req, res) { return resource.unlink(req, res); });
+        API.registerPost(app, '/api/v1/hex/pair', function(req, res) { return resource.pair(req, res); });
+        API.registerPost(app, '/api/v1/hex/pair/callback', function(req, res) { return resource.pairCallback(req, res); });
+        API.registerDelete(app, '/api/v1/hex/unpair', function(req, res) { return resource.unpair(req, res); });
 
         // -- Nodes
         API.registerGet(app, '/api/v1/hex/nodes', function(req, res) { return resource.listNodes(req, res); });

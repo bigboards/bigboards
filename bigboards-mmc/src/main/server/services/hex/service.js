@@ -1,4 +1,5 @@
 var Q = require('q'),
+    ShortId = require('shortid'),
     fsu = require('../../utils/fs-utils'),
     tu = require('../../utils/tint-utils'),
     fs = require('fs'),
@@ -6,7 +7,9 @@ var Q = require('q'),
     Errors = require('../../errors'),
     jwt = require('jsonwebtoken'),
     https = require('https'),
-    auth0 =  require('../../auth0');
+    auth0 =  require('../../auth0'),
+    unirest = require('unirest'),
+    dnsManager = require('../../dns');
 
 function HexService(mmcConfig, hexConfig, templater, services, serf) {
     this.mmcConfig = mmcConfig;
@@ -71,7 +74,14 @@ HexService.prototype._updateNodeList = function() {
 
         self.nodeCache = newNodeList;
 
-        return newNodeList;
+        // -- register the dns records for the nodes
+        if (self.hexConfig.has('hive.token')) {
+            return dnsManager
+                .register(self.mmcConfig, self.hexConfig.get('hive.token'), self.hexConfig.get('id'), self.hexConfig.get('name'), newNodeList)
+                .then(function () { return newNodeList; });
+        } else {
+            return Q(newNodeList)
+        }
     });
 };
 
@@ -87,68 +97,79 @@ HexService.prototype.powerdown = function() {
  * LINK
  *********************************************************************************************************************/
 
-/**
- * Link a hex to a user.
- *
- * @param token the token used for authenticating and identifying the user to which to link the hex.
- */
-HexService.prototype.link = function(token) {
-    var self = this;
+HexService.prototype.pair = function() {
+    var me = this;
 
-    // -- link the device to the profile. We can do this by calling auth0 and adding it to the metadata. I think we
-    // -- should make use of a dedicated api from auth0 for this but I don't find any documentation about that yet.
-    // -- look at https://github.com/auth0/docs/issues/416 for that.
-    var metadata = {
-        hexes: {}
-    };
+    return me.getMasterNode().then(function(masterNode) {
+        var data = {
+            id: me.hexConfig.get('id'),
+            name: me.hexConfig.get('name'),
+            callback: 'http://' + masterNode.network.external.ip + ':' + me.mmcConfig.port + '/api/v1/hex/pair/callback',
+            nodes: []
+        };
 
-    metadata.hexes[this.hexConfig.get('id')] = {
-        name: this.hexConfig.get('name'),
-        architecture: this.hexConfig.get('arch')
-    };
-
-    return auth0.user.updateMetadata(token, metadata)
-        .then(function(profile) {
-
-            var hiveToken = jwt.decode(token).hive_token;
-            var decodedToken = jwt.decode(hiveToken);
-
-            // -- save the profile to the local storage. Also save the hive token
-            self.hexConfig.set([
-                { key: 'hive.token', value: hiveToken },
-                { key: 'hive.user.id', value: decodedToken.hive_id },
-                { key: 'hive.user.name', value: profile.name },
-                { key: 'hive.user.email', value: profile.email },
-                { key: 'hive.user.picture', value: profile.picture }
-            ])
+        // -- also need the firmware
+        me.nodeCache.forEach(function(node) {
+            data.nodes.push({
+                mac: node.network.external.mac,
+                ipv4: node.network.external.ip,
+                name: node.name,
+                arch: node.arch
+            });
         });
+
+        // -- let the hive know we want to link all nodes in this hex
+        var defer = Q.defer();
+        unirest.put('http://' + me.mmcConfig.hive.host + ':' + me.mmcConfig.hive.port + '/api/v1/cluster/incubate')
+            .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
+            .send(data)
+            .end(function (response) {
+                if (response.info || response.ok ) {
+                    me.hexConfig.set([{key: 'pair.code', value: response.body.pair_code}]);
+
+                    defer.resolve({code: response.body.pair_code});
+                }
+                else defer.reject(new Error(response.code + ' -> ' + JSON.stringify(response.body)));
+            });
+
+        return defer.promise;
+    });
 };
 
-HexService.prototype.unlink = function() {
+/**
+ * Handle the pairing response.
+ *  Once the pairing is completed on the hive, it will send a response back to the device containing
+ *  the token to be used when talking to the hive in name of the user.
+ *
+ * @param token the token used to talk to the hive
+ */
+HexService.prototype.pairCallback = function(token) {
     var self = this;
 
-    // -- link the device to the profile. We can do this by calling auth0 and adding it to the metadata. I think we
-    // -- should make use of a dedicated api from auth0 for this but I don't find any documentation about that yet.
-    // -- look at https://github.com/auth0/docs/issues/416 for that.
+    var hiveToken = jwt.decode(token);
+
+    // -- save the profile to the local storage. Also save the hive token
+    self.hexConfig.set([
+        { key: 'hive.token', value: token },
+        { key: 'hive.user.id', value: hiveToken.hive_id },
+        { key: 'hive.user.name', value: hiveToken.name },
+        { key: 'hive.user.email', value: hiveToken.email }
+    ]);
+
+    self.hexConfig.remove(['pair.code']);
+
+    return Q();
+};
+
+HexService.prototype.unpair = function() {
+    var self = this;
+
     var token = this.hexConfig.get('hive.token');
+    if (! token) return Q();
 
-    var metadata = {
-        hexes: {}
-    };
+    self.hexConfig.remove(['hive.token', 'hive.user.id', 'hive.user.name', 'hive.user.email', 'hive.user.picture']);
 
-    metadata.hexes[this.hexConfig.get('id')] = null;
-
-    // TODO: This needs to be implemented the correct way.
-    //return auth0.user.get(token).then(function(profile) {
-    //    delete profile.app_metadata.hexes[self.hexConfig.get('id')];
-
-        //return auth0.user.updateMetadata(token, profile.app_metadata)
-        //    .then(function(profile) {
-                //return auth0.token.blacklist(token).then(function() {
-                return Q(self.hexConfig.remove(['hive.token', 'hive.user.id', 'hive.user.name', 'hive.user.email', 'hive.user.picture']));
-                //});
-            //});
-    //});
+    return Q();
 };
 
 /*********************************************************************************************************************
@@ -156,6 +177,20 @@ HexService.prototype.unlink = function() {
  *********************************************************************************************************************/
 HexService.prototype.listNodes = function() {
     return Q(this.nodeCache);
+};
+
+HexService.prototype.getMasterNode = function() {
+    var defer = Q.defer();
+
+    var masterNode = null;
+    this.nodeCache.forEach(function(node) {
+        if (node.role == 'master') masterNode = node;
+    });
+
+    if (masterNode) defer.resolve(masterNode);
+    else defer.reject(new Error('No masternode found'));
+
+    return defer.promise;
 };
 
 HexService.prototype.addNode = function(node) {
