@@ -1,0 +1,33 @@
+---
+- hosts: all:!localhost
+  sudo: yes
+  handlers:
+    - name: Restart Docker
+      service: name=docker.io state=restarted
+
+  tasks:
+    - name: remove the proxy settings on system level (http)
+      lineinfile: dest=/etc/environment regexp="^http_proxy=" line="http_proxy={{ proxy.http }}"
+
+    - name: remove the proxy settings on system level (https)
+      lineinfile: dest=/etc/environment regexp="^https_proxy=" line="https_proxy={{ proxy.https }}"
+
+    - name: remove the proxy settings on apt level (http)
+      lineinfile: dest=/etc/apt/apt.conf regexp="^Acquire::http::proxy " line='Acquire::http::proxy "{{ proxy.http }}";'
+
+    - name: remove the proxy settings on apt level (https)
+      lineinfile: dest=/etc/apt/apt.conf regexp="^Acquire::https::proxy " line='Acquire::https::proxy "{{ proxy.https }}";'
+
+    - name: set the proxy settings for docker (http)
+      lineinfile: dest=/etc/default/docker regexp="^export http_proxy=" line="export http_proxy={{ proxy.http }}"
+      notify: Restart Docker
+
+    - name: set the proxy settings for docker (https)
+      lineinfile: dest=/etc/default/docker regexp="^export https_proxy=" line="export https_proxy={{ proxy.https }}"
+      notify: Restart Docker
+
+    - name: set the proxy settings for nodejs and npm (http)
+      shell: npm config set proxy {{ proxy.http }}
+
+    - name: set the proxy settings for nodejs and npm (https)
+      shell: npm config set https-proxy {{ proxy.https }}

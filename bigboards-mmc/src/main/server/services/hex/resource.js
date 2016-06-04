@@ -72,6 +72,19 @@ HexResource.prototype.listNodes = function(req, res) {
 };
 
 /*********************************************************************************************************************
+ * SETTINGS - PROXY
+ *********************************************************************************************************************/
+HexResource.prototype.setProxy = function(req, res) {
+    if (! req.body.proxy) return res.status(400).send({message: "Expected a proxy object inside the body"});
+
+    return ApiUtils.handlePromise(res, this.hexService.setProxy(req.body.proxy));
+};
+
+HexResource.prototype.removeProxy = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.removeProxy());
+};
+
+/*********************************************************************************************************************
  * STACKS
  *********************************************************************************************************************/
 /**

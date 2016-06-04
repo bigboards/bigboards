@@ -20,6 +20,10 @@ module.exports = {
         // -- Nodes
         API.registerGet(app, '/api/v1/hex/nodes', function(req, res) { return resource.listNodes(req, res); });
 
+        // -- Settings
+        API.registerPost(app, '/api/v1/hex/settings/proxy', function(req, res) { return resource.setProxy(req, res); });
+        API.registerDelete(app, '/api/v1/hex/settings/proxy', function(req, res) { return resource.removeProxy(req, res); });
+
         // -- Tints
         API.registerGet(app, '/api/v1/hex/tints', function(req, res) { return resource.listTints(req, res); });
         API.registerPost(app, '/api/v1/hex/tints', function(req, res) { return resource.installTint(req, res); });
