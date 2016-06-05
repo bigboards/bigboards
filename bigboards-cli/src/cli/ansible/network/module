@@ -1,0 +1,14 @@
+#!/bin/bash
+
+function moduleInfo() {
+    echo
+    echo "MODULE: network"
+    echo
+
+    for file in `ls ${DIR}/ansible/network/`; do
+        if [ -e "${DIR}/ansible/network/$file/command" ]; then
+            source "${DIR}/ansible/network/$file/command"
+            commandInfo
+        fi
+    done
+}

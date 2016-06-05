@@ -1,0 +1,14 @@
+#!/bin/bash
+
+function moduleExecute() {
+    ansible-playbook ${DIR}/ansible/system/purge-legacy/purge-legacy.yml
+    RET=$?
+
+    return RET
+}
+
+function commandInfo() {
+    echo "      purge-legacy    Clear the legacy system from all containers and state. You will end up with a "
+    echo "                      pristine system to start from."
+    echo
+}

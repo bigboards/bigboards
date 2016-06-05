@@ -1,0 +1,14 @@
+#!/bin/bash
+
+function moduleExecute() {
+    ansible-playbook ${DIR}/ansible/system/dump/dump.yml
+    RET=$?
+
+    return RET
+}
+
+function commandInfo() {
+    echo "      dump            Dump details about this system to a tarball inside your home directory. "
+    echo "                      This operation is mainly usefull for debugging purposes."
+    echo
+}

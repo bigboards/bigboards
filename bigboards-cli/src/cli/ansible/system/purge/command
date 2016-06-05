@@ -1,0 +1,14 @@
+#!/bin/bash
+
+function moduleExecute() {
+    ansible-playbook ${DIR}/ansible/system/purge/purge.yml
+    RET=$?
+
+    return RET
+}
+
+function commandInfo() {
+    echo "      purge           Clear the system from all containers and state. You will end up with a "
+    echo "                      pristine system to start from."
+    echo
+}

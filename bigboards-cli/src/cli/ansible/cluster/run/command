@@ -1,0 +1,41 @@
+#!/bin/bash
+
+function moduleExecute() {
+    sudo apt-get update
+    sudo apt-get install -y --force-yes bigboards-updater bigboards-cli bigboards-mmc
+
+    AVAILABLE_PATCHES="$(ls /opt/bb/runtimes/bigboards-updater/patches)"
+    CURRENT_VERSION=
+
+    if [ -f /opt/bb/.versions ]
+    then
+        CURRENT_VERSION="$(tail -n 1 /opt/bb/.versions | cut -d '|' -f1)"
+    fi
+
+    for p in ${AVAILABLE_PATCHES}
+    do
+        if [ -z "${CURRENT_VERSION}" ] || [ "${p}" -gt "${CURRENT_VERSION}" ]
+        then
+            # check if there is a more specific install file available
+            INSTALL_FILE="/opt/bb/runtimes/bigboards-updater/patches/${p}/install-$(uname -m).yml"
+
+            # fallback to the default install file if the specific one does not exist
+            if [ ! -f "$INSTALL_FILE" ]; then
+                INSTALL_FILE="/opt/bb/runtimes/bigboards-updater/patches/${p}/install.yml"
+            fi
+
+            echo "Invoking patch ${p} using $INSTALL_FILE"
+            ansible-playbook ${INSTALL_FILE} && echo "${p}|$(date)" >> /opt/bb/.versions
+
+            [ "$?" -ne "0" ] && return $?;
+        fi
+    done
+
+    sudo service bigboards-mmc restart
+    return $?
+}
+
+function commandInfo() {
+    echo "      update          Update the firmware to the latest version. "
+    echo
+}

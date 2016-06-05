@@ -1,0 +1,14 @@
+#!/bin/bash
+
+function moduleExecute() {
+    sudo service bigboards-mmc $1
+    return $?
+}
+
+function commandInfo() {
+    echo "      mmc             Start, stop or restart the mmc console. "
+    echo
+    echo "                      ARGUMENTS:"
+    echo "                      command     one of 'start', 'stop', 'restart' or 'status'"
+    echo
+}

@@ -1,0 +1,30 @@
+- hosts: host
+  become: yes
+  become_user: root
+  tasks:
+    - name: generate a correct mac address for the internal interface
+      shell: echo "02$(cat /sys/class/net/{{ ansible_local.bb.node.nic_int }}/address |cut -c 3-17)"
+      register: nic_ext_mac
+
+    - name: change the ansible facts to hold the network range
+      lineinfile: dest=/etc/ansible/facts.d/bb.fact regexp=^range= line=range={{network_range}}
+
+    - name: change the network interfaces file
+      template: src=./interfaces.j2 dest=/etc/network/interfaces owner=root group=root mode=644
+
+    - name: change the hosts file
+      template: src=./hosts.j2 dest=/etc/hosts owner=root group=root mode=644
+
+- hosts: host-workers
+  become: yes
+  become_user: root
+  tasks:
+    - name: change the dhcp client configuration of host-workers to master node ip
+      lineinfile: dest="/etc/dhcp/dhclient.conf" regexp="^prepend domain-name-servers" line="prepend domain-name-servers {{network_range}}.1;"
+
+- hosts: host-coordinators
+  become: yes
+  become_user: root
+  tasks:
+    - name: change the dhcp client configuration of host-coordinators to google
+      lineinfile: dest="/etc/dhcp/dhclient.conf" regexp="^prepend domain-name-servers" line="prepend domain-name-servers 8.8.8.8, 8.8.4.4;"

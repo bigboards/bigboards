@@ -1,0 +1,29 @@
+#!/bin/bash
+
+function moduleExecute() {
+    ansible-playbook ${DIR}/ansible/system/bootstrap/bootstrap.yml
+    RET=$?
+
+    if [ RET -eq 0 ]; then
+        echo
+        echo
+        echo "################################################################################"
+        echo "##                                                                            ##"
+        echo "##                            I M P O R T A N T                               ##"
+        echo "##                                                                            ##"
+        echo "##   You must powercycle the hex in order for the changes to be picked up!    ##"
+        echo "##                                                                            ##"
+        echo "################################################################################"
+        echo
+        echo
+    fi
+
+    return RET
+}
+
+function commandInfo() {
+    echo "      bootstrap       Bootstrap the cluster. "
+    echo "                      This operation will make sure all nodes are running the latest "
+    echo "                      version of the firmware and are able to talk to each other."
+    echo
+}

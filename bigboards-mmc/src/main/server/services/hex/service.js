@@ -219,11 +219,11 @@ HexService.prototype.removeNode = function(node) {
  * SETTINGS - PROXY
  *********************************************************************************************************************/
 HexService.prototype.setProxy = function(proxies) {
-
+    // -- todo: to be implemented by calling the ansible playbook
 };
 
 HexService.prototype.removeProxy = function() {
-
+    // -- todo: to be implemented by calling the ansible playbook
 };
 
 /*********************************************************************************************************************

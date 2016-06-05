@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function moduleExecute() {
+    rx='([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])'
+
+    if [[ -z $1 ]]; then
+        echo "No target version provided"
+        return 1
+    fi
+
+    ansible-playbook .${DIR}/ansible/firmware/upgrade/main.yml --extra-vars "version=${1}"
+    return $?
+}
+
+function commandInfo() {
+    echo "      upgrade         Upgrade the firmware to the given version. "
+    echo
+    echo "                      ARGUMENTS:"
+    echo "                      version     the version to which we want to upgrade"
+    echo
+}

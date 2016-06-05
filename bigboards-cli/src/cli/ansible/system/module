@@ -1,0 +1,14 @@
+#!/bin/bash
+
+function moduleInfo() {
+    echo
+    echo "MODULE: system"
+    echo
+
+    for file in `ls ${DIR}/ansible/system/`; do
+        if [ -e "${DIR}/ansible/system/$file/command" ]; then
+            source "${DIR}/ansible/system/$file/command"
+            commandInfo
+        fi
+    done
+}

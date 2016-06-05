@@ -1,0 +1,14 @@
+#!/bin/bash
+
+function moduleInfo() {
+    echo
+    echo "MODULE: cluster"
+    echo
+
+    for file in `ls ${DIR}/ansible/cluster/`; do
+        if [ -e "${DIR}/ansible/cluster/$file/command" ]; then
+            source "${DIR}/ansible/cluster/$file/command"
+            commandInfo
+        fi
+    done
+}
