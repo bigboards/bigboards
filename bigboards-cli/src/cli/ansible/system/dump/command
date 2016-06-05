@@ -2,9 +2,8 @@
 
 function moduleExecute() {
     ansible-playbook ${DIR}/ansible/system/dump/dump.yml
-    RET=$?
 
-    return RET
+    return $?
 }
 
 function commandInfo() {

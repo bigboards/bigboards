@@ -28,3 +28,10 @@
   tasks:
     - name: change the dhcp client configuration of host-coordinators to google
       lineinfile: dest="/etc/dhcp/dhclient.conf" regexp="^prepend domain-name-servers" line="prepend domain-name-servers 8.8.8.8, 8.8.4.4;"
+
+- hosts: host
+  become: yes
+  become_user: root
+  tasks:
+    - name: synchronize the filesystem
+      shell: sync && sync

@@ -3,24 +3,40 @@
 function moduleExecute() {
     rx='([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])'
 
-    if [[ -z $1 || -z $2 ]]; then
+    if [[ -z $3 || -z $4 ]]; then
         return 1
     fi
 
-    if [[ ! $1 =~ ^$rx\.$rx\.$rx$ ]]; then
+    if [[ ! $3 =~ ^$rx\.$rx\.$rx$ ]]; then
         echo "Invalid network range!"
         echo "  expected format: <1-255>.<0-255>.<0-255>"
         return  1
     fi
 
-    if [[ ! $2 =~ ^$rx\.$rx\.$rx\.$rx$ ]]; then
+    if [[ ! $4 =~ ^$rx\.$rx\.$rx\.$rx$ ]]; then
         echo "Invalid network mask!"
         echo "  expected format: <1-255>.<0-255>.<0-255>.<0-255>"
         return 1
     fi
 
-    ansible-playbook ${DIR}/ansible/network/switch_network.yml --extra-vars "network_range=${1} network_mask=${2}"
-    return $?
+    ansible-playbook ${DIR}/ansible/network/switch/switch_network.yml --extra-vars "network_range=${3} network_mask=${4}"
+    RET=$?
+
+    if [ RET -eq 0 ]; then
+        echo
+        echo
+        echo "################################################################################"
+        echo "##                                                                            ##"
+        echo "##                            I M P O R T A N T                               ##"
+        echo "##                                                                            ##"
+        echo "##   You must powercycle the hex in order for the changes to be picked up!    ##"
+        echo "##                                                                            ##"
+        echo "################################################################################"
+        echo
+        echo
+    fi
+
+    return RET
 }
 
 function commandInfo() {
