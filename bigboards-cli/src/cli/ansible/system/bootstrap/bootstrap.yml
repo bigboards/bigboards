@@ -145,12 +145,6 @@
         owner: bb
         group: root
 
-    - name: make sure the hosts used by ansible are correct
-      sudo: yes
-      template:
-        src: ansible_hosts
-        dest: /etc/ansible/hosts
-
     - name: make sure the old hosts file is not available anymore
       sudo: yes
       file:
