@@ -16,68 +16,33 @@ HOSTSFILE=/opt/bb/hosts
 [ ! -f "$HOSTSFILE" ] && HOSTSFILE=/etc/ansible/hosts
 PLAYBOOK="ansible-playbook -i ${HOSTSFILE}"
 
-verifyPrerequisites() {
-    if [ ! -e "/usr/bin/ansible" ]; then
-        echo "Warn: Ansible: not installed"
-    fi
-
-    if [ ! -e "/etc/ansible/hosts" ]; then
-        echo "Warn: Ansible Hosts File: not installed"
-    fi
-
-    VALID_ANSIBLE_HOSTS=$(grep "\[host-coordinators\]" /etc/ansible/hosts | wc -l)
-    if [ "$VALID_ANSIBLE_HOSTS" == "0" ]; then
-        echo "Warn: Ansible Hosts File: invalid"
-    fi
-}
-
-generateHostsFile() {
-        HEX_NAME_ID=$(hostname |cut -d '-' -f 1)
-
-        echo
-        echo "No ansible hosts file has been found. Generating one for ${HEX_NAME_ID}."
-        echo
-
-cat << EOF | sudo tee /etc/ansible/hosts
-[local]
-localhost   connection=local
-
-[host:children]
-host-coordinators
-host-workers
-
-[host-coordinators]
-${HEX_NAME_ID}-n1   ansible_ssh_user=bb
-
-[host-workers]
-${HEX_NAME_ID}-n2   ansible_ssh_user=bb
-${HEX_NAME_ID}-n3   ansible_ssh_user=bb
-${HEX_NAME_ID}-n4   ansible_ssh_user=bb
-${HEX_NAME_ID}-n5   ansible_ssh_user=bb
-${HEX_NAME_ID}-n6   ansible_ssh_user=bb
-
-EOF
-}
-
-function init() {
-    sudo apt-get install -y software-properties-common
-    sudo apt-add-repository -y ppa:ansible/ansible
-    sudo apt-get update
-    sudo apt-get install -y ansible
-}
-
-requestPowerCycle() {
+askForInit() {
     echo
     echo
     echo "################################################################################"
     echo "##                                                                            ##"
     echo "##                            I M P O R T A N T                               ##"
     echo "##                                                                            ##"
-    echo "##   You must powercycle the hex in order for the changes to be picked up!    ##"
+    echo "##     The cluster has not been initialized yet. You can do so by running     ##"
+    echo "##                                                                            ##"
+    echo "##                             bb system init                                 ##"
     echo "##                                                                            ##"
     echo "################################################################################"
     echo
     echo
+}
+
+verifyPrerequisites() {
+    if [ ! -e "/usr/bin/ansible" ] || [ ! -e "/etc/ansible/hosts" ]; then
+        askForInit
+        exit 1
+    else
+        VALID_ANSIBLE_HOSTS=$(grep "\[host-coordinators\]" /etc/ansible/hosts | wc -l)
+        if [ "$VALID_ANSIBLE_HOSTS" == "0" ]; then
+            askForInit
+            exit 1
+        fi
+    fi
 }
 
 validateTintBuilder() {
@@ -109,7 +74,7 @@ for OPT in $@; do
 
             RET=$?
             if [[ $RET != 0 ]]; then
-                moduleInfo
+                commandInfo
                 exit $RET
             fi
         else
@@ -132,8 +97,3 @@ if [ "$MOD_FOUND" = "no" ]; then
     echo "run '$0 <module> help' to get more information about a specific module and its commands"
     echo
 fi
-
-#case "${ACTION}" in
-#    mmc)
-#        sudo service bigboards-mmc $2
-#        ;;
