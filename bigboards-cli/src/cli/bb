@@ -3,6 +3,7 @@
 # -- bb : BigBoards management script
 # -- ----------------------------------------------------------------------- --
 ACTION=${1}
+OPERATION=${2}
 DIR=$(dirname "$(readlink -f ${BASH_SOURCE[0]})" )
 
 if [[ $EUID -eq 0 ]];
@@ -38,6 +39,10 @@ usage() {
 }
 
 verifyPrerequisites() {
+    if [ "$ACTION" = "system" ] && [ "$OPERATION" = "init" ]; then
+        return
+    fi
+
     if [ ! -e "/usr/bin/ansible" ] || [ ! -e "/etc/ansible/hosts" ]; then
         askForInit
         exit 1
@@ -148,15 +153,26 @@ EOF
     network)
         case "${2}" in
             switch)
-                # validate the given network prefix
-                if [[ ! $3 =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-                    echo "Invalid network prefix! please specify a network prefix as xxx.xxx.xxx"
-                    exit 3
+                rx='([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])'
+
+                if [[ -z $3 || -z $4 ]]; then
+                    echo "No range and prefix have been provide"
+                    exit 1
                 fi
 
-                ORIGINAL_RANGE=$(grep "range" /etc/ansible/facts.d/bb.fact |cut -d '=' -f2)
+                if [[ ! $3 =~ ^$rx\.$rx\.$rx$ ]]; then
+                    echo "Invalid network range!"
+                    echo "  expected format: <1-255>.<0-255>.<0-255>"
+                    exit 1
+                fi
 
-                ${PLAYBOOK} --extra-vars "ip_prefix=${3} orig_ip_prefix=${ORIGINAL_RANGE//\./\\.}" ${DIR}/ansible/network/switch_ip/main.yml
+                if [[ ! $4 =~ ^$rx\.$rx\.$rx\.$rx$ ]]; then
+                    echo "Invalid network mask!"
+                    echo "  expected format: <1-255>.<0-255>.<0-255>.<0-255>"
+                    exit 1
+                fi
+
+                ansible-playbook ${DIR}/ansible/network/switch/switch_network.yml --extra-vars "network_range=${3} network_mask=${4}"
 
                 [ $? -eq 0 ] && requestPowerCycle
                 ;;
@@ -172,8 +188,10 @@ OPTIONS
             hexes in the same network.
 
             arguments:
-                ip-prefix     The network prefix to use. This is the first 3 numbers of your
+                range         The network prefix to use. This is the first 3 numbers of your
                               ip address. Valid examples are 172.21.3 or 192.168.1
+                mask          The netmask to use. this usually is something like 255.255.255.0,
+                              255.255.0.0 or 255.0.0.0
 
 
     help    Show this help message
@@ -315,7 +333,7 @@ EOF
 
                 sudo mv /tmp/ansible_hosts /etc/ansible/hosts
 
-                return $?
+                exit $?
 
                 ;;
             bootstrap)
