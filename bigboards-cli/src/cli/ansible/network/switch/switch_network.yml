@@ -3,7 +3,7 @@
   become_user: root
   tasks:
     - name: generate a correct mac address for the internal interface
-      shell: echo "02$(cat /sys/class/net/{{ ansible_local.bb.node.nic_int }}/address |cut -c 3-17)"
+      shell: echo "02$(cat /sys/class/net/{{ itf }}/address |cut -c 3-17)"
       register: nic_ext_mac
 
     - name: change the ansible facts to hold the network range

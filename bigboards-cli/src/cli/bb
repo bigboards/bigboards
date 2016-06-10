@@ -155,8 +155,8 @@ EOF
             switch)
                 rx='([1-9]?[0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])'
 
-                if [[ -z $3 || -z $4 ]]; then
-                    echo "No range and prefix have been provide"
+                if [[ -z $3 || -z $4 || -z $5 ]]; then
+                    echo "No range, prefix and interface have been provide"
                     exit 1
                 fi
 
@@ -172,7 +172,13 @@ EOF
                     exit 1
                 fi
 
-                ansible-playbook ${DIR}/ansible/network/switch/switch_network.yml --extra-vars "network_range=${3} network_mask=${4}"
+                if [[ ! -e /sys/class/net/$5 ]]; then
+                    echo "Invalid network interface!"
+                    echo "  valid network interfaces: $(ls /sys/class/net)"
+                    exit 1
+                fi
+
+                ansible-playbook ${DIR}/ansible/network/switch/switch_network.yml --extra-vars "network_range=${3} network_mask=${4} itf=${5}"
 
                 [ $? -eq 0 ] && requestPowerCycle
                 ;;
@@ -192,6 +198,7 @@ OPTIONS
                               ip address. Valid examples are 172.21.3 or 192.168.1
                 mask          The netmask to use. this usually is something like 255.255.255.0,
                               255.255.0.0 or 255.0.0.0
+                itf           The name of the physical network interface
 
 
     help    Show this help message
