@@ -61,7 +61,7 @@
 - name: make sure the [[ role.name ]] docker container exists
   sudo: yes
   docker:
-    docker_api_version: "1.15"
+    docker_api_version: "1.19"
     name: "[[ role.name ]]"
 [% if not isFalsy(role.networking) %]
     net: "[[ role.networking ]]"
