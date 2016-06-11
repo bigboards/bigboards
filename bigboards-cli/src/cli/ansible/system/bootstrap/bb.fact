@@ -5,6 +5,7 @@ arch={{ hex_arch }}
 
 [network]
 range={{ hex_ip_range.stdout }}
+netmask={{ hex_ip_mask.stdout }}
 
 [node]
 sequence={{ node_sequence.stdout }}
