@@ -10,4 +10,5 @@
 - hosts: all:!localhost
   sudo: yes
   tasks:
-    - shell: sync && sync
+    - name: make sure all changes are synced to disk
+      shell: sync && sync
