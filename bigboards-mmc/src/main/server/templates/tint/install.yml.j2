@@ -7,7 +7,7 @@
 
 [% endfor %]
 
-- hosts: all
+- hosts: all:!localhost
   tasks:
     - name: make sure all changes are synced to disk
       shell: sync && sync
