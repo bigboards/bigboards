@@ -4,7 +4,7 @@ function moduleExecute() {
     ansible-playbook ${DIR}/ansible/system/bootstrap/bootstrap.yml
     RET=$?
 
-    if [ RET -eq 0 ]; then
+    if [ $RET -eq 0 ]; then
         echo
         echo
         echo "################################################################################"
@@ -18,7 +18,7 @@ function moduleExecute() {
         echo
     fi
 
-    return RET
+    return $RET
 }
 
 function commandInfo() {
