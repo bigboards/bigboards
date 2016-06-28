@@ -3,6 +3,7 @@
 # -- bb : BigBoards management script
 # -- ----------------------------------------------------------------------- --
 ACTION=${1}
+OPERATION=${2}
 DIR=$(dirname "$(readlink -f ${BASH_SOURCE[0]})" )
 
 if [[ $EUID -eq 0 ]];
@@ -33,6 +34,10 @@ askForInit() {
 }
 
 verifyPrerequisites() {
+    if [ "$ACTION" = "system" ] && [ "$OPERATION" = "init" ]; then
+        return
+    fi
+
     if [ ! -e "/usr/bin/ansible" ] || [ ! -e "/etc/ansible/hosts" ]; then
         askForInit
         exit 1
