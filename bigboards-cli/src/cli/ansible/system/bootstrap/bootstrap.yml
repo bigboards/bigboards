@@ -281,11 +281,11 @@
       template:
           src: "dnsmasq.conf"
           dest: "/etc/dnsmasq.conf"
-#      notify: Restart DNSMasq
+      notify: Restart DNSMasq
 
-#  handlers:
-#    - name: Restart DNSMasq
-#      shell: service dnsmasq restart
+  handlers:
+    - name: Restart DNSMasq
+      shell: service dnsmasq restart
 
 ## ####################################################################################################################
 ## DNS

@@ -13,6 +13,7 @@ module.exports = {
         API.registerDelete(app, '/api/v1/hex', function(req, res) { return resource.powerdown(req, res); });
 
         // --  link
+        API.registerPost(app, '/api/v1/hex/sync', function(req, res) { return resource.sync(req, res); });
         API.registerPost(app, '/api/v1/hex/pair', function(req, res) { return resource.pair(req, res); });
         API.registerPost(app, '/api/v1/hex/pair/callback', function(req, res) { return resource.pairCallback(req, res); });
         API.registerDelete(app, '/api/v1/hex/unpair', function(req, res) { return resource.unpair(req, res); });

@@ -97,6 +97,20 @@ HexService.prototype.powerdown = function() {
  * LINK
  *********************************************************************************************************************/
 
+/**
+ * Synchronize the node information with the central platform.
+ *
+ * @returns {*}
+ */
+HexService.prototype.sync = function() {
+    // -- register the dns records for the nodes
+    if (! this.hexConfig.has('hive.token')) return Q({status: 'not-linked'});
+
+    return dnsManager
+        .register(this.mmcConfig, this.hexConfig.get('hive.token'), this.hexConfig.get('id'), this.hexConfig.get('name'), this.nodeCache)
+        .then(function () { return {status: 'ok'}; });
+};
+
 HexService.prototype.pair = function() {
     var me = this;
 

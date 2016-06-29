@@ -138,6 +138,20 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
         });
     };
 
+    Hex.prototype.sync = function() {
+        var self = this;
+
+        $http.post(settings.api + '/api/v1/hex/sync', {})
+            .error(function(data, status, headers, config) {
+                toaster.pop({
+                    type: 'error',
+                    title: 'Unable to sync with the central platform Failed',
+                    body: data.message,
+                    showCloseButton: true
+                });
+            });
+    };
+
     Hex.prototype.install = function(data, onSuccess, onError) {
         var self = this;
 

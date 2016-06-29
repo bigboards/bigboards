@@ -44,6 +44,10 @@ HexResource.prototype.powerdown = function(req, res) {
  * LINK
  *********************************************************************************************************************/
 
+HexResource.prototype.sync = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.sync());
+};
+
 HexResource.prototype.pair = function(req, res) {
     return ApiUtils.handlePromise(res, this.hexService.pair());
 };

@@ -131,20 +131,10 @@ app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket',
             path: '/dashboard'
         },
         {
-            label: 'Library',
-            icon: 'fa-tint',
-            path: '/library'
-        },
-        {
             label: 'Tasks',
             icon: 'fa-tasks',
             path: '/tasks'
         },
-        //{
-        //    label: 'Tutor',
-        //    icon: 'fa-graduation-cap',
-        //    path: '/tutors'
-        //},
         {
             label: 'Settings',
             icon: 'fa-cog',
@@ -183,4 +173,8 @@ app.controller('ApplicationController', ['$scope', '$location', 'Hex', 'socket',
             window.open(item.url,'_blank');
         }
     };
+
+    $scope.refresh = function() {
+        Hex.sync();
+    }
 }]);
