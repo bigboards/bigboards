@@ -1,4 +1,5 @@
 var unirest = require('unirest'),
+    log = require('winston'),
     Q = require('q');
 
 module.exports.register = function(mmcConfig, token, id, name, nodes) {
@@ -22,6 +23,7 @@ module.exports.register = function(mmcConfig, token, id, name, nodes) {
 
     // -- make the call
     var defer = Q.defer();
+    log.log('info', 'Making a call to ' + 'http://' + mmcConfig.hive.host + ':' + mmcConfig.hive.port + '/api/v1/cluster/' + id + '/dns');
     unirest.put('http://' + mmcConfig.hive.host + ':' + mmcConfig.hive.port + '/api/v1/cluster/' + id + '/dns')
         .headers({
             'Accept': 'application/json',

@@ -125,6 +125,7 @@ HexService.prototype.pair = function() {
         // -- also need the firmware
         me.nodeCache.forEach(function(node) {
             data.nodes.push({
+                id: node.network.internal.mac.replace(/\:/g, '').toLowerCase(),
                 mac: node.network.external.mac,
                 ipv4: node.network.external.ip,
                 name: node.name,
@@ -134,6 +135,7 @@ HexService.prototype.pair = function() {
 
         // -- let the hive know we want to link all nodes in this hex
         var defer = Q.defer();
+        log.log('info', "Linking to " + 'http://' + me.mmcConfig.hive.host + ':' + me.mmcConfig.hive.port + '/api/v1/cluster/incubate');
         unirest.put('http://' + me.mmcConfig.hive.host + ':' + me.mmcConfig.hive.port + '/api/v1/cluster/incubate')
             .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
             .send(data)
