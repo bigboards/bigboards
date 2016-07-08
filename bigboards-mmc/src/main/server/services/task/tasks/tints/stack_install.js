@@ -26,33 +26,74 @@ module.exports = function(configuration, services) {
             }
         ],
         execute: function(env, scope) {
-            return services.hex.get().then(function(hex) {
-                var variables = createVariableScope(env, hex, scope);
+            var defer = Q.defer();
 
-                // -- clean the views of the nodes variable
-                //for (var viewIdx in scope.tint.stack.views) {
-                //    delete scope.tint.stack.views[viewIdx].url;
-                //}
+            services.hex.get()
+                .then(function(hex) {
+                    defer.notify({channel: 'output', data: 'Installing tint ' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug + '\n'});
 
-                log.info('Installing tint ' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
+                    var variables = null;
 
-                return TintUtils
-                    .setTintState(env.settings.dir.tints, variables.tint, 'installing')
-                    .then(function() {
-                        return setupTintStructure(variables, services.registry).then(function() {
-                            var tintEnv = {
-                                workdir: variables.generator.ansible,
-                                hostFile: variables.generator.hosts,
-                                verbose: variables.verbose
-                            };
+                    try {
+                        variables = createVariableScope(env, hex, scope);
+                        defer.notify({channel: 'output', data: 'Generated the variable scope \n'});
+                    } catch (error) {
+                        defer.notify({channel: 'error', data: 'Unable to construct the variable scope for installation:\n ' + JSON.stringify(error) + '\n'});
+                        defer.reject();
+                    }
 
-                            log.info('Installing the tint');
-                            return TaskUtils.playbook(tintEnv, 'install', variables).then(function() {
-                                return TintUtils.setTintState(env.settings.dir.tints, variables.tint, 'installed');
-                            });
-                        });
-                    });
-            });
+
+                    defer.notify({channel: 'output', data: 'Changing the tint state to "installing" \n'});
+                    TintUtils
+                        .setTintState(env.settings.dir.tints, variables.tint, 'installing')
+                        .then(function() {
+                            defer.notify({channel: 'output', data: 'Tint state set to "installing" \n'});
+
+                            defer.notify({channel: 'output', data: 'Setting up the tint structure \n'});
+                            setupTintStructure(variables, services.registry)
+                                .then(function() {
+                                    defer.notify({channel: 'output', data: 'Tint structure generated \n'});
+                                    var tintEnv = {
+                                        workdir: variables.generator.ansible,
+                                        hostFile: variables.generator.hosts,
+                                        verbose: variables.verbose
+                                    };
+
+                                    defer.notify({channel: 'output', data: 'Running the installation scripts \n'});
+                                    TaskUtils.playbook(tintEnv, 'install', variables)
+                                        .then(function() {
+                                            defer.notify({channel: 'output', data: 'Installation scripts completed \n'});
+
+                                            defer.notify({channel: 'output', data: 'Changing the tint state to "installed" \n'});
+                                            TintUtils.setTintState(env.settings.dir.tints, variables.tint, 'installed')
+                                                .then(function() {
+                                                    defer.notify({channel: 'output', data: 'Tint state set to "installed" \n'});
+                                                    defer.notify({channel: 'output', data: 'The tint has been installed!\n'});
+                                                    defer.resolve();
+                                                }, function(error) {
+                                                    defer.notify({channel: 'error', data: "Unable to change the tint state:\n " + JSON.stringify(error) + "\n"});
+                                                    defer.reject(error);
+                                                });
+                                        }, function(error) {
+                                            defer.notify({channel: 'error', data: "Something went wrong while running the installation scritps:\n " + JSON.stringify(error) + "\n"});
+                                            defer.reject(error);
+                                        }, function(notification) {
+                                            defer.notify(notification);
+                                        });
+                                }, function(error) {
+                                    defer.notify({channel: 'error', data: "Unable to set up the tint structure:\n " + JSON.stringify(error) + "\n"});
+                                    defer.reject(error);
+                                });
+                        }, function(error) {
+                            defer.notify({channel: 'error', data: "Unable to change the tint state:\n " + JSON.stringify(error) + "\n"});
+                            defer.reject(error);
+                        })
+                }, function(error) {
+                    defer.notify({channel: 'error', data: "Something went wrong while getting the information of the hex:\n " + JSON.stringify(error) + "\n"});
+                    defer.reject(error);
+                });
+
+            return defer.promise;
         }
     };
 };

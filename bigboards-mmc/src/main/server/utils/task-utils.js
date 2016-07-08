@@ -22,7 +22,7 @@ module.exports.playbook = function(env, playbook, parameters) {
             try {
                 pb.exec({cwd: workdir})
                     .then(function (result) {
-                        if (result.code != 0) deferred.reject(new Error(result.code));
+                        if (result.code != 0) deferred.reject(new Error(JSON.stringify(result)));
                         else deferred.resolve();
                     }, function (error) {
                         deferred.reject(error);
