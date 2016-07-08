@@ -7,6 +7,7 @@ var Q = require('q'),
     mkdirp = require('mkdirp');
 
 var renderer = new swig.Swig({
+    cache: false,
     varControls: ['[[', ']]'],
     tagControls: ['[%', '%]'],
     cmtControls: ['[#', '#]'],

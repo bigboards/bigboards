@@ -1,0 +1,23 @@
+## Duplicate Docker ###########################################################
+# We noticed more than one docker instance was running on the nodes. This is
+# bound to give us issues eventually. This update will remove one of the
+# docker instances.
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: make sure all docker daemons are stopped
+      service: name={{ item }} state=stopped
+      with_items:
+        - "docker.io"
+        - "docker"
+
+    - name: make sure there is only one init script
+      file:
+        path: '/etc/init/docker.io.conf'
+        state: absent
+
+    - name: configure AUFS as the filesystem of choice
+      lineinfile: dest=/etc/default/docker regexp=^DOCKER_OPTS= line=DOCKER_OPTS="-s aufs -g /data/docker/data"
+
+    - name: make sure the docker service is started again
+      service: name=docker state=started
