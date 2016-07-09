@@ -97,8 +97,8 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
         }
     };
 
-    Hex.prototype.halt = function() {
-        $http.delete(settings.api + '/api/v1/hex')
+    Hex.prototype.halt = function(callback) {
+        return $http.delete(settings.api + '/api/v1/hex')
             .success(function(data, status, headers, config) {
                 toaster.pop({
                     type: 'success',
@@ -106,6 +106,8 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
                     body: 'All services on this hex have been disabled. You can now safely remove the power.',
                     showCloseButton: true
                 });
+
+                callback(data)
             })
             .error(function(data, status, headers, config) {
                 toaster.pop({

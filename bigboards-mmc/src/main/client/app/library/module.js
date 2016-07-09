@@ -11,9 +11,19 @@ libraryModule.controller('LibraryController', ['$scope', 'Library', 'Hex', funct
         }
     });
 
-    Library.list({scope: 'public'}).then(function(data) {
-        $scope.allTints = data.data;
-    });
+    $scope.searchModel = {
+        query: ""
+    };
+
+    $scope.search = function() {
+        Library
+            .search($scope.searchModel)
+            .then(function(data) {
+                $scope.allTints = data.data;
+            });
+    };
+
+    $scope.search();
 }]);
 
 libraryModule.controller('LibraryItemViewController', ['$scope', '$location', 'tint', 'ApiFeedback', 'Hex', '$routeParams', function($scope, $location, tint, ApiFeedback, Hex, $routeParams) {
@@ -66,6 +76,41 @@ libraryModule.service('Library', ['settings', '$http', function(settings, $http)
 
     Library.prototype.get = function(type, owner, slug) {
         var url = 'http://' + settings.hive.host + ':' + settings.hive.port + settings.hive.path + '/' + type + '/' + owner + '/' + slug;
+        return $http.get(url, this.options).then(function(data) {
+            return data.data;
+        });
+    };
+
+    Library.prototype.search = function(query, offset, size) {
+        var url = 'http://' + settings.hive.host + ':' + settings.hive.port + settings.hive.path;
+
+        var queryParameters = [];
+        if (query.query) queryParameters.push('q=' + encodeURIComponent(query.query) + "*");
+
+        // -- check for paging parameters
+        if (offset) queryParameters.push('f=' + offset);
+        if (size) queryParameters.push('s=' + size);
+
+        // -- check for architecture or firmware
+        if (query.architecture) queryParameters.push('architecture=' + encodeURIComponent(query.architecture));
+        if (query.firmware) queryParameters.push('firmware=' + encodeURIComponent(query.firmware));
+
+        // -- check for scope
+        if (query.scope) queryParameters.push('scope=' + encodeURIComponent(query.scope));
+
+        // -- check for type
+        if (query.type) queryParameters.push('t=' + encodeURIComponent(query.type));
+
+        // -- check for owner or collaborator
+        if (query.owner) {
+            queryParameters.push('o=' + encodeURIComponent(query.owner));
+            queryParameters.push('c=' + encodeURIComponent(query.owner));
+        }
+
+        if (queryParameters.length > 0) {
+            url += ('?' + queryParameters.join('&'))
+        }
+
         return $http.get(url, this.options).then(function(data) {
             return data.data;
         });
