@@ -25,31 +25,34 @@ ObjectStore.prototype.reload = function() {
 };
 
 ObjectStore.prototype.set = function(key, value) {
+    if (! this.cache) this.cache = {};
     this.cache[key] = value;
 
     persist(this.file, this.cache);
 };
 
 ObjectStore.prototype.get = function(key) {
-    return this.cache[key];
+    return (this.cache) ? this.cache[key] : null;
 };
 
 ObjectStore.prototype.remove = function(key) {
-    var self = this;
+    if (this.cache) {
+        delete this.cache[key];
 
-    delete this.cache[key];
-
-    persist(this.file, this.cache);
+        persist(this.file, this.cache);
+    }
 };
 
 ObjectStore.prototype.list = function(prefix) {
     var result = {};
 
-    for (var k in this.cache) {
-        if (! this.cache.hasOwnProperty(k)) continue;
+    if (this.cache) {
+        for (var k in this.cache) {
+            if (!this.cache.hasOwnProperty(k)) continue;
 
-        if (k.indexOf(prefix) == 0) {
-            result[k] = this.cache[k];
+            if (k.indexOf(prefix) == 0) {
+                result[k] = this.cache[k];
+            }
         }
     }
 
@@ -57,7 +60,7 @@ ObjectStore.prototype.list = function(prefix) {
 };
 
 ObjectStore.prototype.all = function() {
-    return this.cache;
+    return (this.cache) ? this.cache : {};
 };
 
 module.exports = ObjectStore;

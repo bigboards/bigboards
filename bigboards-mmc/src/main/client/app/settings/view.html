@@ -1,5 +1,6 @@
-<div class="ml-15">
-    <div class="panel panel-default">
+<div class="ml-15 mt-15" style="overflow: scroll">
+    <div class="col-md-6">
+        <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Hex Details</h3>
         </div>
@@ -19,15 +20,17 @@
         </div>
     </div>
 
-    <div class="panel panel-default">
+        <div class="panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Hive</h3>
         </div>
         <div class="panel-body" ng-include="hiveLinkPart">
         </div>
     </div>
+    </div>
 
-    <div class="panel panel-default">
+    <div class="col-md-6">
+        <div class="panel panel-default">
         <div class="panel-heading clearfix">
             <h3 class="panel-title pull-left">Docker Registry</h3>
             <div class="btn-group pull-right">
@@ -66,10 +69,10 @@
                 <th>username</th>
                 <th>actions</th>
             </tr>
-            <tr ng-repeat="(registryName, registry) in registries" ng-click="editRegistry(registry)">
-                <td>{{registry.name}}</td>
-                <td>{{registry.email}}</td>
-                <td>{{registry.user}}</td>
+            <tr ng-repeat="(registryName, registry) in registries">
+                <td ng-click="editRegistry(registry)">{{registry.name}}</td>
+                <td ng-click="editRegistry(registry)">{{registry.email}}</td>
+                <td ng-click="editRegistry(registry)">{{registry.user}}</td>
                 <td>
                     <button class="btn-warning" ng-click="removeRegistry(registryName)">
                         <span class="fa fa-trash-o"></span>
@@ -77,5 +80,6 @@
                 </td>
             </tr>
         </table>
+    </div>
     </div>
 </div>

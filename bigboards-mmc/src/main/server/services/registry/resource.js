@@ -10,7 +10,7 @@ RegistryResource.prototype.getRegistries = function(req, res) {
 };
 
 RegistryResource.prototype.getRegistry = function(req, res) {
-    return ApiUtils.handlePromise(res, this.service.getRegistry(req.param('id')));
+    return ApiUtils.handlePromise(res, this.service.getRegistry(req.param('name')));
 };
 
 RegistryResource.prototype.addRegistry = function(req, res) {
@@ -18,11 +18,11 @@ RegistryResource.prototype.addRegistry = function(req, res) {
 };
 
 RegistryResource.prototype.updateRegistry = function(req, res) {
-    return ApiUtils.handlePromise(res, this.service.updateRegistry(req.param('id'), req.body));
+    return ApiUtils.handlePromise(res, this.service.updateRegistry(req.param('name'), req.body));
 };
 
 RegistryResource.prototype.removeRegistry = function(req, res) {
-    return ApiUtils.handlePromise(res, this.service.removeRegistry(req.param('id')));
+    return ApiUtils.handlePromise(res, this.service.removeRegistry(req.param('name')));
 };
 
 module.exports = RegistryResource;

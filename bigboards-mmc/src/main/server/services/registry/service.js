@@ -49,6 +49,8 @@ RegistryService.prototype.updateRegistry = function(name, registryData) {
 
 RegistryService.prototype.removeRegistry = function(name) {
     this.store.remove(name);
+
+    return Q();
 };
 
 module.exports = RegistryService;
