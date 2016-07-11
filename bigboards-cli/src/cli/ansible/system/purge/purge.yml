@@ -1,37 +1,52 @@
-- hosts: all:!localhost
-  sudo: yes
+- hosts: "all:!localhost"
+  become: "yes"
   tasks:
-  - shell: docker ps |cut -d ' ' -f1 |grep -v CONTAINER
-    register: docker_running
+  - name: "List running containers"
+    shell: "docker ps |cut -d ' ' -f1 |grep -v CONTAINER"
+    register: "docker_running"
     failed_when: "docker_running.rc > 1"
 
-  - debug: var=docker_running
+  - name: "Debug running containers"
+    debug:
+      var: "docker_running"
 
-  - shell: docker stop --time=10 {{ item }}
-    ignore_errors: yes
-    with_items: docker_running.stdout_lines
+  - name: "Stop running containers"
+    shell: "docker stop --time=10 {{ item }}"
+    ignore_errors: "yes"
+    with_items: "docker_running.stdout_lines"
 
-  - shell: docker ps -a |cut -d ' ' -f1 |grep -v CONTAINER
-    register: docker_available
+  - name: "List available containers"
+    shell: "docker ps -a |cut -d ' ' -f1 |grep -v CONTAINER"
+    register: "docker_available"
     failed_when: "docker_available.rc > 1"
 
-  - shell: docker rm -f {{ item }}
-    ignore_errors: yes
-    with_items: docker_available.stdout_lines
+  - name: "Remove available containers"
+    shell: "docker rm -f {{ item }}"
+    ignore_errors: "yes"
+    with_items: "docker_available.stdout_lines"
 
-  - file:
+  - name: "Remove data directories"
+    file:
       path: "/data/{{ item }}"
       state: "absent"
-    with_lines: find /data/ ! -readable -prune -type f -printf "%P\n"
+    with_lines: 'find /data/ ! -readable -prune -type f -printf "%P\n"'
 
-- hosts: localhost
-  sudo: yes
+- hosts: "localhost"
+  become: "yes"
   tasks:
-    - file:
+    - name: "Remove tints information"
+      file:
         path: "/opt/bb/tints.d/{{item}}"
         state: "absent"
       with_items:
         - "stack"
         - "dataset"
         - "tutor"
-        - "meta.json"
+    - name: "Reset installed tints meta information"
+      copy:
+        dest: "/opt/bb/tints.d/meta.json"
+        content: "[]"
+    - name: "Restart mmc"
+      service:
+        name: "bigboards-mmc"
+        state: "restarted"
