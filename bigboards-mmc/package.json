@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "always-tail": "^0.1.1",
+    "angular-chart.js": "^1.0.0-alpha8",
     "async": "~0.2.9",
     "bitbucket-rest": "0.0.1",
     "cors": "^2.5.2",

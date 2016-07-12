@@ -8,6 +8,12 @@
 <bb-content>
     <div class="container-fluid dashboard">
         <div class="row">
+            <canvas class="chart chart-line" chart-data="data"
+                    chart-labels="labels" chart-series="series" chart-options="options"
+                    chart-dataset-override="datasetOverride">
+            </canvas>
+        </div>
+        <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-8">
                 <h3 class="subtitle">NODES</h3>
                 <div class="node" ng-repeat="node in nodes | orderBy:'name'">

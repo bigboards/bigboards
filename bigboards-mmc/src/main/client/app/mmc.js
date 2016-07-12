@@ -12,7 +12,8 @@ var app = angular.module( 'mmc', [
     'ui.bootstrap',
     'ngAnimate',
     'toaster',
-    'webStorageModule'
+    'webStorageModule',
+    'chart.js'
 ]);
 
 app.factory('settings', ['webStorage', function(webStorage) {

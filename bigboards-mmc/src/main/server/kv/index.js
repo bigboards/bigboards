@@ -1,5 +1,5 @@
 var fs = require('fs'),
-    fsu = require('../utils/fs-utils'),
+    fsu = require('../utils/fs-utils-sync'),
     log = require('winston');
 
 function KeyValueStore(file) {
@@ -8,18 +8,14 @@ function KeyValueStore(file) {
     var self = this;
 
     // -- check if the file exists
-    fsu.exists(file).then(function(exists) {
-        if (!exists) {
-            log.error('Unable to find the file backing the key/value store at '  + file + '!');
-        } else {
-            self.reload();
-        }
-    });
+    if (!fsu.exists(file)) {
+        log.error('Unable to find the file backing the key/value store at '  + file + '!');
+    } else  self.reload();
 }
 
 KeyValueStore.prototype.reload = function() {
     try {
-        this.cache = fsu.readYamlFileSync(this.file);
+        this.cache = fsu.readYamlFile(this.file);
     } catch (error) {
         throw new Error('Unable to parse the contents of the ' + this.file + ' file into a key/value store: ' + error.message);
     }
@@ -39,6 +35,7 @@ KeyValueStore.prototype.set = function(key, value) {
 };
 
 KeyValueStore.prototype.get = function(key) {
+    if (! this.cache) return null;
     return deserialize(this.cache[key]);
 };
 
@@ -77,7 +74,7 @@ KeyValueStore.prototype.all = function() {
 module.exports = KeyValueStore;
 
 function persist(path, contents) {
-    fsu.writeYamlFileSync(path, contents);
+    fsu.writeYamlFile(path, contents);
     log.debug('KeyValueStore persisted to disk!');
 }
 
