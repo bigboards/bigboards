@@ -1,0 +1,36 @@
+- hosts: host
+  become: yes
+  become_user: root
+  tasks:
+    - name: make sure the apt configuration file exists
+      file: path=/etc/apt/apt.conf state=touch
+
+    - name: set apt proxy settings for HTTP
+      lineinfile: dest="/etc/apt/apt.conf" regexp="^Acquire::http::proxy.*" line="Acquire::http::proxy \"http://{{ http_proxy_host }}:{{ http_proxy_port }}/\";"
+
+    - name: set apt proxy settings for HTTPS
+      lineinfile: dest="/etc/apt/apt.conf" regexp="^Acquire::https::proxy.*" line="Acquire::https::proxy \"http://{{ https_proxy_host }}:{{ https_proxy_port }}/\";"
+
+    - name: set system proxy settings for HTTP
+      lineinfile: dest="/etc/environment" regexp="^http_proxy=.*" line="http_proxy=\"http://{{ http_proxy_host }}:{{ http_proxy_port }}/\""
+
+    - name: set system proxy settings for HTTPS
+      lineinfile: dest="/etc/environment" regexp="^https_proxy=.*" line="https_proxy=\"http://{{ https_proxy_host }}:{{ https_proxy_port }}/\""
+
+    - name: set the nodejs proxy settings for HTTP
+      shell: npm config set proxy http://{{http_proxy_host}}:{{http_proxy_port}}
+
+    - name: set the nodejs proxy settings for HTTPS
+      shell: npm config set proxy http://{{https_proxy_host}}:{{https_proxy_port}}
+
+    - name: set docker proxy settings for HTTP
+      lineinfile: dest="/etc/default/docker" regexp="^export http_proxy=.*" line="export http_proxy=\"http://{{ http_proxy_host }}:{{ http_proxy_port }}/\""
+
+    - name: set docker proxy settings for HTTPS
+      lineinfile: dest="/etc/default/docker" regexp="^export https_proxy=.*" line="export https_proxy=\"http://{{ https_proxy_host }}:{{ https_proxy_port }}/\""
+
+    - name: set git proxy settings for HTTP
+      shell: git config --global http.proxy http://{{http_proxy_host}}:{{http_proxy_port}}
+
+    - name: set git proxy settings for HTTPS
+      shell: git config --global https.proxy http://{{https_proxy_host}}:{{https_proxy_port}}
