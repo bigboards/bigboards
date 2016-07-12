@@ -3,5 +3,6 @@ module.exports = {
     Settings: require('./settings'),
     Task: require('./task'),
     Tutorials: require('./tutorials'),
-    Registry: require('./registry')
+    Registry: require('./registry'),
+    Metrics: require('./metrics')
 };

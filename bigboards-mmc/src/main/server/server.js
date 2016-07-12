@@ -104,6 +104,7 @@ function initializeSocketIO(server, services) {
         Services.Task.io(socket, services);
         Services.Tutorials.io(socket, services);
         Services.Registry.io(socket, services);
+        Services.Metrics.io(socket, services);
     });
 
     return io;
@@ -129,6 +130,9 @@ function initializeServices(mmcConfig, hexConfig, registryStore, serf, app) {
 
     services.registry = new Services.Registry.Service(mmcConfig, hexConfig, registryStore);
     Services.Registry.link(app, services);
+
+    services.metrics = new Services.Metrics.Service(mmcConfig, hexConfig);
+    Services.Metrics.link(app, services);
 
     return services;
 }
