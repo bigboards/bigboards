@@ -34,3 +34,9 @@
 
     - name: set git proxy settings for HTTPS
       shell: git config --global https.proxy http://{{https_proxy_host}}:{{https_proxy_port}}
+
+    - name: set git proxy settings for HTTP
+      shell: git config --system http.proxy http://{{http_proxy_host}}:{{http_proxy_port}}
+
+    - name: set git proxy settings for HTTPS
+      shell: git config --system https.proxy http://{{https_proxy_host}}:{{https_proxy_port}}
