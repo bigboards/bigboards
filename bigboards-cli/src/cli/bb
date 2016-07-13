@@ -225,7 +225,7 @@ EOF
         esac
         ;;
     run)
-        ansible host -i /opt/bb/hosts --sudo -m shell -a "$2"
+        ansible host --sudo -m shell -a "$2"
         ;;
     mmc)
         sudo service bigboards-mmc $2
