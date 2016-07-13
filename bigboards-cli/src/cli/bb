@@ -196,6 +196,8 @@ EOF
                 read HTTPS_PROXY_PORT
 
                 ansible-playbook ${DIR}/ansible/network/proxy/set_proxy.yml --extra-vars "http_proxy_host=${HTTP_PROXY_HOST} http_proxy_port=${HTTP_PROXY_PORT} https_proxy_host=${HTTPS_PROXY_HOST} https_proxy_port=${HTTPS_PROXY_PORT}"
+
+                [ $? -eq 0 ] && requestPowerCycle
                 ;;
             help|*)
                 cat <<-EOF
