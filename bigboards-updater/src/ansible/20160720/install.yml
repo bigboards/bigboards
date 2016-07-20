@@ -24,7 +24,7 @@
 
     - name: add the docker apt repository
       when: ansible_machine == 'x86_64'
-      apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-trusty main' state=present filename='docker'
+      apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-trusty main' state=present
 
     - name: install the new docker version
       when: ansible_machine == 'x86_64'
