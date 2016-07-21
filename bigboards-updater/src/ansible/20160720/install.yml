@@ -5,6 +5,9 @@
 # a distro upgrade.
 - hosts: host
   sudo: yes
+  environment:
+    http_proxy: $http_proxy
+    https_proxy: $https_proxy
   tasks:
     - name: make sure the apt http driver is installed
       when: ansible_machine == 'x86_64'
