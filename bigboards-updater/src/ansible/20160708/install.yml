@@ -7,6 +7,7 @@
   tasks:
     - name: make sure all docker daemons are stopped
       service: name={{ item }} state=stopped
+      ignore_errors: yes
       with_items:
         - "docker.io"
         - "docker"
