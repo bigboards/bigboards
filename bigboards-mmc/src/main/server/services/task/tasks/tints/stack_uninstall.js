@@ -1,6 +1,7 @@
 var Q = require('q'),
     winston = require('winston'),
-    deepcopy = require('deepcopy');
+    deepcopy = require('deepcopy'),
+    fss = require('../../../../utils/fs-utils-sync');
 
 var TaskUtils = require('../../../../utils/task-utils'),
     TintUtils = require('../../../../utils/tint-utils');
@@ -31,7 +32,7 @@ module.exports = function(configuration, services) {
                     scope.hex = hex;
 
                     return TintUtils
-                        .setTintState(env.settings.dir.tints, metadata, 'uninstalling')
+                        .setTintState(tintPath, metadata, 'uninstalling')
                         .then(function() {
                             var tintEnv = {
                                 workdir: tintPath + '/ansible',
@@ -43,10 +44,10 @@ module.exports = function(configuration, services) {
                         });
                 })
                 .then(function() {
-                    return TaskUtils.removeFile(tintPath);
-                })
-                .then(function() {
-                    return TintUtils.removeTintState(env.settings.dir.tints, scope.tint);
+                    return TaskUtils.removeFile(tintPath).then(function() {
+                        if (fss.readDir(env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner).length == 0)
+                            fss.rmdir(env.settings.dir.tints + '/' + scope.tint.type + '/' + scope.tint.owner);
+                    });
                 });
 
         }

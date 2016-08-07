@@ -12,3 +12,4 @@
   sudo: yes
   tasks:
     - file: state="absent" path="/data/[[ tint.owner ]]_[[ tint.slug ]]"
+    - shell: sync && sync

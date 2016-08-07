@@ -8,6 +8,7 @@
 [% endfor %]
 
 - hosts: all:!localhost
+  sudo: yes
   tasks:
     - name: make sure all changes are synced to disk
       shell: sync && sync

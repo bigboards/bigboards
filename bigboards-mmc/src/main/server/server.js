@@ -20,14 +20,14 @@ mmcConfig = initializeMMCConfiguration();
 
 var serfer = new Serfer();
 serfer.connect().then(function() {
+    var hexConfig = new KV(mmcConfig.file.hex);
+    var registryStore = new ObjStore(mmcConfig.file.registry);
+
     var app = initializeExpress();
     var server = initializeHttpServer(app);
 
     // -- get the runtime environment
     mmcConfig.environment = app.get('env');
-
-    var hexConfig = new KV(mmcConfig.file.hex);
-    var registryStore = new ObjStore(mmcConfig.file.registry);
 
     var services = initializeServices(mmcConfig, hexConfig, registryStore, serfer, app);
 
@@ -51,7 +51,8 @@ function initializeMMCConfiguration() {
 
     // -- read the environment variables which will allow configuration parameters to be overridden
     if (process.env.DOCKER_REGISTRY) config.docker.registry = process.env.DOCKER_REGISTRY;
-    if (process.env.HIVE) config.docker.registry = process.env.HIVE;
+    if (process.env.HIVE_HOST) config.hive.host = process.env.HIVE_HOST;
+    if (process.env.HIVE_PORT) config.hive.port = process.env.HIVE_PORT;
 
     return config;
 }

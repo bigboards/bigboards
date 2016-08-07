@@ -123,7 +123,12 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
         var id = '[' + type + ']' + owner + '$' + slug;
 
         return this.getInstalledTints().then(function(tints) {
-            return (tints[id] != null);
+            var installed = false;
+            tints.forEach(function(tint) {
+                if (tint.id == id) installed = true;
+            });
+
+            return installed;
         });
     };
 
@@ -131,7 +136,12 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
         var id = '[' + type + ']' + owner + '$' + slug;
 
         return this.getInstalledTints().then(function(tints) {
-            return tints[id];
+            var found = null;
+            tints.forEach(function(tint) {
+                if (tint.id == id) found = tint;
+            });
+
+            return found;
         }).catch(function() {
             toaster.pop({
                 type: 'error',

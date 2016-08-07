@@ -40,26 +40,24 @@ HexResource.prototype.powerdown = function(req, res) {
     return ApiUtils.handlePromise(res, this.hexService.powerdown());
 };
 
+HexResource.prototype.sync = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.sync());
+};
+
 /*********************************************************************************************************************
  * LINK
  *********************************************************************************************************************/
 
-/**
- * @api {delete} /api/v1/hex Prepare the hex for power down.
- * @apiVersion 1.0.5
- *
- * @apiName PowerDownHex
- * @apiGroup Hex
- * @apiGroupDescription all APIs to fully control your Hex
- */
-HexResource.prototype.link = function(req, res) {
-    var token = req.body.token;
-
-    return ApiUtils.handlePromise(res, this.hexService.link(token));
+HexResource.prototype.pair = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.pair());
 };
 
-HexResource.prototype.unlink = function(req, res) {
-    return ApiUtils.handlePromise(res, this.hexService.unlink());
+HexResource.prototype.pairCallback = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.pairCallback(req.body.token));
+};
+
+HexResource.prototype.unpair = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.unpair());
 };
 
 /*********************************************************************************************************************
@@ -75,6 +73,19 @@ HexResource.prototype.unlink = function(req, res) {
  */
 HexResource.prototype.listNodes = function(req, res) {
     return ApiUtils.handlePromise(res, this.hexService.listNodes());
+};
+
+/*********************************************************************************************************************
+ * SETTINGS - PROXY
+ *********************************************************************************************************************/
+HexResource.prototype.setProxy = function(req, res) {
+    if (! req.body.proxy) return res.status(400).send({message: "Expected a proxy object inside the body"});
+
+    return ApiUtils.handlePromise(res, this.hexService.setProxy(req.body.proxy));
+};
+
+HexResource.prototype.removeProxy = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.removeProxy());
 };
 
 /*********************************************************************************************************************

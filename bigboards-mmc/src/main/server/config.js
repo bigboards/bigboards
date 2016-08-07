@@ -1,4 +1,5 @@
 var os = require('os'),
+    fs = require('fs'),
     fsu = require('./utils/fs-utils');
 
 module.exports = {
@@ -13,6 +14,7 @@ module.exports = {
     },
     environments: {
         development: {
+            app: getApplicationDetails(),
             firmware: "v1.3",
             version: "1.3.0",
             is_dev: true,
@@ -34,8 +36,8 @@ module.exports = {
                 facts: fsu.absolute('local/facts.d/')
             },
             hive: {
-                host: 'hive-api-test-env.elasticbeanstalk.com',
-                port: 80,
+                host: 'localhost',
+                port: 8081,
                 path: '/api/v1/library'
             },
             docker: {
@@ -43,6 +45,7 @@ module.exports = {
             }
         },
         production: {
+            app: getApplicationDetails(),
             firmware: "v1.3",
             version: "1.3.0",
             is_dev: false,
@@ -74,3 +77,17 @@ module.exports = {
         }
     }
 };
+
+function getApplicationDetails() {
+    if (! fs.exists('./package.json')) {
+        return {};
+    } else {
+        var app = require('./package.json');
+
+        return {
+            name: app.name,
+            description: app.description,
+            version: app.version
+        };
+    }
+}

@@ -1,5 +1,5 @@
 var fs = require('fs'),
-    fsu = require('../utils/fs-utils-sync'),
+    fsu = require('../utils/fs-utils'),
     log = require('winston');
 
 function KeyValueStore(file) {
@@ -8,14 +8,16 @@ function KeyValueStore(file) {
     var self = this;
 
     // -- check if the file exists
-    if (!fsu.exists(file)) {
+    if (! fs.existsSync(file)) {
         log.error('Unable to find the file backing the key/value store at '  + file + '!');
-    } else  self.reload();
+    } else {
+        self.reload();
+    }
 }
 
 KeyValueStore.prototype.reload = function() {
     try {
-        this.cache = fsu.readYamlFile(this.file);
+        this.cache = fsu.readYamlFileSync(this.file);
     } catch (error) {
         throw new Error('Unable to parse the contents of the ' + this.file + ' file into a key/value store: ' + error.message);
     }
@@ -37,6 +39,11 @@ KeyValueStore.prototype.set = function(key, value) {
 KeyValueStore.prototype.get = function(key) {
     if (! this.cache) return null;
     return deserialize(this.cache[key]);
+};
+
+KeyValueStore.prototype.has = function(key) {
+    if (! this.cache) return false;
+    return this.cache.hasOwnProperty(key);
 };
 
 KeyValueStore.prototype.remove = function(key) {

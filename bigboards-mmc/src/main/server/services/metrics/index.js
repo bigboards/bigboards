@@ -6,9 +6,9 @@ module.exports = {
     Service: require('./service'),
     prepare: function(settings, services) { },
     io: function(socket, services) {
-        services.metrics.on('metrics', function(metrics) {
-            socket.emit('metrics', metrics);
-        });
+        //services.metrics.on('metrics', function(metrics) {
+        //    socket.emit('metrics', metrics);
+        //});
     },
     link: function(app, services) {
         var resource = new this.Resource(services.metrics);
