@@ -75,6 +75,7 @@
 [% endif %]
     volumes:
       - "[[ dirs.role_data ]]:/data"
+      - "[[ dirs.role_scripts ]]:/scripts"
 [%- for volume in role.volumes %]
 [%- if isFalsy(volume.host) %]
       - "[[ volume.container ]]"
@@ -95,6 +96,8 @@
 [% endif %]
 [% if not isFalsy(role.command) %]
     command: "[[ role.command ]]"
+[% else if not isFalsy(role.scripts.run) %]
+    command: "/scripts/run.sh"
 [% endif %]
 [% if not isFalsy(role.privileged) %]
     privileged: yes
@@ -104,11 +107,15 @@
       [% if isFalsy(envVar.value) %] [[ envVar.key ]] [% else %] [[ envVar.key ]]: "[[ envVar.value ]]"[% endif %][% endfor %][% endif %]
 
 - name: make sure the [[ role.name ]] init file is available
-  copy: src=[[ role.name ]].conf dest=/etc/init/[[ role.name ]].conf
+  copy: src=init/[[ role.name ]].conf dest=/etc/init/[[ role.name ]].conf
   sudo: yes
 
 - name: make sure the [[ role.name ]] service is started at boot
   service: name=[[ role.name ]] enabled=yes state=started
+  sudo: yes
+
+- name: make sure the [[ role.name ]] scripts are available
+  copy: src=scripts/ dest=[[ dirs.role_scripts ]]/
   sudo: yes
 
 [% include generator.post_install ignore missing %]

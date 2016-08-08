@@ -125,6 +125,7 @@ function generateAnsibleCode(variables, registryService) {
         variables.generator.pre_install = variables.generator.git + '/scripts/' + container.pre_install;
         variables.generator.post_install = variables.generator.git + '/scripts/' + container.post_install;
         variables.dirs.role_data = variables.dirs.data + '/' + container.name;
+        variables.dirs.role_scripts = variables.dirs.scripts + '/' + container.name;
 
         // -- check if the role has a registry set. If it has one, we will look for registry credentials in the hex
         if (container.registry) {
@@ -143,6 +144,11 @@ function generateAnsibleCode(variables, registryService) {
     });
 }
 
+/**
+ * Generate the ansible role.
+ *   This method will generate the tasks, files, templates and scripts directories for the role to use.
+ * @param variables
+ */
 function generateAnsibleRoleCode(variables) {
     var templateHome = variables.generator.templates + '/tint/role';
 
@@ -150,30 +156,30 @@ function generateAnsibleRoleCode(variables) {
 
     fss.mkdir(variables.generator.role);
 
+    // -- role tasks
     fss.mkdir(variables.generator.role + '/tasks');
     fss.generateFile(templateHome + '/role_install.yml.j2', variables.generator.role + '/tasks/install.yml', variables);
     fss.generateFile(templateHome + '/role_uninstall.yml.j2', variables.generator.role + '/tasks/uninstall.yml', variables);
     fss.generateFile(templateHome + '/role_main.yml.j2', variables.generator.role + '/tasks/main.yml', variables);
 
+    // -- role files
     fss.mkdir(variables.generator.role + '/files');
-    fss.generateFile(templateHome + '/docker-init.conf.j2', variables.generator.role + '/files/' + variables.role.name + '.conf', variables);
+    fss.mkdir(variables.generator.role + '/files/init');
+    fss.generateFile(templateHome + '/docker-init.conf.j2', variables.generator.role + '/files/init/' + variables.role.name + '.conf', variables);
 
     if (variables.role.scripts) {
-        fss.mkdir(variables.generator.role + '/scripts');
+        fss.mkdir(variables.generator.role + '/files/scripts');
 
         if (variables.role.scripts.on_first_start) {
-            fss.generateFile(templateHome + "/on_first_start.sh.j2", variables.generator.role + '/scripts/on_first_start.sh', variables);
+            fss.generateFile(templateHome + "/on_first_start.sh.j2", variables.generator.role + '/files/scripts/on_first_start.sh', variables);
         }
 
-        if (variables.role.scripts.on_start) {
-            fss.generateFile(templateHome + "/on_start.sh.j2", variables.generator.role + '/scripts/on_start.sh', variables);
-        }
-
-        if (variables.role.scripts.on_stop) {
-            fss.generateFile(templateHome + "/on_stop.sh.j2", variables.generator.role + '/scripts/on_stop.sh', variables);
+        if (variables.role.scripts.run) {
+            fss.generateFile(templateHome + "/run.sh.j2", variables.generator.role + '/files/scripts/run.sh', variables);
         }
     }
 
+    // -- role templates
     // -- volumes which don't start with a / are relative to the git config directory. This means we will need to
     // -- generate the config files from git into the templates folder
     fss.mkdir(variables.generator.role + '/templates');
@@ -195,6 +201,12 @@ function generateAnsibleRoleCode(variables) {
 
 function generateHostsInventoryFile(hex, path) {
     var content = "";
+
+    content += "[first]\n";
+    content += hex.name + "-n1	ansible_ssh_user=bb\n\n";
+
+    content += "[last]\n";
+    content += hex.name + "-n" + hex.node_count + "	ansible_ssh_user=bb\n\n";
 
     for (var i = 1; i <= hex.node_count; i++) {
         content += "[n" + i + "]\n";
@@ -255,7 +267,8 @@ function createVariableScope(env, hex, scope) {
         },
         dirs: {
             data: '/data' + '/' + scope.tint.owner + '_' + scope.tint.slug + '/data',
-            config: '/data' + '/' + scope.tint.owner + '_' + scope.tint.slug + '/config'
+            config: '/data' + '/' + scope.tint.owner + '_' + scope.tint.slug + '/config',
+            scripts: '/data' + '/' + scope.tint.owner + '_' + scope.tint.slug + '/scripts',
         }
     };
 
