@@ -18,7 +18,7 @@
         state: absent
 
     - name: configure AUFS as the filesystem of choice
-      lineinfile: dest=/etc/default/docker regexp=^DOCKER_OPTS= line=DOCKER_OPTS=\"-s aufs -g /data/docker/data\"
+      lineinfile: dest=/etc/default/docker regexp=^DOCKER_OPTS= line="DOCKER_OPTS=\"-s aufs -g /data/docker/data\""
 
     - name: make sure the docker service is started again
       service: name=docker state=started
