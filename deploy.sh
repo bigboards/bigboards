@@ -3,8 +3,9 @@ BRANCH="$BUILDKITE_BRANCH"
 export AWS_PROFILE=personal
 
 COMPONENT="unstable"
-if [ ! -z $BUILDKITE_TAG ]; then
-    [[ $BUILDKITE_TAG == release* ]] && COMPONENT="main"
+if [[ $BUILDKITE_TAG == release* ]]; then
+    COMPONENT="main"
+    BRANCH=$(echo $BUILDKITE_TAG| cut -d'_' -f 2)
 fi
 
 echo deb-s3 upload -p -b apt.bigboards.io -a armv7l -c $BRANCH -m $COMPONENT bigboards-cli/target/*.deb
