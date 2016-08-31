@@ -5,8 +5,12 @@ export AWS_PROFILE=personal
 COMPONENT="unstable"
 if [[ $BUILDKITE_TAG == release* ]]; then
     COMPONENT="main"
-    BRANCH=$(echo $BUILDKITE_TAG| cut -d'_' -f 2)
+    BRANCH=$(echo $BUILDKITE_TAG| cut -d'-' -f 2)
+    BRANCH=${BRANCH/_/.}
 fi
+
+[ -z $BRANCH ] && echo "No branch defined!" && exit 1
+[ -z $COMPONENT ] && echo "No component defined!" && exit 1
 
 echo deb-s3 upload -p -b apt.bigboards.io -a armv7l -c $BRANCH -m $COMPONENT bigboards-cli/target/*.deb
 echo deb-s3 upload -p -b apt.bigboards.io -a armhf -c $BRANCH -m $COMPONENT bigboards-cli/target/*.deb
