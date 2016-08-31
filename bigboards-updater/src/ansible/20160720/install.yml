@@ -39,7 +39,7 @@
 
     - name: configure the docker daemon
       when: ansible_machine == 'x86_64'
-      lineinfile: dest=/etc/default/docker regexp=^DOCKER_OPTS= line=DOCKER_OPTS="-s aufs -g /data/docker/data -D"
+      lineinfile: dest=/etc/default/docker regexp=^DOCKER_OPTS= line="DOCKER_OPTS=\"-s aufs -g /data/docker/data -D\""
 
     - name: add the bb user to the docker group
       when: ansible_machine == 'x86_64'
