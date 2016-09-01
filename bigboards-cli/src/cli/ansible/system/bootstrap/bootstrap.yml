@@ -47,7 +47,7 @@
       register: node_sequence
 
     - name: determine the hex name and id
-      shell: hostname |cut -d '-' -f 1
+      shell: echo ${HOSTNAME%-*}
       register: hex_name_id
 
     - assert:
