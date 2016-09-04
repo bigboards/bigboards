@@ -48,7 +48,7 @@
 
     - name: determine the hex name and id
       set_fact:
-        hex_id: { stdout: "{{ ansible_hostname | regex_replace('(.*)(-n[1-9]+$)', '\\1') }}" }
+        hex_name_id: { stdout: "{{ ansible_hostname | regex_replace('(.*)(-n[1-9]+$)', '\\1') }}" }
 
     - debug:
         var: nic_ref
