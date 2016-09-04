@@ -50,6 +50,18 @@
       shell: echo ${HOSTNAME%-*}
       register: hex_name_id
 
+    - debug:
+        var: nic_ref
+
+    - debug:
+        var: hex_ip_range
+
+    - debug:
+        var: node_sequence
+
+    - debug:
+        var: hex_name_id
+
     - assert:
         that:
           - "nic_ref is defined"
