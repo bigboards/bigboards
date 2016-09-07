@@ -8,7 +8,7 @@ function KeyValueStore(file) {
     var self = this;
 
     // -- check if the file exists
-    if (! fs.existsSync(file)) {
+    if (!fsu.exists(file)) {
         log.error('Unable to find the file backing the key/value store at '  + file + '!');
     } else {
         self.reload();
@@ -17,7 +17,7 @@ function KeyValueStore(file) {
 
 KeyValueStore.prototype.reload = function() {
     try {
-        this.cache = fsu.readYamlFileSync(this.file);
+        this.cache = fsu.readYamlFile(this.file);
     } catch (error) {
         throw new Error('Unable to parse the contents of the ' + this.file + ' file into a key/value store: ' + error.message);
     }
