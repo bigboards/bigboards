@@ -279,7 +279,7 @@ HexService.prototype.listTints = function() {
     });
 
     return Q(function() {
-        tints.map(function(tint) {
+        return tints.map(function(tint) {
             if (! tint.stack.views) return;
 
             tint.stack.views.map(function(view) {
