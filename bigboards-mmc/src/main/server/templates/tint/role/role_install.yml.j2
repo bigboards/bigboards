@@ -114,8 +114,4 @@
   service: name=[[ role.name ]] enabled=yes state=started
   sudo: yes
 
-- name: make sure the [[ role.name ]] scripts are available
-  copy: src=scripts/ dest=[[ dirs.role_scripts ]]/
-  sudo: yes
-
 [% include generator.post_install ignore missing %]

@@ -268,7 +268,7 @@ function createVariableScope(env, hex, scope) {
         dirs: {
             data: '/data' + '/' + scope.tint.owner + '_' + scope.tint.slug + '/data',
             config: '/data' + '/' + scope.tint.owner + '_' + scope.tint.slug + '/config',
-            scripts: '/data' + '/' + scope.tint.owner + '_' + scope.tint.slug + '/scripts',
+            scripts: '/data' + '/' + scope.tint.owner + '_' + scope.tint.slug + '/scripts'
         }
     };
 
