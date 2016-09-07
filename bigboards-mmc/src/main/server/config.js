@@ -36,8 +36,8 @@ module.exports = {
                 facts: fsu.absolute('local/facts.d/')
             },
             hive: {
-                host: 'localhost',
-                port: 8081,
+                host: 'hive-api-test-env.elasticbeanstalk.com',
+                port: 80,
                 path: '/api/v1/library'
             },
             docker: {

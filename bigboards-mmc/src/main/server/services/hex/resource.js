@@ -48,16 +48,14 @@ HexResource.prototype.sync = function(req, res) {
  * LINK
  *********************************************************************************************************************/
 
-HexResource.prototype.pair = function(req, res) {
-    return ApiUtils.handlePromise(res, this.hexService.pair());
+HexResource.prototype.link = function(req, res) {
+    var token = req.body.token;
+
+    return ApiUtils.handlePromise(res, this.hexService.link(token));
 };
 
-HexResource.prototype.pairCallback = function(req, res) {
-    return ApiUtils.handlePromise(res, this.hexService.pairCallback(req.body.token));
-};
-
-HexResource.prototype.unpair = function(req, res) {
-    return ApiUtils.handlePromise(res, this.hexService.unpair());
+HexResource.prototype.unlink = function(req, res) {
+    return ApiUtils.handlePromise(res, this.hexService.unlink());
 };
 
 /*********************************************************************************************************************

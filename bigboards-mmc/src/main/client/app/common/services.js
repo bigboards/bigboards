@@ -123,12 +123,7 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
         var id = '[' + type + ']' + owner + '$' + slug;
 
         return this.getInstalledTints().then(function(tints) {
-            var installed = false;
-            tints.forEach(function(tint) {
-                if (tint.id == id) installed = true;
-            });
-
-            return installed;
+            return (tints[id] != null);
         });
     };
 
@@ -136,12 +131,7 @@ app.service('Hex', [ 'settings', '$http', '$q', 'toaster', 'socket', function(se
         var id = '[' + type + ']' + owner + '$' + slug;
 
         return this.getInstalledTints().then(function(tints) {
-            var found = null;
-            tints.forEach(function(tint) {
-                if (tint.id == id) found = tint;
-            });
-
-            return found;
+            return tints[id];
         }).catch(function() {
             toaster.pop({
                 type: 'error',
@@ -791,7 +781,7 @@ app.factory('keyboardManager', ['$window', '$timeout', function ($window, $timeo
     keyboardManagerService.unbind = function (label) {
         label = label.toLowerCase();
         var binding = keyboardManagerService.keyboardEvent[label];
-        delete(keyboardManagerService.keyboardEvent[label])
+        delete(keyboardManagerService.keyboardEvent[label]);
         if(!binding) return;
         var type		= binding['event'],
             elt			= binding['target'],

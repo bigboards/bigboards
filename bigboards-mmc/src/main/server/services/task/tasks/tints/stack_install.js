@@ -26,63 +26,33 @@ module.exports = function(configuration, services) {
             }
         ],
         execute: function(env, scope) {
-            var defer = Q.defer();
+            return services.hex.get().then(function(hex) {
+                var variables = createVariableScope(env, hex, scope);
 
-            services.hex.get()
-                .then(function(hex) {
-                    defer.notify({channel: 'output', data: 'Installing tint ' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug + '\n'});
+                // -- clean the views of the nodes variable
+                //for (var viewIdx in scope.tint.stack.views) {
+                //    delete scope.tint.stack.views[viewIdx].url;
+                //}
 
-                    var variables = null;
+                log.info('Installing tint ' + scope.tint.type + '/' + scope.tint.owner + '/' + scope.tint.slug);
 
-                    try {
-                        variables = createVariableScope(env, hex, scope);
-                        defer.notify({channel: 'output', data: 'Generated the variable scope \n'});
-                    } catch (error) {
-                        defer.notify({channel: 'error', data: 'Unable to construct the variable scope for installation:\n ' + JSON.stringify(error) + '\n'});
-                        defer.reject();
-                    }
-
-                    defer.notify({channel: 'output', data: 'Setting up the tint structure \n'});
-                    setupTintStructure(scope.tint, variables, services.registry)
-                        .then(function() {
-                            defer.notify({channel: 'output', data: 'Tint structure generated \n'});
+                return TintUtils
+                    .setTintState(env.settings.dir.tints, variables.tint, 'installing')
+                    .then(function() {
+                        return setupTintStructure(variables, services.registry).then(function() {
                             var tintEnv = {
                                 workdir: variables.generator.ansible,
                                 hostFile: variables.generator.hosts,
                                 verbose: variables.verbose
                             };
 
-                            defer.notify({channel: 'output', data: 'Running the installation scripts \n'});
-                            TaskUtils.playbook(tintEnv, 'install', variables)
-                                .then(function() {
-                                    defer.notify({channel: 'output', data: 'Installation scripts completed \n'});
-
-                                    defer.notify({channel: 'output', data: 'Changing the tint state to "installed" \n'});
-                                    TintUtils.setTintState(variables.generator.tint, variables.tint, 'installed')
-                                        .then(function() {
-                                            defer.notify({channel: 'output', data: 'Tint state set to "installed" \n'});
-                                            defer.notify({channel: 'output', data: 'The tint has been installed!\n'});
-                                            defer.resolve();
-                                        }, function(error) {
-                                            defer.notify({channel: 'error', data: "Unable to change the tint state:\n " + JSON.stringify(error) + "\n"});
-                                            defer.reject(error);
-                                        });
-                                }, function(error) {
-                                    defer.notify({channel: 'error', data: "Something went wrong while running the installation scritps:\n " + JSON.stringify(error) + "\n"});
-                                    defer.reject(error);
-                                }, function(notification) {
-                                    defer.notify(notification);
-                                });
-                        }, function(error) {
-                            defer.notify({channel: 'error', data: "Unable to set up the tint structure:\n " + JSON.stringify(error) + "\n"});
-                            defer.reject(error);
+                            log.info('Installing the tint');
+                            return TaskUtils.playbook(tintEnv, 'install', variables).then(function() {
+                                return TintUtils.setTintState(env.settings.dir.tints, variables.tint, 'installed');
+                            });
                         });
-                }, function(error) {
-                    defer.notify({channel: 'error', data: "Something went wrong while getting the information of the hex:\n " + JSON.stringify(error) + "\n"});
-                    defer.reject(error);
-                });
-
-            return defer.promise;
+                    });
+            });
         }
     };
 };
@@ -92,13 +62,9 @@ function cleanup(variables) {
     if (variables.generator.tint) fss.rmdir();
 }
 
-function setupTintStructure(tint, variables, registryService) {
+function setupTintStructure(variables, registryService) {
     // -- be sure the tint path exists
     fss.mkdir(variables.generator.tint);
-
-    // -- write the tint metadata to disk
-    tint.state = "installing";
-    fss.writeJsonFile(variables.generator.tint + '/meta.json', tint);
 
     // -- checkout the configuration files from the git repository
     return checkoutIfNeeded(variables.tint.uri, variables.generator.git, variables.firmware).then(function() {
@@ -167,19 +133,6 @@ function generateAnsibleRoleCode(variables) {
     fss.mkdir(variables.generator.role + '/files/init');
     fss.generateFile(templateHome + '/docker-init.conf.j2', variables.generator.role + '/files/init/' + variables.role.name + '.conf', variables);
 
-    if (variables.role.scripts) {
-        fss.mkdir(variables.generator.role + '/files/scripts');
-
-        if (variables.role.scripts.on_first_start) {
-            fss.generateFile(templateHome + "/on_first_start.sh.j2", variables.generator.role + '/files/scripts/on_first_start.sh', variables);
-        }
-
-        if (variables.role.scripts.run) {
-            fss.generateFile(templateHome + "/run.sh.j2", variables.generator.role + '/files/scripts/run.sh', variables);
-        }
-    }
-
-    // -- role templates
     // -- volumes which don't start with a / are relative to the git config directory. This means we will need to
     // -- generate the config files from git into the templates folder
     fss.mkdir(variables.generator.role + '/templates');

@@ -81,14 +81,7 @@ HexService.prototype._updateNodeList = function() {
         self.nodeCache = newNodeList;
         self.addressRegistry = newAddressRegistry;
 
-        // -- register the dns records for the nodes
-        if (self.hexConfig.has('hive.token')) {
-            return dnsManager
-                .register(self.mmcConfig, self.hexConfig.get('hive.token'), self.hexConfig.get('id'), self.hexConfig.get('name'), newNodeList)
-                .then(function () { return newNodeList; });
-        } else {
-            return Q(newNodeList)
-        }
+        return newNodeList;
     });
 };
 
@@ -100,99 +93,72 @@ HexService.prototype.powerdown = function() {
     return this.services.task.invoke('halt', { });
 };
 
-/**
- * Synchronize the node information with the central platform.
- *
- * @returns {*}
- */
-HexService.prototype.sync = function() {
-    // -- register the dns records for the nodes
-    if (! this.hexConfig.has('hive.token')) return Q({status: 'not-linked'});
-
-    return dnsManager
-        .register(this.mmcConfig, this.hexConfig.get('hive.token'), this.hexConfig.get('id'), this.hexConfig.get('name'), this.nodeCache)
-        .then(function () { return {status: 'ok'}; });
-};
-
 /*********************************************************************************************************************
  * LINK
  *********************************************************************************************************************/
 
-HexService.prototype.pair = function() {
-    var me = this;
-
-    return me.getMasterNode().then(function(masterNode) {
-        var data = {
-            id: me.hexConfig.get('id'),
-            name: me.hexConfig.get('name'),
-            callback: 'http://' + masterNode.network.external.ip + ':' + me.mmcConfig.port + '/api/v1/hex/pair/callback',
-            nodes: []
-        };
-
-        // -- also need the firmware
-        me.nodeCache.forEach(function(node) {
-            data.nodes.push({
-                id: node.network.internal.mac.replace(/\:/g, '').toLowerCase(),
-                mac: node.network.external.mac,
-                ipv4: node.network.external.ip,
-                name: node.name,
-                arch: node.arch
-            });
-        });
-
-        // -- let the hive know we want to link all nodes in this hex
-        var defer = Q.defer();
-        log.log('info', "Linking to " + 'http://' + me.mmcConfig.hive.host + ':' + me.mmcConfig.hive.port + '/api/v1/cluster/incubate');
-        unirest.put('http://' + me.mmcConfig.hive.host + ':' + me.mmcConfig.hive.port + '/api/v1/cluster/incubate')
-            .headers({'Accept': 'application/json', 'Content-Type': 'application/json'})
-            .send(data)
-            .end(function (response) {
-                if (response.info || response.ok ) {
-                    me.hexConfig.set([{key: 'pair.code', value: response.body.pair_code}]);
-
-                    defer.resolve({code: response.body.pair_code});
-                }
-                else defer.reject(new Error(response.code + ' -> ' + JSON.stringify(response.body)));
-            });
-
-        return defer.promise;
-    });
-};
-
 /**
- * Handle the pairing response.
- *  Once the pairing is completed on the hive, it will send a response back to the device containing
- *  the token to be used when talking to the hive in name of the user.
+ * Link a hex to a user.
  *
- * @param token the token used to talk to the hive
+ * @param token the token used for authenticating and identifying the user to which to link the hex.
  */
-HexService.prototype.pairCallback = function(token) {
+HexService.prototype.link = function(token) {
     var self = this;
 
-    var hiveToken = jwt.decode(token);
+    // -- link the device to the profile. We can do this by calling auth0 and adding it to the metadata. I think we
+    // -- should make use of a dedicated api from auth0 for this but I don't find any documentation about that yet.
+    // -- look at https://github.com/auth0/docs/issues/416 for that.
+    var metadata = {
+        hexes: {}
+    };
 
-    // -- save the profile to the local storage. Also save the hive token
-    self.hexConfig.set([
-        { key: 'hive.token', value: token },
-        { key: 'hive.user.id', value: hiveToken.hive_id },
-        { key: 'hive.user.name', value: hiveToken.name },
-        { key: 'hive.user.email', value: hiveToken.email }
-    ]);
+    metadata.hexes[this.hexConfig.get('id')] = {
+        name: this.hexConfig.get('name'),
+        architecture: this.hexConfig.get('arch')
+    };
 
-    self.hexConfig.remove(['pair.code']);
+    return auth0.user.updateMetadata(token, metadata)
+        .then(function(profile) {
 
-    return Q();
+            var hiveToken = jwt.decode(token).hive_token;
+            var decodedToken = jwt.decode(hiveToken);
+
+            // -- save the profile to the local storage. Also save the hive token
+            self.hexConfig.set([
+                { key: 'hive.token', value: hiveToken },
+                { key: 'hive.user.id', value: decodedToken.hive_id },
+                { key: 'hive.user.name', value: profile.name },
+                { key: 'hive.user.email', value: profile.email },
+                { key: 'hive.user.picture', value: profile.picture }
+            ])
+        });
 };
 
-HexService.prototype.unpair = function() {
+HexService.prototype.unlink = function() {
     var self = this;
 
+    // -- link the device to the profile. We can do this by calling auth0 and adding it to the metadata. I think we
+    // -- should make use of a dedicated api from auth0 for this but I don't find any documentation about that yet.
+    // -- look at https://github.com/auth0/docs/issues/416 for that.
     var token = this.hexConfig.get('hive.token');
-    if (! token) return Q();
 
-    self.hexConfig.remove(['hive.token', 'hive.user.id', 'hive.user.name', 'hive.user.email', 'hive.user.picture']);
+    var metadata = {
+        hexes: {}
+    };
 
-    return Q();
+    metadata.hexes[this.hexConfig.get('id')] = null;
+
+    // TODO: This needs to be implemented the correct way.
+    //return auth0.user.get(token).then(function(profile) {
+    //    delete profile.app_metadata.hexes[self.hexConfig.get('id')];
+
+        //return auth0.user.updateMetadata(token, profile.app_metadata)
+        //    .then(function(profile) {
+                //return auth0.token.blacklist(token).then(function() {
+                return Q(self.hexConfig.remove(['hive.token', 'hive.user.id', 'hive.user.name', 'hive.user.email', 'hive.user.picture']));
+                //});
+            //});
+    //});
 };
 
 /*********************************************************************************************************************
@@ -200,20 +166,6 @@ HexService.prototype.unpair = function() {
  *********************************************************************************************************************/
 HexService.prototype.listNodes = function() {
     return Q(this.nodeCache);
-};
-
-HexService.prototype.getMasterNode = function() {
-    var defer = Q.defer();
-
-    var masterNode = null;
-    this.nodeCache.forEach(function(node) {
-        if (node.role == 'master') masterNode = node;
-    });
-
-    if (masterNode) defer.resolve(masterNode);
-    else defer.reject(new Error('No masternode found'));
-
-    return defer.promise;
 };
 
 HexService.prototype.addNode = function(node) {
@@ -254,59 +206,41 @@ HexService.prototype.removeProxy = function() {
  *********************************************************************************************************************/
 HexService.prototype.listTints = function() {
     var self = this;
+    var metafile = this.mmcConfig.dir.tints + '/meta.json';
 
-    var tints = [];
-    var scope = self.templater.createScope(this.nodeCache);
+    return fsu.exists(metafile).then(function(exists) {
+        if (exists) {
+            return fsu.readJsonFile(metafile).then(function(metadata) {
+                return self.listNodes().then(function(nodes) {
+                    var scope = self.templater.createScope(nodes);
 
-    var types = fss.readDir(self.mmcConfig.dir.tints);
-    types.forEach(function(type) {
-        if (! fss.isDirectory(self.mmcConfig.dir.tints + '/' + type)) return;
-
-        var owners = fss.readDir(self.mmcConfig.dir.tints + '/' + type);
-        owners.forEach(function(owner) {
-            if (! fss.isDirectory(self.mmcConfig.dir.tints + '/' + type + '/' + owner)) return;
-
-            var slugs = fss.readDir(self.mmcConfig.dir.tints + '/' + type + '/' + owner);
-
-            slugs.forEach(function(slug) {
-                if (! fss.isDirectory(self.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + slug)) return;
-
-                if  (fss.exists(self.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + slug + '/meta.json')) {
-                    tints.push(fss.readJsonFile(self.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + slug + '/meta.json'))
-                }
-            });
-        });
-    });
-
-    return Q(tints.map(function(tint) {
-            if (tint.stack.views) {
-                tint.stack.views.map(function(view) {
-                    view.url = processUrl(view.url);
+                    return self.templater.templateWithScope(metadata, scope);
                 });
-            }
-
-            return tint;
-        })
-    );
+            });
+        } else {
+            return {};
+        }
+    });
 };
 
 HexService.prototype.getTint = function(type, owner, slug) {
     var self = this;
+    var metafile = self.mmcConfig.dir.tints + '/meta.json';
 
-    if (fss.exists(self.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + slug + '/meta.json')) {
-        var tint = fss.readJsonFile(self.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + slug + '/meta.json')
+    return fsu.exists(metafile).then(function(exists) {
+        if (exists) {
+            return fsu.readJsonFile(metafile).then(function(metadata) {
+                return self.listNodes().then(function(nodes) {
+                    var scope = self.templater.createScope(nodes);
 
-        if (! tint.stack.views) return;
-
-        tint.stack.views.map(function(view) {
-            view.url = processUrl(view.url);
-        });
-
-        return Q(tint);
-    }
-
-    return Q({});
-}
+                    return self.templater.templateWithScope(metadata[tu.toTintId(type, owner, slug)], scope);
+                });
+            });
+        } else {
+            return {};
+        }
+    });
+};
 
 HexService.prototype.getTintResource = function(type, owner, tint, resource) {
     var resourcePath = this.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + tint + '/' + resource;
@@ -330,15 +264,31 @@ HexService.prototype.removeTint = function(type, owner, slug) {
 HexService.prototype.installTint = function(tint) {
     var self = this;
 
-    if (! fss.exists(self.mmcConfig.dir.tints + '/' + tint.type + '/' + tint.owner + '/' + tint.slug + '/meta.json')) {
-        if (tint.type == "stack" && fss.readDir(self.mmcConfig.dir.tints + "/stack/").length > 0)
-            return Q.reject(new Errors.TintInstallationError('A stack tint has already been installed. Remove it first before trying to install a new one.'));
-    }
+    var id = tu.toTintId(tint.type, tint.owner, tint.slug);
 
-    return self.services.task.current().then(function(currentTask) {
-        if (currentTask) throw new Errors.TaskAlreadyStartedError('An task is already running. Wait for it to complete before installing the tint');
+    return this.listTints().then(function(installedTints) {
+        return self.services.task.current().then(function(currentTask) {
+            if (currentTask) {
+                throw new Errors.TaskAlreadyStartedError('An task is already running. Wait for it to complete before installing the tint');
+            } else {
+                for (var param in installedTints) {
+                    if (!installedTints.hasOwnProperty(param)) continue;
 
-        return self.services.task.invoke(tint.type + '_install', { tint: tint });
+                    // -- ignore the same tint if it is already installed. That would allow us to reinstall it.
+                    if (param == id) continue;
+
+                    // -- ignore if the tint to install is not a stack. Only stacks can be installed one at the time
+                    if (tint.type != 'stack') continue;
+
+                    // -- ignore stacks
+                    if (installedTints[param].type != 'stack') continue;
+
+                    throw new Errors.TintInstallationError('A stack tint has already been installed. Remove it first before trying to install a new one.');
+                }
+
+                return self.services.task.invoke(tint.type + '_install', { tint: tint });
+            }
+        });
     });
 };
 
@@ -354,8 +304,3 @@ function indexForNode(nodeList, node) {
 }
 
 module.exports = HexService;
-
-function processUrl(url) {
-    // -- todo: implement this
-    return url;
-}
