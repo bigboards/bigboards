@@ -96,7 +96,7 @@
 [% endif %]
 [% if not isFalsy(role.command) %]
     command: "[[ role.command ]]"
-[% else if not isFalsy(role.scripts.run) %]
+[% elseif not isFalsy(role.scripts.run) %]
     command: "/scripts/run.sh"
 [% endif %]
 [% if not isFalsy(role.privileged) %]
