@@ -1,5 +1,5 @@
 var fs = require('fs'),
-    fsu = require('../utils/fs-utils'),
+    fsu = require('../utils/fs-utils-sync'),
     log = require('winston');
 
 function KeyValueStore(file) {
