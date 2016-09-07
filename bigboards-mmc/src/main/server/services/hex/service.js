@@ -278,8 +278,7 @@ HexService.prototype.listTints = function() {
         });
     });
 
-    return Q(function() {
-        return tints.map(function(tint) {
+    return Q(tints.map(function(tint) {
             if (tint.stack.views) {
                 tint.stack.views.map(function(view) {
                     view.url = processUrl(view.url);
@@ -287,8 +286,8 @@ HexService.prototype.listTints = function() {
             }
 
             return tint;
-        });
-    });
+        })
+    );
 };
 
 HexService.prototype.getTint = function(type, owner, slug) {
