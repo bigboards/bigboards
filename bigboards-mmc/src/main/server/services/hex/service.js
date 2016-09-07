@@ -280,11 +280,13 @@ HexService.prototype.listTints = function() {
 
     return Q(function() {
         return tints.map(function(tint) {
-            if (! tint.stack.views) return;
+            if (tint.stack.views) {
+                tint.stack.views.map(function(view) {
+                    view.url = processUrl(view.url);
+                });
+            }
 
-            tint.stack.views.map(function(view) {
-                view.url = processUrl(view.url);
-            });
+            return tint;
         });
     });
 };
