@@ -68,7 +68,7 @@
   apt_repository: repo='deb https://packagecloud.io/bigboards/docker-engine/ubuntu/ trusty main' state=present
 
 - name: install the new docker version
-  apt: name=docker-engine=1.12.0 update_cache=yes state=present
+  apt: name=docker-engine=1.12.0-0~trusty update_cache=yes state=present
   notify: Restart Docker
 
 - name: be sure the docker python bindings are installed
