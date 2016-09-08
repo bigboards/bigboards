@@ -45,6 +45,24 @@
 ## CONSUL
 ##   Consul is the replacement for Serf and provides us with service discovery, dns and a kv store
 ## ####################################################################################################################
-- name: be sure consul is installed
-  copy: src="{{ansible_machine}}/consul" dest="/usr/bin/consul" mode="755"
+- name: create a consul user
+  user: name=consul comment="Consul Agent" system=yes
+
+- name: install consul
+  copy: src="{{ansible_machine}}/consul" dest="/usr/bin/consul" mode="755" owner=consul
   notify: Restart Consul
+
+- name: create the consul configuration directory
+  file: state=directory path="/etc/consul.d" owner=consul
+
+- name: create the consul data directory
+  file: state=directory path="/data/consul" owner=consul
+
+- name: copy the defaults file
+  template: src=consul.default dest=/etc/default/consul owner=consul
+
+- name: copy the init file
+  copy: src=consul.conf dest=/etc/init/consul.conf owner=consul
+
+- name: start consul
+  service: name=consul state=restarted enabled=yes

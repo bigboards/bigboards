@@ -1,0 +1,8 @@
+CONSUL_DATA_DIR=/data/consul
+CONSUL_ADVERTISE_ITF=eth1
+CONSUL_INTERNAL_ITF=eth0
+
+{% if 'host-coordinator' in group_names %}
+CONSUL_QUORUM_SIZE=1
+CONSUL_IS_SERVER="Y"
+{% endif %}
