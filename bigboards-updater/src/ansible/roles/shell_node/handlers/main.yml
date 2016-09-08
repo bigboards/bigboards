@@ -1,0 +1,8 @@
+    - name: Restart Butterfly
+      supervisorctl:
+        name: "butterfly"
+        state: "restarted"
+    - name: Restart Supervisor
+      supervisorctl:
+        name: "supervisor"
+        state: "restarted"

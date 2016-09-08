@@ -1,0 +1,6 @@
+- name: Install ganglia monitor
+  apt: name=ganglia-monitor=3.6.* state=present
+
+- name: Configure gmond
+  template: src=gmond.conf.j2 dest=/etc/ganglia/gmond.conf
+  notify: restart gmond

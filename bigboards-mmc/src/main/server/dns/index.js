@@ -11,13 +11,11 @@ module.exports.register = function(mmcConfig, token, id, name, nodes) {
 
     // -- for each node, there is some information we need to gather: firmware and ipv4
     nodes.forEach(function(node) {
-        var nodeId = node.network.internal.mac.replace(/\:/g, '').toLowerCase();
-
-        clusterData.nodes[nodeId] = {
+        clusterData.nodes[node.name] = {
             name: node.name,
-            role: node.role,
+            role: 'unknown',
             firmware: mmcConfig.app.version,
-            ipv4: node.network.external.ip
+            ipv4: node.address
         };
     });
 

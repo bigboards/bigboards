@@ -1,0 +1,5 @@
+- name: make sure the /etc/bigboards directory exists
+  file: path="/etc/bigboards" state="directory" owner="bb" mode="755"
+
+- name: make sure the hex.yml file exists
+  template: src=hex.yml.j2 dest=/etc/bigboards/hex.yml owner=bb mode=755

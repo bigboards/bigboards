@@ -14,33 +14,40 @@ var express = require('express'),
     Q = require('q'),
     Templater = require('./utils/templater'),
     KV = require('./kv'),
-    ObjStore = require('./obj');
+    ObjStore = require('./obj'),
+    Consul = require('consul');
+
+var log4js = require('log4js');
+var logger = log4js.getLogger('server');
 
 mmcConfig = initializeMMCConfiguration();
 
-var serfer = new Serfer();
-serfer.connect().then(function() {
-    var hexConfig = new KV(mmcConfig.file.hex);
-    var registryStore = new ObjStore(mmcConfig.file.registry);
+// -- try to connect to consul
 
-    var app = initializeExpress();
-    var server = initializeHttpServer(app);
+var consul = new Consul({promisify: true});
+consul.catalog.node.list()
+    .then(function(nodes) {
+        var hexConfig = new KV(mmcConfig.file.hex);
+        var registryStore = new ObjStore(mmcConfig.file.registry);
 
-    // -- get the runtime environment
-    mmcConfig.environment = app.get('env');
+        var app = initializeExpress();
+        var server = initializeHttpServer(app);
 
-    var services = initializeServices(mmcConfig, hexConfig, registryStore, serfer, app);
+        // -- get the runtime environment
+        mmcConfig.environment = app.get('env');
 
-    services.task.registerDefaultTasks(hexConfig, services);
+        var services = initializeServices(mmcConfig, hexConfig, registryStore, consul, app);
 
-    var io = initializeSocketIO(server, services);
+        services.task.registerDefaultTasks(hexConfig, services);
 
-    server.listen(app.get('port'), function () {
-        winston.info('BigBoards-mmc listening on port ' + app.get('port'));
+        var io = initializeSocketIO(server, services);
+
+        server.listen(app.get('port'), function () {
+            winston.info('BigBoards-mmc listening on port ' + app.get('port'));
+        });
+    }, function(error) {
+        logger.error("Unable to connect to the local consul instance", error);
     });
-}).fail(function(error) {
-    handleError(error);
-});
 
 process.on('uncaughtException', function(err) {
     handleError(err);
@@ -101,6 +108,7 @@ function initializeSocketIO(server, services) {
     // -- Initialize Socket.io communication
     io.sockets.on('connection', function(socket) {
         Services.Hex.io(socket, services);
+        Services.Cloud.io(socket, services);
         Services.Settings.io(socket, services);
         Services.Task.io(socket, services);
         Services.Tutorials.io(socket, services);
@@ -111,7 +119,7 @@ function initializeSocketIO(server, services) {
     return io;
 }
 
-function initializeServices(mmcConfig, hexConfig, registryStore, serf, app) {
+function initializeServices(mmcConfig, hexConfig, registryStore, consul, app) {
     var templater = new Templater(hexConfig);
     winston.log('info', 'Service Registration:');
 
@@ -123,7 +131,10 @@ function initializeServices(mmcConfig, hexConfig, registryStore, serf, app) {
     services.settings = new Services.Settings.Service(mmcConfig, hexConfig);
     Services.Settings.link(app, services);
 
-    services.hex = new Services.Hex.Service(mmcConfig, hexConfig, templater, services, serf);
+    services.cloud = new Services.Hex.Service(mmcConfig, hexConfig, services, consul);
+    Services.Cloud.link(app, services);
+
+    services.hex = new Services.Hex.Service(mmcConfig, hexConfig, templater, services, consul);
     Services.Hex.link(app, services);
 
     services.tutorials = new Services.Tutorials.Service(mmcConfig, hexConfig, services, templater);

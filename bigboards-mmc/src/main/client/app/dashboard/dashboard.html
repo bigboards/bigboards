@@ -20,20 +20,18 @@
                     <table class="node-table">
                         <tr>
                             <td rowspan="2"><span class="index">{{'0' + ($index + 1)}}</span></td>
-                            <td><span class="name">{{ node.name }}</span></td>
-                            <td><span class="internal-ip-label">INTERNAL IP</span></td>
-                            <td><span class="internal-ip-label">EXTERNAL IP</span></td>
-                            <td><span class="status">STATUS | <span class="status-highlight">{{ node.status }}</span></span></td>
+                            <td rowspan="2"><span class="name">{{ node.name }}</span></td>
+                            <td><span class="internal-ip-label">LAN</span></td>
+                            <td><span class="internal-ip-label">WAN</span></td>
                             <td rowspan="2" valign="top">
-                                <a class="action" tooltip-trigger="mouseenter" tooltip-placement="right" tooltip="Open Terminal" href="http://{{ node.network.external.ip }}:57575/" target="_blank">
+                                <a class="action" tooltip-trigger="mouseenter" tooltip-placement="right" tooltip="Open Terminal" href="http://{{ node.address }}:57575/" target="_blank">
                                     <span class="fa fa-terminal"></span>
                                 </a>
                             </td>
                         </tr>
                         <tr>
-                            <td><span class="role">{{ node.role }}</span></td>
-                            <td><span class="internal-ip">> {{ node.network.internal.ip}}</span></td>
-                            <td><span class="internal-ip">> {{ node.network.external.ip}}</span></td>
+                            <td><span class="internal-ip">> {{ node.address }}</span></td>
+                            <td><span class="internal-ip">> {{ node.network.wan }}</span></td>
                         </tr>
                     </table>
 

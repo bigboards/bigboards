@@ -35,15 +35,7 @@
                             <type>directory</type>
                             <mapper>
                                 <type>perm</type>
-                                <prefix>/opt/bb/runtimes/${project.name}/patches</prefix>
-                            </mapper>
-                        </data>
-                        <data>
-                            <src>${project.basedir}/src/scripts</src>
-                            <type>directory</type>
-                            <mapper>
-                                <type>perm</type>
-                                <prefix>/opt/bb/runtimes/${project.name}</prefix>
+                                <prefix>/opt/bb/runtimes/${project.name}/</prefix>
                             </mapper>
                         </data>
                     </dataSet>

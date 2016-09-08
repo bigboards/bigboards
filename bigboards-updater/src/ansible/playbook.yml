@@ -1,0 +1,15 @@
+---
+- hosts: host
+  sudo: yes
+  roles:
+    - storage_node
+    - node
+    - docker_node
+    - shell_node
+    - ganglia_monitor_node
+
+- hosts: host-coordinators
+  sudo: yes
+  roles:
+    - ganglia_master_node
+    - mmc_node

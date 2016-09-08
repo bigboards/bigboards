@@ -1,0 +1,24 @@
+- shell: mount |grep " / " | cut -d' ' -f1
+  register: root_dev
+
+- name: be sure the harddisk is initialized
+  shell: creates=/dev/sda1 parted -s /dev/sda mklabel msdos mkpart primary 0% 100%
+  when: root_dev.stdout != '/dev/sda1'
+
+- name: be sure the harddrive filesystem has been created
+  shell: creates=/root/.sda1.initialized mkfs.ext4 /dev/sda1 && touch /root/.sda1.initialized
+  when: root_dev.stdout != '/dev/sda1'
+
+- name: be sure the data mountpoint exists
+  file: state=directory path=/data owner=bb
+
+- name: be sure the correct FSTAB file is installed
+  template: src=templates/etc/fstab-{{ ansible_machine }} dest=/etc/fstab
+  when: root_dev.stdout != '/dev/sda1'
+
+- name: be sure the data directory is mounted
+  shell: creates=/data/lost+found mount /data
+  when: root_dev.stdout != '/dev/sda1'
+
+- name: be sure anyone can write in the data directory
+  file: state=directory path=/data owner=bb mode=777 recurse=yes

@@ -1,0 +1,2 @@
+- name: restart gmond
+  command: service ganglia-monitor restart

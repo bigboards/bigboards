@@ -1,8 +1,0 @@
-## AWS DNS ####################################################################
-# Curl is needed for DNS to work correctly. The previous patch did not
-# take that into account.
-- hosts: host
-  sudo: yes
-  tasks:
-    - name: install curl
-      apt: name="curl" state="present"

@@ -1,0 +1,84 @@
+## ####################################################################################################################
+## DOCKER.IO
+##   Clean old artifacts
+## ####################################################################################################################
+- name: check if an old docker version is present
+  stat: path=/usr/bin/docker-1.5.0
+  register: docker
+
+- name: uninstall the old docker version
+  when: docker.stat.isreg is defined and docker.stat.isreg
+  apt: name={{ item }} state=absent
+  with_items:
+    - "docker"
+    - "docker.io"
+
+- name: remove old docker artifacts
+  file: path={{ item }} state=absent
+  when: docker.stat.isreg is defined and docker.stat.isreg
+  with_items:
+    - "/etc/init/docker.conf"
+    - "/etc/init/docker.io.conf"
+    - "/etc/init.d/docker.io"
+    - "/etc/init.d/docker"
+    - "/usr/bin/docker-1.5.0"
+    - "/usr/bin/docker"
+    - "/usr/bin/docker.io"
+    - "/usr/lib/docker.io/dockerinit-1.5.0"
+    - "/usr/lib/docker.io/dockerinit"
+    - "/usr/lib/docker"
+    - "/etc/defaults/docker.io"
+    - "/etc/defaults/docker"
+
+## ####################################################################################################################
+## DOCKER.IO
+##   There is a very nasty bug in the current version of docker we were using. The only solution seems to be to
+##   upgrade docker to a new version. This fix is only applied on x86 machines since upgrading docker on the armv7's
+##   requires a distro upgrade.
+## ####################################################################################################################
+- name: make sure docker can reach its depending libraries
+  when: ansible_machine == 'armv7l'
+  file: src=/lib/arm-linux-gnueabihf/libdevmapper.so.1.02.1 dest=/lib/arm-linux-gnueabihf/libdevmapper.so.1.02 state=link
+
+- name: make sure docker can reach its depending libraries
+  when: ansible_machine == 'x86_64'
+  file: src=/lib/x86_64-linux-gnu/libdevmapper.so.1.02.1 dest=/lib/x86_64-linux-gnu/libdevmapper.so.1.02 state=link
+
+- name: be sure the requests package for python is removed
+  file: path='/usr/local/lib/python2.7/dist-packages/requests' state=absent
+
+- name: make sure the docker data directory exists
+  file: state='directory' path='/data/docker' owner='bb' mode='777'
+
+## ####################################################################################################################
+## DOCKER.IO
+## ####################################################################################################################
+- name: add the docker apt repository key (without proxy)
+  when: ansible_env.http_proxy is not defined
+  apt_key: url=https://packagecloud.io/bigboards/docker-engine/gpgkey state=present
+
+- name: add the docker apt repository key (with proxy)
+  when: ansible_env.http_proxy is defined
+  apt_key: url=https://packagecloud.io/bigboards/docker-engine/gpgkey state=present
+  environment:
+      http_proxy: $http_proxy
+      https_proxy: $https_proxy
+
+- name: add the docker apt repository
+  apt_repository: repo='deb https://packagecloud.io/bigboards/docker-engine/ubuntu/ trusty main' state=present
+
+- name: install the new docker version
+  apt: name=docker-engine=1.12.0 update_cache=yes state=present
+  notify: Restart Docker
+
+- name: be sure the docker python bindings are installed
+  pip: name='docker-py' state='latest'
+  notify: Restart Docker
+
+- name: configure the docker daemon
+  lineinfile: dest=/etc/default/docker regexp=^DOCKER_OPTS= line="DOCKER_OPTS=\"-s aufs -g /data/docker/data -D\""
+  notify: Restart Docker
+
+- name: add the bb user to the docker group
+  user: name=bb groups=docker append=yes
+  notify: Restart Docker
