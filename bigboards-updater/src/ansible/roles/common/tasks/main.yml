@@ -1,0 +1,50 @@
+- name: install mandatory tooling
+  apt: name="{{ item }}" state="present"
+  with_items:
+    - "curl"
+    - "python-pip"
+    - "python-dev"
+    - "build-essential"
+    - "apt-transport-https"
+
+## ####################################################################################################################
+## SERF
+##   Serf is not being used anymore.
+## ####################################################################################################################
+- name: check if serf has been installed
+  stat: path=/etc/init/serf.conf
+  register: serf_service
+
+- name: stop serf if the serf service is installed
+  service: name=serf state=stopped
+  when: serf_service.stat.isreg is defined and serf_service.stat.isreg
+
+## Remove the old serf artifacts
+- name: remove the serf directories
+  file: path="{{ item }}" state="absent"
+  with_items:
+    - "/etc/serf"
+    - "/opt/serf"
+    - "/usr/bin/serf"
+    - "/etc/default/serf"
+    - "/etc/init/serf.conf"
+    - "/etc/network/if-down.d/serf"
+    - "/etc/network/if-up.d/serf"
+    - "/etc/dhcp/dhclient-exit-hooks.d/serf"
+
+
+## ####################################################################################################################
+## AWS DNS
+##   We use AWS to make do a mapping from <hex>.hex.bigboards.io to the external ip addresses of a node. The script
+##   for doing that is executed when a nic is brought into the up state.
+## ####################################################################################################################
+- name: copy the dns script
+  template: src=dns dest=/etc/network/if-up.d/dns mode=777
+
+## ####################################################################################################################
+## CONSUL
+##   Consul is the replacement for Serf and provides us with service discovery, dns and a kv store
+## ####################################################################################################################
+- name: be sure consul is installed
+  copy: src="{{ansible_machine}}/consul" dest="/usr/bin/consul" mode="755"
+  notify: Restart Consul

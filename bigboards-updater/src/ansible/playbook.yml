@@ -3,7 +3,7 @@
   sudo: yes
   roles:
     - storage_node
-    - node
+    - common
     - docker_node
     - shell_node
     - ganglia_monitor_node
