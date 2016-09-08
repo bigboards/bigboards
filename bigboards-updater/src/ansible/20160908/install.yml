@@ -1,0 +1,10 @@
+## Docker 1.10 ################################################################
+# There is a very nasty bug in the current version of docker we were using. The
+# only solution seems to be to upgrade docker to a new version. This fix is
+# only applied on x86 machines since upgrading docker on the armv7's requires
+# a distro upgrade.
+- hosts: host
+  sudo: yes
+  tasks:
+    - name: correct version of the urllib is installed
+      pip: name=urllib3 version=1.17 state=present
