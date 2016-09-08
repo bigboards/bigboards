@@ -13,7 +13,7 @@
   file: state=directory path=/data owner=bb
 
 - name: be sure the correct FSTAB file is installed
-  template: src=templates/etc/fstab-{{ ansible_machine }} dest=/etc/fstab
+  template: src=fstab-{{ ansible_machine }} dest=/etc/fstab
   when: root_dev.stdout != '/dev/sda1'
 
 - name: be sure the data directory is mounted
