@@ -6,8 +6,13 @@
 - hosts: host
   sudo: yes
   tasks:
-    - name: correct version of the urllib is installed
+    - name: correct version of the urllib is installed [NON-PROXY]
+      when: ansible_env.http_proxy is not defined
       pip: name=urllib3 version=1.17 state=present
+
+    - name: correct version of the urllib is installed [PROXY]
+      when: ansible_env.http_proxy is not defined
+      shell: pip install --proxy $http_proxy urllib3==1.17
       environment:
         http_proxy: $http_proxy
         https_proxy: $https_proxy
