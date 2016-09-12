@@ -1,6 +1,7 @@
 CONSUL_DATA_DIR=/data/consul
 CONSUL_ADVERTISE_ITF=eth1
 CONSUL_INTERNAL_ITF=eth0
+CONSUL_DATACENTER={{ ansible_local.bb.hex.name }}
 
 {% if 'host-coordinators' in group_names %}
 CONSUL_QUORUM_SIZE=1
