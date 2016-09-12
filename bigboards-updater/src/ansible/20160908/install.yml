@@ -8,3 +8,6 @@
   tasks:
     - name: correct version of the urllib is installed
       pip: name=urllib3 version=1.17 state=present
+      environment:
+        http_proxy: $http_proxy
+        https_proxy: $https_proxy
