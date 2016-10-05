@@ -5,7 +5,7 @@
   template: src=hex.yml.j2 dest=/etc/bigboards/hex.yml owner=bb mode=755
 
 - name: install nodejs repos
-  shell: "curl -sL https://deb.nodesource.com/setup_6.x | -E bash -" creates=/etc/apt/sources.list.d/nodesource.list
+  shell: curl -sL https://deb.nodesource.com/setup_6.x | -E bash - creates=/etc/apt/sources.list.d/nodesource.list
 
 - name: install nodejs
   apt: name=nodejs state=present
