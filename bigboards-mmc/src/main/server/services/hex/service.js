@@ -74,56 +74,32 @@ HexService.prototype.removeProxy = function() {
 HexService.prototype.listTints = function() {
     var self = this;
 
-    var tints = [];
-
-    var types = fss.readDir(self.mmcConfig.dir.tints);
-    types.forEach(function(type) {
-        if (! fss.isDirectory(self.mmcConfig.dir.tints + '/' + type)) return;
-
-        var owners = fss.readDir(self.mmcConfig.dir.tints + '/' + type);
-        owners.forEach(function(owner) {
-            if (! fss.isDirectory(self.mmcConfig.dir.tints + '/' + type + '/' + owner)) return;
-
-            var slugs = fss.readDir(self.mmcConfig.dir.tints + '/' + type + '/' + owner);
-
-            slugs.forEach(function(slug) {
-                if (! fss.isDirectory(self.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + slug)) return;
-
-                if  (fss.exists(self.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + slug + '/meta.json')) {
-                    tints.push(fss.readJsonFile(self.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + slug + '/meta.json'))
+    return this.consul.kv.get({key: 'tints/', recurse: true})
+        .then(function(tints) {
+            return tints.map(function(tint) {
+                if (tint.stack.views) {
+                    tint.stack.views.map(function(view) {
+                        view.url = processUrl(view.url);
+                    });
                 }
+
+                return tint;
             });
         });
-    });
-
-    return Q(tints.map(function(tint) {
-            if (tint.stack.views) {
-                tint.stack.views.map(function(view) {
-                    view.url = processUrl(view.url);
-                });
-            }
-
-            return tint;
-        })
-    );
 };
 
 HexService.prototype.getTint = function(type, owner, slug) {
     var self = this;
 
-    if (fss.exists(self.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + slug + '/meta.json')) {
-        var tint = fss.readJsonFile(self.mmcConfig.dir.tints + '/' + type + '/' + owner + '/' + slug + '/meta.json')
+    return this.consul.kv.get('tints/' + owner + '/' + slug).then(function(tint) {
+        if (tint.stack.views) {
+            tint.stack.views.map(function(view) {
+                view.url = processUrl(view.url);
+            });
+        }
 
-        if (! tint.stack.views) return;
-
-        tint.stack.views.map(function(view) {
-            view.url = processUrl(view.url);
-        });
-
-        return Q(tint);
-    }
-
-    return Q({});
+        return tint;
+    });
 };
 
 HexService.prototype.getTintResource = function(type, owner, tint, resource) {

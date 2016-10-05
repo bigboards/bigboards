@@ -23,7 +23,6 @@ var logger = log4js.getLogger('server');
 mmcConfig = initializeMMCConfiguration();
 
 // -- try to connect to consul
-
 var consul = new Consul({promisify: true});
 consul.catalog.node.list()
     .then(function(nodes) {
