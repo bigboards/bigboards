@@ -1,8 +1,9 @@
-var winston = require('winston');
+var log4js = require('log4js');
+var logger = log4js.getLogger('setup.route');
 
 module.exports.handleError = function(res, error) {
-    winston.info(error);
-    winston.info(error.stack);
+    logger.info(error);
+    logger.info(error.stack);
 
     if (!error) return res.send(500, 'No reason given');
 
@@ -40,22 +41,22 @@ module.exports.handlePromise = function(res, promise) {
 
 module.exports.registerGet = function(app, path, fn) {
     app.get(path, fn);
-    winston.info('   [GET] ' + path);
+    logger.info('   [GET] ' + path);
 };
 
 module.exports.registerPut = function(app, path, fn) {
     app.put(path, function(req, res) { return fn(req, res); });
-    winston.info('   [PUT] ' + path);
+    logger.info('   [PUT] ' + path);
 };
 
 module.exports.registerPost = function(app, path, fn) {
     app.post(path, function(req, res) { return fn(req, res); });
-    winston.info('  [POST] ' + path);
+    logger.info('  [POST] ' + path);
 };
 
 module.exports.registerDelete = function(app, path, fn) {
     app.del(path, function(req, res) { return fn(req, res); });
-    winston.info('[DELETE] ' + path);
+    logger.info('[DELETE] ' + path);
 };
 
 module.exports.isTint = function(obj) {

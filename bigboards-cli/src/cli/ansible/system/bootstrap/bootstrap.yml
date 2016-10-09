@@ -1,66 +1,13 @@
 - hosts: all:!localhost
   sudo: yes
   tasks:
-    - name: load the facts (armv7l)
-      when: ansible_machine == 'armv7l'
+    - name: load the facts
       set_fact:
-        node_nic_internal: eth0
-        node_nic_external: eth1
-        hex_arch: armv7l
-
-    - name: load the facts (x86_64)
-      when: ansible_machine == 'x86_64'
-      set_fact:
-        node_nic_internal: eth0
-        node_nic_external: eth1
-        hex_arch: x86_64
-
-    - name: check if there is a br1 interface
-      shell: "[ $(ifconfig br1 2> /dev/null |wc -l) -gt 0 ] && echo 'yes' || echo 'no'"
-      register: has_bridge
-
-    - name: set the nic to use as a reference (armv7l && bridge)
-      when: ansible_machine == 'armv7l' and 'yes' in has_bridge.stdout
-      set_fact:
-        nic_ref: br1
-
-    - name: set the nic to use as a reference (armv7l && no bridge)
-      when: ansible_machine == 'armv7l' and 'no' in has_bridge.stdout
-      set_fact:
-        nic_ref: eth0
-
-    - name: set the nic to use as a reference
-      when: ansible_machine == 'x86_64'
-      set_fact:
-        nic_ref: eth0
-
-    - name: determine the hex ip range
-      shell: echo `ifconfig {{ nic_ref }} 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'` | rev | cut -c 3- | rev
-      register: hex_ip_range
-
-    - name: determine the hex ip netmask
-      shell: echo $(ifconfig {{ nic_ref }} |grep Mask | tr -s ' ' | cut -d ':' -f4)
-      register: hex_ip_mask
-
-    - name: determine the hex node sequence
-      shell: echo `ifconfig {{ nic_ref }} 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'` | rev | cut -d '.' -f 1
-      register: node_sequence
+        hex_arch: "{{ ansible_machine }}"
 
     - name: determine the hex name and id
       set_fact:
         hex_name_id: { stdout: "{{ ansible_hostname | regex_replace('(.*)(-n[1-9]+$)', '\\1') }}" }
-
-    - debug:
-        var: nic_ref
-
-    - debug:
-        var: hex_ip_range
-
-    - debug:
-        var: node_sequence
-
-    - debug:
-        var: hex_name_id
 
     - assert:
         that:
@@ -68,63 +15,6 @@
           - "hex_ip_range.stdout|length > 0"
           - "node_sequence.stdout|length > 0"
           - "hex_name_id.stdout|length > 0"
-
-    - name: create the ansible facts directory
-      file:
-        state: "directory"
-        path: "/etc/ansible/facts.d"
-
-    - name: make sure the correct bigboards facts are available
-      template:
-        src: bb.fact
-        dest: /etc/ansible/facts.d/bb.fact
-
-    - name: load the modules we needed
-      lineinfile:
-        dest: '/etc/modules'
-        line: '{{ item }}'
-        regexp: '^{{ item }}$'
-        state: 'present'
-      when: ansible_machine == 'armv7l'
-      with_items:
-        - usbnet
-        - g_ether
-
-
-    - name: make sure the bb user has a valid home directory
-      file:
-        state: directory
-        path: '/home/bb'
-        owner: bb
-        group: root
-
-    - name: make sure the resources in the old home are owned by the bb user
-      file:
-        state: directory
-        path: '/opt/bb'
-        owner: bb
-        group: root
-        recurse: yes
-
-    - name: make sure the resources from the old home are copied into the new one.
-      sudo: no
-      shell: cp -r /opt/bb/{{ item }} /home/bb/{{ item }} creates=/home/bb/{{ item }}
-      ignore_errors: yes
-      with_items:
-        - '.ansible'
-        - '.bash_history'
-        - '.cache'
-        - '.local'
-        - '.npm'
-        - '.rnd'
-        - '.ssh'
-        - '.viminfo'
-
-    - name: make sure the bb user has the right directory
-      replace:
-        dest: '/etc/passwd'
-        regexp: '/opt/bb'
-        replace: '/home/bb'
 
 - hosts: all:!localhost
   sudo: yes
@@ -220,10 +110,6 @@
 - hosts: all:!localhost
   sudo: yes
   tasks:
-    - name: generate a correct mac address for the internal interface
-      shell: echo "02$(cat /sys/class/net/{{ ansible_local.bb.node.nic_int }}/address |cut -c 3-17)"
-      register: nic_ext_mac
-
     - name: make sure the network interfaces are set correctly
       template:
         src: interfaces
@@ -279,29 +165,6 @@
 #      service:
 #        name: 'ntp'
 #        state: 'restarted'
-
-## ####################################################################################################################
-## DNSMASQ
-## ####################################################################################################################
-- hosts: host-coordinators
-  sudo: yes
-  tasks:
-    - name: make sure the software is installed
-      apt:
-        name: "{{ item }}"
-        state: "latest"
-      with_items:
-        - dnsmasq
-
-    - name: make sure the correct dnsmasq file is being used
-      template:
-          src: "dnsmasq.conf"
-          dest: "/etc/dnsmasq.conf"
-#      notify: Restart DNSMasq
-
-#  handlers:
-#    - name: Restart DNSMasq
-#      shell: service dnsmasq restart
 
 ## ####################################################################################################################
 ## DNS

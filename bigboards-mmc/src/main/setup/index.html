@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+        <link rel="stylesheet" href="bower_components/angular-material/angular-material.css">
+
+        <link rel="stylesheet" href="styles/app.css">
+        <link rel="stylesheet" href="styles/linear-font.css">
+        <link rel="stylesheet" href="styles/util.css">
+
+        <title>BigBoards Cluster Setup</title>
+
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+    </head>
+
+    <body ng-app="bb.setup">
+
+        <div ng-controller="ApplicationController" ng-view layout="column" flex style="height: 100%; width: 100%;">
+
+        </div>
+
+        <a style="position: fixed; bottom: 10px; right: 10px;" href="mailto:support@bigboards.io" data-uv-trigger="contact">
+            <div style="border: solid 2px white; border-radius: 24px; height: 48px; width: 48px; color: white;" class="m-t-30" layout="column" layout-align="center center">
+                <md-icon md-font-icon="lnr-question" class="lnr" style="color: white; font-size: 24px; padding-left: 2px;"></md-icon>
+            </div>
+        </a>
+
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-aria/angular-aria.js"></script>
+        <script src="bower_components/angular-animate/angular-animate.js"></script>
+        <script src="bower_components/angular-material/angular-material.js"></script>
+        <script src="bower_components/angular-route/angular-route.min.js"></script>
+
+        <script src="app/app.js"></script>
+        <script src="app/app.controller.js"></script>
+        <script src="app/app.config.js"></script>
+        <script src="app/hello/hello.controller.js"></script>
+
+        <!-- UserVoice - JavaScript SDK (only needed once on a page) -->
+        <script>(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/yjwfLqF0V88QyIB4J1sJ2A.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})()</script>
+
+        <!-- UserVoice - A tab to launch the Classic Widget -->
+        <script>
+            UserVoice = window.UserVoice || [];
+        </script>
+    </body>
+</html>

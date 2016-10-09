@@ -1,4 +1,4 @@
-var Ansible = require('../mods/ansible/index.js'),
+var Ansible = require('../services/ansible/index.js'),
     path = require('path'),
     fsu = require('./fs-utils'),
     Q = require('q');

@@ -2,13 +2,16 @@ var os = require('os'),
     fs = require('fs'),
     fsu = require('./utils/fs-utils');
 
+var log4js = require('log4js');
+var logger = log4js.getLogger('server');
+
 module.exports = {
     lookupEnvironment: function() {
         if (process.env.BB_ENVIRONMENT) {
-            console.log('Loading ' + process.env.BB_ENVIRONMENT + ' Settings');
+            logger.info('Loading ' + process.env.BB_ENVIRONMENT + ' Settings');
             return this.environments[process.env.BB_ENVIRONMENT];
         } else {
-            console.log('Loading Production Settings');
+            logger.info('Loading Production Settings');
             return this.environments.production;
         }
     },

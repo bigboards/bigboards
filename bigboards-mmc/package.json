@@ -2,11 +2,12 @@
   "name": "BigBoards-mmc",
   "description": "This is the management console, incl. master and slaves",
   "author": "BigBoards <code@bigboards.io>",
-  "version": "3.0.0",
+  "version": "2.0",
   "private": true,
   "dependencies": {
     "always-tail": "^0.1.1",
     "angular-chart.js": "^1.0.0-alpha8",
+    "angular-material": "^1.1.1",
     "async": "~0.2.9",
     "bitbucket-rest": "0.0.1",
     "consul": "^0.25.0",

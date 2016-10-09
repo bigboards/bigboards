@@ -12,9 +12,6 @@ module.exports = {
         API.registerGet(app, '/api/v1/hex', function(req, res) { return resource.get(req, res); });
         API.registerDelete(app, '/api/v1/hex', function(req, res) { return resource.powerdown(req, res); });
 
-        // -- Nodes
-        API.registerGet(app, '/api/v1/hex/nodes', function(req, res) { return resource.listNodes(req, res); });
-
         // -- Settings
         API.registerPost(app, '/api/v1/hex/settings/proxy', function(req, res) { return resource.setProxy(req, res); });
         API.registerDelete(app, '/api/v1/hex/settings/proxy', function(req, res) { return resource.removeProxy(req, res); });
