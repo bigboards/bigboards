@@ -1,15 +1,15 @@
 angular.module('bb.setup')
     .controller('HelloViewController', HelloViewController);
 
-HelloViewController.$Inject = [];
+HelloViewController.$Inject = ['$location'];
 
-function HelloViewController() {
+function HelloViewController($location) {
     var vm = this;
 
     vm.proceed = proceed;
 
     function proceed() {
-
+        $location.path('/name')
     }
 
 }

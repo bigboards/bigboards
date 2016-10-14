@@ -1,0 +1,29 @@
+<div layout="column" layout-align="center center" style="width: 100%; height: 100%;">
+    <div style="width: 500px; " layout="column" layout-align="center center">
+        <span style="text-align: center; font-weight: 300;" class="md-display-4">User</span>
+
+        <p class="md-caption" style="text-align: center;">
+            Use the short ID you find in the bigboards cloud console to link this cluster to your
+            bigboards account.
+        </p>
+
+        <md-input-container style="color: white;">
+            <label style="color: white;">Short ID</label>
+
+            <input ng-model="vm.shortId" style="color: white; border-color: white;">
+        </md-input-container>
+
+
+        <div layout="row">
+            <div style="border: solid 2px white; border-radius: 24px; height: 48px; width: 48px; color: white;" class="m-t-30" layout="column" layout-align="center center" ng-click="vm.proceed(vm.shortId)">
+                <md-icon md-font-icon="lnr-chevron-right" class="lnr" style="color: white; font-size: 24px; padding-left: 2px;"></md-icon>
+            </div>
+        </div>
+
+
+        <md-button class="md-link" href="http://hive.bigboards.io" target="_blank">
+            I have no cloud account yet
+        </md-button>
+    </div>
+</div>
+

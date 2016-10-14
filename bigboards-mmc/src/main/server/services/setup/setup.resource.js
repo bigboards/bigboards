@@ -14,6 +14,10 @@ SetupResource.prototype.validateName = function(req, res) {
     return ApiUtils.handlePromise(res, this.service.validateName(req.query.name));
 };
 
+SetupResource.prototype.validateShortId = function(req, res) {
+    return ApiUtils.handlePromise(res, this.service.validateShortId(req.query.short_id));
+};
+
 SetupResource.prototype.setup = function(req, res) {
     return ApiUtils.handlePromise(res, this.service.setup(req.body.name, req.body.shortId));
 };
