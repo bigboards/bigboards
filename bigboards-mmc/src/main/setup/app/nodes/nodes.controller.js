@@ -1,12 +1,13 @@
 angular.module('bb.setup')
     .controller('NodesViewController', NodesViewController);
 
-NodesViewController.$Inject = ['$location', 'Application', 'Notifications'];
+NodesViewController.$Inject = ['$location', 'Notifications', 'clusterName', 'nodes'];
 
-function NodesViewController($location, Application, Notifications) {
+function NodesViewController($location, Notifications, clusterName, nodes) {
     var vm = this;
 
-    vm.nodes = Application.listNodes();
+    vm.clusterName = clusterName;
+    vm.nodes = nodes;
 
     vm.proceed = proceed;
     vm.addNode = addNode;
@@ -18,7 +19,10 @@ function NodesViewController($location, Application, Notifications) {
             return;
         }
 
-        $location.path('/user');
+        $location
+            .path('/user')
+            .search('clustername', clusterName)
+            .search('nodes', vm.nodes.join(','));
     }
 
     function addNode(name) {
@@ -27,11 +31,11 @@ function NodesViewController($location, Application, Notifications) {
             return;
         }
 
-        Application.addNode(name);
+        $location.search('nodes', vm.nodes.join(','));
     }
 
     function removeNode(name) {
-        Application.removeNode(name);
+        $location.search('nodes', vm.nodes.join(','));
     }
 
 }

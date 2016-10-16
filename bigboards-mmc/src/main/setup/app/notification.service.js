@@ -6,6 +6,7 @@ Notifications.$Inject = ['$mdToast'];
 
 function Notifications($mdToast) {
     var service = {
+        info: info,
         error: error
     };
 
@@ -16,6 +17,15 @@ function Notifications($mdToast) {
         $mdToast.show(
             $mdToast.simple()
                 .textContent(msg)
+                .position("bottom left")
+                .hideDelay(3000)
+        );
+    }
+
+    function info(message) {
+        $mdToast.show(
+            $mdToast.simple()
+                .textContent(message)
                 .position("bottom left")
                 .hideDelay(3000)
         );

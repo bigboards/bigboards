@@ -32,6 +32,8 @@
         <script src="bower_components/angular-material/angular-material.js"></script>
         <script src="bower_components/angular-route/angular-route.min.js"></script>
         <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+        <script src="bower_components/socket.io-client/socket.io.js"></script>
+        <script src="bower_components/angular-socket-io/socket.js"></script>
 
         <script src="app/app.js"></script>
         <script src="app/app.controller.js"></script>
@@ -43,10 +45,11 @@
         <script src="app/name/name.controller.js"></script>
         <script src="app/nodes/nodes.controller.js"></script>
         <script src="app/user/user.controller.js"></script>
+        <script src="app/progress/progress.controller.js"></script>
 
         <script src="app/app.service.js"></script>
-        <script src="app/cloud-clusters.service.js"></script>
-        <script src="app/cloud-users.service.js"></script>
+        <script src="app/websocket.service.js"></script>
+        <script src="app/setup.service.js"></script>
         <script src="app/notification.service.js"></script>
 
         <!-- UserVoice - JavaScript SDK (only needed once on a page) -->

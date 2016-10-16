@@ -14,7 +14,7 @@ var logger = log4js.getLogger('server');
 
 var consul = new Consul({promisify: true});
 
-var mmcConfig = require('./config').lookupEnvironment();
+var mmcConfig = require('./config');
 
 consul.agent.self()
     .then(function() {
@@ -56,15 +56,20 @@ function startServing(setupOnly) {
     }
 
     var server = http.createServer(app);
-    var io = require('socket.io').listen(server);
+    var io = require('socket.io')(server);
 
-    if (setupOnly) {
-        require('./services/setup/setup.route')(app, io);
+    try {
+        if (setupOnly) {
+            require('./services/setup/setup.route')(app, io);
 
-    } else {
-        require('./services/nodes/node.route')(app, io);
-        require('./services/cluster/cluster.route')(app, io);
+        } else {
+            require('./services/nodes/node.route')(app, io);
+            require('./services/cluster/cluster.route')(app, io);
 
+        }
+
+    } catch (err) {
+        logger.error(err);
     }
 
     server.listen(app.get('port'), function () {

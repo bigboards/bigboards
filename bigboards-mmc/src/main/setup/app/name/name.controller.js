@@ -1,32 +1,34 @@
 angular.module('bb.setup')
     .controller('NameViewController', NameViewController);
 
-NameViewController.$Inject = ['$location', 'CloudClusters', 'Application', 'Notifications'];
+NameViewController.$Inject = ['$location', 'Setup', 'Notifications', 'clusterName'];
 
-function NameViewController($location, CloudClusters, Application, Notifications) {
+function NameViewController($location, Setup, Notifications, clusterName) {
     var vm = this;
 
     vm.proceed = proceed;
+    vm.name = clusterName;
 
-    function proceed(name) {
-        if (!name || name.length == 0) {
+    function proceed() {
+        if (!vm.name || vm.name.length == 0) {
             Notifications.error("No cluster name");
             return;
         }
 
-        var valid = /[a-z0-9_\-]+/.test(name);
+        var valid = /[a-z0-9_\-]+/.test(vm.name);
 
         if (! valid) {
             Notifications.error("Invalid cluster name");
             return;
         }
 
-        CloudClusters.validate.name(name)
+        Setup.validate.name(vm.name)
             .then(function(response) {
                 if (response.exists === false) {
-                    Application.setName(name);
+                    $location
+                        .path('/nodes')
+                        .search("clustername", vm.name);
 
-                    $location.path('/nodes')
                 } else {
                     Notifications.error("That name is already taken!")
                 }

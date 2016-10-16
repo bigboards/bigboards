@@ -1,5 +1,6 @@
 angular.module('bb.setup', [
     'ngRoute',
     'ngMaterial',
-    'ngResource'
+    'ngResource',
+    'btford.socket-io'
 ]);

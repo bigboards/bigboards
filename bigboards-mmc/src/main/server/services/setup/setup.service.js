@@ -1,5 +1,8 @@
 var Q = require('q'),
-    unirest = require('unirest');
+    unirest = require('unirest'),
+    ansible = require('node-ansible'),
+    fsUtils = require('../../utils/fs-utils-sync'),
+    mmcConfig = require('../../config');
 
 var log4js = require('log4js');
 var logger = log4js.getLogger('setup.service');
@@ -17,8 +20,7 @@ SetupService.prototype.validateName = function(name) {
     var defer = Q.defer();
 
     unirest
-        .get('http://api.hive.test.bigboards.io/api/v1/cluster/' + name + '/exists')
-        .query({ name: name })
+        .get(mmcConfig.cloud_api_url + '/v1/cluster/' + name + '/exists')
         .end(function(response) {
             if (response.ok) {
                 defer.resolve({ exists: response.body.exists});
@@ -39,8 +41,7 @@ SetupService.prototype.validateShortId = function(shortId) {
     var defer = Q.defer();
 
     unirest
-        .get('http://api.hive.test.bigboards.io:8080/api/v1/people/' + name + '/exists')
-        .query({ name: shortId })
+        .get(mmcConfig.cloud_api_url + '/v1/people/' + shortId + '/exists')
         .end(function(response) {
             if (response.ok) {
                 defer.resolve(response.body.exists === true);
@@ -63,9 +64,30 @@ SetupService.prototype.validateShortId = function(shortId) {
  *
  * @param name      the name for the cluster
  * @param shortId   the short id of the hive user
+ * @param nodes     the list of node hostnames
  */
-SetupService.prototype.setup = function(name, shortId) {
+SetupService.prototype.setup = function(name, shortId, nodes) {
+    if (!name) throw new Error("No custer name has been defined.");
+    if (!shortId) throw new Error("No short ID has been defined.");
+    if (!nodes || nodes.length == 0) throw new Error("No nodes have been defined.");
 
+    var content = "[nodes]";
+
+    nodes.foreach(function(node) {
+        content += ("\n" + node);
+    });
+
+    // -- generate the hosts file
+    fsUtils.writeFile("../../../etc/inventory.ansible", content);
+
+    // -- create the playbook
+    var playbook = new Ansible.Playbook()
+        .inventory("../../../etc/inventory.ansible")
+        .playbook('../../ansible/setup/initialize.yml')
+        .variables({clusterName: name, shortId: shortId});
+
+    // -- run the playbook
+    return playbook.exec({cwd: process.cwd()});
 };
 
 /**
@@ -74,7 +96,13 @@ SetupService.prototype.setup = function(name, shortId) {
  *  Exiting setup mode means we need to restart our process. Ansible is used to complete this action
  */
 SetupService.prototype.exit = function() {
+    // -- create the playbook
+    var playbook = new Ansible.Playbook()
+        .inventory("../../../etc/inventory.ansible")
+        .playbook('../../ansible/setup/restart-mmc.yml');
 
+    // -- run the playbook
+    return playbook.exec({cwd: process.cwd()});
 };
 
 module.exports = SetupService;

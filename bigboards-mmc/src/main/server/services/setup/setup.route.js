@@ -5,7 +5,7 @@ var log4js = require('log4js');
 var logger = log4js.getLogger('setup.route');
 
 module.exports = function(app, io) {
-    var resource = new SetupResource();
+    var resource = new SetupResource(io);
 
     API.registerGet(app, '/api/v1/setup/validate/name', function(req, res) { return resource.validateName(req, res); });
     API.registerGet(app, '/api/v1/setup/validate/shortId', function(req, res) { return resource.validateShortId(req, res); });
