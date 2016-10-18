@@ -206,7 +206,7 @@ EOF
                 cat <<-EOF
 Manage the network.
 
-USAGE: $0 network [switch|help] [arguments]
+USAGE: $0 network [switch|proxy|help] [arguments]
 
 OPTIONS
 
@@ -220,6 +220,8 @@ OPTIONS
                               255.255.0.0 or 255.0.0.0
                 itf           The name of the physical network interface
 
+    proxy   Set the proxy servers for your device's various networked services. You'll be
+            asked interactively for HTTP and HTTPS server addresses and ports.
 
     help    Show this help message
 
