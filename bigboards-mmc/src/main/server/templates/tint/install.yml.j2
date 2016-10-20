@@ -1,3 +1,7 @@
+# force gathering of facts for all hosts
+- hosts: all
+  tasks: [ ]
+
 [% for group in tint.stack.groups %]
 - hosts: [[ group.runs_on ]]
   sudo: yes
