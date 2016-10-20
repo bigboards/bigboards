@@ -45,4 +45,13 @@
       lineinfile: dest="/etc/ansible/facts.d/bb.fact" regexp="^http_proxy=.*" insertafter="^\[network\]" line="http_proxy=http://{{ http_proxy_host }}:{{ http_proxy_port }}/"
 
     - name: set bb.fact proxy settings for HTTPS
-      lineinfile: dest="/etc/ansible/facts.d/bb.fact" regexp="^https_proxy=.*" insertafter="^\[network\]" line="https_proxy=https://{{ https_proxy_host }}:{{ https_proxy_port }}/"
+      lineinfile: dest="/etc/ansible/facts.d/bb.fact" regexp="^https_proxy=.*" insertafter="^\[network\]" line="https_proxy=http://{{ https_proxy_host }}:{{ https_proxy_port }}/"
+
+    - name: make sure .bowerrc exists
+      copy: dest="/opt/bb/runtimes/bigboards-mmc/client/.bowerrc" content="{\n}" force="no" owner="bb" group="root" mode="u=rw,g=r,o=r"
+
+    - name: set .bowerrc proxy settings for HTTP
+      lineinfile: dest="/opt/bb/runtimes/bigboards-mmc/client/.bowerrc" regexp="^\"proxy\":.*" insertafter="^\{$" line="\"proxy\": \"http://{{ http_proxy_host }}:{{ http_proxy_port }}/\""
+
+    - name: set .bowerrc proxy settings for HTTPS
+      lineinfile: dest="/opt/bb/runtimes/bigboards-mmc/client/.bowerrc" regexp="^\"https-proxy\":.*" insertafter="^\{$" line="\"https-proxy\": \"http://{{ https_proxy_host }}:{{ https_proxy_port }}/\""
