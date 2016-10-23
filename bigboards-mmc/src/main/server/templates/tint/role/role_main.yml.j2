@@ -1,4 +1,7 @@
 ---
+- debug:
+    var: "mode"
+
 - include: install.yml
   when: mode == 'install'
 
