@@ -13,7 +13,7 @@
   - name: "Stop running containers"
     shell: "docker stop --time=10 {{ item }}"
     ignore_errors: "yes"
-    with_items: "docker_running.stdout_lines"
+    with_items: "{{docker_running.stdout_lines}}"
 
   - name: "List available containers"
     shell: "docker ps -a |cut -d ' ' -f1 |grep -v CONTAINER"
@@ -23,7 +23,7 @@
   - name: "Remove available containers"
     shell: "docker rm -f {{ item }}"
     ignore_errors: "yes"
-    with_items: "docker_available.stdout_lines"
+    with_items: "{{docker_available.stdout_lines}}"
 
   - name: "Remove data directories"
     file:
