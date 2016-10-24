@@ -17,6 +17,5 @@
   shell: docker rm -f -v [[ role.name ]]
   when: container.stdout.find('"Id":') != -1
 
-- name: remove the container's service script
-  name: make sure the service script is removed
+- name: remove container service script
   file: state=absent path=/etc/init/[[ role.name ]].conf
