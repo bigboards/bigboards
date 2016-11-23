@@ -101,8 +101,9 @@ function generateAnsibleCode(variables, registryService) {
             else throw new Error('Unable to find a mapping for registry ' +  container.registry);
         }
 
-        // -- substitute the role image with an updated one. In case of bigboards images we append the hex architecture
-        if (container.image.indexOf('bigboards/') == 0) {
+        // -- substitute the role image with an updated one.
+        // -- In case of bigboards images we append the hex architecture if its not already there
+        if ((container.image.indexOf('bigboards/') == 0) && (container.image.indexOf(variables.hex.arch) == 0)) {
             // -- we must support image tags which are appended as :tag
             var index = container.image.lastIndexOf(":");
             if (index != -1) {
