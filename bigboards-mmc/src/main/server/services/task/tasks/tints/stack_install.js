@@ -103,7 +103,14 @@ function generateAnsibleCode(variables, registryService) {
 
         // -- substitute the role image with an updated one. In case of bigboards images we append the hex architecture
         if (container.image.indexOf('bigboards/') == 0) {
-            container.image = container.image + '-' + variables.hex.arch;
+            // -- we must support image tags which are appended as :tag
+            var index = container.image.lastIndexOf(":");
+            if (index != -1) {
+                container.image = container.image.substring(0,index) + '-' + variables.hex.arch + container.image.substring(index)
+            }
+            else {
+                container.image = container.image + '-' + variables.hex.arch;
+            }
         }
 
         generateAnsibleRoleCode(variables);
