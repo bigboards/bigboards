@@ -94,7 +94,7 @@
     links:[% for link in role.links %]
       - "[[ link ]]"[% endfor %]
 [% endif %]
-[% if not isFalsy(role.command) %]
+[% if not (isFalsy(role.command) || role.command == "null") %]
     command: "[[ role.command ]]"
 [% elseif not isFalsy(role.scripts.run) %]
     command: "/scripts/run.sh"
