@@ -19,8 +19,9 @@
   file: state="directory" path="[[ dirs.config ]]/[[ volume.host ]]" owner="1000"
 
 - name: list the [[ role.name ]] configuration files to make available
-  find:
-    path: "../templates/[[volume.host]]/*"
+  local_action:
+    module: "find"
+    path: "[[ generator.ansible ]]/roles/[[ role.name ]]/templates/[[volume.host]]"
     recurse: yes
   register: "config_files_list"
 
