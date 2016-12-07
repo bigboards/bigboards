@@ -27,9 +27,9 @@
 
 - name: make sure the [[ role.name ]] configuration files are available
   template:
-    src: "{{ item }}"
+    src: "{{ item.path }}"
     dest: "[[ dirs.config ]]/[[ volume.host ]]"
-  with_items: "{{ config_files_list }}"
+  with_items: "{{ config_files_list.files }}"
 
 [% else %]
 - name: make sure the [[ role.name ]] configuration directory exists
