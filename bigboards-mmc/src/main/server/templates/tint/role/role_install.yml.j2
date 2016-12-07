@@ -18,12 +18,17 @@
 - name: make sure the [[ role.name ]] configuration directory exists
   file: state="directory" path="[[ dirs.config ]]/[[ volume.host ]]" owner="1000"
 
+- name: list the [[ role.name ]] configuration files to make available
+  find:
+    path: "[[ dirs.config ]]/[[ volume.host ]]"
+    recurse: yes
+  register: "config_files_list"
+
 - name: make sure the [[ role.name ]] configuration files are available
   template:
     src: "{{ item }}"
     dest: "[[ dirs.config ]]/[[ volume.host ]]"
-  with_fileglob:
-    - ../templates/[[volume.host]]/*
+  with_items: "{{ config_files_list }}"
 
 [% else %]
 - name: make sure the [[ role.name ]] configuration directory exists
