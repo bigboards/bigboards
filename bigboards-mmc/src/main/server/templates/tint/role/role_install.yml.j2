@@ -50,7 +50,6 @@
 
 - name: make sure the [[ role.name ]] configuration folders are available
   file:
-    state: "directory"
     dest: "[[ dirs.config ]]/[[ volume.host ]]/{{item}}"
     state: "directory"
   with_items: "{{ config_folder_paths }}"
