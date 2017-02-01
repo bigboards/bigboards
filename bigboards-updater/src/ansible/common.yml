@@ -9,7 +9,7 @@
     - "python-pip"
     - "python-dev"
     - "python-setuptools"
-    - "build-essentials"
+    - "build-essential"
     - "apt-transport-https"
     - "libffi-dev"
     - "supervisor"
