@@ -1,0 +1,39 @@
+- name: be sure the serf home directoy has been created
+  file:
+    path: '{{item}}'
+    state: 'directory'
+  with_items:
+    - '/etc/serf'
+    - '/opt/serf'
+    - '/opt/serf/bin'
+
+- name: be sure serf is installed
+  copy:
+    src: 'files/{{ansible_machine}}/serf'
+    dest: '/opt/serf/bin/serf'
+    mode: 755
+  notify: Restart Serf
+
+- name: be sure there is a link to serf
+  file:
+    src: "/opt/serf/bin/serf"
+    dest: "/usr/bin/serf"
+    state: "link"
+
+- name: be sure the serf files are up to date
+  template:
+    src: 'templates/{{ item }}'
+    dest: '/{{ item }}'
+  with_items:
+    - etc/default/serf
+    - etc/init/serf.conf
+    - etc/network/if-down.d/serf
+    - etc/network/if-up.d/serf
+    - etc/dhcp/dhclient-exit-hooks.d/serf
+  notify: Restart Serf
+
+- name: be sure serf has the right configuration
+  template:
+    src: 'templates/etc/serf/serf.conf'
+    dest: '/etc/serf/serf.conf'
+  notify: Restart Serf

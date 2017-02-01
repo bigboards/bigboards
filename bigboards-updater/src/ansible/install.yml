@@ -1,0 +1,114 @@
+## ####################################################################################################################
+## ANSIBLE
+## ####################################################################################################################
+- hosts: host-coordinators
+  become: yes
+  tasks:
+    - name: be sure host key checking is disabled
+      lineinfile:
+        dest: '/etc/ansible/ansible.cfg'
+        regexp: 'host_key_checking '
+        insertafter: '^#host_key_checking '
+        line: 'host_key_checking = False'
+
+## ####################################################################################################################
+## HDD
+## ####################################################################################################################
+- hosts: host
+  become: yes
+  tasks:
+    - shell: mount |grep " / " | cut -d' ' -f1
+      register: root_dev
+
+    - name: be sure the harddisk is initialized
+      shell: creates=/dev/sda1 parted -s /dev/sda mklabel msdos mkpart primary 0% 100%
+      when: root_dev.stdout != '/dev/sda1'
+
+    - name: be sure the harddrive filesystem has been created
+      shell: creates=/root/.sda1.initialized mkfs.ext4 /dev/sda1 && touch /root/.sda1.initialized
+      when: root_dev.stdout != '/dev/sda1'
+
+    - name: be sure the data mountpoint exists
+      file: state=directory path=/data owner=bb
+
+    - name: be sure the correct FSTAB file is installed
+      template: src=templates/etc/fstab-{{ ansible_machine }} dest=/etc/fstab
+      when: root_dev.stdout != '/dev/sda1'
+
+    - name: be sure the data directory is mounted
+      shell: creates=/data/lost+found mount /data
+      when: root_dev.stdout != '/dev/sda1'
+
+    - name: be sure anyone can write in the data directory
+      file: state=directory path=/data owner=bb mode=777 recurse=yes
+
+#######################################################################################################################
+### Hosts
+#######################################################################################################################
+- hosts: host
+  become: yes
+  tasks:
+    - include: common.yml
+    - include: dns.yml
+    - include: ganglia-monitor.yml
+    - include: docker.yml
+    - include: serf.yml
+    - include: butterfly.yml
+
+  handlers:
+    - name: Restart Serf
+      service:
+        name: "serf"
+        state: "restarted"
+
+    - name: Restart Docker
+      service:
+        name: "docker.io"
+        state: "restarted"
+
+    - name: Restart Butterfly
+      supervisorctl:
+        name: "butterfly"
+        state: "restarted"
+
+    - name: Restart Supervisor
+      supervisorctl:
+        name: "supervisor"
+        state: "restarted"
+
+    # gmetad and ganglia-monitor init scripts does not support `status` argument.
+    - name: Restart gmond
+      command: service ganglia-monitor restart
+
+
+#######################################################################################################################
+### Coordinators
+#######################################################################################################################
+- hosts: host-coordinators
+  become: yes
+  tasks:
+    - include: ganglia-master.yml
+
+    - name: make sure the /etc/bigboards directory exists
+      file:
+        path: "/etc/bigboards"
+        state: "directory"
+        owner: "bb"
+        mode: "755"
+
+    - name: make sure the hex.yml file exists
+      template:
+        src: "templates/hex.yml.j2"
+        dest: "/etc/bigboards/hex.yml"
+        owner: "bb"
+        mode: 755
+
+  handles:
+    - name: restart apache
+      service:
+        name: "apache2"
+        status: "restarted"
+
+    # gmetad and ganglia-monitor init scripts does not support `status` argument.
+    - name: restart gmetad
+      command: service gmetad restart

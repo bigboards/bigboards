@@ -1,0 +1,12 @@
+- name: make sure docker can reach its depending libraries
+  file:
+    src: "/lib/arm-linux-gnueabihf/libdevmapper.so.1.02.1"
+    dest: "/lib/arm-linux-gnueabihf/libdevmapper.so.1.02"
+    state: "link"
+
+- name: install docker-hypriot
+  apt:
+    name: "docker-hypriot=1.10.3-*"
+    update_cache: "yes"
+    state: "present"
+  notify: "Restart Docker"

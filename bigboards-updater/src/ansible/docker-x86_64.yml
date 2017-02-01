@@ -1,0 +1,33 @@
+- name: make sure docker can reach its depending libraries
+  file:
+    src: "/lib/x86_64-linux-gnu/libdevmapper.so.1.02.1"
+    dest: "/lib/x86_64-linux-gnu/libdevmapper.so.1.02"
+    state: "link"
+  notify: "Restart Docker"
+
+- name: add the docker apt repository key (without proxy)
+  when: ansible_machine == 'x86_64' and ansible_env.http_proxy is not defined
+  apt_key:
+    keyserver: "hkp://p80.pool.sks-keyservers.net:80"
+    id: "58118E89F3A912897C070ADBF76221572C52609D"
+
+- name: add the docker apt repository key (with proxy)
+  when: ansible_machine == 'x86_64' and ansible_env.http_proxy is defined
+  apt_key:
+      keyserver: "hkp://p80.pool.sks-keyservers.net:80"
+      id: "58118E89F3A912897C070ADBF76221572C52609D"
+  environment:
+      http_proxy: $http_proxy
+      https_proxy: $https_proxy
+
+- name: add the docker apt repository
+  apt_repository:
+    repo: "deb https://apt.dockerproject.org/repo ubuntu-trusty main"
+    state: "present"
+
+- name: install the new docker version
+  apt:
+    name: "docker-engine"
+    update_cache: "yes"
+    state: "present"
+  notify: "Restart Docker"

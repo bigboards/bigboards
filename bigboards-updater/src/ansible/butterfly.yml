@@ -1,0 +1,35 @@
+- name: make sure supervisor runs as the root user
+  template:
+    src: "templates/etc/init.d/supervisor"
+    dest: "/etc/init.d/supervisor"
+  notify: Restart Supervisor
+
+- name: make sure supervisor is started and will start at boot
+  service:
+    name: "supervisor"
+    state: "started"
+    enabled: "yes"
+
+# Ubuntu 14.04 or some install/upgrade seems to break
+# pip in combination with the requests module
+#
+# http://stackoverflow.com/questions/27318535/pip-install-traceback-error-while-installing-packages-in-python
+# https://bugs.launchpad.net/ubuntu/+source/python-pip/+bug/1306991
+#
+# suggested fix = easy_install -U pip
+#
+# Not sure if this is the best approach as we loose control over the exact version that's being installed.
+# Or would if be better to keep our Hexes at the latest Ubuntu version (apt-get upgrade)?
+#    - name: make sure pip is upgraded
+#      shell: easy_install -U pip
+
+- name: make sure butterfly is installed
+  pip:
+    name: "butterfly"
+    state: "present"
+
+- name: make sure the butterfly supervisord file is up to date
+  template:
+    src: "templates/etc/supervisor/conf.d/butterfly.conf"
+    dest: "/etc/supervisor/conf.d/butterfly.conf"
+  notify: Restart Butterfly

@@ -1,0 +1,8 @@
+# We use AWS to make do a mapping from <hex>.hex.bigboards.io to the external
+# ip addresses of a node. The script for doing that is executed when a nic
+# is brought into the up state.
+- name: copy the dns script
+  copy:
+    src: 'templates/dns'
+    dest: '/etc/network/if-up.d/dns'
+    mode: 777

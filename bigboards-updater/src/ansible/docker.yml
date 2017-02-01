@@ -1,0 +1,43 @@
+- name: make sure the docker data directory exists
+  file:
+    state: 'directory'
+    path: '/data/docker'
+    owner: 'bb'
+    mode: '777'
+
+- name: make sure no docker.io or docker daemon is not installed
+  apt:
+    name: "{{ item }}"
+    state: "absent"
+  with_items:
+    - "docker.io"
+    - "docker"
+
+- name: be sure the docker python bindings are installed
+  pip:
+    name: "docker-py"
+    state: "latest"
+
+- name: be sure the requests package for python is removed
+  file:
+    path: "/usr/local/lib/python2.7/dist-packages/requests"
+    state: "absent"
+
+- include: docker-x86_64.yml
+  when: ansible_machine == 'x86_64'
+
+- include: docker-armv7l.yml
+  when: ansible_machine == 'armv7l'
+
+- name: configure the docker daemon
+  lineinfile:
+    dest: "/etc/default/docker"
+    regexp: "^DOCKER_OPTS="
+    line: "DOCKER_OPTS=\"-s aufs -g /data/docker/data -D\""
+  notify: "Restart Docker"
+
+- name: add the bb user to the docker group
+  user:
+    name: "bb"
+    groups: "docker"
+    append: "yes"
