@@ -1,0 +1,35 @@
+- hosts: all:!localhost
+  become: yes
+  tasks:
+    - include: determine-facts.yml
+
+    - include: kernel-x86_64.yml
+      when: ansible_machine == 'x86_64'
+
+    - include: kernel-armv7l.yml
+      when: ansible_machine == 'armv7l'
+
+    - include: common.yml
+
+
+
+
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: make sure the bb directory exists
+      file:
+        path: "/opt/bb"
+        state: "directory"
+        owner: "bb"
+        group: "root"
+
+    - name: make sure the old hosts file is not available anymore
+      file:
+        path: "/opt/bb/hosts"
+        state: "absent"
+
+    - name: make sure the correct dnsmasq file is being used
+      template:
+          src: "templates/dnsmasq.conf"
+          dest: "/etc/dnsmasq.conf"

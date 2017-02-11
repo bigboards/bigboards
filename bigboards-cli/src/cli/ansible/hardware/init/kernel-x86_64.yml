@@ -1,0 +1,4 @@
+- name: install the linux kernel extras
+  apt:
+    name: "linux-image-extra-{{ ansible_kernel }}"
+    state: "latest"

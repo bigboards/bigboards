@@ -1,0 +1,7 @@
+- hosts: host
+  become: yes
+  tasks:
+    - include: docker.part.yml
+    - include: fs.part.yml
+    - include: disk.part.yml
+    - include: network.part.yml

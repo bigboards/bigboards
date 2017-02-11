@@ -1,0 +1,79 @@
+- name: create the ansible facts directory
+  file:
+    state: "directory"
+    path: "/etc/ansible/facts.d"
+
+- name: create the bigboards facts file
+  template:
+    src: "templates/bb.fact"
+    dest: "/etc/ansible/facts.d/bb.fact"
+
+#######################################################################################################################
+### Home Directory
+#######################################################################################################################
+
+- name: make sure the bb user has a valid home directory
+  file:
+    state: directory
+    path: '/home/bb'
+    owner: bb
+    group: root
+
+- name: make sure the resources in the old home are owned by the bb user
+  file:
+    state: directory
+    path: '/opt/bb'
+    owner: bb
+    group: root
+    recurse: yes
+
+- name: make sure the resources from the old home are copied into the new one.
+  become: no
+  shell: cp -r /opt/bb/{{ item }} /home/bb/{{ item }} creates=/home/bb/{{ item }}
+  ignore_errors: yes
+  with_items:
+    - '.ansible'
+    - '.bash_history'
+    - '.cache'
+    - '.local'
+    - '.npm'
+    - '.rnd'
+    - '.ssh'
+    - '.viminfo'
+
+- name: make sure the bb user has the right directory
+  replace:
+    dest: '/etc/passwd'
+    regexp: '/opt/bb'
+    replace: '/home/bb'
+
+- name: make sure the resources from the old home are removed.
+  shell: rm -rf /opt/bb/{{ item }} removes=/opt/bb/{{ item }}
+  with_items:
+    - '.ansible'
+    - '.bash_history'
+    - '.cache'
+    - '.local'
+    - '.npm'
+    - '.rnd'
+    - '.ssh'
+    - '.viminfo'
+
+#######################################################################################################################
+### Home Directory
+#######################################################################################################################
+
+- name: make sure the bigboards data directory exists and has the right permissions
+  file:
+    path: "{{ item }}"
+    owner: bb
+    group: root
+    state: directory
+  with_items:
+    - /data
+    - /data/bigboards
+
+#######################################################################################################################
+### Network
+#######################################################################################################################
+

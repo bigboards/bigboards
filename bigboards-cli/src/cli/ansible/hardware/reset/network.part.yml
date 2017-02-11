@@ -1,0 +1,28 @@
+- name: generate a correct mac address for the internal interface
+  shell: echo "02$(cat /sys/class/net/{{ bb_nic_int }}/address |cut -c 3-17)"
+  register: bb_nic_ext_mac
+
+- name: make sure the network interfaces are set correctly
+  template:
+    src: "templates/interfaces"
+    dest: "/etc/network/interfaces"
+
+- name: make sure the network hosts are set correctly
+  template:
+    src: "templates/hosts"
+    dest: "/etc/hosts"
+
+- name: make sure the ntp.conf file is up to date
+  template:
+    src: "templates/ntp.conf"
+    dest: "/etc/ntp.conf"
+
+- name: make sure the ntp defaults file is up to date
+  copy:
+    src: "files/ntp"
+    dest: "/etc/default/ntp"
+
+- name: make sure the dhcp configuration is set correctly
+  template:
+    src: "templates/dhclient.conf"
+    dest: "/etc/dhcp/dhclient.conf"

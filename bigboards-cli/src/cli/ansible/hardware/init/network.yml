@@ -1,0 +1,43 @@
+- name: generate a correct mac address for the internal interface
+  shell: echo "02$(cat /sys/class/net/{{ ansible_local.bb.node.nic_int }}/address |cut -c 3-17)"
+  register: nic_ext_mac
+
+- name: make sure the network interfaces are set correctly
+  template:
+    src: interfaces
+    dest: /etc/network/interfaces
+
+- name: make sure the network hosts are set correctly
+  template:
+    src: hosts
+    dest: /etc/hosts
+
+- name: make sure some necessary packages are installed
+  apt:
+    name: '{{ item }}'
+    state: 'latest'
+  with_items:
+    - parted
+    - apparmor
+    - ntp
+    - dnsmasq
+
+- name: make sure the ntp.conf file is up to date
+  template:
+    src: 'ntp.conf'
+    dest: '/etc/ntp.conf'
+
+- name: make sure the ntp defaults file is up to date
+  template:
+    src: 'default/ntp'
+    dest: '/etc/default/ntp'
+
+- name: make sure the dhcp configuration is set correctly
+  template:
+    src: dhclient.conf
+    dest: /etc/dhcp/dhclient.conf
+
+- name: make sure the dns configuration is set correctly
+  template:
+    src: resolv.conf
+    dest: /etc/resolv.conf

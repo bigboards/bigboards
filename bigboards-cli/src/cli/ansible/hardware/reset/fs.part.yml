@@ -1,0 +1,8 @@
+- name: remove existing packages
+  apt:
+    name: "{{ item }}"
+    purge: "yes"
+    state: "absent"
+  with_items:
+    - "bigboards-mmc"
+    - "bigboards-updater"

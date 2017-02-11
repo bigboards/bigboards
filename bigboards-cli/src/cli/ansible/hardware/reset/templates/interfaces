@@ -1,0 +1,20 @@
+auto lo
+iface lo inet loopback
+
+# internal network interface
+auto {{ bb_nic_int }}
+iface {{ bb_nic_int }} inet static
+    address {{ bb_node_address }}
+    netmask {{ bb_netmask }}
+{% if 'host-coordinators' in group_names %}
+    dns-nameservers 127.0.0.1
+{% else %}
+    dns-nameservers {{ bb_dns }}
+{% endif %}
+
+# external network interface
+auto {{ bb_nic_ext }}
+iface {{ bb_nic_ext }} inet dhcp
+    pre-up ip link add link {{ bb_nic_int }} {{ bb_nic_ext }} type macvlan
+    pre-up ifconfig {{ bb_nic_ext }} hw ether {{ bb_nic_ext_mac.stdout }}
+    post-down ip link del {{ bb_nic_ext }}

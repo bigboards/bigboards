@@ -1,0 +1,44 @@
+# Check if docker.io is installed
+- shell: [ $(dpkg -l |grep docker.io | wc -l) -ge 1 ] && echo 1 || echo 0
+  register: docker_io_installed
+
+- shell: [ $(dpkg -l |grep docker-engine | wc -l) -ge 1 ] && echo 1 || echo 0
+  register: docker_engine_installed
+
+- shell: [ $(dpkg -l |grep docker-hypriot | wc -l) -ge 1 ] && echo 1 || echo 0
+  register: docker_hypriot_installed
+
+- set_fact:
+    docker_installed: "1" in docker_io_installed.stdout or "1" in docker_io_installed.stdout or "1" in docker_io_installed.stdout
+
+- debug:
+    var: docker_installed
+
+- name: kill and remove all docker containers
+  shell: docker rm -v -f $(docker ps -a -q)
+  when: docker_installed
+
+- name: remove all docker images
+  shell: docker rmi $(docker images -q)
+  when: docker_installed
+
+- name: remove docker.io
+  when: "1" in docker_io_installed.stdout
+  apt:
+    name: docker.io
+    purge: yes
+    state: absent
+
+- name: remove docker-engine
+  when: "1" in docker_engine_installed.stdout
+  apt:
+    name: docker-engine
+    purge: yes
+    state: absent
+
+- name: remove docker-hypriot
+  when: "1" in docker_hypriot_installed.stdout
+  apt:
+    name: docker-hypriot
+    purge: yes
+    state: absent
