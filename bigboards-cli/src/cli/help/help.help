@@ -1,0 +1,14 @@
+Interact with the hex.
+
+USAGE: $0 [firmware|network|run|mmc|container|system|help]
+
+OPTIONS
+
+    firmware    Manage the hex firmware.
+    network     Manage the network.
+    run         Run a command on all nodes of the hex.
+    mmc         Pass a command to the mmc daemon.
+    container   Manage the docker containers.
+    system      Manage the system.
+    help        Show this help message
+

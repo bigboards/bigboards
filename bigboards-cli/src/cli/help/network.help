@@ -1,0 +1,21 @@
+Manage the network.
+
+USAGE: $0 network [switch|proxy|help] [arguments]
+
+OPTIONS
+
+    switch  Switch the internal network. This is an important step when using multiple
+            hexes in the same network.
+
+            arguments:
+                range         The network prefix to use. This is the first 3 numbers of your
+                              ip address. Valid examples are 172.21.3 or 192.168.1
+                mask          The netmask to use. this usually is something like 255.255.255.0,
+                              255.255.0.0 or 255.0.0.0
+                itf           The name of the physical network interface
+
+    proxy   Set the proxy servers for your device's various networked services. You'll be
+            asked interactively for HTTP and HTTPS server addresses and ports.
+
+    help    Show this help message
+

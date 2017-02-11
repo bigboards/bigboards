@@ -1,0 +1,34 @@
+Manage the docker containers.
+
+USAGE: $0 container [list|attach|tail|build|help] [arguments]
+
+OPTIONS
+
+    list    List the available containers
+
+
+    attach  Attach the terminal to the container with the given name
+
+            arguments:
+                container-name     The name of the container to connect to
+
+
+    tail    Follow the output of the container with the given name
+
+            arguments:
+                container-name     The name of the container to connect to
+
+
+    build   Build the docker containers for the tint with the given git url. We will look for a
+            folder named 'docker' inside the repository. We will consider each subfolder of the
+            docker folder a repository.
+
+            arguments:
+                git-url           The url pointing to the git repository. The git url can be one
+                                  from github, bitbucket or any other valid url which can be passed
+                                  to the git clone command.
+                folder-name       The name of the folder hosting the tint files.
+
+
+    help    Show this help message
+

@@ -1,0 +1,19 @@
+Manage the software version on the hex.
+
+USAGE: $0 firmware [upgrade|update|help] [arguments]
+
+OPTIONS
+
+    update  Update the software version on the hex. An update is a smaller update of some of the
+            functionality of the hex.
+
+
+    upgrade Upgrade to a new release of the software. A release is different from an update
+            and is considered to be a major upgrade.
+
+            arguments:
+                release-name     The name of the release to upgrade to
+
+
+    help    Show this help message
+

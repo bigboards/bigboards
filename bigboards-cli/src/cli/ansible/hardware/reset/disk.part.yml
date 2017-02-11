@@ -5,13 +5,15 @@
   register: root_dev
 
 - mount:
-    path: "/data"
+    name: "/data"
     src: "{{ data_dev.stdout }}"
     state: "unmounted"
-  when: "/dev/" in data_dev.stdout and root_dev.stdout != data_dev.stdout
+  when: '"/dev/" in data_dev.stdout and root_dev.stdout != data_dev.stdout'
+
+- shell: rm -rf /data/*
 
 - mount:
-    path: "/data"
+    name: "/data"
     src: "{{ data_dev.stdout }}"
     state: "absent"
-  when: "/dev/" in data_dev.stdout and root_dev.stdout != data_dev.stdout
+  when: '"/dev/" in data_dev.stdout and root_dev.stdout != data_dev.stdout'

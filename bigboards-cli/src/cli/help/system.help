@@ -1,0 +1,19 @@
+Manage the system.
+
+USAGE: $0 system [purge|version|help]
+
+OPTIONS
+
+    bootstrap   Bootstrap the system. This should only be needed the first time you boot the hex.
+
+    init        Initialize the cluster.
+
+    purge       Clear the system from all containers and state. You will end up with a
+                pristine system to start from.
+
+
+    version     Show the hardware revision
+
+
+    help        Show this help message
+

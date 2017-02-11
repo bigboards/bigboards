@@ -1,0 +1,10 @@
+Manage the hardware.
+
+USAGE: $0 hardware [reset|help] [arguments]
+
+OPTIONS
+
+    reset   Reset the hardware back to factory defaults.
+
+    help    Show this help message
+

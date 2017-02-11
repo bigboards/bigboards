@@ -1,6 +1,14 @@
 - name: generate a correct mac address for the internal interface
-  shell: echo "02$(cat /sys/class/net/{{ bb_nic_int }}/address |cut -c 3-17)"
+  shell: echo "02$(cat /sys/class/net/eth0/address |cut -c 3-17)"
   register: bb_nic_ext_mac
+
+- name: get the current netmask
+  shell: ifconfig eth0 |grep "Mask:" | tr -s ' ' | cut -d ' ' -f5 | cut -d ':' -f2
+  register: bb_netmask
+
+- name: get the current ip address
+  shell: ifconfig eth0 |grep "Mask:" | tr -s ' ' | cut -d ' ' -f3 | cut -d ':' -f2
+  register: bb_node_address
 
 - name: make sure the network interfaces are set correctly
   template:

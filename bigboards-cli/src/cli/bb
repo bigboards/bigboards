@@ -91,6 +91,14 @@ update() {
 verifyPrerequisites
 
 case "${ACTION}" in
+    hardware)
+        case "${2}" in
+            reset)
+                ${DIR}/scripts/bb-hardware-reset.sh ;;
+            help|*)
+                cat ${DIR}/help/hardware.help ;;
+        esac
+        ;;
     firmware)
         case "${2}" in
             upgrade)
@@ -105,27 +113,7 @@ case "${ACTION}" in
                 update
                 ;;
             help|*)
-                cat <<-EOF
-Manage the software version on the hex.
-
-USAGE: $0 firmware [upgrade|update|help] [arguments]
-
-OPTIONS
-
-    update  Update the software version on the hex. An update is a smaller update of some of the
-            functionality of the hex.
-
-
-    upgrade Upgrade to a new release of the software. A release is different from an update
-            and is considered to be a major upgrade.
-
-            arguments:
-                release-name     The name of the release to upgrade to
-
-
-    help    Show this help message
-
-EOF
+                cat "${DIR}/help/firmware.help"
                 ;;
         esac
         ;;
@@ -179,30 +167,7 @@ EOF
                 [ $? -eq 0 ] && requestPowerCycle
                 ;;
             help|*)
-                cat <<-EOF
-Manage the network.
-
-USAGE: $0 network [switch|proxy|help] [arguments]
-
-OPTIONS
-
-    switch  Switch the internal network. This is an important step when using multiple
-            hexes in the same network.
-
-            arguments:
-                range         The network prefix to use. This is the first 3 numbers of your
-                              ip address. Valid examples are 172.21.3 or 192.168.1
-                mask          The netmask to use. this usually is something like 255.255.255.0,
-                              255.255.0.0 or 255.0.0.0
-                itf           The name of the physical network interface
-
-    proxy   Set the proxy servers for your device's various networked services. You'll be
-            asked interactively for HTTP and HTTPS server addresses and ports.
-
-    help    Show this help message
-
-EOF
-                ;;
+                cat "${DIR}/help/network.help" ;;
         esac
         ;;
     run)
@@ -260,42 +225,7 @@ EOF
                 popd
                 ;;
             help|*)
-                cat <<-EOF
-Manage the docker containers.
-
-USAGE: $0 container [list|attach|tail|build|help] [arguments]
-
-OPTIONS
-
-    list    List the available containers
-
-
-    attach  Attach the terminal to the container with the given name
-
-            arguments:
-                container-name     The name of the container to connect to
-
-
-    tail    Follow the output of the container with the given name
-
-            arguments:
-                container-name     The name of the container to connect to
-
-
-    build   Build the docker containers for the tint with the given git url. We will look for a
-            folder named 'docker' inside the repository. We will consider each subfolder of the
-            docker folder a repository.
-
-            arguments:
-                git-url           The url pointing to the git repository. The git url can be one
-                                  from github, bitbucket or any other valid url which can be passed
-                                  to the git clone command.
-                folder-name       The name of the folder hosting the tint files.
-
-
-    help    Show this help message
-
-EOF
+                cat "${DIR}/help/container.help"
                 ;;
             *)
         esac
@@ -327,46 +257,11 @@ EOF
                 fi
                 ;;
             help|*)
-                cat <<-EOF
-Manage the system.
-
-USAGE: $0 system [purge|version|help]
-
-OPTIONS
-
-    bootstrap   Bootstrap the system. This should only be needed the first time you boot the hex.
-
-    init        Initialize the cluster.
-
-    purge       Clear the system from all containers and state. You will end up with a
-                pristine system to start from.
-
-
-    version     Show the hardware revision
-
-
-    help        Show this help message
-
-EOF
+                cat "${DIR}/help/system.help"
                 ;;
         esac
         ;;
     help|*)
-        cat <<-EOF
-Interact with the hex.
-
-USAGE: $0 [firmware|network|run|mmc|container|system|help]
-
-OPTIONS
-
-    firmware    Manage the hex firmware.
-    network     Manage the network.
-    run         Run a command on all nodes of the hex.
-    mmc         Pass a command to the mmc daemon.
-    container   Manage the docker containers.
-    system      Manage the system.
-    help        Show this help message
-
-EOF
+        cat "${DIR}/help/help.help"
         ;;
 esac
