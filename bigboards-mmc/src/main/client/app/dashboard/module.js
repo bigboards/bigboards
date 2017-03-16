@@ -1,5 +1,19 @@
 var dashboardModule = angular.module('bb.dashboard', ['ngResource']);
 
+/*
+ * Browser do support SSH protocol handling. Even on Windows! But we must enable ssh as safe protocol
+ *
+ * http://docs.rightscale.com/faq/How_Do_I_Configure_My_Native_SSH_Client_to_Work_with_RightScale.html
+ * http://stackoverflow.com/questions/15606751/angular-changes-urls-to-unsafe-in-extension-page
+ */
+dashboardModule.config([
+    '$compileProvider',
+    function( $compileProvider ) {
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|ssh):/);
+        // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
+    }
+]);
+
 dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'Tints', 'Tasks', 'socket', 'ApiFeedback', '$location',
                                           function ($scope,   Hex,   Nodes,   Tints,   Tasks,   socket,   ApiFeedback,   $location) {
     $scope.nodes = Nodes.list();
@@ -20,6 +34,11 @@ dashboardModule.controller('DashboardController', ['$scope', 'Hex', 'Nodes', 'Ti
 
     Hex.getIdentity().then(function(identity) {
         $scope.deviceName = identity.name;
+
+        $scope.urlHandling = identity['mmc.terminal.url'];
+        if (!$scope.urlHandling) {
+            $scope.urlHandling = 'http';
+        }
     });
 
 
