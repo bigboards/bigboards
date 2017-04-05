@@ -75,14 +75,14 @@ libraryModule.service('Library', ['settings', '$http', function(settings, $http)
     };
 
     Library.prototype.get = function(type, owner, slug) {
-        var url = 'http://' + settings.hive.host + ':' + settings.hive.port + settings.hive.path + '/' + type + '/' + owner + '/' + slug;
+        var url = settings.hive.protocol + '://' + settings.hive.host + ':' + settings.hive.port + settings.hive.path + '/' + type + '/' + owner + '/' + slug;
         return $http.get(url, this.options).then(function(data) {
             return data.data;
         });
     };
 
     Library.prototype.search = function(query, offset, size) {
-        var url = 'http://' + settings.hive.host + ':' + settings.hive.port + settings.hive.path;
+        var url = settings.hive.protocol + '://' + settings.hive.host + ':' + settings.hive.port + settings.hive.path;
 
         var queryParameters = [];
         if (query.query) queryParameters.push('q=' + encodeURIComponent(query.query) + "*");
@@ -117,7 +117,7 @@ libraryModule.service('Library', ['settings', '$http', function(settings, $http)
     };
 
     Library.prototype.list = function(query) {
-        var url = 'http://' + settings.hive.host + ':' + settings.hive.port + settings.hive.path;
+        var url = settings.hive.protocol + '://' + settings.hive.host + ':' + settings.hive.port + settings.hive.path;
 
         var queryParameters = [];
         if (query.scope) queryParameters.push('scope=' + encodeURIComponent(query.scope));

@@ -51,6 +51,7 @@ function initializeMMCConfiguration() {
 
     // -- read the environment variables which will allow configuration parameters to be overridden
     if (process.env.DOCKER_REGISTRY) config.docker.registry = process.env.DOCKER_REGISTRY;
+    if (process.env.HIVE_PROTOCOL) config.hive.protocol = process.env.HIVE_PROTOCOL;
     if (process.env.HIVE_HOST) config.hive.host = process.env.HIVE_HOST;
     if (process.env.HIVE_PORT) config.hive.port = process.env.HIVE_PORT;
 
