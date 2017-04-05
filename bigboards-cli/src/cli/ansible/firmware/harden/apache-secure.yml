@@ -1,0 +1,84 @@
+---
+- name: "install auth modules"
+  package:
+    name: "{{ item }}"
+    state: "latest"
+  with_items:
+    - "libapache2-mod-authnz-external"
+    - "libapache2-mod-authz-unixgroup"
+    - "pwauth"
+
+- name: "disable some defaults"
+  file:
+    path: "/etc/apache2/sites-enabled/{{ item }}"
+    state: "absent"
+    src: "/etc/apache2/sites-available/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "u+rw,g=r,o=r"
+  with_items:
+   - "000-default.conf"
+   - "default-ssl.conf"
+
+- name: "only highly secure ciphers"
+  lineinfile:
+    dest: "/etc/apache2/mods-available/ssl.conf"
+    regexp: "^[ \t]SSLCipherSuite"
+    line: "\tSSLCipherSuite HIGH:!aNULL:!MD5"
+
+- name: "install authz_external_pwauth.conf"
+  template:
+    src: "templates/etc/apache2/mods-available/authnz_external_pwauth.conf"
+    dest: "/etc/apache2/mods-available/authnz_external_pwauth.conf"
+    owner: "root"
+    group: "root"
+    mode: "u+rw,g=r,o=r"
+
+- name: "install alternative confs"
+  template:
+    src: "templates/etc/apache2/sites-available/{{ item }}"
+    dest: "/etc/apache2/sites-available/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "u+rw,g=r,o=r"
+  with_items:
+    - "redirect-https.conf"
+    - "bigboards-mmc.conf"
+
+- name: "enable mods on apache2"
+  file:
+    path: "/etc/apache2/mods-enabled/{{ item }}"
+    state: "link"
+    src: "/etc/apache2/mods-available/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "u+rw,g=r,o=r"
+  with_items:
+    - "socache_shmcb.load"
+    - "ssl.load"
+    - "ssl.conf"
+    - "authnz_external.load"
+    - "authz_unixgroup.load"
+    - "authnz_external_pwauth.conf"
+    - "proxy.load"
+    - "proxy_http.load"
+    - "proxy_wstunnel.load"
+    - "rewrite.load"
+
+- name: "enable alternatives"
+  file:
+    path: "/etc/apache2/sites-enabled/{{ item }}"
+    state: "link"
+    src: "/etc/apache2/sites-available/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "u+rw,g=r,o=r"
+  with_items:
+    - "redirect-https.conf"
+    - "bigboards-mmc.conf"
+
+- name: "restart apache2"
+  service:
+    name: "apache2"
+    state: "restarted"
+  become: "true"

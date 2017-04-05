@@ -14,6 +14,7 @@ OPTIONS
             arguments:
                 release-name     The name of the release to upgrade to
 
+    harden  Tighten the security of the hex regarding the use of the firmware applications.
 
     help    Show this help message
 

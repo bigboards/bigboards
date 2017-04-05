@@ -112,6 +112,9 @@ case "${ACTION}" in
             update)
                 update
                 ;;
+            harden)
+                ${PLAYBOOK} ${DIR}/ansible/firmware/harden/main.yml
+                ;;
             help|*)
                 cat "${DIR}/help/firmware.help"
                 ;;
@@ -145,7 +148,7 @@ case "${ACTION}" in
                     exit 1
                 fi
 
-                ansible-playbook ${DIR}/ansible/network/switch/switch_network.yml --extra-vars "network_range=${3} network_mask=${4} itf=${5}"
+                ${PLAYBOOK} ${DIR}/ansible/network/switch/switch_network.yml --extra-vars "network_range=${3} network_mask=${4} itf=${5}"
 
                 [ $? -eq 0 ] && requestPowerCycle
                 ;;
@@ -162,7 +165,7 @@ case "${ACTION}" in
                 echo -n "Please enter the port of your HTTPS proxy server [eg. 8080]: "
                 read HTTPS_PROXY_PORT
 
-                ansible-playbook ${DIR}/ansible/network/proxy/set_proxy.yml --extra-vars "http_proxy_host=${HTTP_PROXY_HOST} http_proxy_port=${HTTP_PROXY_PORT} https_proxy_host=${HTTPS_PROXY_HOST} https_proxy_port=${HTTPS_PROXY_PORT}"
+                ${PLAYBOOK} ${DIR}/ansible/network/proxy/set_proxy.yml --extra-vars "http_proxy_host=${HTTP_PROXY_HOST} http_proxy_port=${HTTP_PROXY_PORT} https_proxy_host=${HTTPS_PROXY_HOST} https_proxy_port=${HTTPS_PROXY_PORT}"
 
                 [ $? -eq 0 ] && requestPowerCycle
                 ;;

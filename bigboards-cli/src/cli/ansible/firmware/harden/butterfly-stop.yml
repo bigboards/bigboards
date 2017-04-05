@@ -1,0 +1,5 @@
+---
+- name: 'butterfly stop'
+  supervisorctl:
+    name: 'butterfly'
+    state: 'stopped'

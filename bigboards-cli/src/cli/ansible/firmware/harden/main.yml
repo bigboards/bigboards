@@ -1,0 +1,10 @@
+---
+- hosts: "host-coordinators"
+  become: "yes"
+  tasks:
+    - include: "apache-secure.yml"
+
+- hosts: "host"
+  become: "yes"
+  tasks:
+    - include: "butterfly-stop.yml"
