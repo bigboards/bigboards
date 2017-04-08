@@ -5,7 +5,7 @@
     state: "link"
 
 - name: make sure hypriot apt-repository is installed
-  apt-repository:
+  apt_repository:
     repo: "{{ item }}"
     state: "present"
   with_items:
