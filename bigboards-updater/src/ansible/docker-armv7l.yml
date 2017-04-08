@@ -4,6 +4,14 @@
     dest: "/lib/arm-linux-gnueabihf/libdevmapper.so.1.02"
     state: "link"
 
+- name: make sure hypriot apt-repository is installed
+  apt-repository:
+    repo: "{item}"
+    state: "present"
+  with_items:
+    - "deb https://packagecloud.io/Hypriot/Schatzkiste/ubuntu/ trusty main"
+    - "deb-src https://packagecloud.io/Hypriot/Schatzkiste/ubuntu/ trusty main"
+
 - name: install docker-hypriot
   apt:
     name: "docker-hypriot=1.10.3-*"
