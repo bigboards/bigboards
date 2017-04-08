@@ -6,7 +6,7 @@
 
 - name: make sure hypriot apt-repository is installed
   apt-repository:
-    repo: "{item}"
+    repo: "{{ item }}"
     state: "present"
   with_items:
     - "deb https://packagecloud.io/Hypriot/Schatzkiste/ubuntu/ trusty main"
