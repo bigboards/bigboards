@@ -20,6 +20,7 @@ module.exports = {
             is_dev: true,
             is_prod: false,
             port: process.env.PORT || 7000,
+            hostname: '0.0.0.0',
             host: os.hostname(),
             file: {
                 hosts: fsu.absolute('local/root/hosts'),
@@ -52,6 +53,7 @@ module.exports = {
             is_dev: false,
             is_prod: true,
             port: process.env.PORT || 7000,
+            hostname: '0.0.0.0',
             host: os.hostname(),
             file: {
                 hosts: '/etc/ansible/hosts',
@@ -84,6 +86,7 @@ module.exports = {
             is_dev: false,
             is_prod: true,
             port: process.env.PORT || 7000,
+            hostname: 'localhost',
             host: os.hostname(),
             file: {
                 hosts: '/etc/ansible/hosts',

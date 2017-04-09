@@ -35,8 +35,8 @@ serfer.connect().then(function() {
 
     var io = initializeSocketIO(server, services);
 
-    server.listen(app.get('port'), function () {
-        winston.info('BigBoards-mmc listening on port ' + app.get('port'));
+    server.listen(app.get('port'), app.get('hostname'), function () {
+        winston.info('BigBoards-mmc listening to ' + app.get('hostname') + ' on port ' + app.get('port'));
     });
 }).fail(function(error) {
     handleError(error);
@@ -73,6 +73,7 @@ function initializeExpress() {
     };
 
     app.set('port', mmcConfig.port);
+    app.set('hostname', mmcConfig.hostname);
     //app.use(function(req, res, next) {
     //    res.header("Access-Control-Allow-Origin", "*");
     //    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");

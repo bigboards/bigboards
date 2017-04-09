@@ -1,0 +1,7 @@
+---
+- name: 'use hardened environment'
+  lineinfile:
+    path: '/etc/init/bigboards-mmc.conf'
+    regexp: '^env BB_ENVIRONMENT='
+    line: 'env BB_ENVIRONMENT=hardened'
+  notify: 'restart bigboards-mmc'

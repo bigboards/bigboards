@@ -1,4 +1,34 @@
 ---
+- name: "ensure /etc/bigboards/ssl folders are present"
+  file:
+    path: "{{ item.path }}"
+    state: "directory"
+    owner: "root"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - "{ path: '/etc/bigboards/ssl', group: 'root', mode: 'u=rwx,g=rx,o=rx'"
+    - "{ path: '/etc/bigboards/ssl/certs', group: 'root', mode: 'u=rwx,g=rx,o=rx'"
+    - "{ path: '/etc/bigboards/ssl/private', group: 'ssl-cert', mode: 'u=rwx,g=x,o='"
+
+- name: "install bigboards-mmc snakeoil certs"
+  file:
+    path: "/etc/bigboards/ssl/certs/ssl-cert-bigboards-mmc.pem"
+    state: "link"
+    scr: " /etc/ssl/certs/ssl-cert-snakeoil.pem"
+    owner: "root"
+    group: "root"
+    mode: "u=rw,g=r,o=r"
+
+- name: "install bigboards-mmc snakeoil key"
+  file:
+    path: "/etc/bigboards/ssl/private/ssl-cert-bigboards-mmc.key"
+    state: "link"
+    scr: " /etc/ssl/private/ssl-cert-snakeoil.key"
+    owner: "root"
+    group: "ssl-cert"
+    mode: "u=rw,g=r,o="
+
 - name: "install auth modules"
   package:
     name: "{{ item }}"
@@ -17,14 +47,16 @@
     group: "root"
     mode: "u+rw,g=r,o=r"
   with_items:
-   - "000-default.conf"
-   - "default-ssl.conf"
+    - "000-default.conf"
+    - "default-ssl.conf"
+  notify: "restart apache2"
 
 - name: "only highly secure ciphers"
   lineinfile:
     dest: "/etc/apache2/mods-available/ssl.conf"
     regexp: "^[ \t]SSLCipherSuite"
     line: "\tSSLCipherSuite HIGH:!aNULL:!MD5"
+  notify: "restart apache2"
 
 - name: "install authz_external_pwauth.conf"
   template:
@@ -32,7 +64,8 @@
     dest: "/etc/apache2/mods-available/authnz_external_pwauth.conf"
     owner: "root"
     group: "root"
-    mode: "u+rw,g=r,o=r"
+    mode: "u=rw,g=r,o=r"
+  notify: "restart apache2"
 
 - name: "install alternative confs"
   template:
@@ -40,10 +73,11 @@
     dest: "/etc/apache2/sites-available/{{ item }}"
     owner: "root"
     group: "root"
-    mode: "u+rw,g=r,o=r"
+    mode: "u=rw,g=r,o=r"
   with_items:
     - "redirect-https.conf"
     - "bigboards-mmc.conf"
+  notify: "restart apache2"
 
 - name: "enable mods on apache2"
   file:
@@ -52,7 +86,7 @@
     src: "/etc/apache2/mods-available/{{ item }}"
     owner: "root"
     group: "root"
-    mode: "u+rw,g=r,o=r"
+    mode: "u=rw,g=r,o=r"
   with_items:
     - "socache_shmcb.load"
     - "ssl.load"
@@ -64,6 +98,7 @@
     - "proxy_http.load"
     - "proxy_wstunnel.load"
     - "rewrite.load"
+  notify: "restart apache2"
 
 - name: "enable alternatives"
   file:
@@ -72,13 +107,8 @@
     src: "/etc/apache2/sites-available/{{ item }}"
     owner: "root"
     group: "root"
-    mode: "u+rw,g=r,o=r"
+    mode: "u=rw,g=r,o=r"
   with_items:
     - "redirect-https.conf"
     - "bigboards-mmc.conf"
-
-- name: "restart apache2"
-  service:
-    name: "apache2"
-    state: "restarted"
-  become: "true"
+  notify: "restart apache2"

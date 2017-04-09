@@ -3,6 +3,16 @@
   become: "yes"
   tasks:
     - include: "apache-secure.yml"
+    - include: "mmc-secure.yml"
+  handlers:
+    - name: "restart apache2"
+      service:
+        name: "apache2"
+        state: "restarted"
+    - name: "restart bigboards-mmc"
+      service:
+        name: "bigboards-mmc"
+        state: "restarted"
 
 - hosts: "host"
   become: "yes"
