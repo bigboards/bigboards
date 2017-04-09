@@ -63,7 +63,7 @@
         src: "templates/etc/bigboards/hex.yml.j2"
         dest: "/etc/bigboards/hex.yml"
         owner: "bb"
-        mode: 755
+        mode: "u=rx,g=r,o=r"
 
   handlers:
     - name: restart apache
