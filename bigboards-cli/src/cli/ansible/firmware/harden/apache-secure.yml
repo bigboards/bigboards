@@ -15,7 +15,7 @@
   file:
     path: "/etc/bigboards/ssl/certs/ssl-cert-bigboards-mmc.pem"
     state: "link"
-    scr: " /etc/ssl/certs/ssl-cert-snakeoil.pem"
+    src: " /etc/ssl/certs/ssl-cert-snakeoil.pem"
     owner: "root"
     group: "root"
     mode: "u=rw,g=r,o=r"
@@ -24,7 +24,7 @@
   file:
     path: "/etc/bigboards/ssl/private/ssl-cert-bigboards-mmc.key"
     state: "link"
-    scr: " /etc/ssl/private/ssl-cert-snakeoil.key"
+    src: " /etc/ssl/private/ssl-cert-snakeoil.key"
     owner: "root"
     group: "ssl-cert"
     mode: "u=rw,g=r,o="
