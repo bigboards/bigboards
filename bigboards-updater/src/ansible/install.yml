@@ -30,7 +30,7 @@
         state: "restarted"
     - name: Restart Docker
       service:
-        name: "docker.io"
+        name: "docker"
         state: "restarted"
     - name: Restart Butterfly
       supervisorctl:
