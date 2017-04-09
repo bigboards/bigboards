@@ -7,9 +7,9 @@
     group: "{{ item.group }}"
     mode: "{{ item.mode }}"
   with_items:
-    - "{ path: '/etc/bigboards/ssl', group: 'root', mode: 'u=rwx,g=rx,o=rx'"
-    - "{ path: '/etc/bigboards/ssl/certs', group: 'root', mode: 'u=rwx,g=rx,o=rx'"
-    - "{ path: '/etc/bigboards/ssl/private', group: 'ssl-cert', mode: 'u=rwx,g=x,o='"
+    - { path: "/etc/bigboards/ssl", group: "root", mode: "u=rwx,g=rx,o=rx" }
+    - { path: "/etc/bigboards/ssl/certs", group: "root", mode: "u=rwx,g=rx,o=rx" }
+    - { path: "/etc/bigboards/ssl/private", group: "ssl-cert", mode: "u=rwx,g=x,o=" }
 
 - name: "install bigboards-mmc snakeoil certs"
   file:
