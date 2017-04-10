@@ -3,3 +3,9 @@
   supervisorctl:
     name: 'butterfly'
     state: 'stopped'
+
+- name: 'ssh url handling'
+  lineinfile:
+    path: '/etc/bigboards/hex.yml'
+    regexp: '^mmc.terminal.url:'
+    line: 'mmc.terminal.url: ssh'
