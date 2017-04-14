@@ -8,6 +8,7 @@
     name: "/data"
     src: "{{ data_dev.stdout }}"
     state: "unmounted"
+    fstype: "ext4"
   when: '"/dev/" in data_dev.stdout and root_dev.stdout != data_dev.stdout'
 
 - shell: rm -rf /data/*
@@ -16,4 +17,5 @@
     name: "/data"
     src: "{{ data_dev.stdout }}"
     state: "absent"
+    fstype: "ext4"
   when: '"/dev/" in data_dev.stdout and root_dev.stdout != data_dev.stdout'

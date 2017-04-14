@@ -8,19 +8,44 @@
 - shell: dpkg -l |grep docker-hypriot | wc -l
   register: docker_hypriot_installed
 
+- debug:
+    var: docker_io_installed
+
+- debug:
+    var: docker_engine_installed
+
+- debug:
+    var: docker_hypriot_installed
+
 - set_fact:
-    docker_installed: docker_io_installed.stdout != "0" or docker_io_installed.stdout != "0" or docker_io_installed.stdout != "0"
+    docker_installed: '{{docker_io_installed.stdout != "0" or docker_io_installed.stdout != "0" or docker_io_installed.stdout != "0"}}'
 
 - debug:
     var: docker_installed
 
+- name: list docker containers
+  shell: docker ps -a -q
+  when: docker_installed
+  register: docker_containers
+
+- debug:
+    var: docker_containers
+
 - name: kill and remove all docker containers
   shell: docker rm -v -f $(docker ps -a -q)
+  when: docker_installed and docker_containers.changed and docker_containers.stdout != ""
+
+- name: list docker images
+  shell: docker images -q
   when: docker_installed
+  register: docker_images
+
+- debug:
+    var: docker_images
 
 - name: remove all docker images
   shell: docker rmi $(docker images -q)
-  when: docker_installed
+  when: docker_installed and docker_images.changed and docker_images.stdout != ""
 
 - name: remove docker.io
   when: docker_io_installed.stdout != "0"
