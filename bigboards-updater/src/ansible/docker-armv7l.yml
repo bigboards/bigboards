@@ -19,20 +19,22 @@
 
 - name: add the docker apt repository key (without proxy)
   when: ansible_machine == 'armv7l' and ansible_env.http_proxy is not defined
-  apt_key:
-    url: "https://download.docker.com/linux/ubuntu/gpg"
+  shell: "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
+#  apt_key:
+#    url: "https://download.docker.com/linux/ubuntu/gpg"
 
 - name: add the docker apt repository key (with proxy)
   when: ansible_machine == 'armv7l' and ansible_env.http_proxy is defined
-  apt_key:
-    url: "https://download.docker.com/linux/ubuntu/gpg"
+  shell: "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -"
+#  apt_key:
+#    url: "https://download.docker.com/linux/ubuntu/gpg"
   environment:
       http_proxy: $http_proxy
       https_proxy: $https_proxy
 
 - name: add the docker apt repository
   apt_repository:
-    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu trusty stable"
+    repo: "deb [arch=armhf] https://download.docker.com/linux/ubuntu trusty stable"
     state: "present"
 
 - name: install the new docker version
