@@ -12,6 +12,7 @@
   with_items:
     - "docker.io"
     - "docker"
+    - "docker-hypriot"
 
 - name: be sure the docker python bindings are installed
   pip:

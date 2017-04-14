@@ -7,19 +7,37 @@
 - name: make sure hypriot apt-key is installed
   apt_key:
     url: "https://packagecloud.io/Hypriot/Schatzkiste/gpgkey"
-    state: "present"
+    state: "absent"
 
 - name: make sure hypriot apt-repository debian is installed
   apt_repository:
     repo: "{{ item }}"
-    state: "present"
+    state: "absent"
   with_items:
     - "deb https://packagecloud.io/Hypriot/Schatzkiste/debian/ wheezy main"
     - "deb-src https://packagecloud.io/Hypriot/Schatzkiste/debian/ wheezy main"
 
-- name: install docker-hypriot
+- name: add the docker apt repository key (without proxy)
+  when: ansible_machine == 'armv7l' and ansible_env.http_proxy is not defined
+  apt_key:
+    url: "https://download.docker.com/linux/ubuntu/gpg"
+
+- name: add the docker apt repository key (with proxy)
+  when: ansible_machine == 'armv7l' and ansible_env.http_proxy is defined
+  apt_key:
+    url: "https://download.docker.com/linux/ubuntu/gpg"
+  environment:
+      http_proxy: $http_proxy
+      https_proxy: $https_proxy
+
+- name: add the docker apt repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu trusty stable"
+    state: "present"
+
+- name: install the new docker version
   apt:
-    name: "docker-hypriot=1.10.3-*"
+    name: "docker-ce"
     update_cache: "yes"
     state: "present"
   notify: "Restart Docker"
