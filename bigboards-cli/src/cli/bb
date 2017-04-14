@@ -115,6 +115,9 @@ case "${ACTION}" in
             harden)
                 ${PLAYBOOK} ${DIR}/ansible/firmware/harden/main.yml
                 ;;
+            factory-reset)
+                ${PLAYBOOK} ${DIR}/ansible/hardware/reset/main.yml
+                ;;
             help|*)
                 cat "${DIR}/help/firmware.help"
                 ;;
