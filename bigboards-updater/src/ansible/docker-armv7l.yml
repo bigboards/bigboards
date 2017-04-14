@@ -9,7 +9,7 @@
     url: "https://packagecloud.io/Hypriot/Schatzkiste/gpgkey"
     state: "present"
 
-- name: make sure hypriot apt-repository debian is installed
+- name: make sure hypriot apt-repository debian is uninstalled
   apt_repository:
     repo: "{{ item }}"
     state: "absent"
