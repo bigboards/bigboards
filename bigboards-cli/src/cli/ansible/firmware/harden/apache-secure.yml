@@ -98,6 +98,9 @@
     - "proxy_http.load"
     - "proxy_wstunnel.load"
     - "rewrite.load"
+    - "ldap.load"
+    - "authnz_ldap.load"
+    - "ldap.conf"
   notify: "restart apache2"
 
 - name: "enable alternatives"
