@@ -46,7 +46,7 @@
 
 - name: reduce the [[ role.name ]] configuration files to relative paths
   set_fact:
-    config_file_paths: "{{ config_files.files | map(attribute='path') | list | replace(config_source_path, '') }}"
+    config_file_paths: "{{ config_files.files | map(attribute='path') | list | replace(config_source_path + '/', '') }}"
 
 - name: make sure the [[ role.name ]] configuration folders are available
   file:
