@@ -21,7 +21,7 @@
   when: ansible_local.bb.network.http_proxy is not defined
   pip:
     name: "{{ item }}"
-    state: "present"
+    state: "latest"
   with_items:
     - "urllib3"
     - "pyopenssl"
@@ -30,7 +30,7 @@
 
 - name: correct version of the urllib is installed [PROXY]
   when: ansible_local.bb.network.http_proxy is defined
-  shell: pip install --proxy {{ansible_local.bb.network.http_proxy}} {{ item }}
+  shell: pip install --proxy {{ansible_local.bb.network.http_proxy}} {{ item }} --upgrade
   with_items:
     - "urllib3"
     - "pyopenssl"
