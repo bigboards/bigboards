@@ -103,10 +103,10 @@
 [% endif %]
     ports:
 [% for port in role.ports %]
-[% if isFalsy(port.binding) %]
+[% if isFalsy(port.bind) %]
       - "[[ port.host ]]:[[ port.container ]]"
 [%- else %]
-      - "[[ port.binding ]]:[[ port.host ]]:[[ port.container ]]"
+      - "[[ port.bind ]]:[[ port.host ]]:[[ port.container ]]"
 [% endif %]
 [% endfor %]
     publish_all_ports: "yes"
