@@ -101,8 +101,14 @@
 [% if not isFalsy(role.networking) %]
     net: "[[ role.networking ]]"
 [% endif %]
-    ports:[% for port in role.ports %]
-      - "[[ port.host ]]:[[ port.container ]]"[% endfor %]
+    ports:
+[% for port in role.ports %]
+[% if isFalsy(port.binding) %]
+      - "[[ port.host ]]:[[ port.container ]]"
+[%- else %]
+      - "[[ port.binding ]]:[[ port.host ]]:[[ port.container ]]"
+[% endif %]
+[% endfor %]
     publish_all_ports: "yes"
 [% if not isFalsy(role.volumes_from) %]
     volumes_from:[% for v in role.volumes_from %]
