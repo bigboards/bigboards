@@ -111,7 +111,7 @@
 [% if isFalsy(port.bind) %]
       - "[[ port.host ]]:[[ port.container ]]"
 [%- else %]
-      - "[[ port.bind ]]:[[ port.host ]]:[[ port.container ]]"
+      - "[[ port.bind | safe ]]:[[ port.host ]]:[[ port.container ]]"
 [% endif %]
 [% endfor %]
 [% endif %]
