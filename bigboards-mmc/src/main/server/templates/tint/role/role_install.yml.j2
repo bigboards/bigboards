@@ -102,6 +102,10 @@
     net: "[[ role.networking ]]"
 [% endif %]
 [% if not isFalsy(role.ports) %]
+    expose:
+[% for port in role.ports %]
+      - "[[ port.container ]]"
+[% endfor %]
     ports:
 [% for port in role.ports %]
 [% if isFalsy(port.bind) %]
