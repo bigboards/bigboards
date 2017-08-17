@@ -64,6 +64,7 @@
         dest: "/etc/bigboards/hex.yml"
         owner: "bb"
         mode: "u=rw,g=r,o=r"
+        force: "no"
 
   handlers:
     - name: restart apache
