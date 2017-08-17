@@ -19,9 +19,11 @@
 
     - name: unset the nodejs proxy settings for HTTP
       shell: npm config delete proxy
+      ignore_errors: yes
 
     - name: unset the nodejs proxy settings for HTTPS
       shell: npm config delete https-proxy
+      ignore_errors: yes
 
     - name: unset docker proxy settings for HTTP
       lineinfile: dest="/etc/default/docker" regexp="^export http_proxy=.*" state="absent"
@@ -31,15 +33,19 @@
 
     - name: unset git proxy settings for HTTP
       shell: git config --global --unset http.proxy
+      ignore_errors: yes
 
     - name: unset git proxy settings for HTTPS
       shell: git config --global --unset https.proxy
+      ignore_errors: yes
 
     - name: unset git proxy settings for HTTP
       shell: git config --system --unset http.proxy
+      ignore_errors: yes
 
     - name: unset git proxy settings for HTTPS
       shell: git config --system --unset https.proxy
+      ignore_errors: yes
 
     - name: unset bb.fact proxy settings for HTTP
       lineinfile: dest="/etc/ansible/facts.d/bb.fact" regexp="^http_proxy=.*" state="absent"
