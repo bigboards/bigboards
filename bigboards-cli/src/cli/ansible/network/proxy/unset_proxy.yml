@@ -1,0 +1,73 @@
+- hosts: host
+  become: yes
+  become_user: root
+  tasks:
+    - name: make sure the apt configuration file exists
+      file: path=/etc/apt/apt.conf state=touch
+
+    - name: unset apt proxy settings for HTTP
+      lineinfile: dest="/etc/apt/apt.conf" regexp="^Acquire::http::proxy.*" state="absent"
+
+    - name: unset apt proxy settings for HTTPS
+      lineinfile: dest="/etc/apt/apt.conf" regexp="^Acquire::https::proxy.*" state="absent"
+
+    - name: unset system proxy settings for HTTP
+      lineinfile: dest="/etc/environment" regexp="^http_proxy=.*" state="absent"
+
+    - name: unset system proxy settings for HTTPS
+      lineinfile: dest="/etc/environment" regexp="^https_proxy=.*" state="absent"
+
+    - name: unset the nodejs proxy settings for HTTP
+      shell: npm config delete proxy
+
+    - name: unset the nodejs proxy settings for HTTPS
+      shell: npm config delete https-proxy
+
+    - name: unset docker proxy settings for HTTP
+      lineinfile: dest="/etc/default/docker" regexp="^export http_proxy=.*" state="absent"
+
+    - name: unset docker proxy settings for HTTPS
+      lineinfile: dest="/etc/default/docker" regexp="^export https_proxy=.*" state="absent"
+
+    - name: unset git proxy settings for HTTP
+      shell: git config --global --unset http.proxy
+
+    - name: unset git proxy settings for HTTPS
+      shell: git config --global --unset https.proxy
+
+    - name: unset git proxy settings for HTTP
+      shell: git config --system --unset http.proxy
+
+    - name: unset git proxy settings for HTTPS
+      shell: git config --system --unset https.proxy
+
+    - name: unset bb.fact proxy settings for HTTP
+      lineinfile: dest="/etc/ansible/facts.d/bb.fact" regexp="^http_proxy=.*" state="absent"
+
+    - name: unset bb.fact proxy settings for HTTPS
+      lineinfile: dest="/etc/ansible/facts.d/bb.fact" regexp="^https_proxy=.*" state="absent"
+
+- hosts: host-coordinators
+  become: yes
+  become_user: root
+  tasks:
+    - name: make sure .bowerrc exists
+      copy:
+        dest: "/opt/bb/runtimes/bigboards-mmc/client/.bowerrc"
+        content: "{\n\"dummy\": \"value\"\n}"
+        force: "no"
+        owner: "bb"
+        group: "root"
+        mode: "u=rw,g=r,o=r"
+
+    - name: unset .bowerrc proxy settings for HTTP
+      lineinfile:
+        dest: "/opt/bb/runtimes/bigboards-mmc/client/.bowerrc"
+        regexp: "^\"proxy\":.*"
+        state: "absent"
+
+    - name: unset .bowerrc proxy settings for HTTPS
+      lineinfile:
+        dest: "/opt/bb/runtimes/bigboards-mmc/client/.bowerrc"
+        regexp: "^\"https-proxy\":.*"
+        state: "absent"

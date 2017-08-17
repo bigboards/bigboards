@@ -172,6 +172,11 @@ case "${ACTION}" in
 
                 [ $? -eq 0 ] && requestPowerCycle
                 ;;
+            no-proxy)
+                ${PLAYBOOK} ${DIR}/ansible/network/proxy/unset_proxy.yml
+
+                [ $? -eq 0 ] && requestPowerCycle
+                ;;
             help|*)
                 cat "${DIR}/help/network.help" ;;
         esac
