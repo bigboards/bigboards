@@ -57,6 +57,18 @@
   become: yes
   become_user: root
   tasks:
+    - name: set bigboards-mmc proxy settings for HTTP
+      lineinfile:
+        dest: "/etc/init/bigboards-mmc.conf"
+        regexp: "^env http_proxy=.*"
+        state: "absent"
+
+    - name: set bigboards-mmc proxy settings for HTTPS
+      lineinfile:
+        dest: "/etc/init/bigboards-mmc.conf"
+        regexp: "^env https_proxy=.*"
+        state: "absent"
+
     - name: make sure .bowerrc exists
       copy:
         dest: "/opt/bb/runtimes/bigboards-mmc/client/.bowerrc"
