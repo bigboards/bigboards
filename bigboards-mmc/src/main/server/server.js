@@ -47,6 +47,9 @@ process.on('uncaughtException', function(err) {
 });
 
 function initializeMMCConfiguration() {
+    winston.info('Environment:');
+    winston.info(process.env);
+
     var config = require('./config').lookupEnvironment();
 
     // -- read the environment variables which will allow configuration parameters to be overridden
