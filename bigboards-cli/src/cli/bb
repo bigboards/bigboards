@@ -35,7 +35,7 @@ askForInit() {
 
 
 usage() {
-    echo "Usage: $0 [firmware|network|run|mmc|container|system|help]" 1>&2; exit 1;
+    echo "Usage: $0 [hardware|firmware|network|run|mmc|container|system|help]" 1>&2; exit 1;
 }
 
 verifyPrerequisites() {
@@ -178,14 +178,29 @@ case "${ACTION}" in
                 [ $? -eq 0 ] && requestPowerCycle
                 ;;
             help|*)
-                cat "${DIR}/help/network.help" ;;
+                cat "${DIR}/help/network.help"
+                ;;
         esac
         ;;
     run)
-        ansible host --sudo -m shell -a "$2"
+        case "${2}" in
+            help)
+                cat "${DIR}/help/run.help"
+                ;;
+            *)
+                ansible host --sudo -m shell -a "$2"
+                ;;
+        esac
         ;;
     mmc)
-        sudo service bigboards-mmc $2
+        case "${2}" in
+            help)
+                cat "${DIR}/help/mmc.help"
+                ;;
+            *)
+                sudo service bigboards-mmc $2
+                ;;
+        esac
         ;;
     container)
         case "${2}" in

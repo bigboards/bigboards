@@ -1,0 +1,8 @@
+Run a command against all nodes of you device
+
+USAGE: $0 run '<COMMAND>'
+
+EXAMPLE
+
+    bb run 'sleep 5 && reboot'      reboots all nodes of your device
+    bb run 'sleep 5 && poweroff'    shuts all nodes of you device down

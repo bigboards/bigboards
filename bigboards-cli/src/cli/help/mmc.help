@@ -1,0 +1,13 @@
+Manage BigBoards MMC process
+
+USAGE: $0 mmc [status|start|stop|restart]
+
+OPTIONS
+
+    status    print the status of the MMC process
+
+    start     start the MMC process
+
+    stop      stop the MMC proces
+
+    restart   restart the MMC process
