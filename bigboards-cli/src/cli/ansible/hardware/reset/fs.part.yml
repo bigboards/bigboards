@@ -6,3 +6,14 @@
   with_items:
     - "bigboards-mmc"
     - "bigboards-updater"
+
+- name: remove bigboards directories
+  file:
+    path: "{{ item }}"
+    state: "absent"
+  with_items:
+    - "/opt/bb/runtimes/bigboards-mmc"
+    - "/opt/bb/runtimes/bigboards-updater"
+    - "/opt/bb/.ansible"
+    - "/opt/bb/.versions"
+    - "/opt/bb/tints.d"
