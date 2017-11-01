@@ -1,7 +1,7 @@
 - debug:
     var: 'ansible_local.bb.network.http_proxy'
 
-- name: install dependencies
+- name: install python tools
   apt:
     name: "{{ item}}"
     state: "present"
@@ -9,6 +9,26 @@
     - "python-pip"
     - "python-dev"
     - "python-setuptools"
+
+- name: first update python-setuptools via pip [NON-PROXY]
+  when: ansible_local.bb.network.http_proxy is not defined
+  pip:
+    name: "{{ item }}"
+    state: "latest"
+  with_items:
+    - "setuptools"
+
+- name: first update python-setuptools via pip [PROXY]
+  when: ansible_local.bb.network.http_proxy is defined
+  shell: pip install --proxy {{ansible_local.bb.network.http_proxy}} {{ item }} --upgrade
+  with_items:
+    - "setuptools"
+
+- name: install build utilities
+  apt:
+    name: "{{ item}}"
+    state: "present"
+  with_items:
     - "build-essential"
     - "apt-transport-https"
     - "libffi-dev"
@@ -17,7 +37,7 @@
     - "curl"
     - "gnupg-curl"
 
-- name: correct version of the urllib is installed [NON-PROXY]
+- name: install python urllib and security tools installed [NON-PROXY]
   when: ansible_local.bb.network.http_proxy is not defined
   pip:
     name: "{{ item }}"
@@ -28,7 +48,7 @@
     - "ndg-httpsclient"
     - "pyasn1"
 
-- name: correct version of the urllib is installed [PROXY]
+- name: install python urllib and security tools installed [PROXY]
   when: ansible_local.bb.network.http_proxy is defined
   shell: pip install --proxy {{ansible_local.bb.network.http_proxy}} {{ item }} --upgrade
   with_items:
