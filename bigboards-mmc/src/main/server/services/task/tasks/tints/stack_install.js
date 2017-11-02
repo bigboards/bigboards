@@ -103,7 +103,7 @@ function generateAnsibleCode(variables, registryService) {
 
         // -- substitute the role image with an updated one.
         // -- In case of bigboards images we append the hex architecture if its not already there
-        if ((container.image.indexOf('bigboards/') == 0) && (container.image.indexOf(variables.hex.arch) == -1)) {
+        if (container.image && (container.image.indexOf('bigboards/') == 0) && (container.image.indexOf(variables.hex.arch) == -1)) {
             // -- we must support image tags which are appended as :tag
             var index = container.image.lastIndexOf(":");
             if (index != -1) {
@@ -182,26 +182,32 @@ function checkoutIfNeeded(repoUrl, repoPath, firmware) {
 
     fss.rmdir(repoPath);
 
-    defer.notify({channel: 'output', data: "Cloning the configuration repository " + repoUrl + " to " + repoPath});
+    log.info("Cloning the configuration repository " + repoUrl + " to " + repoPath);
+    defer.notify({channel: 'output', data: "Cloning the configuration repository " + repoUrl + " to " + repoPath + "\n"});
 
     gift.clone(repoUrl, repoPath, function(err, repo) {
         if (err) defer.reject(err);
 
         // -- try to checkout the branch with the current firmware
         defer.notify({channel: 'output', data: "Checking if a firmware branch is available for firmware " + firmware + "\n"});
-        repo.checkout(firmware, function(err) {
-            if (err) {
-                defer.notify({channel: 'output', data: "Using the master as configuration branch " + firmware + "\n"});
-                defer.resolve(repo);
-            } else {
-                defer.notify({channel: 'output', data: "Using configuration branch " + firmware + "\n"});
+        if (!repo) {
+            defer.notify({channel: 'output', data: "No repository found for given URL " + repoUrl});
+        }
+        else {
+            repo.checkout(firmware, function(err) {
+                if (err) {
+                    defer.notify({channel: 'output', data: "Using the master as configuration branch " + firmware + "\n"});
+                    defer.resolve(repo);
+                } else {
+                    defer.notify({channel: 'output', data: "Using configuration branch " + firmware + "\n"});
 
-                repo.checkout(firmware, function(err) {
-                    if (err) defer.reject(err);
-                    else defer.resolve(repo);
-                });
-            }
-        });
+                    repo.checkout(firmware, function(err) {
+                        if (err) defer.reject(err);
+                        else defer.resolve(repo);
+                    });
+                }
+            });
+        }
     });
 
     return defer.promise;
