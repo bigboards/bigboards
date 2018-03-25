@@ -23,6 +23,12 @@
 #    - name: make sure pip is upgraded
 #      shell: easy_install -U pip
 
+- name: make sure older version of tornado is installed to bypass python 2.7.9 requirement
+  pip:
+    name: "tornado"
+    state: "present"
+    version: "4.5.3"
+
 - name: make sure butterfly is installed
   pip:
     name: "butterfly"
