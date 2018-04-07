@@ -1,0 +1,2 @@
+/dev/sdb1 /     auto errors=remount-ro   0   1
+/dev/sda1 /data ext4 rw,noatime,nodiratime,acl,user_xattr,data=writeback 0 0
